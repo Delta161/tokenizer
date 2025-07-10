@@ -1,0 +1,6 @@
+(await Token.balanceOf("0x1243C824c89A94309fD859C99dBF574430E7f5BD")).toString()
+const Token = await ethers.getContractAt("MyToken", "0x244e7A9b0d76b2D18BE27a7E1737f1228F298EdD");(await Token.balanceOf("0x1243C824c89A94309fD859C99dBF574430E7f5BD")).toString()
+(await Token.balanceOf("YOUR_WALLET_ADDRESS")).toString()
+const Token = await ethers.getContractAt("MyToken", "0x244e7A9b0d76b2D18BE27a7E1737f1228F298EdD");
+(await Token.balanceOf("YOUR_WALLET_ADDRESS")).toString()
+const Token = await ethers.getContractAt("MyToken", "0x244e7A9b0d76b2D18BE27a7E1737f1228F298EdD");
