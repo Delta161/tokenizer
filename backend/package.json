@@ -20,7 +20,11 @@
   "homepage": "https://github.com/Delta161/tokenizer#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^5.3.0",
-    "dotenv": "^17.1.0"
+    "@prisma/client": "^6.11.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.1.0",
+    "express": "^5.1.0",
+    "prisma": "^6.11.1"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.9",

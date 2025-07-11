@@ -1,0 +1,30 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id             String   @id @default(cuid())
+  title          String
+  location       String
+  issuer         String
+  network        String
+  type           String
+  tokenPrice     Float
+  tokensAvailable Int
+  totalTokens    Int
+  fundedPercent  Int
+  status         String
+  launchDate     DateTime
+  description    String
+  tokenAddress   String
+  imageUrl       String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
