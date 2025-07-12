@@ -10,7 +10,10 @@ const navLinks = [
 
 export default function Navbar() {
     return (
-        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-md border-b" style={{ borderBottom: "1px solid #ccd1e0" }}>
+        <header
+            className="sticky top-0 z-50 bg-white/80 shadow-[0_8px_24px_-8px_rgba(60,72,100,0.18)]"
+            style={{ borderBottom: "1px solid #ccd1e0", paddingBottom: "8px" }} // 8px = 0.5rem, adjust as needed
+        >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
@@ -20,7 +23,7 @@ export default function Navbar() {
                             <Image
                                 src="/logo.png"
                                 alt="Tokenizer Logo"
-                                width={180}
+                                width={190}
                                 height={64}
                                 className="block"
                                 draggable={false}

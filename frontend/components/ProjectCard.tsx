@@ -1,6 +1,6 @@
 // components/ProjectCard.tsx
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StarIcon, HeartIcon, EyeIcon, Building2Icon } from "lucide-react";
 
@@ -40,7 +40,7 @@ export default function ProjectCard({
     isFavorite = false,
 }: ProjectCardProps) {
     return (
-        <Card className="rounded-2xl shadow-md overflow-hidden max-w-[350px] border border-gray-100">
+        <Card className="rounded-2xl shadow-2xl overflow-hidden max-w-[420px] border border-gray-100">
             <div className="relative">
                 <Image
                     src={imageUrl}
@@ -138,4 +138,9 @@ export default function ProjectCard({
             </CardContent>
         </Card>
     );
+}
+
+// Card.tsx
+export function Card({ className, ...props }) {
+  return <div className={className} {...props} />;
 }

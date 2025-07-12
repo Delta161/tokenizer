@@ -1,159 +1,164 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { CountryDropdown } from "@/components/ui/country-dropdown";
 
-const TABS = [
-    { key: "general", label: "General" },
-    { key: "financial", label: "Financial" },
-    { key: "details", label: "Details" },
-];
+type FormValues = {
+  title: string;
+  location: string;
+  imageUrl: string;
+  type: string;
+  tokenPrice: string;
+  totalTokens: string;
+  description: string;
+  country: string;
+};
 
 export default function AddProjectForm() {
-    const [form, setForm] = useState({
-        title: "",
-        location: "",
-        imageUrl: "",
-        type: "",
-        tokenPrice: "",
-        totalTokens: "",
-        description: "",
-    });
-    const [activeTab, setActiveTab] = useState("general");
+  const form = useForm<FormValues>({
+    defaultValues: {
+      title: "",
+      location: "",
+      imageUrl: "",
+      type: "",
+      tokenPrice: "",
+      totalTokens: "",
+      description: "",
+      country: "",
+    },
+  });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+  const onSubmit = (data: FormValues) => {
+    // Call your API
+    console.log("Submitting:", data);
+  };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        // Call your API
-        console.log("Submitting:", form);
-    };
-
-    return (
-        <div className="max-w-2xl mx-auto px-4 py-10">
-            <h1 className="text-2xl font-bold mb-6">Add New Project</h1>
-            {/* Tabs */}
-            <div className="mb-6 flex border-b border-gray-200">
-                {TABS.map(tab => (
-                    <button
-                        key={tab.key}
-                        type="button"
-                        onClick={() => setActiveTab(tab.key)}
-                        className={`px-4 py-2 -mb-px border-b-2 font-medium transition ${
-                            activeTab === tab.key
-                                ? "border-purple-600 text-purple-700"
-                                : "border-transparent text-gray-500 hover:text-purple-700"
-                        }`}
-                    >
-                        {tab.label}
-                    </button>
-                ))}
-            </div>
-            <form
-                onSubmit={handleSubmit}
-                className="space-y-6 bg-white p-6 rounded-lg shadow border border-gray-200"
-            >
-                {/* General Tab */}
-                {activeTab === "general" && (
-                    <>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Title</label>
-                            <input
-                                name="title"
-                                type="text"
-                                value={form.title}
-                                onChange={handleChange}
-                                className="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Location</label>
-                            <input
-                                name="location"
-                                type="text"
-                                value={form.location}
-                                onChange={handleChange}
-                                className="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Image URL</label>
-                            <input
-                                name="imageUrl"
-                                type="url"
-                                value={form.imageUrl}
-                                onChange={handleChange}
-                                className="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-                                required
-                            />
-                        </div>
-                    </>
-                )}
-
-                {/* Financial Tab */}
-                {activeTab === "financial" && (
-                    <>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Property Type</label>
-                            <input
-                                name="type"
-                                type="text"
-                                value={form.type}
-                                onChange={handleChange}
-                                className="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-                                required
-                            />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Token Price (€)</label>
-                                <input
-                                    name="tokenPrice"
-                                    type="number"
-                                    step="0.01"
-                                    value={form.tokenPrice}
-                                    onChange={handleChange}
-                                    className="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Total Tokens</label>
-                                <input
-                                    name="totalTokens"
-                                    type="number"
-                                    value={form.totalTokens}
-                                    onChange={handleChange}
-                                    className="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-                                    required
-                                />
-                            </div>
-                        </div>
-                    </>
-                )}
-
-                {/* Details Tab */}
-                {activeTab === "details" && (
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea
-                            name="description"
-                            rows={4}
-                            value={form.description}
-                            onChange={handleChange}
-                            className="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-                        ></textarea>
-                    </div>
-                )}
-
-                <button
-                    type="submit"
-                    className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition"
-                >
-                    Submit Project
-                </button>
-            </form>
-        </div>
-    );
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-10">
+      <h1 className="text-2xl font-bold mb-6">Add New Project</h1>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Title</FormLabel>
+                <FormControl>
+                  <Input placeholder="Title" {...field} />
+                </FormControl>
+                <FormDescription>This is the Title field</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="location"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Location</FormLabel>
+                <FormControl>
+                  <Input placeholder="Location" {...field} />
+                </FormControl>
+                <FormDescription>This is the Location field</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="country"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Country</FormLabel>
+                <CountryDropdown
+                  value={field.value}
+                  onChange={(value) => field.onChange(value)}
+                  placeholder="Select a country"
+                />
+                <FormDescription>This is the Country field</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="imageUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Image URL</FormLabel>
+                <FormControl>
+                  <Input placeholder="Image URL" {...field} />
+                </FormControl>
+                <FormDescription>This is the Image URL field</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type</FormLabel>
+                <FormControl>
+                  <Input placeholder="Type" {...field} />
+                </FormControl>
+                <FormDescription>This is the Type field</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="tokenPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Token Price (€)</FormLabel>
+                  <FormControl>
+                    <Input type="number" step="0.01" placeholder="Token Price" {...field} />
+                  </FormControl>
+                  <FormDescription>This is the Token Price field</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="totalTokens"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Total Tokens</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="Total Tokens" {...field} />
+                  </FormControl>
+                  <FormDescription>This is the Total Tokens field</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Description" {...field} />
+                </FormControl>
+                <FormDescription>This is the Description field</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Submit Project</Button>
+        </form>
+      </Form>
+    </div>
+  );
 }
