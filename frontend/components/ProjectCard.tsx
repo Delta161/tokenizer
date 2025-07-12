@@ -1,6 +1,6 @@
 // components/ProjectCard.tsx
 import Image from "next/image";
-import { CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardTitle, CardHeader, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StarIcon, HeartIcon, EyeIcon, Building2Icon } from "lucide-react";
 
@@ -40,32 +40,13 @@ export default function ProjectCard({
     isFavorite = false,
 }: ProjectCardProps) {
     return (
-        <Card className="rounded-2xl shadow-2xl overflow-hidden max-w-[420px] border border-gray-100">
-            <div className="relative">
-                <Image
-                    src={imageUrl}
-                    alt="Property Image"
-                    width={350}
-                    height={200}
-                    className="w-full h-[200px] object-cover"
-                />
-                <Button
-                    size="icon"
-                    variant="ghost"
-                    className="absolute top-2 right-2 p-1 bg-white/90 hover:bg-white/70 rounded-full"
-                >
-                    <HeartIcon className={`w-5 h-5 ${isFavorite ? "fill-purple-600" : ""}`} />
-                </Button>
-            </div>
-            <CardContent className="p-4 space-y-2">
-                {/* Title and address */}
-                <div>
-                    <h2 className="text-lg font-semibold leading-snug">{title}</h2>
-                    <p className="text-sm text-muted-foreground">{address}</p>
-                </div>
-
-                {/* Tags */}
-                <div className="flex items-center gap-2 mt-1">
+        <Card className="w-[500px] shadow-md">
+            <CardHeader>
+                <CardTitle>{title}</CardTitle>
+                <CardDescription>{address}</CardDescription>
+         </CardHeader>
+         <CardContent>
+                           <div className="flex items-center gap-2 mt-1">
                     <Image src={issuerLogoUrl} alt="Issuer logo" width={24} height={24} />
                     <div className="text-xs text-muted-foreground flex items-center gap-1">
                         <Building2Icon className="w-4 h-4" />
@@ -140,7 +121,3 @@ export default function ProjectCard({
     );
 }
 
-// Card.tsx
-export function Card({ className, ...props }) {
-  return <div className={className} {...props} />;
-}
