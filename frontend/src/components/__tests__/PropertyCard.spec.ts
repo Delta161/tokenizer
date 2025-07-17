@@ -1,20 +1,40 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import PropertyCard from '../PropertyCard.vue';
+import ProjectCard from '../ProjectCard.vue';
+import type { Project } from '../../types/Project';
 
-describe('PropertyCard', () => {
-  it('renders property name', () => {
-    const wrapper = mount(PropertyCard, {
+describe('ProjectCard', () => {
+  it('renders project title', () => {
+    const mockProject: Project = {
+      id: '1',
+      projectTitle: 'Test Project',
+      location: 'Test Location',
+      description: 'Test description',
+      tokenSymbol: 'TEST',
+      totalTokens: 1000,
+      pricePerToken: 100,
+      expectedYield: 10,
+      price: 150000,
+      tokenPrice: 100,
+      minInvestment: 1000,
+      irr: 12.5,
+      apr: 8.5,
+      valueGrowth: 15.2,
+      tokensAvailable: 500,
+      imageUrls: ['test.jpg'],
+      tag: 'Commercial',
+      tags: ['Commercial', 'High Yield'],
+      visitsThisWeek: 25,
+      totalVisitors: 150,
+      isFavorite: false,
+      country: 'USA'
+    };
+
+    const wrapper = mount(ProjectCard, {
       props: {
-        property: {
-          id: 1,
-          name: 'Test Property',
-          description: 'Test desc',
-          price: 1.5,
-          image: 'test.jpg'
-        }
+        project: mockProject
       }
     });
-    expect(wrapper.text()).toContain('Test Property');
+    expect(wrapper.text()).toContain('Test Project');
   });
 });

@@ -1,36 +1,106 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import ProjectCard from '@/components/ProjectCard.vue'
+import type { Project } from '@/types/Project'
 
-// Mock data for featured properties
-const featuredProperties = ref([
+// Mock data for featured projects
+const featuredProjects = ref<Project[]>([
   {
-    id: 1,
-    name: 'Luxury Downtown Apartment',
+    id: '1',
+    projectTitle: 'Luxury Downtown Apartment',
     location: 'New York, NY',
-    price: '2.5 ETH',
-    image: 'https://via.placeholder.com/300x200?text=Luxury+Apartment',
-    tokenized: true,
-    availableTokens: 1000
+    description: 'Premium apartment in the heart of Manhattan',
+    tokenSymbol: 'LDA',
+    totalTokens: 10000,
+    pricePerToken: 250,
+    expectedYield: 12.5,
+    projectImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
+    status: 'active',
+    // Additional ProjectCard fields
+    price: 2500000,
+    tokenPrice: 250,
+    minInvestment: 1000,
+    irr: 14.2,
+    apr: 12.5,
+    valueGrowth: 8.3,
+    tokensAvailable: 75,
+    imageUrls: [
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop'
+    ],
+    tags: ['LANDSHARE', 'Apartment'],
+    visitsThisWeek: 127,
+    totalVisitors: 1543,
+    isFavorite: false,
+    country: 'USA'
   },
   {
-    id: 2,
-    name: 'Modern Office Building',
+    id: '2',
+    projectTitle: 'Modern Office Building',
     location: 'San Francisco, CA',
-    price: '15.8 ETH',
-    image: 'https://via.placeholder.com/300x200?text=Office+Building',
-    tokenized: true,
-    availableTokens: 5000
+    description: 'State-of-the-art commercial building in SOMA district',
+    tokenSymbol: 'MOB',
+    totalTokens: 50000,
+    pricePerToken: 316,
+    expectedYield: 15.8,
+    projectImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
+    status: 'active',
+    // Additional ProjectCard fields
+    price: 15800000,
+    tokenPrice: 316,
+    minInvestment: 2500,
+    irr: 'Request',
+    apr: 15.8,
+    valueGrowth: 12.1,
+    tokensAvailable: 42,
+    imageUrls: [
+      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop'
+    ],
+    tags: ['LANDSHARE', 'Commercial'],
+    visitsThisWeek: 89,
+    totalVisitors: 2156,
+    isFavorite: true,
+    country: 'USA'
   },
   {
-    id: 3,
-    name: 'Beachfront Villa',
+    id: '3',
+    projectTitle: 'Beachfront Villa',
     location: 'Miami, FL',
-    price: '8.2 ETH',
-    image: 'https://via.placeholder.com/300x200?text=Beachfront+Villa',
-    tokenized: false,
-    availableTokens: 0
+    description: 'Luxury oceanfront property with private beach access',
+    tokenSymbol: 'BFV',
+    totalTokens: 25000,
+    pricePerToken: 328,
+    expectedYield: 10.2,
+    projectImage: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
+    status: 'active',
+    // Additional ProjectCard fields
+    price: 8200000,
+    tokenPrice: 328,
+    minInvestment: 1500,
+    irr: 11.8,
+    apr: 10.2,
+    valueGrowth: 15.7,
+    tokensAvailable: 88,
+    imageUrls: [
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
+      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=300&fit=crop'
+    ],
+    tags: ['LANDSHARE', 'Villa'],
+    visitsThisWeek: 203,
+    totalVisitors: 3421,
+    isFavorite: false,
+    country: 'USA'
   }
 ])
+
+// Handle project card events
+const handleToggleFavorite = (projectId: string) => {
+  const project = featuredProjects.value.find(p => p.id === projectId)
+  if (project) {
+    project.isFavorite = !project.isFavorite
+  }
+}
 </script>
 
 <template>
@@ -50,27 +120,17 @@ const featuredProperties = ref([
       </div>
     </section>
 
-    <!-- Featured Properties -->
-    <section class="featured-properties">
+    <!-- Featured Projects -->
+    <section class="featured-projects">
       <div class="container">
-        <h2>Featured Properties</h2>
-        <div class="properties-grid">
-          <div v-for="property in featuredProperties" :key="property.id" class="property-card">
-            <img :src="property.image" :alt="property.name" />
-            <div class="property-info">
-              <h3>{{ property.name }}</h3>
-              <p class="location">{{ property.location }}</p>
-              <p class="price">{{ property.price }}</p>
-              <div class="tokenization-status">
-                <span v-if="property.tokenized" class="status tokenized">✓ Tokenized</span>
-                <span v-else class="status pending">⏳ Coming Soon</span>
-              </div>
-              <div v-if="property.tokenized" class="tokens-available">
-                <span>{{ property.availableTokens }} tokens available</span>
-              </div>
-              <router-link :to="`/project/${property.id}`" class="btn btn-outline">View Details</router-link>
-            </div>
-          </div>
+        <h2>Featured Projects</h2>
+        <div class="projects-grid">
+          <ProjectCard 
+            v-for="project in featuredProjects" 
+            :key="project.id" 
+            :project="project"
+            @toggle-favorite="handleToggleFavorite"
+          />
         </div>
       </div>
     </section>
@@ -199,7 +259,7 @@ const featuredProperties = ref([
   color: white;
 }
 
-.featured-properties {
+.featured-projects {
   padding: 3rem 2rem;
   background: #f8fafc;
   width: 100%;
@@ -213,86 +273,19 @@ const featuredProperties = ref([
   margin: 0 auto;
 }
 
-.featured-properties h2 {
+.featured-projects h2 {
   text-align: center;
   margin-bottom: 3rem;
   font-size: 2.5rem;
   color: #1e293b;
 }
 
-.properties-grid {
+.projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(384px, 1fr));
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.property-card {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.property-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
-
-.property-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.property-info {
-  padding: 1.5rem;
-}
-
-.property-info h3 {
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.location {
-  color: #666;
-  margin-bottom: 0.5rem;
-}
-
-.price {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #667eea;
-  margin-bottom: 1rem;
-}
-
-.tokenization-status {
-  margin-bottom: 0.5rem;
-}
-
-.status {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.status.tokenized {
-  background: #d4edda;
-  color: #155724;
-}
-
-.status.pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.tokens-available {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 1rem;
 }
 
 .stats {
@@ -360,13 +353,13 @@ const featuredProperties = ref([
     font-size: 1rem;
   }
   
-  .featured-properties,
+  .featured-projects,
   .stats {
     padding: 2rem 1rem;
     margin: 1rem 0;
   }
   
-  .properties-grid {
+  .projects-grid {
     grid-template-columns: 1fr;
   }
   

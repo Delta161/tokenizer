@@ -23,6 +23,11 @@ import { createRouter, createWebHistory } from 'vue-router';
       path: '/dashboard',
       name: 'dashboard',
       component: () => import('@/views/Home.vue')
+    },
+    {
+      path: '/add-project',
+      name: 'add-project',
+      component: () => import('@/components/AddProjectForm.vue')
     }
     // {
     //   path: '/login',
