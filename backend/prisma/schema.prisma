@@ -1,0 +1,271 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // or your preferred DB
+  url      = env("DATABASE_URL")
+}
+
+enum Blockchain {
+  SEPOLIA
+  POLYGON
+  MAINNET
+}
+
+enum PaymentMethod {
+  FIAT
+  CRYPTO
+}
+
+enum InvestmentStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum PropertyStatus {
+  DRAFT
+  PENDING_REVIEW
+  LIVE
+  SOLD_OUT
+  ARCHIVED
+}
+
+enum ProjectStage {
+  PLANNING
+  UNDER_CONSTRUCTION
+  COMPLETED
+}
+
+enum PropertyCategory {
+  RESIDENTIAL
+  COMMERCIAL
+  INDUSTRIAL
+  HOSPITALITY
+  MIXED_USE
+  OTHER
+}
+
+enum UserRole {
+  INVESTOR
+  CLIENT
+  ADMIN
+}
+
+enum AuthProvider {
+  GOOGLE
+  AZURE
+}
+
+model User {
+  id                 String        @id @default(uuid())
+  email              String        @unique
+  fullName           String
+  authProvider       AuthProvider
+  providerId         String        @unique
+  avatarUrl          String?
+  role               UserRole      @default(INVESTOR)
+  phone              String?
+  timezone           String?
+  preferredLanguage  String?
+  deletedAt          DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  investor Investor?
+  client   Client?
+  wallets  Wallet[]
+}
+
+model Investor {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  nationality        String
+  isVerified         Boolean   @default(false)
+  verifiedAt         DateTime?
+  verificationMethod String?
+  dateOfBirth        DateTime?
+  institutionName    String?
+  vatNumber          String?
+  phoneNumber        String?
+  address            String?
+  city               String?
+  country            String?
+  postalCode         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  wallets     Wallet[]
+  investments Investment[]
+}
+
+model Wallet {
+  id         String     @id @default(uuid())
+  investorId String
+  investor   Investor   @relation(fields: [investorId], references: [id])
+  address    String     @unique
+  blockchain Blockchain @default(SEPOLIA)
+  isVerified Boolean    @default(false)
+  verifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  investments Investment[]
+  User        User?        @relation(fields: [userId], references: [id])
+  userId      String?
+}
+
+model Property {
+  id       String @id @default(uuid())
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id])
+
+  title       String
+  description String
+  location    String
+  country     String
+  city        String?
+  lat         Decimal?
+  lng         Decimal?
+
+  category PropertyCategory @default(OTHER)
+  tags     String[]
+
+  valuation     Decimal
+  currency      String
+  expectedYield Decimal?
+
+  totalTokens Int
+  tokenPrice  Decimal
+
+  contractAddress String?
+  blockchain      Blockchain @default(SEPOLIA)
+
+  status       PropertyStatus @default(DRAFT)
+  projectStage ProjectStage   @default(PLANNING)
+  isPublic     Boolean        @default(false)
+  isFeatured   Boolean        @default(false)
+  publishAt    DateTime?
+
+  reviewedBy  String?
+  reviewNotes String?
+
+  constructionStartDate DateTime?
+  completionDate        DateTime?
+
+  reservationLimit Int?
+  reservedBy       String[]
+
+  translations Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tokens      Token[]
+  investments Investment[]
+}
+
+model Token {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  name        String
+  symbol      String
+  decimals    Int
+  totalSupply Int
+
+  contractAddress String?
+  deploymentTx    String?
+  deploymentError String?
+
+  blockchain Blockchain @default(SEPOLIA)
+  isMinted   Boolean    @default(false)
+  isActive   Boolean    @default(true)
+
+  version        Int     @default(1)
+  isTransferable Boolean @default(true)
+  tokenUri       String?
+
+  vestingStart DateTime?
+  vestingEnd   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  investments Investment[]
+}
+
+model Investment {
+  id         String   @id @default(uuid())
+  investorId String
+  investor   Investor @relation(fields: [investorId], references: [id])
+
+  tokenId String
+  token   Token  @relation(fields: [tokenId], references: [id])
+
+  walletId String?
+  wallet   Wallet? @relation(fields: [walletId], references: [id])
+
+  amount        Int
+  pricePerToken Decimal
+  totalValue    Decimal
+  currency      String
+
+  paymentMethod PaymentMethod @default(CRYPTO)
+  paymentRef    String?
+
+  status InvestmentStatus @default(PENDING)
+
+  ipAddress     String?
+  userAgent     String?
+  kycVerifiedAt DateTime?
+  isOnChain     Boolean   @default(false)
+  metadata      Json?
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  Property   Property? @relation(fields: [propertyId], references: [id])
+  propertyId String?
+}
+
+model Client {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  companyName    String
+  contactName    String
+  email          String
+  phoneNumber    String?
+  vatNumber      String?
+  registrationNo String?
+  country        String
+  address        String
+  city           String
+  postalCode     String?
+
+  website        String?
+  logoUrl        String?
+  description    String?
+  linkedinUrl    String?
+  teamMembers    Json?
+  kybDocumentUrl String?
+  referralSource String?
+
+  isVerified Boolean   @default(false)
+  verifiedAt DateTime?
+  isBlocked  Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  properties Property[]
+}
