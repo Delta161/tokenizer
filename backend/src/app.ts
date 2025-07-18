@@ -18,6 +18,8 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 // Import routes
 import { authRouter } from './modules/auth/auth.routes';
+import { createPropertyRoutes } from './modules/property';
+import { createClientRoutes } from './modules/client';
 
 // Create Express application
 const app: Express = express();
@@ -55,7 +57,8 @@ app.get('/health', (req, res) => {
 app.use(`${API_PREFIX}/auth`, authRouter);
 // Add other module routes here as they are implemented
 // app.use(`${API_PREFIX}/users`, userRouter);
-// app.use(`${API_PREFIX}/properties`, propertyRouter);
+app.use(`${API_PREFIX}/properties`, createPropertyRoutes());
+app.use(`${API_PREFIX}/clients`, createClientRoutes());
 // etc.
 
 // Apply error handling middleware

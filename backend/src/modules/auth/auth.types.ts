@@ -1,11 +1,8 @@
 /**
- * Auth Module Types
- * Contains all DTOs and interfaces for the auth module
+ * Auth Types
+ * Defines types for the auth module
  */
 
-/**
- * User roles enum
- */
 export enum UserRole {
   USER = 'USER',
   CLIENT = 'CLIENT',
@@ -13,9 +10,6 @@ export enum UserRole {
   INVESTOR = 'INVESTOR'
 }
 
-/**
- * User DTO interface
- */
 export interface UserDTO {
   id: string;
   email: string;
@@ -24,19 +18,17 @@ export interface UserDTO {
   role: UserRole;
   createdAt: Date;
   updatedAt: Date;
+  authProvider?: string;
+  providerId?: string;
+  avatarUrl?: string;
+  lastLoginAt?: Date;
 }
 
-/**
- * Login credentials DTO
- */
 export interface LoginCredentialsDTO {
   email: string;
   password: string;
 }
 
-/**
- * Register data DTO
- */
 export interface RegisterDataDTO {
   email: string;
   password: string;
@@ -45,18 +37,22 @@ export interface RegisterDataDTO {
   role?: UserRole;
 }
 
-/**
- * Auth response DTO
- */
 export interface AuthResponseDTO {
   user: UserDTO;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
-/**
- * OAuth profile DTO
- */
+export interface TokenPayload {
+  id: string;
+  email: string;
+  role: UserRole;
+  iat?: number;
+  exp?: number;
+}
+
 export interface OAuthProfileDTO {
+  provider: string;
   id: string;
   displayName?: string;
   name?: {
@@ -65,5 +61,37 @@ export interface OAuthProfileDTO {
   };
   emails?: Array<{ value: string; verified?: boolean }>;
   photos?: Array<{ value: string }>;
+  _json?: any;
+}
+
+export interface NormalizedProfile {
   provider: string;
+  providerId: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  displayName?: string;
+  avatarUrl?: string;
+  role?: UserRole;
+}
+
+export interface GoogleProfile {
+  id: string;
+  displayName: string;
+  name: { givenName: string; familyName: string };
+  emails: Array<{ value: string; verified: boolean }>;
+  photos: Array<{ value: string }>;
+  provider: string;
+  _json: any;
+}
+
+export interface AzureProfile {
+  oid: string;
+  displayName?: string;
+  givenName?: string;
+  surname?: string;
+  userPrincipalName?: string;
+  mail?: string;
+  provider: string;
+  _json: any;
 }
