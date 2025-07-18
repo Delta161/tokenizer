@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { User } from '@prisma/client';
 import { verifyToken, extractTokenFromRequest } from './jwt.js';
 import { getUserById } from './auth.service.js';
+import { isTokenBlacklisted } from './token.service.js';
+import logger from './logger.js';
 
 /**
  * Extended Request interface to include user information
@@ -28,6 +30,21 @@ export const requireAuth = async (
       res.status(401).json({
         error: 'Authentication required',
         message: 'No valid authentication token provided'
+      });
+      return;
+    }
+    
+    // Check if token is blacklisted
+    if (isTokenBlacklisted(token)) {
+      logger.securityEvent('Blacklisted token used', {
+        ip: req.ip,
+        userAgent: req.headers['user-agent'] || 'unknown'
+      });
+      
+      res.status(401).json({
+        error: 'Invalid token',
+        message: 'This token has been revoked for security reasons',
+        tokenStatus: 'revoked'
       });
       return;
     }
@@ -64,18 +81,35 @@ export const requireAuth = async (
     
     // Handle specific JWT errors
     if (error instanceof Error) {
-      if (error.name === 'TokenExpiredError') {
-        res.status(401).json({
-          error: 'Token expired',
-          message: 'Your authentication token has expired. Please log in again.'
-        });
+      if (error.name === 'TokenExpiredError' || error.message === 'Token expired') {
+        // Check if there's a valid refresh token
+        const refreshToken = req.cookies?.refreshToken;
+        
+        if (refreshToken) {
+          // Redirect to refresh token endpoint
+          res.status(401).json({
+            error: 'Token expired',
+            message: 'Your authentication token has expired.',
+            tokenStatus: 'expired',
+            canRefresh: true
+          });
+        } else {
+          // No refresh token available
+          res.status(401).json({
+            error: 'Token expired',
+            message: 'Your authentication token has expired. Please log in again.',
+            tokenStatus: 'expired',
+            canRefresh: false
+          });
+        }
         return;
       }
       
       if (error.name === 'JsonWebTokenError') {
         res.status(401).json({
           error: 'Invalid token',
-          message: 'The provided authentication token is malformed'
+          message: 'The provided authentication token is malformed',
+          tokenStatus: 'invalid'
         });
         return;
       }

@@ -68,6 +68,9 @@ export const generateRefreshToken = (userId: string): string => {
  */
 export const verifyToken = (token: string): JWTPayload => {
   try {
+    // First check if the token is blacklisted (will be implemented in token.service.ts)
+    // This will be checked in requireAuth middleware
+    
     const decoded = jwt.verify(token, JWT_SECRET, {
       issuer: 'tokenizer-platform',
       audience: 'tokenizer-users'
@@ -86,7 +89,34 @@ export const verifyToken = (token: string): JWTPayload => {
 };
 
 /**
- * Extract token from request (cookie or Authorization header)
+ * Verify and decode refresh token
+ */
+export const verifyRefreshToken = (token: string): RefreshTokenPayload => {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET, {
+      issuer: 'tokenizer-platform',
+      audience: 'tokenizer-users'
+    } as jwt.VerifyOptions) as RefreshTokenPayload;
+    
+    // Ensure it's actually a refresh token
+    if (decoded.type !== 'refresh') {
+      throw new Error('Invalid token type');
+    }
+    
+    return decoded;
+  } catch (error: any) {
+    if (error.name === 'TokenExpiredError') {
+      throw new Error('Refresh token expired');
+    }
+    if (error.name === 'JsonWebTokenError') {
+      throw new Error('Invalid refresh token');
+    }
+    throw new Error('Refresh token verification failed');
+  }
+};
+
+/**
+ * Extract access token from request (cookie or Authorization header)
  */
 export const extractTokenFromRequest = (req: Request): string | null => {
   // Check Authorization header first
@@ -99,7 +129,19 @@ export const extractTokenFromRequest = (req: Request): string | null => {
   if (req.cookies && req.cookies.accessToken) {
     return req.cookies.accessToken;
   }
+  
+  return null;
+};
 
+/**
+ * Extract refresh token from request (cookie only)
+ */
+export const extractRefreshTokenFromRequest = (req: Request): string | null => {
+  // Refresh tokens should only be in HTTP-only cookies for security
+  if (req.cookies && req.cookies.refreshToken) {
+    return req.cookies.refreshToken;
+  }
+  
   return null;
 };
 

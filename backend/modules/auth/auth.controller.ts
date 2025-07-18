@@ -1,16 +1,28 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthProvider, UserRole } from '@prisma/client';
 import 'express-session';
+import * as jwt from 'jsonwebtoken';
 
 // Extend Request interface to include user property
 interface RequestWithUser extends Request {
   user?: any;
   session?: any;
 }
-import { generateAccessToken, generateRefreshToken, setTokenCookies, clearTokenCookies } from './jwt.js';
+import { 
+  generateAccessToken, 
+  generateRefreshToken, 
+  setTokenCookies, 
+  clearTokenCookies,
+  RefreshTokenPayload,
+  verifyRefreshToken,
+  extractRefreshTokenFromRequest,
+  extractTokenFromRequest
+} from './jwt.js';
 import { AuthenticatedRequest } from './requireAuth.js';
-import { UserWithRole } from './auth.service.js';
+import { UserWithRole, getUserById } from './auth.service.js';
 import logger, { logUserLogout } from './logger.js';
+import { blacklistToken } from './token.service.js';
+import * as jwt from 'jsonwebtoken';
 
 /**
  * Authentication response interface
@@ -156,8 +168,45 @@ export const azureCallback = (req: RequestWithUser, res: Response, next: NextFun
 /**
  * Logout handler
  */
-export const logout = (req: AuthenticatedRequest, res: Response): void => {
+export const logout = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
+    // Get tokens before clearing cookies
+    const accessToken = extractTokenFromRequest(req);
+    const refreshToken = extractRefreshTokenFromRequest(req);
+    
+    // Blacklist tokens if they exist
+    if (accessToken && req.user) {
+      try {
+        // Get token expiration from JWT payload
+        const decoded = jwt.decode(accessToken) as { exp?: number };
+        const expiryDate = decoded.exp ? new Date(decoded.exp * 1000) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        
+        // Add to blacklist
+        await blacklistToken(accessToken, req.user.id, expiryDate, 'User logout');
+      } catch (tokenError) {
+        logger.error('Failed to blacklist access token', {
+          userId: req.user.id,
+          error: tokenError instanceof Error ? tokenError.message : 'Unknown error'
+        });
+      }
+    }
+    
+    if (refreshToken && req.user) {
+      try {
+        // Get token expiration from JWT payload
+        const decoded = jwt.decode(refreshToken) as RefreshTokenPayload;
+        const expiryDate = decoded.exp ? new Date(decoded.exp * 1000) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        
+        // Add to blacklist
+        await blacklistToken(refreshToken, req.user.id, expiryDate, 'User logout');
+      } catch (tokenError) {
+        logger.error('Failed to blacklist refresh token', {
+          userId: req.user.id,
+          error: tokenError instanceof Error ? tokenError.message : 'Unknown error'
+        });
+      }
+    }
+    
     // Clear authentication cookies
     clearTokenCookies(res);
 
@@ -244,18 +293,112 @@ export const getCurrentUser = (req: AuthenticatedRequest, res: Response): void =
 
 /**
  * Refresh token handler
+ * Verifies the refresh token and issues a new access token
  */
-export const refreshToken = (req: RequestWithUser, res: Response): void => {
+export const refreshToken = async (req: Request, res: Response): Promise<void> => {
   try {
-    // This would implement refresh token logic
-    // For now, we'll return a not implemented response
-    res.status(501).json({
-      success: false,
-      error: 'Not implemented',
-      message: 'Token refresh functionality will be implemented in a future version'
-    });
+    // Extract refresh token from cookie using the dedicated function
+    const refreshToken = extractRefreshTokenFromRequest(req);
+    
+    if (!refreshToken) {
+      res.status(401).json({
+        success: false,
+        error: 'Refresh token missing',
+        message: 'No refresh token provided'
+      });
+      return;
+    }
+    
+    // Verify the refresh token
+    try {
+      // Use the dedicated refresh token verification function
+      const decoded = verifyRefreshToken(refreshToken);
+      
+      // Get user from database
+      const user = await getUserById(decoded.userId);
+      
+      if (!user) {
+        throw new Error('User not found');
+      }
+      
+      // Generate new tokens
+      const newAccessToken = generateAccessToken({
+        id: user.id,
+        email: user.email,
+        provider: user.authProvider,
+        role: user.role as 'INVESTOR' | 'CLIENT' | 'ADMIN'
+      });
+      
+      const newRefreshToken = generateRefreshToken(user.id);
+      
+      // Blacklist the old refresh token for security
+      try {
+        // Get token expiration from JWT payload
+        const decoded = jwt.decode(refreshToken) as RefreshTokenPayload;
+        const expiryDate = decoded.exp ? new Date(decoded.exp * 1000) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        
+        // Add to blacklist
+        await blacklistToken(refreshToken, user.id, expiryDate, 'Token refresh');
+      } catch (blacklistError) {
+        logger.error('Failed to blacklist old refresh token', {
+          userId: user.id,
+          error: blacklistError instanceof Error ? blacklistError.message : 'Unknown error'
+        });
+        // Continue with the token refresh process even if blacklisting fails
+      }
+      
+      // Set new tokens as cookies
+      setTokenCookies(res, newAccessToken, newRefreshToken);
+      
+      // Log the token refresh event
+      logger.tokenEvent('Token refreshed', {
+        'userId': user.id,
+        email: user.email,
+        ip: req.ip,
+        userAgent: req.headers['user-agent'] || 'unknown'
+      });
+      
+      // Return success response
+      res.status(200).json({
+        success: true,
+        message: 'Token refreshed successfully'
+      });
+    } catch (tokenError) {
+      // Clear invalid tokens
+      clearTokenCookies(res);
+      
+      logger.tokenEvent('Token refresh failed', {
+        ip: req.ip,
+        userAgent: req.headers['user-agent'] || 'unknown',
+        error: tokenError instanceof Error ? tokenError.message : 'Unknown error'
+      });
+      
+      // Determine the appropriate error message based on the error
+      let errorMessage = 'The provided refresh token is invalid or expired';
+      let errorCode = 'Invalid refresh token';
+      
+      if (tokenError instanceof Error) {
+        if (tokenError.message === 'Refresh token expired') {
+          errorMessage = 'Your refresh token has expired. Please log in again.';
+          errorCode = 'Token expired';
+        } else if (tokenError.message === 'Invalid token type') {
+          errorMessage = 'The provided token is not a valid refresh token.';
+          errorCode = 'Invalid token type';
+        }
+      }
+      
+      res.status(401).json({
+        success: false,
+        error: errorCode,
+        message: errorMessage
+      });
+    }
   } catch (error) {
-    logger.error('Refresh token failed', {}, error as Error);
+    logger.error('Refresh token failed', {
+      ip: req.ip,
+      userAgent: req.headers['user-agent'] || 'unknown'
+    }, error as Error);
+    
     res.status(500).json({
       success: false,
       error: 'Server error',

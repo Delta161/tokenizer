@@ -12,6 +12,8 @@ import {
 import { requireAuth } from './requireAuth.js';
 import { googleAuthOptions, googleCallbackOptions } from './strategies/google.strategy.js';
 import { azureAuthOptions, azureCallbackOptions } from './strategies/azure.strategy.js';
+import { validateRequest } from './middleware/validateRequest.js';
+import { RefreshTokenSchema } from './auth.validator.js';
 
 const router = Router();
 
@@ -104,14 +106,13 @@ router.get('/logout', logout);
  * Alternative POST logout route
  * POST /auth/logout
  */
-router.post('/logout', logout);
+router.post('/logout', validateRequest(LogoutSchema), logout);
 
 /**
  * Refresh access token using refresh token
  * POST /auth/refresh
- * Note: This is a placeholder for future implementation
  */
-router.post('/refresh', refreshToken);
+router.post('/refresh', validateRequest(RefreshTokenSchema), refreshToken);
 
 /**
  * Error handling routes

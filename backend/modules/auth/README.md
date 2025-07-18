@@ -329,9 +329,36 @@ model Client {
 
 Set `NODE_ENV=development` for detailed error messages and logging.
 
+## Token Management
+
+### Access Tokens
+
+Access tokens are short-lived JWTs that grant access to protected resources. They are stored in HTTP-only cookies and have a default expiration of 7 days.
+
+### Refresh Tokens
+
+Refresh tokens are long-lived JWTs that can be used to obtain new access tokens when the current one expires. They are stored in HTTP-only cookies and have a default expiration of 30 days.
+
+### Token Rotation
+
+When a refresh token is used to obtain a new access token, the old refresh token is invalidated and a new one is issued. This helps prevent replay attacks.
+
+### Token Blacklisting
+
+When a user logs out, their access and refresh tokens are added to a blacklist to prevent their use even if they haven't expired yet. The blacklist is cleaned up periodically to remove expired tokens.
+
+### Handling Token Expiration
+
+When an access token expires, the client should:
+
+1. Detect the 401 response with `tokenStatus: 'expired'` and `canRefresh: true`
+2. Call the refresh token endpoint to obtain a new access token
+3. Retry the original request with the new access token
+
 ## Future Enhancements
 
-- [ ] Refresh token rotation
+- [x] Refresh token rotation
+- [x] Token blacklisting
 - [ ] Apple OAuth integration
 - [ ] Multi-factor authentication
 - [ ] Session management dashboard

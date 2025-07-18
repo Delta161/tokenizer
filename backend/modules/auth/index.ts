@@ -1,6 +1,7 @@
 import * as passport from 'passport';
 import { configureGoogleStrategy } from './strategies/google.strategy.js';
 import { configureAzureStrategy } from './strategies/azure.strategy.js';
+import { scheduleBlacklistCleanup, stopBlacklistCleanup } from './token.service.js';
 import authRoutes from './auth.routes.js';
 
 /**
@@ -27,9 +28,31 @@ export const initializeAuth = (): void => {
       done(null, { id });
     });
     
+    // Initialize token blacklist cleanup scheduler
+    // This will periodically clean up expired tokens from the blacklist
+    scheduleBlacklistCleanup();
+    
     console.log('Authentication module initialized successfully');
   } catch (error) {
     console.error('Failed to initialize authentication module:', error);
+    throw error;
+  }
+};
+
+/**
+ * Shutdown authentication module
+ * This function should be called when the application is shutting down
+ */
+export const shutdownAuth = (): void => {
+  console.log('Shutting down authentication module...');
+  
+  try {
+    // Stop token blacklist cleanup scheduler
+    stopBlacklistCleanup();
+    
+    console.log('Authentication module shutdown successfully');
+  } catch (error) {
+    console.error('Failed to shutdown authentication module:', error);
     throw error;
   }
 };
@@ -57,6 +80,7 @@ export {
   isAdmin,
   isClientOrHigher
 } from './requireRole.js';
+export { validateRequest, validateParams, validateQuery } from './middleware/validateRequest.js';
 export { UserRole } from '@prisma/client';
 
 /**
@@ -81,12 +105,25 @@ export {
   generateAccessToken,
   generateRefreshToken,
   verifyToken,
+  verifyRefreshToken,
   extractTokenFromRequest,
+  extractRefreshTokenFromRequest,
   setTokenCookies,
   clearTokenCookies,
   type JWTPayload,
   type RefreshTokenPayload
 } from './jwt.js';
+
+/**
+ * Export token service utilities
+ */
+export {
+  blacklistToken,
+  isTokenBlacklisted,
+  cleanupBlacklist,
+  scheduleBlacklistCleanup,
+  stopBlacklistCleanup
+} from './token.service.js';
 
 /**
  * Export OAuth profile utilities
@@ -135,6 +172,17 @@ export {
 export { authRouteConfig } from './auth.routes.js';
 
 /**
+ * Export validators
+ */
+export {
+  RefreshTokenSchema,
+  LogoutSchema,
+  AuthErrorResponseSchema,
+  AuthSuccessResponseSchema,
+  TokenRefreshResponseSchema
+} from './auth.validator.js';
+
+/**
  * Export logger utilities
  */
 export { default as logger } from './logger.js';
@@ -162,7 +210,8 @@ export const authModuleInfo = {
     'Role-based access control',
     'Auto user provisioning',
     'Session management',
-    'Refresh token support (planned)',
+    'Refresh token support',
+    'Token blacklisting',
     'Comprehensive middleware'
   ],
   requiredEnvironmentVariables: [
