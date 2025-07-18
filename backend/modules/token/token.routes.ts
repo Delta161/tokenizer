@@ -3,10 +3,15 @@ import { PrismaClient } from '@prisma/client';
 import { requireAuth } from '../auth/requireAuth.js';
 import { requireAdmin, requireInvestor } from '../auth/requireRole.js';
 import { TokenController } from './token.controller.js';
+import { requireKycVerified } from '../kyc/index.js';
+
+import { SmartContractService } from '../smart-contract/smartContract.service.js';
+import { getSmartContractConfig } from '../smart-contract/smartContract.service.js';
 
 export function createTokenRoutes(prisma: PrismaClient): Router {
   const router = Router();
-  const controller = new TokenController(prisma);
+  const smartContractService = new SmartContractService(getSmartContractConfig());
+  const controller = new TokenController(prisma, smartContractService);
 
   // Admin endpoints
   router.post('/tokens/create', requireAuth, requireAdmin, controller.create);
@@ -17,6 +22,10 @@ export function createTokenRoutes(prisma: PrismaClient): Router {
 
   // Investor endpoints
   router.get('/tokens/public', requireAuth, requireInvestor, controller.getAllPublic);
+  
+  // Blockchain endpoints - require KYC verification for token balance
+  router.get('/blockchain/balance', requireAuth, requireKycVerified, controller.getTokenBalance);
+  router.get('/blockchain/metadata/:contractAddress', requireAuth, controller.getBlockchainMetadata);
 
   return router;
 }

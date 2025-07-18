@@ -2,6 +2,7 @@ import { SmartContractService, getSmartContractConfig } from './smartContract.se
 import { SmartContractController } from './controllers/smartContract.controller.js';
 import { smartContractRoutes } from './routes/smartContract.routes.js';
 import { PrismaClient } from '@prisma/client';
+import { DEFAULT_CHAIN_ID, getNetworkConfig } from './config/smartContract.config.js';
 
 export function initSmartContractModule(prisma: PrismaClient) {
   const config = getSmartContractConfig();
@@ -17,3 +18,4 @@ export function initSmartContractModule(prisma: PrismaClient) {
 
 export * from './types/smartContract.types.js';
 export * from './utils/contract.utils.js';
+export { DEFAULT_CHAIN_ID, getNetworkConfig } from './config/smartContract.config.js';

@@ -2,9 +2,28 @@ import { PrismaClient, PropertyStatus } from '@prisma/client';
 import { TokenCreateDTO, TokenUpdateDTO, TokenPublicDTO, TokenListQuery } from './token.types.js';
 import { mapTokenToPublicDTO, mapTokensToPublicDTOs } from './token.mapper.js';
 import { isAddress } from 'ethers';
+import { SmartContractService } from '../smart-contract/smartContract.service.js';
 
 export class TokenService {
-  constructor(private prisma: PrismaClient) {}
+  private smartContractService: SmartContractService;
+  
+  constructor(
+    private prisma: PrismaClient,
+    smartContractService?: SmartContractService
+  ) {
+    // If smartContractService is not provided, we'll initialize it later when needed
+    this.smartContractService = smartContractService;
+  }
+
+  // Get or initialize the smart contract service
+  private getSmartContractService(): SmartContractService {
+    if (!this.smartContractService) {
+      // Import dynamically to avoid circular dependencies
+      const { getSmartContractConfig } = require('../smart-contract/smartContract.service.js');
+      this.smartContractService = new SmartContractService(getSmartContractConfig());
+    }
+    return this.smartContractService;
+  }
 
   async create(dto: TokenCreateDTO): Promise<TokenPublicDTO> {
     // Ensure property exists and is APPROVED
@@ -21,6 +40,15 @@ export class TokenService {
     if (!isAddress(dto.contractAddress)) {
       throw new Error('Invalid Ethereum contract address');
     }
+    
+    // Validate the contract on the blockchain
+    const smartContractService = this.getSmartContractService();
+    const validationResult = await smartContractService.validateContract(dto.contractAddress);
+    
+    if (!validationResult.isValid || !validationResult.supportsERC20) {
+      throw new Error('Contract address does not point to a valid ERC20 token');
+    }
+    
     // Create token
     const token = await this.prisma.token.create({
       data: {
@@ -48,6 +76,17 @@ export class TokenService {
   async getById(id: string): Promise<TokenPublicDTO | null> {
     const token = await this.prisma.token.findUnique({ where: { id } });
     return token ? mapTokenToPublicDTO(token) : null;
+  }
+  
+  async getTokenBalanceFromBlockchain(contractAddress: string, walletAddress: string): Promise<string> {
+    const smartContractService = this.getSmartContractService();
+    const balance = await smartContractService.getBalanceOf(contractAddress, walletAddress);
+    return balance.toString();
+  }
+  
+  async getTokenMetadataFromBlockchain(contractAddress: string): Promise<any> {
+    const smartContractService = this.getSmartContractService();
+    return smartContractService.getTokenMetadata(contractAddress);
   }
 
   async update(id: string, dto: TokenUpdateDTO): Promise<TokenPublicDTO | null> {

@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, UserRole } from '@prisma/client';
 import { SmartContractService } from '../smartContract.service.js';
-import { validateAddress } from '../utils/contract.utils.js';
+import { validateAddress, validateTxHash } from '../utils/contract.utils.js';
 import { z } from 'zod';
 import { Decimal } from '@prisma/client/runtime/library';
+import { DEFAULT_CHAIN_ID, getNetworkConfig } from '../config/smartContract.config.js';
 
 const TokenMetadataSchema = z.object({
   contractAddress: z.string().refine(validateAddress, {
@@ -40,6 +41,12 @@ const TransferTokensSchema = z.object({
   amount: z.string().or(z.number()).transform(val => new Decimal(val.toString())),
 });
 
+const TransactionHashSchema = z.object({
+  txHash: z.string().refine(validateTxHash, {
+    message: 'Invalid transaction hash',
+  }),
+});
+
 export class SmartContractController {
   constructor(
     private smartContractService: SmartContractService,
@@ -48,10 +55,26 @@ export class SmartContractController {
 
   async validateContract(req: Request, res: Response, next: NextFunction) {
     try {
-      const { contractAddress } = req.params;
-      const isValid = this.smartContractService.validateContract(contractAddress);
-      return res.json({ success: true, data: { isValid } });
+      const { contractAddress } = TokenMetadataSchema.parse(req.params);
+      
+      // Check if contract exists in database
+      const token = await this.prisma.token.findFirst({
+        where: { contractAddress }
+      });
+
+      const validationResult = await this.smartContractService.validateContract(contractAddress);
+      
+      return res.json({
+        success: true,
+        data: {
+          ...validationResult,
+          existsInDatabase: !!token
+        }
+      });
     } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ success: false, error: error.errors });
+      }
       return res.status(400).json({ success: false, error: error.message });
     }
   }
@@ -124,6 +147,58 @@ export class SmartContractController {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ success: false, error: error.errors });
       }
+      return res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  async getTransactionReceipt(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { txHash } = TransactionHashSchema.parse(req.body);
+      
+      const receipt = await this.smartContractService.getTransactionReceipt(txHash);
+      
+      return res.json({
+        success: true,
+        data: receipt
+      });
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ success: false, error: error.errors });
+      }
+      return res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  async getGasPrice(req: Request, res: Response, next: NextFunction) {
+    try {
+      const gasPrice = await this.smartContractService.getGasPrice();
+      
+      return res.json({
+        success: true,
+        data: { gasPrice }
+      });
+    } catch (error: any) {
+      return res.status(400).json({ success: false, error: error.message });
+    }
+  }
+
+  async getNetworkConfig(req: Request, res: Response, next: NextFunction) {
+    try {
+      const chainId = req.query.chainId ? parseInt(req.query.chainId as string) : DEFAULT_CHAIN_ID;
+      const networkConfig = getNetworkConfig(chainId);
+      
+      if (!networkConfig) {
+        return res.status(404).json({
+          success: false,
+          error: `Network configuration not found for chain ID ${chainId}`
+        });
+      }
+      
+      return res.json({
+        success: true,
+        data: networkConfig
+      });
+    } catch (error: any) {
       return res.status(400).json({ success: false, error: error.message });
     }
   }

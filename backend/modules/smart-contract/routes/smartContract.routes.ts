@@ -10,9 +10,14 @@ export function smartContractRoutes(controller: SmartContractController): Router
   router.get('/validate/:contractAddress', controller.validateContract.bind(controller));
   router.get('/metadata/:contractAddress', controller.getTokenMetadata.bind(controller));
   router.get('/balance', controller.getBalanceOf.bind(controller));
+  router.get('/gas-price', controller.getGasPrice.bind(controller));
+  router.get('/network-config', controller.getNetworkConfig.bind(controller));
 
   // Protected routes (auth required)
   router.use(requireAuth);
+  
+  // User routes (any authenticated user)
+  router.post('/transaction-receipt', controller.getTransactionReceipt.bind(controller));
   
   // Admin-only routes
   router.use(requireRole('ADMIN'));
