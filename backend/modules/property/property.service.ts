@@ -122,21 +122,29 @@ export class PropertyService {
   }
 
   /**
-   * Get properties belonging to a specific client
+   * Get properties belonging to a specific client with pagination
    * @param clientId Client ID
-   * @returns List of properties for the client
+   * @param query Query parameters for pagination
+   * @returns Paginated list of properties for the client
    */
-  async getMyProperties(clientId: string): Promise<PropertyListResponse> {
+  async getMyProperties(clientId: string, query: PropertyListQuery = {}): Promise<PropertyListResponse> {
     try {
       if (!clientId) {
         throw new PropertyAccessError('Client ID is required');
       }
       
+      const limit = query.limit ? parseInt(query.limit, 10) : 10;
+      const offset = query.offset ? parseInt(query.offset, 10) : 0;
+      
+      // Get total count for pagination
       const total = await this.prisma.property.count({ where: { clientId } });
       
+      // Get paginated properties
       const properties = await this.prisma.property.findMany({ 
         where: { clientId }, 
-        orderBy: { createdAt: 'desc' } 
+        orderBy: { createdAt: 'desc' },
+        skip: offset,
+        take: limit
       });
       
       const propertyDTOs = mapPropertiesToPublicDTOs(properties);
@@ -144,17 +152,20 @@ export class PropertyService {
       logger.info('Retrieved client properties', { 
         module: 'property',
         clientId,
-        count: properties.length 
+        count: properties.length,
+        total,
+        limit,
+        offset
       });
       
       return {
         success: true,
         data: propertyDTOs,
         pagination: {
-          limit: properties.length,
-          offset: 0,
+          limit,
+          offset,
           total,
-          hasMore: false
+          hasMore: offset + properties.length < total
         }
       };
     } catch (error) {

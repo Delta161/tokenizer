@@ -20,10 +20,16 @@ export class PropertyController {
     return new PropertyService(this.prisma);
   }
 
+  /**
+   * Get all approved properties with pagination
+   * @param req Request with query parameters
+   * @param res Response
+   * @param next Next function
+   */
   getAllApproved = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const properties = await this.getService().getAllApproved(req.query);
-      res.json({ success: true, data: properties });
+      const response = await this.getService().getAllApproved(req.query);
+      res.json(response); // The service now returns a complete response object with pagination
     } catch (error) {
       next(error);
     }
@@ -39,12 +45,25 @@ export class PropertyController {
     }
   };
 
+  /**
+   * Get properties for the authenticated client with pagination
+   * @param req Request with authenticated user and query parameters
+   * @param res Response
+   * @param next Next function
+   */
   getMyProperties = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const clientId = req.user?.client?.id;
-      if (!clientId) return res.status(403).json({ success: false, error: 'Forbidden', message: 'Not a client' });
-      const properties = await this.getService().getMyProperties(clientId);
-      res.json({ success: true, data: properties });
+      if (!clientId) {
+        return res.status(403).json({ 
+          success: false, 
+          error: 'Forbidden', 
+          message: 'Not a client' 
+        });
+      }
+      
+      const response = await this.getService().getMyProperties(clientId, req.query);
+      res.json(response); // The service now returns a complete response object with pagination
     } catch (error) {
       next(error);
     }
@@ -186,10 +205,16 @@ export class PropertyController {
     }
   };
 
+  /**
+   * Get all properties for admin with filtering and pagination
+   * @param req Request with authenticated user and query parameters
+   * @param res Response
+   * @param next Next function
+   */
   getAllAdmin = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
-      const properties = await this.getService().getAllAdmin(req.query);
-      res.json({ success: true, data: properties });
+      const response = await this.getService().getAllAdmin(req.query);
+      res.json(response); // The service now returns a complete response object with pagination
     } catch (error) {
       next(error);
     }

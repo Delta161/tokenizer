@@ -5,8 +5,7 @@ import { requireAdmin, requireInvestor } from '../auth/requireRole.js';
 import { TokenController } from './token.controller.js';
 import { requireKycVerified } from '../kyc/index.js';
 
-import { SmartContractService } from '../smart-contract/smartContract.service.js';
-import { getSmartContractConfig } from '../smart-contract/smartContract.service.js';
+import { SmartContractService, getSmartContractConfig } from '../smart-contract/smartContract.service.js';
 
 export function createTokenRoutes(prisma: PrismaClient): Router {
   const router = Router();

@@ -14,7 +14,7 @@ export const tokenCreateSchema = z.object({
     }
   }, { message: 'totalSupply must be a positive number' }),
   contractAddress: z.string().refine((val) => isAddress(val), { message: 'Invalid Ethereum address' }),
-  chainId: z.string().min(1),
+  blockchain: z.enum(['ETHEREUM', 'SEPOLIA', 'POLYGON', 'MUMBAI']).optional().default('SEPOLIA'),
 });
 
 export const tokenUpdateSchema = z.object({
@@ -30,5 +30,7 @@ export const tokenUpdateSchema = z.object({
     }
   }, { message: 'totalSupply must be a positive number' }).optional(),
   contractAddress: z.string().refine((val) => isAddress(val), { message: 'Invalid Ethereum address' }).optional(),
-  chainId: z.string().min(1).optional(),
+  blockchain: z.enum(['ETHEREUM', 'SEPOLIA', 'POLYGON', 'MUMBAI']).optional(),
+  isActive: z.boolean().optional(),
+  isTransferable: z.boolean().optional(),
 });

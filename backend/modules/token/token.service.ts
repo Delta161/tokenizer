@@ -3,6 +3,7 @@ import { TokenCreateDTO, TokenUpdateDTO, TokenPublicDTO, TokenListQuery } from '
 import { mapTokenToPublicDTO, mapTokensToPublicDTOs } from './token.mapper.js';
 import { isAddress } from 'ethers';
 import { SmartContractService } from '../smart-contract/smartContract.service.js';
+import { TokenMetadata } from '../smart-contract/types/smartContract.types.js';
 
 export class TokenService {
   private smartContractService: SmartContractService;
@@ -56,19 +57,20 @@ export class TokenService {
         name: dto.name,
         symbol: dto.symbol,
         decimals: dto.decimals,
-        totalSupply: dto.totalSupply.toString(),
+        totalSupply: parseInt(dto.totalSupply, 10),
         contractAddress: dto.contractAddress,
-        chainId: dto.chainId,
+        blockchain: 'SEPOLIA', // Default to SEPOLIA blockchain
       },
     });
     return mapTokenToPublicDTO(token);
   }
 
   async getAll(query: TokenListQuery = {}): Promise<TokenPublicDTO[]> {
-    const where: any = {};
+    const where: Record<string, unknown> = {};
     if (query.propertyId) where.propertyId = query.propertyId;
     if (query.symbol) where.symbol = query.symbol;
-    if (query.chainId) where.chainId = query.chainId;
+    if (query.blockchain) where.blockchain = query.blockchain;
+    if (query.isActive !== undefined) where.isActive = query.isActive;
     const tokens = await this.prisma.token.findMany({ where, orderBy: { createdAt: 'desc' } });
     return mapTokensToPublicDTOs(tokens);
   }
@@ -78,13 +80,17 @@ export class TokenService {
     return token ? mapTokenToPublicDTO(token) : null;
   }
   
+  async getTokenByContractAddress(contractAddress: string): Promise<Token | null> {
+    return this.prisma.token.findFirst({ where: { contractAddress } });
+  }
+  
   async getTokenBalanceFromBlockchain(contractAddress: string, walletAddress: string): Promise<string> {
     const smartContractService = this.getSmartContractService();
     const balance = await smartContractService.getBalanceOf(contractAddress, walletAddress);
     return balance.toString();
   }
   
-  async getTokenMetadataFromBlockchain(contractAddress: string): Promise<any> {
+  async getTokenMetadataFromBlockchain(contractAddress: string): Promise<TokenMetadata> {
     const smartContractService = this.getSmartContractService();
     return smartContractService.getTokenMetadata(contractAddress);
   }

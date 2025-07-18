@@ -19,13 +19,18 @@ For the backend the following packages are used:
 - @types/passport-google-oauth20@2.0.16
 - @types/passport@1.0.17
 - @types/pino@7.0.4
+- @typescript-eslint/eslint-plugin@8.37.0
+- @typescript-eslint/parser@8.37.0
 - cookie-parser@1.4.7
+- dotenv@17.2.0
+- eslint@9.31.0
 - ethers@6.15.0
 - express-session@1.18.1
 - express@5.1.0
 - hardhat@2.26.0
 - jsonwebtoken@9.0.2
 - multer@2.0.2
+- node-fetch@3.3.2
 - passport-apple@2.0.2
 - passport-azure-ad@4.3.5
 - passport-google-oauth20@2.0.0
@@ -35,100 +40,63 @@ For the backend the following packages are used:
 - typescript@5.8.3
 - zod@4.0.5
 
-## 1. Architecture & Structure
 
-1. **Modular Layout**
-   * Every feature lives under `backend/modules/<module>/`
-   * Inside each module: flat files named `<module>.<layer>.ts` (no deep nesting)
-   * Always include an `index.ts` for exports
+### 1. Architecture & Structure
+* **Modular Layout**:
+  • Every feature in `backend/modules/<module>/`
+  • Flat files: `<module>.<layer>.ts` plus `index.ts`
+* **Layer Separation**:
+  • **Routes**: only paths + middleware
+  • **Controllers**: validation → service calls → HTTP response
+  • **Services**: business logic + Prisma queries
+  • **Validators**: Zod schemas for body/params/query
+  • **Types**: DTOs and shared interfaces
+  • **Utils**: mappers, helpers, adapters
+* **Naming**:
+  • Methods like `createUser`, `getPropertyById`
+  • DTOs: `CreateXxxDto`, `XxxResponse`
+  • Schemas: `CreateXxxSchema`, `GetXxxParamsSchema`
 
-2. **Layer Separation**
-   * **Routes** only define paths and middleware
-   * **Controllers** orchestrate validation → service calls → HTTP response
-   * **Services** contain all business logic and Prisma queries
-   * **Validators** use Zod schemas for all input (body, params, query)
-   * **Types** declare DTOs and shared interfaces
-   * **Utils** house mappers, helpers, adapters
+### 2. Security & Access Control
+* **Authentication**: OAuth 2.0 (Google & Azure) only, JWT in HTTP-only cookies, always apply `requireAuth` on protected routes
+* **Authorization**: `requireRole('<ROLE>')` for role gating; never trust client-supplied IDs
+* **Validation**: Rigorously validate every input with Zod; reject extra fields
 
-3. **Consistent Naming**
-   * `getUserById`, `createProperty`, `uploadDocument`, etc.
-   * DTOs named `CreateXxxDto`, `UpdateXxxDto`, `XxxResponse`
-   * Zod schemas named `CreateXxxSchema`, `GetXxxParamsSchema`
+### 3. Data & Schema
+* **Prisma First**:
+  • Update `schema.prisma` for every new model/field, run migrations under `backend/prisma/migrations/`
+  • Use relations and `onDelete` cascade where appropriate
+* **DTO Layer**: Never return raw Prisma models—map to DTOs exposing only safe fields
 
+### 4. Error Handling & Responses
+* **Structured Errors**: `{ statusCode, errorCode, message, details? }`
+* **HTTP Status Codes**:
+  • 200, 201, 204 for success
+  • 400 for validation failures
+  • 401/403 for auth errors
+  • 404 for not found
+  • 409 for uniqueness conflicts
+* **Debugging via ESLint**:
+  • **Must** run ESLint (with `@typescript-eslint/parser` and plugin) on all TypeScript files before audit/fixes
+  • Address **all** lint errors (type mistakes, unused vars, style violations) as part of debugging
 
-## 2. Security & Access Control
+### 5. Logging & Monitoring
+* **Structured Logging**: Use Pino (JSON) to log requests (method, path, userId) and errors
+* **Audit Hooks**: Record security-sensitive actions in Audit Log Module
 
-4. **Authentication**
-   * OAuth 2.0 only (Google, Azure), JWT in HTTP-only cookies
-   * Always apply `requireAuth` on non-public routes
+### 6. Performance & Scalability
+* **Efficient Queries**: Use Prisma’s `select`/`include` to fetch only needed fields
+* **Pagination**: Use `take`/`skip` or cursor-based for list endpoints
 
-5. **Authorization**
-   * Use `requireRole('<ROLE>')` for role gating
-   * Never trust `userId` or `propertyId` from client — derive from JWT
+### 7. Extensibility & Future-Proofing
+* **Adapter Patterns**: Abstract third-party integrations (storage, KYC, email) behind interfaces
+* **Config & Env**: Read credentials, URLs, feature flags from `process.env`, validate at startup
 
-6. **Input Sanitization & Validation**
-   * Rigorously validate every field with Zod before any logic
-   * Reject unexpected or extra properties
-
-## 3. Data & Schema
-
-7. **Prisma First**
-   * Update `backend/prisma/schema.prisma` for every new model/field
-   * Keep migrations in `backend/prisma/migrations/`
-   * Always include relation directives and `onDelete` behaviors
-
-8. **DTO Layer**
-   * Don’t return raw Prisma models — map to DTOs that expose only safe fields
-
-## 4. Error Handling & Responses
-
-9. **Structured Errors**
-   * Throw or return errors with `{ statusCode, errorCode, message, details? }`
-   * Use a global error handler middleware to format all errors
-
-10. **HTTP Status Codes**
-    * 200 OK, 201 Created, 204 No Content
-    * 400 Bad Request for validation failures
-    * 401 Unauthorized, 403 Forbidden
-    * 404 Not Found, 409 Conflict for uniqueness
-
-## 5. Logging & Monitoring
-11. **Structured Logging**
-    * Use a logger (e.g. Pino) with JSON output
-    * Log incoming requests (method, path, userId) and errors
-
-12. **Audit Hooks**
-    * For security-sensitive actions, record an audit log entry
-
-## 6. Performance & Scalability
-
-13. **Efficient Queries**
-    * Use Prisma’s `select`/`include` to fetch only needed fields
-    * Use pagination (`take`/`skip` or `cursor`) for lists
-
-14. **Rate Limiting (Future)**
-    * Plan to apply per-route rate limits using `express-rate-limit`
+### 8. Testing & Documentation
+* **Automated Tests**: Services and controllers should be unit- and integration-testable; inject dependencies
+* **In-Code Docs**: Use JSDoc/TSDoc on public methods and DTOs; include module README if non-trivial
 
 
-## 7. Extensibility & Future-Proofing
-
-15. **Adapter Patterns**
-    * Abstract third-party integrations (storage, KYC providers) behind interfaces
-    * Provide in-memory or no-op implementations for local dev
-
-16. **Feature Flags & Config**
-    * Read all credentials, URLs, feature toggles from `process.env`
-    * Validate env vars at startup
-
-## 8. Testing & Documentation
-
-17. **Automated Tests**
-    * Services and controllers should be unit- and integration-testable
-    * Inject dependencies rather than importing singletons
-
-18. **In-Code Docs**
-    * Use JSDoc/TSDoc comments on public methods and DTOs
-    * Maintain a brief README in each module if non-trivial
 
 
 

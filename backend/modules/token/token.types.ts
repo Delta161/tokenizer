@@ -1,22 +1,24 @@
-import { Decimal } from '@prisma/client/runtime/library';
+// No imports needed
 
 export interface TokenCreateDTO {
   propertyId: string;
   name: string;
   symbol: string;
   decimals: number;
-  totalSupply: string | Decimal;
+  totalSupply: string;
   contractAddress: string;
-  chainId: string;
+  blockchain?: string; // Optional, defaults to SEPOLIA
 }
 
 export interface TokenUpdateDTO {
   name?: string;
   symbol?: string;
   decimals?: number;
-  totalSupply?: string | Decimal;
+  totalSupply?: string;
   contractAddress?: string;
-  chainId?: string;
+  blockchain?: string;
+  isActive?: boolean;
+  isTransferable?: boolean;
 }
 
 export interface TokenPublicDTO {
@@ -25,9 +27,11 @@ export interface TokenPublicDTO {
   name: string;
   symbol: string;
   decimals: number;
-  totalSupply: string;
+  totalSupply: number;
   contractAddress: string;
-  chainId: string;
+  blockchain: string;
+  isActive: boolean;
+  isTransferable: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,7 +39,8 @@ export interface TokenPublicDTO {
 export interface TokenListQuery {
   propertyId?: string;
   symbol?: string;
-  chainId?: string;
+  blockchain?: string;
+  isActive?: boolean;
 }
 
 export interface TokenResponse {
