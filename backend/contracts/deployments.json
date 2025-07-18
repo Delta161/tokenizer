@@ -1,0 +1,32 @@
+{
+  "networks": {
+    "1": {
+      "name": "Ethereum Mainnet",
+      "rpcUrl": "${MAINNET_RPC_URL}",
+      "contracts": {
+        "PropertyToken": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "5": {
+      "name": "Goerli Testnet",
+      "rpcUrl": "${GOERLI_RPC_URL}",
+      "contracts": {
+        "PropertyToken": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "11155111": {
+      "name": "Sepolia Testnet",
+      "rpcUrl": "${SEPOLIA_RPC_URL}",
+      "contracts": {
+        "PropertyToken": "0x0000000000000000000000000000000000000000"
+      }
+    },
+    "31337": {
+      "name": "Hardhat Local",
+      "rpcUrl": "http://127.0.0.1:8545",
+      "contracts": {
+        "PropertyToken": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+      }
+    }
+  }
+}

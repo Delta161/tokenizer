@@ -44,17 +44,13 @@ async function main() {
     data: {
       userId: user.id,
       companyName: 'Real Estate B.V.',
-      contactName: 'Test User',
-      email: 'developer@example.com',
-      phoneNumber: '+31699999999',
-      vatNumber: 'NL123456789B01',
-      registrationNo: '12345678',
+      contactEmail: 'developer@example.com',
+      contactPhone: '+31699999999',
       country: 'Netherlands',
-      address: 'Clientstraat 9',
-      city: 'Rotterdam',
-      postalCode: '3011AA',
-      isVerified: true,
-      verifiedAt: new Date(),
+      legalEntityNumber: '12345678',
+      walletAddress: '0x1234567890abcdef1234567890abcdef12345678',
+      status: 'APPROVED',
+      logoUrl: 'https://example.com/logo.png',
     },
   });
 

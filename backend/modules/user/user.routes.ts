@@ -21,7 +21,7 @@ export const createUserRoutes = (prisma: PrismaClient): Router => {
    * @access  Private (any authenticated user)
    * @returns UserProfileResponse
    */
-  router.get('/me', userController.getCurrentUserProfile);
+  router.get('/me', userController.getCurrentUserProfile.bind(userController));
 
   /**
    * @route   PATCH /users/me
@@ -30,7 +30,7 @@ export const createUserRoutes = (prisma: PrismaClient): Router => {
    * @body    UpdateUserRequest
    * @returns UpdateUserResponse
    */
-  router.patch('/me', userController.updateCurrentUserProfile);
+  router.patch('/me', userController.updateCurrentUserProfile.bind(userController));
 
   /**
    * @route   DELETE /users/me
@@ -38,7 +38,7 @@ export const createUserRoutes = (prisma: PrismaClient): Router => {
    * @access  Private (any authenticated user)
    * @returns DeleteUserResponse
    */
-  router.delete('/me', userController.deleteCurrentUser);
+  router.delete('/me', userController.deleteCurrentUser.bind(userController));
 
   /**
    * @route   GET /users/:id
@@ -47,7 +47,7 @@ export const createUserRoutes = (prisma: PrismaClient): Router => {
    * @param   id - User UUID
    * @returns UserProfileResponse
    */
-  router.get('/:id', requireAdmin, userController.getUserProfileById);
+  router.get('/:id', requireAdmin, userController.getUserProfileById.bind(userController));
 
   /**
    * @route   GET /users
@@ -57,7 +57,7 @@ export const createUserRoutes = (prisma: PrismaClient): Router => {
    * @query   offset - Number of users to skip (default 0)
    * @returns Paginated list of users
    */
-  router.get('/', requireAdmin, userController.getAllUsers);
+  router.get('/', requireAdmin, userController.getAllUsers.bind(userController));
 
   return router;
 };

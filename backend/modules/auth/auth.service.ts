@@ -1,4 +1,4 @@
-import { PrismaClient, User, AuthProvider, UserRole } from '@prisma/client';
+import { PrismaClient, User, UserRole, AuthProvider } from '@prisma/client';
 import { NormalizedProfile } from './oauthProfileMapper.js';
 import logger, { logUserRegistration, logUserLogin } from './logger.js';
 

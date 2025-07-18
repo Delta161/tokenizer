@@ -55,9 +55,9 @@ export {
   canAccessUserResource,
   getUserRole,
   isAdmin,
-  isClientOrHigher,
-  type UserRole
+  isClientOrHigher
 } from './requireRole.js';
+export { UserRole } from '@prisma/client';
 
 /**
  * Export services

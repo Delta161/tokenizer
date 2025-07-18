@@ -1,19 +1,15 @@
 import { Response, NextFunction } from 'express';
+import { UserRole } from '@prisma/client';
 import { AuthenticatedRequest } from './requireAuth.js';
-
-/**
- * User roles in the system
- */
-export type UserRole = 'INVESTOR' | 'CLIENT' | 'ADMIN';
 
 /**
  * Role hierarchy for permission checking
  * Higher numbers indicate higher privileges
  */
 const ROLE_HIERARCHY: Record<UserRole, number> = {
-  INVESTOR: 1,
-  CLIENT: 2,
-  ADMIN: 3
+  [UserRole.INVESTOR]: 1,
+  [UserRole.CLIENT]: 2,
+  [UserRole.ADMIN]: 3
 };
 
 /**
@@ -96,21 +92,21 @@ export const requireMinRole = (minRole: UserRole) => {
 
 /**
  * Middleware to require admin role
- * Convenience wrapper for requireRole('ADMIN')
+ * Convenience wrapper for requireRole(UserRole.ADMIN)
  */
-export const requireAdmin = requireRole('ADMIN');
+export const requireAdmin = requireRole(UserRole.ADMIN);
 
 /**
  * Middleware to require client role or higher
- * Convenience wrapper for requireMinRole('CLIENT')
+ * Convenience wrapper for requireMinRole(UserRole.CLIENT)
  */
-export const requireClient = requireMinRole('CLIENT');
+export const requireClient = requireMinRole(UserRole.CLIENT);
 
 /**
  * Middleware to require investor role or higher (essentially any authenticated user)
- * Convenience wrapper for requireMinRole('INVESTOR')
+ * Convenience wrapper for requireMinRole(UserRole.INVESTOR)
  */
-export const requireInvestor = requireMinRole('INVESTOR');
+export const requireInvestor = requireMinRole(UserRole.INVESTOR);
 
 /**
  * Check if current user can access resource owned by specific user
@@ -130,7 +126,7 @@ export const canAccessUserResource = (
   }
 
   // Admins can access any user's resources
-  if (req.user.role === 'ADMIN') {
+  if (req.user.role === UserRole.ADMIN) {
     return true;
   }
 
@@ -186,7 +182,7 @@ export const getUserRole = (req: AuthenticatedRequest): UserRole | null => {
  * Utility function for controllers
  */
 export const isAdmin = (req: AuthenticatedRequest): boolean => {
-  return req.user?.role === 'ADMIN';
+  return req.user?.role === UserRole.ADMIN;
 };
 
 /**
@@ -194,5 +190,5 @@ export const isAdmin = (req: AuthenticatedRequest): boolean => {
  * Utility function for controllers
  */
 export const isClientOrHigher = (req: AuthenticatedRequest): boolean => {
-  return req.user ? hasRole(req.user.role, 'CLIENT') : false;
+  return req.user ? hasRole(req.user.role, UserRole.CLIENT) : false;
 };

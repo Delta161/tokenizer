@@ -22,7 +22,6 @@ export { UserService } from './user.service';
 
 // Type exports
 export type {
-  User,
   UserPublicDTO,
   UpdateUserDTO,
   UpdateUserRequest,
@@ -32,6 +31,7 @@ export type {
   DeleteUserResponse,
   ErrorResponse
 } from './user.types';
+export type { User } from '@prisma/client';
 
 // Validation exports
 export {

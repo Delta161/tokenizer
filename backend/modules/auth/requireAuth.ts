@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { User } from '@prisma/client';
 import { verifyToken, extractTokenFromRequest } from './jwt.js';
 import { getUserById } from './auth.service.js';
 
@@ -6,13 +7,7 @@ import { getUserById } from './auth.service.js';
  * Extended Request interface to include user information
  */
 export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    fullName: string;
-    role: 'INVESTOR' | 'CLIENT' | 'ADMIN';
-    authProvider: string;
-  };
+  user?: User;
   session?: any;
 }
 
@@ -60,13 +55,7 @@ export const requireAuth = async (
     }
 
     // Attach user information to request object
-    req.user = {
-      id: user.id,
-      email: user.email,
-      fullName: user.fullName,
-      role: user.role,
-      authProvider: user.authProvider
-    };
+    req.user = user;
 
     // Continue to next middleware
     next();
@@ -130,13 +119,7 @@ export const optionalAuth = async (
     const user = await getUserById(decoded.id);
 
     if (user) {
-      req.user = {
-        id: user.id,
-        email: user.email,
-        fullName: user.fullName,
-        role: user.role,
-        authProvider: user.authProvider
-      };
+      req.user = user;
     }
 
     next();
