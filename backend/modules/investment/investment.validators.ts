@@ -19,9 +19,11 @@ export const investmentCreateSchema = z.object({
     }
   }, { message: 'tokensBought must be a positive number' }),
   walletAddress: z.string().refine((val) => isAddress(val), { message: 'Invalid Ethereum address' }),
+  paymentMethod: z.enum(['FIAT', 'CRYPTO']).optional().default('CRYPTO'),
+  currency: z.string().optional().default('USD'),
 });
 
 export const investmentUpdateStatusSchema = z.object({
-  status: z.enum(['PENDING', 'CONFIRMED', 'FAILED']),
+  status: z.enum(['PENDING', 'CONFIRMED', 'FAILED', 'CANCELLED', 'REFUNDED']),
   txHash: z.string().optional(),
 });

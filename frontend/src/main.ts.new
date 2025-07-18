@@ -1,0 +1,27 @@
+import './assets/main.css'
+
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+
+import App from './App.vue'
+import router from './router'
+
+// Import module initializers
+import { initAuthModule } from './modules/Auth'
+import { initUserModule } from './modules/User'
+
+// Initialize the application
+const app = createApp(App)
+
+// Initialize Pinia store
+app.use(createPinia())
+
+// Initialize router
+app.use(router)
+
+// Initialize modules
+initAuthModule()
+initUserModule()
+
+// Mount the app
+app.mount('#app')

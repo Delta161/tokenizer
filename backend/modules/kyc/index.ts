@@ -11,7 +11,14 @@ import { initKycProviderModule, KycProvider, KycProviderService } from './provid
  * @param prisma PrismaClient instance
  * @returns Object containing routes and services
  */
-export function initKycModule(prisma: PrismaClient) {
+export function initKycModule(prisma: PrismaClient): {
+  routes: ReturnType<typeof createKycRoutes>;
+  service: KycService;
+  controller: KycController;
+  providerRoutes: ReturnType<typeof initKycProviderModule>['routes'];
+  webhookRoutes: ReturnType<typeof initKycProviderModule>['webhookRoutes'];
+  providerService: ReturnType<typeof initKycProviderModule>['service'];
+} {
   const kycRoutes = createKycRoutes(prisma);
   const kycService = new KycService(prisma);
   const kycController = new KycController(prisma);

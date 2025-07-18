@@ -126,7 +126,7 @@ export class KycService {
    * @param redirectUrl URL to redirect after verification
    * @returns Provider session information
    */
-  async initiateProviderVerification(userId: string, provider: KycProvider, redirectUrl: string) {
+  async initiateProviderVerification(userId: string, provider: KycProvider, redirectUrl: string): Promise<KycProviderSession> {
     // Check if user exists
     const user = await this.prisma.user.findUnique({
       where: { id: userId }

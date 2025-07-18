@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { AuthenticatedRequest } from '../../auth/requireAuth.js';
 import { KycService } from '../services/kyc.service.js';
+import { logger } from '../../../utils/logger.js';
 
 const prisma = new PrismaClient();
 const kycService = new KycService(prisma);
@@ -39,7 +40,7 @@ export const requireKycVerified = async (
 
     next();
   } catch (error) {
-    console.error('KYC verification middleware error:', error);
+    logger.error('KYC verification middleware error', { module: 'kyc' }, error instanceof Error ? error : new Error(String(error)));
     res.status(500).json({
       success: false,
       error: 'Internal server error',

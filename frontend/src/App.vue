@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import NavBar from './components/NavBar.vue'
+import TailwindTest from './components/TailwindTest.vue'
 </script>
 
 <template>
   <div id="app">
     <NavBar />
-    <RouterView />
+    <div class="container mx-auto py-4">
+      <TailwindTest />
+      <RouterView />
+    </div>
   </div>
 </template>
 

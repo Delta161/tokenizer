@@ -105,3 +105,5 @@ For the backend the following packages are used:
 The folder named "frontend" is the frontend folder.
 In the frontend folder, Vue.js is used.
 The frontend test server is http://localhost:5173
+
+

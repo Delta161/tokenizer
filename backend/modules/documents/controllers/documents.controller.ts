@@ -10,8 +10,8 @@ import {
   DocumentIdParamSchema
 } from '../validators/documents.validators.js';
 import { getFilePath } from '../middleware/upload.middleware.js';
+import logger from '../../../utils/logger.js';
 import fs from 'fs';
-import path from 'path';
 
 export class DocumentController {
   private documentService: DocumentService;
@@ -72,7 +72,7 @@ export class DocumentController {
         data: mapDocumentToDto(document, `${req.protocol}://${req.get('host')}`),
       });
     } catch (error) {
-      console.error('Error uploading document:', error);
+      logger.error('Error uploading document', { module: 'documents', method: 'uploadDocument' }, error instanceof Error ? error : new Error(String(error)));
       res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -145,7 +145,7 @@ export class DocumentController {
         });
       }
     } catch (error) {
-      console.error('Error retrieving document:', error);
+      logger.error('Error retrieving document', { module: 'documents', method: 'getDocumentById' }, error instanceof Error ? error : new Error(String(error)));
       res.status(error instanceof Error && error.message.includes('permission') ? 403 : 500).json({
         success: false,
         error: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -192,7 +192,7 @@ export class DocumentController {
         message: 'Document deleted successfully',
       });
     } catch (error) {
-      console.error('Error deleting document:', error);
+      logger.error('Error deleting document', { module: 'documents', method: 'deleteDocument' }, error instanceof Error ? error : new Error(String(error)));
       res.status(error instanceof Error && error.message.includes('permission') ? 403 : 500).json({
         success: false,
         error: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -237,7 +237,7 @@ export class DocumentController {
         data: mapDocumentsToDto(documents, `${req.protocol}://${req.get('host')}`),
       });
     } catch (error) {
-      console.error('Error retrieving documents:', error);
+      logger.error('Error retrieving documents', { module: 'documents', method: 'getDocumentsByPropertyId' }, error instanceof Error ? error : new Error(String(error)));
       res.status(error instanceof Error && error.message.includes('permission') ? 403 : 500).json({
         success: false,
         error: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -275,7 +275,7 @@ export class DocumentController {
         data: mapDocumentsToDto(documents, `${req.protocol}://${req.get('host')}`),
       });
     } catch (error) {
-      console.error('Error retrieving documents:', error);
+      logger.error('Error retrieving documents', { module: 'documents', method: 'getDocumentsByUserId' }, error instanceof Error ? error : new Error(String(error)));
       res.status(error instanceof Error && error.message.includes('permission') ? 403 : 500).json({
         success: false,
         error: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -333,7 +333,7 @@ export class DocumentController {
         ),
       });
     } catch (error) {
-      console.error('Error listing documents:', error);
+      logger.error('Error listing documents', { module: 'documents', method: 'listDocuments' }, error instanceof Error ? error : new Error(String(error)));
       res.status(error instanceof Error && error.message.includes('permission') ? 403 : 500).json({
         success: false,
         error: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -381,7 +381,7 @@ export class DocumentController {
       // Stream the file
       stream.pipe(res);
     } catch (error) {
-      console.error('Error downloading document:', error);
+      logger.error('Error downloading document', { module: 'documents', method: 'downloadDocument' }, error instanceof Error ? error : new Error(String(error)));
       res.status(error instanceof Error && error.message.includes('permission') ? 403 : 500).json({
         success: false,
         error: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -429,7 +429,7 @@ export class DocumentController {
       // Stream the file
       stream.pipe(res);
     } catch (error) {
-      console.error('Error previewing document:', error);
+      logger.error('Error previewing document', { module: 'documents', method: 'previewDocument' }, error instanceof Error ? error : new Error(String(error)));
       res.status(error instanceof Error && error.message.includes('permission') ? 403 : 500).json({
         success: false,
         error: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -476,7 +476,7 @@ export class DocumentController {
         message: 'Document deleted successfully',
       });
     } catch (error) {
-      console.error('Error soft deleting document:', error);
+      logger.error('Error soft deleting document', { module: 'documents', method: 'softDeleteDocument' }, error instanceof Error ? error : new Error(String(error)));
       res.status(error instanceof Error && error.message.includes('permission') ? 403 : 500).json({
         success: false,
         error: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -524,7 +524,7 @@ export class DocumentController {
         data: mapDocumentToDto(document, `${req.protocol}://${req.get('host')}`),
       });
     } catch (error) {
-      console.error('Error restoring document:', error);
+      logger.error('Error restoring document', { module: 'documents', method: 'restoreDocument' }, error instanceof Error ? error : new Error(String(error)));
       res.status(error instanceof Error && error.message.includes('permission') ? 403 : 500).json({
         success: false,
         error: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -557,7 +557,7 @@ export class DocumentController {
         data: stats,
       });
     } catch (error) {
-      console.error('Error retrieving document statistics:', error);
+      logger.error('Error retrieving document statistics', { module: 'documents', method: 'getStatistics' }, error instanceof Error ? error : new Error(String(error)));
       res.status(error instanceof Error && error.message.includes('permission') ? 403 : 500).json({
         success: false,
         error: error instanceof Error ? error.message : 'An unknown error occurred',

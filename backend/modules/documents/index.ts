@@ -3,14 +3,18 @@ import { DocumentService } from './services/documents.service.js';
 import { DocumentController } from './controllers/documents.controller.js';
 import { createDocumentsRouter } from './routes/documents.routes.js';
 import { Router } from 'express';
-import { StorageAdapter, LocalStorageAdapter } from './utils/storage.adapter.js';
+import { LocalStorageAdapter } from './utils/storage.adapter.js';
 
 /**
  * Initialize the Document module
  * @param prisma - The Prisma client instance
  * @returns Object containing the initialized services, controllers, and routes
  */
-export const initDocumentModule = (prisma: PrismaClient) => {
+export const initDocumentModule = (prisma: PrismaClient): {
+  services: { documentService: DocumentService };
+  controllers: { documentController: DocumentController };
+  routes: Router;
+} => {
   // Initialize services
   const storageAdapter = new LocalStorageAdapter();
   const documentService = new DocumentService(prisma, storageAdapter);
@@ -42,7 +46,7 @@ export const mountDocumentRoutes = (
   router: Router,
   documentRouter: Router,
   basePath: string = '/documents'
-) => {
+): void => {
   router.use(basePath, documentRouter);
 };
 

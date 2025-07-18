@@ -51,7 +51,7 @@ const upload = multer({
  * @param fieldName - The name of the form field containing the file
  * @returns Multer middleware for single file upload
  */
-export const singleFile = (fieldName: string) => upload.single(fieldName);
+export const singleFile = (fieldName: string): ReturnType<typeof upload.single> => upload.single(fieldName);
 
 /**
  * Get the absolute path to an uploaded file

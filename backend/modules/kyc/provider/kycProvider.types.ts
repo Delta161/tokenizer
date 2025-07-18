@@ -1,4 +1,3 @@
-import { KycRecord } from '@prisma/client';
 import { KycStatus } from '../types/kyc.types.js';
 
 /**
@@ -29,7 +28,7 @@ export interface KycProviderWebhookPayload {
   reviewAnswer?: string;
   rejectReason?: string;
   createdAt: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -54,7 +53,7 @@ export interface ProviderStatusMapping {
 export interface KycVerificationResult {
   status: KycStatus;
   referenceId: string;
-  providerData: Record<string, any>;
+  providerData: Record<string, unknown>;
   rejectionReason?: string;
 }
 

@@ -2,7 +2,7 @@ import { PrismaClient, KycRecord } from '@prisma/client';
 import { KycProvider, KycProviderAdapter, KycProviderSession, KycVerificationResult, WebhookVerificationResult, KycProviderWebhookPayload } from './kycProvider.types.js';
 import { KycStatus } from '../types/kyc.types.js';
 import { generateMockSession, generateMockVerificationResult } from './kycProvider.mock.js';
-import { verifySumsubWebhookSignature, mapProviderStatus, generateReferenceId } from './kycProvider.utils.js';
+import { verifySumsubWebhookSignature, mapProviderStatus } from './kycProvider.utils.js';
 import { logger } from '../../../utils/logger.js';
 
 /**
@@ -149,7 +149,14 @@ export class KycProviderService {
       
       // Update KYC record based on verification result
       const now = new Date();
-      const updateData: any = {
+      const updateData: {
+        status: KycStatus;
+        providerData: Record<string, unknown>;
+        updatedAt: Date;
+        verifiedAt?: Date | null;
+        rejectedAt?: Date | null;
+        rejectionReason?: string | null;
+      } = {
         status: result.status,
         providerData: result.providerData,
         updatedAt: now
@@ -206,7 +213,14 @@ export class KycProviderService {
       
       // Update KYC record based on verification result
       const now = new Date();
-      const updateData: any = {
+      const updateData: {
+        status: KycStatus;
+        providerData: Record<string, unknown>;
+        updatedAt: Date;
+        verifiedAt?: Date | null;
+        rejectedAt?: Date | null;
+        rejectionReason?: string | null;
+      } = {
         status: result.status,
         providerData: result.providerData,
         updatedAt: now

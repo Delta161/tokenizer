@@ -1,8 +1,9 @@
 import { Document, PrismaClient, UserRole } from '@prisma/client';
 import fs from 'fs';
 import { getFilePath } from '../middleware/upload.middleware.js';
-import { DocumentStatsDto, ListDocumentsQuery } from '../types/documents.types.js';
+import { DocumentStatsDto } from '../types/documents.types.js';
 import { LocalStorageAdapter, StorageAdapter } from '../utils/storage.adapter.js';
+import logger from '../../../utils/logger.js';
 
 export class DocumentService {
   private prisma: PrismaClient;
@@ -168,7 +169,7 @@ export class DocumentService {
     try {
       await fs.unlink(getFilePath(document.filename));
     } catch (error) {
-      console.error(`Failed to delete file ${document.filename}:`, error);
+      logger.error(`Failed to delete file ${document.filename}`, { module: 'documents', method: 'deleteDocument' }, error instanceof Error ? error : new Error(String(error)));
       // Continue with database deletion even if file deletion fails
     }
 
@@ -282,7 +283,11 @@ export class DocumentService {
     const skip = (page - 1) * limit;
 
     // Build where clause based on filters and permissions
-    const where: any = {};
+    const where: {
+      propertyId?: string;
+      userId?: string;
+      deletedAt?: null | Date;
+    } = {};
 
     // Apply propertyId filter if provided
     if (filters.propertyId) {

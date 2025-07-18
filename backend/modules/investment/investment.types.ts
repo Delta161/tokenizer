@@ -1,13 +1,13 @@
-import { Decimal } from '@prisma/client/runtime/library';
-
-export type InvestmentStatus = 'PENDING' | 'CONFIRMED' | 'FAILED';
+export type InvestmentStatus = 'PENDING' | 'CONFIRMED' | 'FAILED' | 'CANCELLED' | 'REFUNDED';
 
 export interface InvestmentCreateDTO {
   tokenId: string;
   propertyId: string;
-  amount: string | Decimal;
-  tokensBought: string | Decimal;
+  amount: string; // Number of tokens to buy
+  tokensBought: string; // Price per token
   walletAddress: string;
+  paymentMethod?: 'FIAT' | 'CRYPTO';
+  currency?: string;
 }
 
 export interface InvestmentUpdateStatusDTO {

@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, UserRole } from '@prisma/client';
 import { requireAuth } from '../../auth/requireAuth.js';
 import { requireRole } from '../../auth/requireRole.js';
 import { KycController } from '../controllers/kyc.controller.js';
-import { UserRole } from '@prisma/client';
 
 export function createKycRoutes(prisma: PrismaClient): Router {
   const router = Router();

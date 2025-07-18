@@ -10,9 +10,13 @@ export function createWebhookRoutes(kycProviderController: KycProviderController
   
   // Middleware to capture raw body for signature verification
   router.use(express.json({
-    verify: (req: any, res, buf) => {
+    verify: (req: express.Request, res, buf) => {
       // Store the raw body for signature verification
-      req.rawBody = buf.toString();
+      // Define custom property on request object
+      interface RequestWithRawBody extends express.Request {
+        rawBody?: string;
+      }
+      (req as RequestWithRawBody).rawBody = buf.toString();
     }
   }));
   
