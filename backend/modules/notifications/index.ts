@@ -25,6 +25,9 @@ export {
   createNotificationConfig 
 } from './config/notification.config';
 
+// Export router creator
+export { createNotificationRouter } from './routes/notifications.routes';
+
 /**
  * Initializes the notification module
  * @param prisma - The Prisma client instance

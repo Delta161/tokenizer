@@ -9,6 +9,10 @@ import propertyRoutes from './routes/properties.js';
 import { initSmartContractModule } from './modules/smart-contract/index.js';
 import { createTokenRoutes } from './modules/token/index.js';
 import { initKycModule } from './modules/kyc/index.js';
+import { initNotificationModule, mountNotificationRoutes } from './modules/notifications/index.js';
+import { initAdminModule } from './modules/admin/index.js';
+import { initDocumentModule, mountDocumentRoutes } from './modules/documents/index.js';
+import { auditRouter } from './modules/audit/index.ts';
 
 const app = express();
 
@@ -42,6 +46,11 @@ initializeAuth();
 // Initialize modules
 const smartContractModule = initSmartContractModule(prisma);
 const kycModule = initKycModule(prisma);
+const notificationModule = initNotificationModule(prisma);
+const documentModule = initDocumentModule(prisma);
+
+// Initialize admin module with Prisma client and notification trigger
+const adminModule = initAdminModule(prisma, notificationModule.trigger);
 
 // Routes
 app.use('/auth', authRoutes);
@@ -56,6 +65,18 @@ app.use('/api/kyc/provider', kycModule.providerRoutes);
 
 // KYC Webhook routes (no auth middleware)
 app.use('/api/kyc/webhook', kycModule.webhookRoutes);
+
+// Notification routes
+mountNotificationRoutes(app, notificationModule.controller, '/api/notifications');
+
+// Document routes
+mountDocumentRoutes(app, documentModule.routes, '/api/documents');
+
+// Admin routes
+app.use('/api/admin', adminModule);
+
+// Audit routes
+app.use('/api', auditRouter);
 
 export default app;
 

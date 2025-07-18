@@ -1,0 +1,2 @@
+export { createPropertyRoutes } from './property.routes.js';
+//# sourceMappingURL=index.d.ts.map
