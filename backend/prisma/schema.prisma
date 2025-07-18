@@ -307,3 +307,11 @@ model AuditLogEntry {
   createdAt   DateTime   @default(now())
   user        User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model FeatureFlag {
+  key         String   @id                // unique flag key
+  enabled     Boolean  @default(false)    // on/off
+  description String?                     // human-friendly
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
