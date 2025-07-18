@@ -1,16 +1,32 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
+import { computed } from 'vue'
 import NavBar from './components/NavBar.vue'
-import TailwindTest from './components/TailwindTest.vue'
+import { DefaultLayout, AuthLayout } from './layouts'
+
+// Get current route
+const route = useRoute()
+
+// Determine which layout to use based on route meta
+const layout = computed(() => {
+  return route.meta.layout || 'DefaultLayout'
+})
 </script>
 
 <template>
   <div id="app">
-    <NavBar />
-    <div class="container mx-auto py-4">
-      <TailwindTest />
+    <!-- Use AuthLayout for auth routes -->
+    <AuthLayout v-if="layout === 'AuthLayout'">
       <RouterView />
-    </div>
+    </AuthLayout>
+    
+    <!-- Use DefaultLayout for other routes -->
+    <template v-else>
+      <NavBar />
+      <div class="container mx-auto py-4">
+        <RouterView />
+      </div>
+    </template>
   </div>
 </template>
 

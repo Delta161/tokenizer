@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { authRoutes } from '@/modules/Auth/views';
 // import { useAuthStore } from '@/stores/auth'; // Commented out for disabling auth
  
  const router = createRouter({
@@ -28,17 +29,9 @@ import { createRouter, createWebHistory } from 'vue-router';
       path: '/add-project',
       name: 'add-project',
       component: () => import('@/components/AddProjectForm.vue')
-    }
-    // {
-    //   path: '/login',
-    //   name: 'login',
-    //   component: () => import('@/views/Login.vue')
-    // },
-    // {
-    //   path: '/register',
-    //   name: 'register',
-    //   component: () => import('@/views/Register.vue')
-    // },
+    },
+    // Add auth routes from Auth module
+    ...authRoutes,
     // {
     //   path: '/kyc',
     //   name: 'kyc',
