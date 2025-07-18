@@ -13,6 +13,7 @@ import { initNotificationModule, mountNotificationRoutes } from './modules/notif
 import { initAdminModule } from './modules/admin/index.js';
 import { initDocumentModule, mountDocumentRoutes } from './modules/documents/index.js';
 import { auditRouter } from './modules/audit/index.ts';
+import { flagsRoutes } from './modules/flags/index.js';
 const app = express();
 // Initialize Prisma client
 const prisma = new PrismaClient();
@@ -62,5 +63,7 @@ mountDocumentRoutes(app, documentModule.routes, '/api/documents');
 app.use('/api/admin', adminModule);
 // Audit routes
 app.use('/api', auditRouter);
+// Feature Flags routes
+app.use('/api', flagsRoutes);
 export default app;
 //# sourceMappingURL=app.js.map

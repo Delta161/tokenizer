@@ -1,5 +1,6 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import { flagsRoutes } from './modules/flags/index.js';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -7,6 +8,72 @@ const prisma = new PrismaClient();
 // Middleware for parsing JSON and form data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Add request logging middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
+// Import the FlagsService from the flags module
+const { FlagsService } = flagsRoutes;
+const flagsService = new FlagsService();
+
+// Define feature flags routes directly
+console.log('Registering feature flags routes directly...');
+
+// Admin routes
+app.get('/api/admin/flags', async (req, res) => {
+  console.log('GET /api/admin/flags endpoint accessed');
+  try {
+    const flags = await flagsService.listFlags();
+    res.json(flags);
+  } catch (error) {
+    console.error('Error listing flags:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.patch('/api/admin/flags/:key', async (req, res) => {
+  console.log(`PATCH /api/admin/flags/${req.params.key} endpoint accessed`);
+  try {
+    const { key } = req.params;
+    const { enabled } = req.body;
+    
+    if (typeof enabled !== 'boolean') {
+      return res.status(400).json({ message: 'Enabled must be a boolean' });
+    }
+    
+    const updated = await flagsService.updateFlag(key, { enabled });
+    res.json(updated);
+  } catch (error) {
+    console.error('Error updating flag:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Client routes
+app.get('/api/flags', async (req, res) => {
+  console.log('GET /api/flags endpoint accessed');
+  try {
+    const flags = await flagsService.listFlags();
+    const clientFlags = {};
+    
+    for (const flag of flags) {
+      clientFlags[flag.key] = flag.enabled;
+    }
+    
+    res.json(clientFlags);
+  } catch (error) {
+    console.error('Error getting client flags:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+console.log('Routes registered for:');
+console.log('- GET /api/admin/flags');
+console.log('- PATCH /api/admin/flags/:key');
+console.log('- GET /api/flags');
 
 // Simple test route
 app.get('/', (req, res) => {

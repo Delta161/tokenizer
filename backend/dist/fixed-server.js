@@ -1,5 +1,7 @@
 import express from 'express';
+import { PrismaClient } from '@prisma/client';
 const app = express();
+const prisma = new PrismaClient();
 // Middleware for parsing JSON and form data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,6 +37,66 @@ app.get('/api/documents/deleted', (req, res) => {
         message: 'Mock deleted documents returned',
         data: mockDeletedDocuments
     });
+});
+// Test route for audit logs
+app.get('/api/audit/logs', async (req, res) => {
+    console.log('Audit logs endpoint accessed');
+    try {
+        const auditLogs = await prisma.auditLogEntry.findMany({
+            include: {
+                user: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+        res.json({
+            success: true,
+            message: 'Audit logs retrieved',
+            data: auditLogs
+        });
+    }
+    catch (error) {
+        console.error('Error retrieving audit logs:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to retrieve audit logs',
+            error: error.message
+        });
+    }
+});
+// Test route for specific audit log
+app.get('/api/audit/logs/:id', async (req, res) => {
+    console.log(`Audit log endpoint accessed for ID: ${req.params.id}`);
+    try {
+        const auditLog = await prisma.auditLogEntry.findUnique({
+            where: {
+                id: req.params.id
+            },
+            include: {
+                user: true
+            }
+        });
+        if (!auditLog) {
+            return res.status(404).json({
+                success: false,
+                message: `Audit log with ID ${req.params.id} not found`
+            });
+        }
+        res.json({
+            success: true,
+            message: 'Audit log retrieved',
+            data: auditLog
+        });
+    }
+    catch (error) {
+        console.error('Error retrieving audit log:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to retrieve audit log',
+            error: error.message
+        });
+    }
 });
 const PORT = 3001;
 app.listen(PORT, () => {

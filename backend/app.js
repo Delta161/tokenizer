@@ -13,6 +13,7 @@ import { initNotificationModule, mountNotificationRoutes } from './modules/notif
 import { initAdminModule } from './modules/admin/index.js';
 import { initDocumentModule, mountDocumentRoutes } from './modules/documents/index.js';
 import { auditRouter } from './modules/audit/index.ts';
+import { flagsRoutes } from './modules/flags/index.js';
 
 const app = express();
 
@@ -77,6 +78,9 @@ app.use('/api/admin', adminModule);
 
 // Audit routes
 app.use('/api', auditRouter);
+
+// Feature Flags routes
+app.use('/api', flagsRoutes);
 
 export default app;
 
