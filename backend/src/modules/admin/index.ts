@@ -14,7 +14,7 @@ import { NotificationTrigger } from '../notifications/services/notification.trig
 export const initAdminModule = (prisma: PrismaClient, notificationTrigger: NotificationTrigger): Router => {
   // Create service instances
   const adminService = new AdminService(notificationTrigger);
-  const adminAnalyticsService = new AdminAnalyticsService(prisma);
+  const adminAnalyticsService = new AdminAnalyticsService();
   
   // Create controller instances
   const adminController = new AdminController(adminService);
