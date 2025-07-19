@@ -74,7 +74,7 @@ export * from './auth.types';
 export * from './auth.validators';
 
 // Export auth guards and utilities
-export { authGuard, roleGuard } from '../../middleware/authGuard';
+export { authGuard, roleGuard } from './auth.middleware';
 export { generateAccessToken, generateRefreshToken, verifyToken, extractTokenFromRequest, setTokenCookies, clearTokenCookies } from './jwt';
 export { blacklistToken, isTokenBlacklisted, cleanupBlacklist } from './token.service';
 export { mapOAuthProfile, validateNormalizedProfile } from './oauthProfileMapper';

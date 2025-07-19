@@ -4,7 +4,6 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import { PrismaClient } from '@prisma/client';
 import { initializeAuth, authRoutes } from './modules/auth/index.js';
-import investorRoutes from './routes/investors.js';
 import propertyRoutes from './routes/properties.js';
 import { initSmartContractModule } from './modules/smart-contract/index.js';
 import { createTokenRoutes } from './modules/token/index.js';
@@ -55,7 +54,6 @@ const adminModule = initAdminModule(prisma, notificationModule.trigger);
 
 // Routes
 app.use('/auth', authRoutes);
-app.use('/api/investors', investorRoutes);
 app.use('/api/properties', propertyRoutes);
 app.use('/api/smart-contract', smartContractModule.routes);
 app.use('/api', createTokenRoutes(prisma));
