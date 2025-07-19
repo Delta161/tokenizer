@@ -1,0 +1,315 @@
+import { ethers, Contract, Wallet, JsonRpcProvider, ContractTransactionResponse } from 'ethers';
+import { Decimal } from '@prisma/client/runtime/library';
+import path from 'path';
+import fs from 'fs';
+import dotenv from 'dotenv';
+import {
+  SmartContractConfig,
+  TokenMetadata,
+  TransactionResult,
+  ContractValidationResult,
+  TransactionStatus,
+  TransactionReceipt,
+  ContractEventListener
+} from './smartContract.types.js';
+import {
+  validateAddress,
+  loadContractABI,
+  resolveArtifactPath,
+  validateTxHash,
+  formatAmount,
+  parseAmount
+} from './smartContract.utils.js';
+import { DEFAULT_GAS_LIMIT, DEFAULT_GAS_PRICE, PRIVATE_KEY } from './smartContract.config.js';
+
+dotenv.config();
+
+export class SmartContractService {
+  private provider: JsonRpcProvider;
+  private wallet: Wallet;
+  private config: SmartContractConfig;
+  private eventListeners: ContractEventListener[] = [];
+
+  constructor(config?: Partial<SmartContractConfig>) {
+    this.config = {
+      chainId: config?.chainId || 1,
+      rpcUrl: config?.rpcUrl || process.env.ETH_RPC_URL || 'http://localhost:8545',
+      privateKey: config?.privateKey || PRIVATE_KEY,
+      gasLimit: config?.gasLimit || DEFAULT_GAS_LIMIT,
+      gasPrice: config?.gasPrice || DEFAULT_GAS_PRICE
+    };
+    this.provider = new ethers.JsonRpcProvider(this.config.rpcUrl);
+    this.wallet = new ethers.Wallet(this.config.privateKey, this.provider);
+  }
+
+  /**
+   * Loads a contract instance
+   * @param address The contract address
+   * @returns A Contract instance
+   */
+  private loadContract(address: string): Contract {
+    if (!validateAddress(address)) {
+      throw new Error('Invalid contract address');
+    }
+    
+    try {
+      // Use a standard ERC20 ABI if specific artifact not provided
+      const erc20Abi = [
+        "function name() view returns (string)",
+        "function symbol() view returns (string)",
+        "function decimals() view returns (uint8)",
+        "function totalSupply() view returns (uint256)",
+        "function balanceOf(address) view returns (uint256)",
+        "function transfer(address to, uint256 amount) returns (bool)",
+        "function allowance(address owner, address spender) view returns (uint256)",
+        "function approve(address spender, uint256 amount) returns (bool)",
+        "function transferFrom(address from, address to, uint256 amount) returns (bool)",
+        "function mint(address to, uint256 amount) returns (bool)",
+        "function owner() view returns (address)",
+        "event Transfer(address indexed from, address indexed to, uint256 value)",
+        "event Approval(address indexed owner, address indexed spender, uint256 value)"
+      ];
+      
+      return new ethers.Contract(address, erc20Abi, this.wallet);
+    } catch (error: any) {
+      throw new Error(`Failed to load contract: ${error.message}`);
+    }
+  }
+
+  /**
+   * Validates if a contract address is valid and implements ERC20 interface
+   * @param address The contract address to validate
+   * @returns A validation result object
+   */
+  async validateContract(address: string): Promise<ContractValidationResult> {
+    if (!validateAddress(address)) {
+      return { isValid: false, isERC20: false, error: 'Invalid Ethereum address format' };
+    }
+
+    try {
+      const contract = this.loadContract(address);
+      
+      // Check if contract implements ERC20 interface
+      const [name, symbol, totalSupply, decimals] = await Promise.all([
+        contract.name().catch(() => null),
+        contract.symbol().catch(() => null),
+        contract.totalSupply().catch(() => null),
+        contract.decimals().catch(() => null)
+      ]);
+
+      const isERC20 = name !== null && symbol !== null && totalSupply !== null;
+
+      if (isERC20) {
+        return {
+          isValid: true,
+          isERC20: true,
+          metadata: {
+            name,
+            symbol,
+            decimals: decimals || 18,
+            totalSupply: totalSupply.toString()
+          }
+        };
+      } else {
+        return { 
+          isValid: false, 
+          isERC20: false, 
+          error: 'Contract does not implement ERC20 interface' 
+        };
+      }
+    } catch (error: any) {
+      return { 
+        isValid: false, 
+        isERC20: false, 
+        error: `Contract validation failed: ${error.message}` 
+      };
+    }
+  }
+
+  /**
+   * Gets metadata for a token contract
+   * @param address The contract address
+   * @returns Token metadata
+   */
+  async getTokenMetadata(address: string): Promise<TokenMetadata> {
+    const contract = this.loadContract(address);
+    
+    try {
+      const [name, symbol, totalSupply, decimals, owner] = await Promise.all([
+        contract.name(),
+        contract.symbol(),
+        contract.totalSupply(),
+        contract.decimals().catch(() => 18), // Default to 18 if not available
+        contract.owner().catch(() => null)  // Owner is optional
+      ]);
+
+      return {
+        name,
+        symbol,
+        decimals,
+        totalSupply: totalSupply.toString()
+      };
+    } catch (error: any) {
+      throw new Error(`Failed to get token metadata: ${error.message}`);
+    }
+  }
+
+  /**
+   * Gets the token balance for a wallet address
+   * @param address The contract address
+   * @param userWallet The wallet address to check balance for
+   * @returns The token balance as a Decimal
+   */
+  async getBalanceOf(address: string, userWallet: string): Promise<Decimal> {
+    if (!validateAddress(userWallet)) {
+      throw new Error('Invalid user wallet address');
+    }
+    
+    const contract = this.loadContract(address);
+    
+    try {
+      const balance = await contract.balanceOf(userWallet);
+      return new Decimal(balance.toString());
+    } catch (error: any) {
+      throw new Error(`Failed to get balance: ${error.message}`);
+    }
+  }
+
+  /**
+   * Mints tokens to a recipient address
+   * @param address The contract address
+   * @param recipient The recipient address
+   * @param amount The amount to mint
+   * @returns Transaction hash
+   */
+  async mintTokens(address: string, recipient: string, amount: Decimal | string): Promise<TransactionResult> {
+    if (!validateAddress(recipient)) {
+      throw new Error('Invalid recipient address');
+    }
+    
+    const contract = this.loadContract(address);
+    const amountStr = amount.toString();
+    
+    try {
+      // Get decimals to format amount correctly
+      const decimals = await contract.decimals().catch(() => 18);
+      const formattedAmount = formatAmount(amountStr, decimals);
+      
+      const tx = await contract.mint(recipient, formattedAmount, {
+        gasLimit: this.config.gasLimit,
+        gasPrice: this.config.gasPrice
+      });
+      
+      const receipt = await tx.wait();
+      return {
+        transactionHash: receipt.hash,
+        blockNumber: receipt.blockNumber,
+        status: receipt.status === 1
+      };
+    } catch (error: any) {
+      throw new Error(`Minting failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Transfers tokens to a recipient address
+   * @param address The contract address
+   * @param recipient The recipient address
+   * @param amount The amount to transfer
+   * @returns Transaction hash
+   */
+  async transferTokens(address: string, recipient: string, amount: Decimal | string): Promise<TransactionResult> {
+    if (!validateAddress(recipient)) {
+      throw new Error('Invalid recipient address');
+    }
+    
+    const contract = this.loadContract(address);
+    const amountStr = amount.toString();
+    
+    try {
+      // Get decimals to format amount correctly
+      const decimals = await contract.decimals().catch(() => 18);
+      const formattedAmount = formatAmount(amountStr, decimals);
+      
+      const tx = await contract.transfer(recipient, formattedAmount, {
+        gasLimit: this.config.gasLimit,
+        gasPrice: this.config.gasPrice
+      });
+      
+      const receipt = await tx.wait();
+      return {
+        transactionHash: receipt.hash,
+        blockNumber: receipt.blockNumber,
+        status: receipt.status === 1
+      };
+    } catch (error: any) {
+      throw new Error(`Transfer failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Gets transaction details
+   * @param txHash The transaction hash
+   * @returns Transaction receipt details
+   */
+  async getTransactionReceipt(txHash: string): Promise<TransactionReceipt> {
+    if (!validateTxHash(txHash)) {
+      throw new Error('Invalid transaction hash');
+    }
+    
+    try {
+      const receipt = await this.provider.getTransactionReceipt(txHash);
+      
+      if (!receipt) {
+        return {
+          transactionHash: txHash,
+          status: TransactionStatus.PENDING,
+          blockNumber: 0,
+          blockHash: '',
+          gasUsed: '0'
+        };
+      }
+      
+      return {
+        transactionHash: txHash,
+        status: receipt.status ? TransactionStatus.CONFIRMED : TransactionStatus.FAILED,
+        blockNumber: receipt.blockNumber,
+        blockHash: receipt.blockHash,
+        gasUsed: receipt.gasUsed.toString()
+      };
+    } catch (error: any) {
+      throw new Error(`Failed to get transaction receipt: ${error.message}`);
+    }
+  }
+
+  /**
+   * Gets the current gas price
+   * @returns The current gas price in gwei
+   */
+  async getGasPrice(): Promise<string> {
+    const gasPrice = await this.provider.getFeeData();
+    return ethers.formatUnits(gasPrice.gasPrice || 0, 'gwei');
+  }
+
+  /**
+   * Gets the current block number
+   * @returns The current block number
+   */
+  async getBlockNumber(): Promise<number> {
+    return await this.provider.getBlockNumber();
+  }
+}
+
+/**
+ * Gets the smart contract configuration from environment variables
+ * @returns SmartContractConfig object
+ */
+export function getSmartContractConfig(): SmartContractConfig {
+  return {
+    rpcUrl: process.env.ETH_RPC_URL || 'http://localhost:8545',
+    privateKey: PRIVATE_KEY,
+    chainId: process.env.ETH_CHAIN_ID ? parseInt(process.env.ETH_CHAIN_ID) : 1,
+    gasLimit: DEFAULT_GAS_LIMIT,
+    gasPrice: DEFAULT_GAS_PRICE
+  };
+}
