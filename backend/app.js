@@ -6,7 +6,7 @@ import { PrismaClient } from '@prisma/client';
 import { initializeAuth, authRoutes } from './modules/auth/index.js';
 import propertyRoutes from './routes/properties.js';
 import { initSmartContractModule } from './modules/smart-contract/index.js';
-import { createTokenRoutes } from './modules/token/index.js';
+// Token module has been migrated to the new structure
 import { initKycModule } from './modules/kyc/index.js';
 import { initNotificationModule, mountNotificationRoutes } from './modules/notifications/index.js';
 import { initAdminModule } from './modules/admin/index.js';
@@ -56,7 +56,7 @@ const adminModule = initAdminModule(prisma, notificationModule.trigger);
 app.use('/auth', authRoutes);
 app.use('/api/properties', propertyRoutes);
 app.use('/api/smart-contract', smartContractModule.routes);
-app.use('/api', createTokenRoutes(prisma));
+// Token routes have been migrated to the new structure
 app.use('/api/kyc', kycModule.routes);
 
 // KYC Provider routes

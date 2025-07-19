@@ -21,6 +21,7 @@ import { authRouter } from './modules/auth/auth.routes';
 import { createPropertyRoutes } from './modules/property';
 import { createClientRoutes } from './modules/client';
 import { createInvestorRoutes } from './modules/investor';
+import { createTokenRoutes } from './modules/token';
 
 // Create Express application
 const app: Express = express();
@@ -61,6 +62,7 @@ app.use(`${API_PREFIX}/auth`, authRouter);
 app.use(`${API_PREFIX}/properties`, createPropertyRoutes());
 app.use(`${API_PREFIX}/clients`, createClientRoutes());
 app.use(`${API_PREFIX}/investors`, createInvestorRoutes());
+app.use(`${API_PREFIX}/tokens`, createTokenRoutes());
 // etc.
 
 // Apply error handling middleware
