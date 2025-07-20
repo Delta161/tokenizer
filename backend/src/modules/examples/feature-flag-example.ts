@@ -5,7 +5,7 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
 import { flagsService } from '../flags/flags.service';
-import { authGuard } from '../auth/auth.middleware';
+import { authGuard } from '../accounts/middleware/auth.middleware';
 
 const router = Router();
 

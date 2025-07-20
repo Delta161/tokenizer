@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuditController } from './audit.controller';
-import { requireAuth } from '../auth/auth.middleware';
-import { requireRole } from '../auth/auth.middleware';
+import { requireAuth } from '../accounts/middleware/auth.middleware';
+import { requireRole } from '../accounts/middleware/auth.middleware';
 
 export const auditRoutes = Router();
 const auditController = new AuditController();

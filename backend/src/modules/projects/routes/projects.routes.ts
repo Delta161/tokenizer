@@ -7,7 +7,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { ClientController, PropertyController, TokenController, ProjectController } from '../controllers';
-import { requireAuth, requireRole } from '../../auth/auth.middleware';
+import { requireAuth, requireRole } from '../../accounts/middleware/auth.middleware';
 
 /**
  * Create and configure the projects module routes

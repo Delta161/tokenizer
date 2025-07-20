@@ -2,8 +2,8 @@ import { Router } from 'express';
 import { SmartContractController } from './smartContract.controller.js';
 import { PrismaClient } from '@prisma/client';
 import { SmartContractService } from './smartContract.service.js';
-import { isAuthenticated } from '../auth/auth.middleware.js';
-import { hasRole } from '../auth/auth.middleware.js';
+import { isAuthenticated } from '../accounts/middleware/auth.middleware.js';
+import { hasRole } from '../accounts/middleware/auth.middleware.js';
 import { UserRole } from '@prisma/client';
 import { getSmartContractConfig } from './smartContract.config.js';
 

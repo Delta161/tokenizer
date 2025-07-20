@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { authGuard, roleGuard } from '../auth';
-import { requireKycVerified } from '../kyc';
+import { authGuard, roleGuard } from '../accounts';
+import { requireKycVerified } from '../accounts';
 import { InvestmentController } from './investment.controller';
 
 export function createInvestmentRoutes(prisma: PrismaClient): Router {

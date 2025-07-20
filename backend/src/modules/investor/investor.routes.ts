@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { InvestorController } from './investor.controller.js';
-import { authGuard, roleGuard } from '../auth/index.js';
+import { authGuard, roleGuard } from '../accounts/middleware/auth.middleware.js';
 
 /**
  * Creates and configures the investor routes

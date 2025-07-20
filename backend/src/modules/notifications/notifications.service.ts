@@ -1,6 +1,6 @@
 import { PrismaClient, Notification, Prisma } from '@prisma/client';
 import { NotificationDto, CreateNotificationDto } from './notifications.types';
-import { UserPublicDTO } from '../user/user.types';
+import { UserPublicDTO } from '../accounts/types/user.types';
 import { Logger } from '../../utils/logger';
 import { mapNotificationToDto } from './notifications.mapper';
 

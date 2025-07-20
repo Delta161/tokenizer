@@ -10,7 +10,7 @@ import {
   propertyListQuerySchema,
   tokenListQuerySchema,
 } from './admin.validators.js';
-import { AuthenticatedRequest } from '../auth/auth.middleware.js';
+import { AuthenticatedRequest } from '../accounts/types/auth.types.js';
 
 export class AdminController {
   private adminService: AdminService;

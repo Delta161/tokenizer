@@ -11,7 +11,7 @@ import {
   parseWalletIdParam,
   parseInvestorListQuery
 } from './investor.validators.js';
-import { AuthenticatedRequest } from '../auth/auth.types.js';
+import { AuthenticatedRequest } from '../accounts/types/auth.types.js';
 
 export class InvestorController {
   constructor(private prisma: PrismaClient) {}

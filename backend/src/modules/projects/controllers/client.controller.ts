@@ -8,7 +8,7 @@ import {
   validateClientIdParam,
   validateClientListQuery
 } from '../validators/client.validators';
-import { AuthenticatedRequest } from '../../auth/auth.types';
+import { AuthenticatedRequest } from '../../accounts/types/auth.types';
 import { logger } from '../../../utils/logger';
 
 /**

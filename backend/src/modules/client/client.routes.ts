@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { ClientController } from './client.controller';
-import { authGuard, roleGuard } from '../auth';
+import { authGuard, roleGuard } from '../accounts';
 
 /**
  * Create client routes with proper middleware

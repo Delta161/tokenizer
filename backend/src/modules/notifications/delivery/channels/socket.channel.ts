@@ -1,5 +1,5 @@
 import { NotificationDto } from '../../notifications.types';
-import { UserPublicDTO } from '../../../user/user.types';
+import { UserPublicDTO } from '../../../accounts/types/user.types';
 import { BaseNotificationChannel } from './base.channel';
 
 /**

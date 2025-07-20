@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { VisitController } from './controllers/visit.controller.js';
 import { VisitAnalyticsController } from './controllers/visit.analytics.controller.js';
-import { optionalAuth, requireAuth } from '../auth/requireAuth.js';
+import { optionalAuth, requireAuth } from '../accounts/middleware/auth.middleware.js';
 
 /**
  * Creates and configures the visit routes

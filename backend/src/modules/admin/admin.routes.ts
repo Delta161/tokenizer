@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { AdminController } from './admin.controller.js';
-import { requireAuth, requireAdmin } from '../../middleware/auth.middleware.js';
+import { requireAuth, requireRole } from '../accounts/middleware/auth.middleware.js';
 
 export function createAdminRouter(adminController: AdminController): Router {
   const router = Router();
 
   // Apply authentication and admin role middleware to all routes
   router.use(requireAuth);
-  router.use(requireAdmin);
+  router.use(requireRole('ADMIN'));
 
   // User management routes
   router.get('/users', adminController.getUsers.bind(adminController));

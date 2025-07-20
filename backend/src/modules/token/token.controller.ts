@@ -9,7 +9,7 @@ import {
   safeParseContractAddressParams
 } from './token.validators';
 import { TokenCreateDTO, TokenUpdateDTO } from './token.types';
-import { AuthRequest } from '../auth/auth.types';
+import { AuthRequest } from '../accounts/types/auth.types';
 import { SmartContractService, getSmartContractConfig } from '../../services/smartContract.service';
 import { validateAddress } from '../../utils/contract.utils';
 

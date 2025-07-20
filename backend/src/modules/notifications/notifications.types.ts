@@ -1,5 +1,5 @@
 import { Notification } from '@prisma/client';
-import { UserPublicDTO } from '../user/user.types';
+import { UserPublicDTO } from '../accounts/types/user.types';
 
 /**
  * Notification types enum

@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { TokenController } from './token.controller';
-import { authGuard } from '../auth/auth.middleware';
-import { roleGuard } from '../auth/role.middleware';
+import { authGuard } from '../accounts/middleware/auth.middleware';
+import { roleGuard } from '../accounts/middleware/auth.middleware';
 import { UserRole } from '@prisma/client';
-import { kycVerifiedGuard } from '../kyc/kyc.middleware';
+import { kycVerifiedGuard } from '../accounts/middleware/kyc.middleware';
 import { SmartContractService, getSmartContractConfig } from '../../services/smartContract.service';
 
 /**

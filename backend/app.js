@@ -3,12 +3,12 @@ import passport from 'passport';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import { PrismaClient } from '@prisma/client';
-import { initializeAuth, authRouter as authRoutes } from './src/modules/auth/index.js';
+import { initializeAuth, authRouter as authRoutes } from './src/modules/accounts/index.js';
 import { createPropertyRoutes } from './src/modules/property/index.js';
 import { createInvestorRoutes } from './src/modules/investor/index.js';
 import { initSmartContractModule } from './src/modules/smart-contract/index.js';
-// Token module has been migrated to the new structure
-import { initKycModule } from './src/modules/kyc/index.js';
+// Token and KYC modules have been migrated to the new structure
+import { initKycModule } from './src/modules/accounts/index.js';
 import { initNotificationModule, mountNotificationRoutes } from './src/modules/notifications/index.js';
 import { initAdminModule } from './src/modules/admin/index.js';
 import { initDocumentModule, mountDocumentRoutes } from './src/modules/documents/index.js';
@@ -58,7 +58,7 @@ app.use('/auth', authRoutes);
 app.use('/api/properties', createPropertyRoutes());
 app.use('/api/investors', createInvestorRoutes());
 app.use('/api/smart-contract', smartContractModule.routes);
-// Token routes have been migrated to the new structure
+// Token and KYC routes have been migrated to the new structure
 app.use('/api/kyc', kycModule.routes);
 
 // KYC Provider routes

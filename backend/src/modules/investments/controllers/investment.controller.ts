@@ -3,7 +3,7 @@ import { InvestmentService } from '../services/investment.service.js';
 import { investmentCreateSchema, investmentUpdateStatusSchema } from '../utils/investment.validators.js';
 import { InvestmentCreateDTO } from '../types/investment.types.js';
 import { ZodError } from 'zod';
-import { AuthenticatedRequest } from '../../auth/auth.types.js';
+import { AuthenticatedRequest } from '../../accounts/types/auth.types.js';
 
 export class InvestmentController {
   constructor(private investmentService: InvestmentService) {}

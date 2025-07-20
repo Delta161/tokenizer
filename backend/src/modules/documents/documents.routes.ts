@@ -1,8 +1,8 @@
 import express, { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { DocumentController } from './documents.controller.js';
-import { requireAuth } from '../../middleware/auth.middleware.js';
-import { requireRole } from '../../middleware/role.middleware.js';
+import { requireAuth } from '../accounts/middleware/auth.middleware.js';
+import { requireRole } from '../accounts/middleware/auth.middleware.js';
 import { singleFile } from './upload.middleware.js';
 import { UserRole } from '@prisma/client';
 

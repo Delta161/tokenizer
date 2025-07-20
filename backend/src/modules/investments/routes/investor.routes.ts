@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { InvestorController } from '../controllers/investor.controller.js';
-import { authGuard, roleGuard } from '../../auth/auth.middleware.js';
+import { authGuard, roleGuard } from '../../accounts/middleware/auth.middleware.js';
 
 /**
  * Creates and configures the investor routes

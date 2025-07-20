@@ -91,7 +91,7 @@ All import paths referencing the old structure have been updated to use the new 
 import { authService } from './modules/auth/services/auth.service.js';
 
 // New import
-import { authService } from './src/modules/auth/auth.service.js';
+import { authService } from './src/modules/accounts/services/auth.service.js';
 ```
 
 ## Future Development

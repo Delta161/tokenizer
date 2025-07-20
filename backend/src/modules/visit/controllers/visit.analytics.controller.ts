@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { AuthenticatedRequest } from '../../auth/requireAuth.js';
+import { AuthenticatedRequest } from '../../accounts/types/auth.types.js';
 import { VisitAnalyticsService } from '../services/visit.analytics.service.js';
 import { validatePropertyId, validateClientId, validateTimeRange } from '../validators/visit.analytics.validators.js';
 import { UserRole } from '@prisma/client';
-import { hasRole } from '../../auth/requireRole.js';
+import { hasRole } from '../../accounts/middleware/auth.middleware.js';
 
 export class VisitAnalyticsController {
   private visitAnalyticsService: VisitAnalyticsService;

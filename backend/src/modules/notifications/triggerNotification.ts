@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { NotificationService } from './notifications.service';
 import { NotificationDispatcherService, createNotificationDispatcher } from './delivery';
 import { NotificationConfig } from './notifications.config';
-import { UserPublicDTO } from '../user/user.types';
+import { UserPublicDTO } from '../accounts/types/user.types';
 import { Logger } from '../../utils/logger';
 import { CreateNotificationDto, NotificationDto } from './notifications.types';
 

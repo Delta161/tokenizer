@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { flagsController } from './flags.controller';
-import { authGuard, roleGuard } from '../auth/auth.middleware';
+import { authGuard, roleGuard } from '../accounts/middleware/auth.middleware';
 import { validateBody, validateParams } from './flags.validation';
 import { UpdateFlagSchema, FlagKeyParamSchema } from './flags.validators';
 

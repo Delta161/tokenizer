@@ -1,5 +1,5 @@
 import { NotificationChannel, NotificationDto } from '../../notifications.types';
-import { UserPublicDTO } from '../../../user/user.types';
+import { UserPublicDTO } from '../../../accounts/types/user.types';
 import { Logger } from '../../../../utils/logger';
 
 /**

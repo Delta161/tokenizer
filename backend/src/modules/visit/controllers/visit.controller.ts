@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { AuthenticatedRequest } from '../../auth/requireAuth.js';
+import { AuthenticatedRequest } from '../../accounts/types/auth.types.js';
 import { VisitService } from '../services/visit.service.js';
 import { validateCreateVisit } from '../validators/visit.validators.js';
 import { VisitResponse } from '../types/visit.types.js';

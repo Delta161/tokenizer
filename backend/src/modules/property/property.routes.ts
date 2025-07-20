@@ -5,7 +5,7 @@
 
 import { Router } from 'express';
 import { propertyController } from './property.controller';
-import { authGuard, roleGuard } from '../../middleware/authGuard';
+import { authGuard, roleGuard } from '../accounts/middleware/auth.middleware';
 
 export const createPropertyRoutes = (): Router => {
   const router = Router();
