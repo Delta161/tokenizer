@@ -1,6 +1,6 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import { initDocumentModule, mountDocumentRoutes } from './modules/documents/index.js';
+import { initDocumentModule, mountDocumentRoutes } from './src/modules/documents/index.js';
 
 const app = express();
 

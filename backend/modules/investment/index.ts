@@ -1,1 +1,0 @@
-export { createInvestmentRoutes } from './investment.routes.js';

@@ -1,6 +1,6 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import { flagsRoutes } from './modules/flags/index.js';
+import { flagsRoutes } from './src/modules/flags/index.js';
 
 const app = express();
 const prisma = new PrismaClient();

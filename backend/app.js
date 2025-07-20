@@ -3,16 +3,16 @@ import passport from 'passport';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import { PrismaClient } from '@prisma/client';
-import { initializeAuth, authRoutes } from './modules/auth/index.js';
+import { initializeAuth, authRoutes } from './src/modules/auth/index.js';
 import propertyRoutes from './routes/properties.js';
-import { initSmartContractModule } from './modules/smart-contract/index.js';
+import { initSmartContractModule } from './src/modules/smart-contract/index.js';
 // Token module has been migrated to the new structure
-import { initKycModule } from './modules/kyc/index.js';
-import { initNotificationModule, mountNotificationRoutes } from './modules/notifications/index.js';
-import { initAdminModule } from './modules/admin/index.js';
-import { initDocumentModule, mountDocumentRoutes } from './modules/documents/index.js';
-import { auditRouter } from './modules/audit/index.ts';
-import { flagsRoutes } from './modules/flags/index.js';
+import { initKycModule } from './src/modules/kyc/index.js';
+import { initNotificationModule, mountNotificationRoutes } from './src/modules/notifications/index.js';
+import { initAdminModule } from './src/modules/admin/index.js';
+import { initDocumentModule, mountDocumentRoutes } from './src/modules/documents/index.js';
+import { auditRouter } from './src/modules/audit/index.ts';
+import { flagsRoutes } from './src/modules/flags/index.js';
 
 const app = express();
 

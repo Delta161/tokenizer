@@ -22,6 +22,7 @@ import { createPropertyRoutes } from './modules/property';
 import { createClientRoutes } from './modules/client';
 import { createInvestorRoutes } from './modules/investor';
 import { createTokenRoutes } from './modules/token';
+import { initExamplesModule } from './modules/examples';
 
 // Create Express application
 const app: Express = express();
@@ -63,6 +64,7 @@ app.use(`${API_PREFIX}/properties`, createPropertyRoutes());
 app.use(`${API_PREFIX}/clients`, createClientRoutes());
 app.use(`${API_PREFIX}/investors`, createInvestorRoutes());
 app.use(`${API_PREFIX}/tokens`, createTokenRoutes());
+app.use(`${API_PREFIX}/examples`, initExamplesModule());
 // etc.
 
 // Apply error handling middleware

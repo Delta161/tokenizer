@@ -5,7 +5,7 @@
  * to create, update, and read feature flags.
  */
 
-import { flagsService } from '../modules/flags/services/flags.service.js';
+import { flagsService } from '../src/modules/flags/flags.service.js';
 
 // Note: In a TypeScript project, you would typically need to compile TS to JS first
 // This script assumes the TypeScript files have been compiled to JavaScript

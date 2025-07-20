@@ -21,12 +21,12 @@ async function updateAppJsImport() {
     try {
         let content = await fs.readFile(appJsPath, 'utf8');
         // Replace the import statement to use the .ts file directly
-        if (content.includes("import { auditRouter } from './modules/audit/index.ts';")) {
+        if (content.includes("import { auditRouter } from './src/modules/audit/index.ts';")) {
             console.log('Import statement already updated.');
             return;
         }
         // If it's using .js extension, update it
-        content = content.replace("import { auditRouter } from './modules/audit/index.js';", "import { auditRouter } from './modules/audit/index.ts';");
+        content = content.replace("import { auditRouter } from './src/modules/audit/index.js';", "import { auditRouter } from './src/modules/audit/index.ts';");
         await fs.writeFile(appJsPath, content, 'utf8');
     }
     catch (error) {

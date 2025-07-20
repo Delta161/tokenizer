@@ -1,1 +1,0 @@
-export { createPropertyRoutes } from './property.routes.js';

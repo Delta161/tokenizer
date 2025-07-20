@@ -4,14 +4,14 @@
  * This file shows how to integrate the Feature Flags module into the main application
  */
 // In app.js, add the following imports:
-// import { flagsRoutes } from './modules/flags/routes/flags.routes.js';
+// import { flagsRoutes } from './src/modules/flags/routes/flags.routes.js';
 // Then mount the routes:
 // app.use('/api', flagsRoutes);
 // Example usage in any other module:
 /**
  * Example of using feature flags to conditionally enable functionality
  */
-import { flagsService } from './modules/flags/index.js';
+import { flagsService } from './src/modules/flags/index.js';
 async function conditionalFeature() {
     // Check if a feature flag is enabled
     const isNewFeatureEnabled = await flagsService.getFlag('NEW_FEATURE');

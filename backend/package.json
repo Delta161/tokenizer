@@ -3,6 +3,8 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
+    "dev:new": "ts-node-dev --respawn --transpile-only --esm src/server.ts",
+    "start:new": "node dist/src/server.js",
     "build": "tsc",
     "seed": "ts-node --transpile-only prisma/seed.ts"
   },
@@ -11,13 +13,18 @@
     "@types/cookie-parser": "^1.4.9",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/pino": "^7.0.4",
+    "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "ethers": "^6.15.0",
     "express": "^5.1.0",
-    "express-session": "^1.18.1",
+    "express-rate-limit": "^8.0.1",
+    "express-session": "^1.18.2",
     "hardhat": "^2.26.0",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
     "passport": "^0.7.0",
@@ -25,6 +32,7 @@
     "passport-azure-ad": "^4.3.5",
     "passport-google-oauth20": "^2.0.0",
     "prisma": "^6.11.1",
+    "winston": "^3.17.0",
     "zod": "^4.0.5"
   },
   "devDependencies": {
