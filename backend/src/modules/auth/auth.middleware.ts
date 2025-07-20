@@ -4,7 +4,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { authService } from './auth.service';
+import { authService } from './auth.service.js';
 
 // Extend Express Request interface to include user property
 declare global {

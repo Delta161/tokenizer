@@ -5,8 +5,8 @@
 
 import { Router } from 'express';
 import passport from 'passport';
-import { authController } from './auth.controller';
-import { authGuard } from '../../middleware/authGuard';
+import { authController } from './auth.controller.js';
+import { authGuard } from './auth.middleware.js';
 
 // Create router
 const router = Router();

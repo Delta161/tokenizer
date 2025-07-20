@@ -2,7 +2,7 @@
  * Server Entry Point
  */
 
-import app from './app';
+import app from '../app.js';
 import { env, validateEnv } from './config/env';
 import { logger } from './utils/logger';
 import { prisma } from './prisma/client';

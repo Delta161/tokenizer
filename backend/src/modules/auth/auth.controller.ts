@@ -4,11 +4,11 @@
  */
 
 import { Request, Response } from 'express';
-import { authService } from './auth.service';
-import { LoginCredentialsDTO, RegisterDataDTO, OAuthProfileDTO } from './auth.types';
-import { loginSchema, registerSchema } from './auth.validators';
-import { setTokenCookies, clearTokenCookies } from './jwt';
-import { logger } from '../../utils/logger';
+import { authService } from './auth.service.js';
+import { LoginCredentialsDTO, RegisterDataDTO, OAuthProfileDTO } from './auth.types.js';
+import { loginSchema, registerSchema } from './auth.validators.js';
+import { setTokenCookies, clearTokenCookies } from './jwt.js';
+import { logger } from '../../utils/logger.js';
 
 export class AuthController {
   /**

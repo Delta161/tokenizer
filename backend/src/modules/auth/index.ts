@@ -4,12 +4,12 @@
  */
 
 import * as passport from 'passport';
-import { authRouter } from './auth.routes';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { scheduleBlacklistCleanup, stopBlacklistCleanup, loadBlacklistedTokens } from './token.service';
-import './strategies/google.strategy';
-import './strategies/azure.strategy';
+import { authRouter } from './auth.routes.js';
+import { AuthController } from './auth.controller.js';
+import { AuthService } from './auth.service.js';
+import { scheduleBlacklistCleanup, stopBlacklistCleanup, loadBlacklistedTokens } from './token.service.js';
+import './strategies/google.strategy.js';
+import './strategies/azure.strategy.js';
 
 /**
  * Initialize authentication module
