@@ -5,7 +5,7 @@ import { authGuard } from '../accounts/middleware/auth.middleware';
 import { roleGuard } from '../accounts/middleware/auth.middleware';
 import { UserRole } from '@prisma/client';
 import { kycVerifiedGuard } from '../accounts/middleware/kyc.middleware';
-import { SmartContractService, getSmartContractConfig } from '../../services/smartContract.service';
+import { BlockchainService, getBlockchainConfig } from '../blockchain/services/blockchain.service.js';
 
 /**
  * Creates and configures the token routes
@@ -14,8 +14,8 @@ import { SmartContractService, getSmartContractConfig } from '../../services/sma
 export function createTokenRoutes(): Router {
   const router = Router();
   const prisma = new PrismaClient();
-  const smartContractService = new SmartContractService(getSmartContractConfig());
-  const controller = new TokenController(prisma, smartContractService);
+  const blockchainService = new BlockchainService(getBlockchainConfig());
+  const controller = new TokenController(prisma, blockchainService);
 
   // Public routes
   // None

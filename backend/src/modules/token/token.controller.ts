@@ -10,14 +10,14 @@ import {
 } from './token.validators';
 import { TokenCreateDTO, TokenUpdateDTO } from './token.types';
 import { AuthRequest } from '../accounts/types/auth.types';
-import { SmartContractService, getSmartContractConfig } from '../../services/smartContract.service';
-import { validateAddress } from '../../utils/contract.utils';
+import { BlockchainService, getBlockchainConfig } from '../blockchain/services/blockchain.service.js';
+import { validateAddress } from '../blockchain/utils/blockchain.utils.js';
 
 export class TokenController {
   private tokenService: TokenService;
   
-  constructor(private prisma: PrismaClient, smartContractService?: SmartContractService) {
-    this.tokenService = new TokenService(prisma, smartContractService);
+  constructor(private prisma: PrismaClient, blockchainService?: BlockchainService) {
+    this.tokenService = new TokenService(prisma, blockchainService);
   }
 
   /**

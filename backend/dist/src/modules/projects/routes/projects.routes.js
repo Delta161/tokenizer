@@ -6,6 +6,7 @@
 import { Router } from 'express';
 import { ClientController, PropertyController, TokenController, ProjectController } from '../controllers';
 import { requireAuth, requireRole } from '../../accounts/middleware/auth.middleware';
+import { BlockchainService, getBlockchainConfig } from '../../../modules/blockchain/index.js';
 /**
  * Create and configure the projects module routes
  * @param prisma PrismaClient instance
@@ -16,7 +17,8 @@ export function createProjectsRoutes(prisma) {
     // Initialize controllers
     const clientController = new ClientController(prisma);
     const propertyController = new PropertyController(prisma);
-    const tokenController = new TokenController(prisma);
+    const blockchainService = new BlockchainService(getBlockchainConfig());
+    const tokenController = new TokenController(prisma, blockchainService);
     const projectController = new ProjectController(prisma);
     // Client routes
     router.post('/clients/apply', requireAuth, clientController.applyAsClient);

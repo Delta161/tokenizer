@@ -1,12 +1,12 @@
 import { PrismaClient, Token } from '@prisma/client';
 import { TokenCreateDTO, TokenUpdateDTO, TokenPublicDTO, TokenListQuery } from './token.types';
-import { SmartContractService } from '../../services/smartContract.service';
-import { TokenMetadata } from '../../types/smartContract.types';
+import { BlockchainService } from '../../modules/blockchain/index.js';
+import { TokenMetadata } from '../../modules/blockchain/types/blockchain.types.js';
 export declare class TokenService {
     private prisma;
-    private smartContractService;
-    constructor(prisma: PrismaClient, smartContractService?: SmartContractService);
-    private getSmartContractService;
+    private blockchainService;
+    constructor(prisma: PrismaClient, blockchainService?: BlockchainService);
+    private getBlockchainService;
     /**
      * Create a new token
      * @param dto Token creation data

@@ -1,4 +1,4 @@
-import { TokenMetadata } from '../../types/smartContract.types';
+import { TokenMetadata } from '../../modules/blockchain/types/blockchain.types.js';
 export interface TokenCreateDTO {
     propertyId: string;
     name: string;

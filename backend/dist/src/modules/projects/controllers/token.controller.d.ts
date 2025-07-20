@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../../accounts/types/auth.types';
-import { SmartContractService } from '../../../services/smartContract.service';
+import { BlockchainService } from '../../../modules/blockchain/index.js';
 export declare class TokenController {
     private prisma;
     private tokenService;
-    constructor(prisma: PrismaClient, smartContractService?: SmartContractService);
+    constructor(prisma: PrismaClient, blockchainService?: BlockchainService);
     /**
      * Create a new token
      */

@@ -24,6 +24,7 @@ import { createInvestorRoutes } from './modules/investor';
 import { createTokenRoutes } from './modules/token';
 import { createProjectsRoutes } from './modules/projects';
 import { initExamplesModule } from './modules/examples';
+import { initBlockchainModule } from './modules/blockchain';
 
 // Initialize Prisma client
 const prisma = new PrismaClient();
@@ -64,12 +65,12 @@ app.get('/health', (req, res) => {
 app.use(`${API_PREFIX}/auth`, authRouter);
 // Add other module routes here as they are implemented
 // app.use(`${API_PREFIX}/users`, userRouter);
-app.use(`${API_PREFIX}/properties`, createPropertyRoutes());
 app.use(`${API_PREFIX}/clients`, createClientRoutes());
 app.use(`${API_PREFIX}/investors`, createInvestorRoutes());
 app.use(`${API_PREFIX}/tokens`, createTokenRoutes());
 app.use(`${API_PREFIX}/projects`, createProjectsRoutes(prisma));
 app.use(`${API_PREFIX}/examples`, initExamplesModule());
+app.use(`${API_PREFIX}/blockchain`, initBlockchainModule());
 // etc.
 
 // Apply error handling middleware

@@ -6,7 +6,7 @@
  */
 
 import { ClientStatus, PropertyStatus } from '@prisma/client';
-import { TokenMetadata } from '../../../types/smartContract.types';
+import { TokenMetadata } from '../../blockchain/types/blockchain.types.js';
 
 // ===== CLIENT TYPES =====
 

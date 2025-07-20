@@ -4,9 +4,9 @@ import { validateAddress } from '../../../utils/contract.utils';
 export class TokenController {
     prisma;
     tokenService;
-    constructor(prisma, smartContractService) {
+    constructor(prisma, blockchainService) {
         this.prisma = prisma;
-        this.tokenService = new TokenService(prisma, smartContractService);
+        this.tokenService = new TokenService(prisma, blockchainService);
     }
     /**
      * Create a new token

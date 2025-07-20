@@ -2,27 +2,27 @@ import { PrismaClient, PropertyStatus, Token } from '@prisma/client';
 import { TokenCreateDTO, TokenUpdateDTO, TokenPublicDTO, TokenListQuery } from './token.types';
 import { mapTokenToPublicDTO, mapTokensToPublicDTOs } from './token.mapper';
 import { isAddress } from 'ethers';
-import { SmartContractService, getSmartContractConfig } from '../../services/smartContract.service';
-import { TokenMetadata } from '../../types/smartContract.types';
+import { BlockchainService, getBlockchainConfig } from '../../modules/blockchain';
+import { TokenMetadata } from '../../modules/blockchain/types/blockchain.types';
 import { logger } from '../../utils/logger';
 
 export class TokenService {
-  private smartContractService: SmartContractService;
+  private blockchainService: BlockchainService;
   
   constructor(
     private prisma: PrismaClient,
-    smartContractService?: SmartContractService
+    blockchainService?: BlockchainService
   ) {
-    // If smartContractService is not provided, we'll initialize it later when needed
-    this.smartContractService = smartContractService;
+    // If blockchainService is not provided, we'll initialize it later when needed
+    this.blockchainService = blockchainService;
   }
 
-  // Get or initialize the smart contract service
-  private getSmartContractService(): SmartContractService {
-    if (!this.smartContractService) {
-      this.smartContractService = new SmartContractService(getSmartContractConfig());
+  // Get or initialize the blockchain service
+  private getBlockchainService(): BlockchainService {
+    if (!this.blockchainService) {
+      this.blockchainService = new BlockchainService(getBlockchainConfig());
     }
-    return this.smartContractService;
+    return this.blockchainService;
   }
 
   /**
@@ -49,10 +49,10 @@ export class TokenService {
     }
     
     // Validate the contract on the blockchain
-    const smartContractService = this.getSmartContractService();
-    const validationResult = await smartContractService.validateContract(dto.contractAddress);
+    const blockchainService = this.getBlockchainService();
+    const validationResult = await blockchainService.validateContract(dto.contractAddress);
     
-    if (!validationResult.isValid || !validationResult.supportsERC20) {
+    if (!validationResult.isValid || !validationResult.isERC20) {
       throw new Error('Contract address does not point to a valid ERC20 token');
     }
     
@@ -121,8 +121,8 @@ export class TokenService {
    * @returns Balance as string
    */
   async getTokenBalanceFromBlockchain(contractAddress: string, walletAddress: string): Promise<string> {
-    const smartContractService = this.getSmartContractService();
-    const balance = await smartContractService.getBalanceOf(contractAddress, walletAddress);
+    const blockchainService = this.getBlockchainService();
+    const balance = await blockchainService.getBalanceOf(contractAddress, walletAddress);
     return balance.toString();
   }
   
@@ -132,8 +132,8 @@ export class TokenService {
    * @returns Token metadata
    */
   async getTokenMetadataFromBlockchain(contractAddress: string): Promise<TokenMetadata> {
-    const smartContractService = this.getSmartContractService();
-    return smartContractService.getTokenMetadata(contractAddress);
+    const blockchainService = this.getBlockchainService();
+    return blockchainService.getTokenMetadata(contractAddress);
   }
 
   /**

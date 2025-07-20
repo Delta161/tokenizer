@@ -5,7 +5,7 @@
  * that have been merged into the projects module.
  */
 import { ClientStatus, PropertyStatus } from '@prisma/client';
-import { TokenMetadata } from '../../../types/smartContract.types';
+import { TokenMetadata } from '../../../modules/blockchain/types/blockchain.types.js';
 /**
  * Client application request DTO
  * Used when a user applies to become a client
