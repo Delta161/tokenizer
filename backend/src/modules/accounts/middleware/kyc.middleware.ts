@@ -1,8 +1,11 @@
+// External packages
 import { Response, NextFunction } from 'express';
-import { AuthenticatedRequest } from './auth.middleware';
-import { KycService } from '../services/kyc.service';
 import { PrismaClient } from '@prisma/client';
-import { logger } from '../../../utils/logger';
+
+// Internal modules
+import { AuthenticatedRequest } from '@modules/accounts/middleware/auth.middleware';
+import { KycService } from '@modules/accounts/services/kyc.service';
+import { logger } from '@utils/logger';
 
 // Create a singleton instance of the KYC service
 let kycService: KycService | null = null;

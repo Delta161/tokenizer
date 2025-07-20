@@ -3,18 +3,21 @@
  * Handles user-related business logic
  */
 
+// External packages
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { AppError } from '../../../middleware/errorHandler';
-import { PAGINATION } from '../../../config/constants';
-import { 
-  UserDTO, 
+
+// Internal modules
+import { PAGINATION } from '@config/constants';
+import { AppError } from '@middleware/errorHandler';
+import type { 
+  ChangePasswordDTO,
   CreateUserDTO, 
   UpdateUserDTO, 
-  ChangePasswordDTO,
+  UserDTO, 
   UserFilterOptions,
   UserSortOptions 
-} from '../types/user.types';
+} from '@modules/accounts/types/user.types';
 
 export class UserService {
   private prisma: PrismaClient;

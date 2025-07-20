@@ -3,7 +3,8 @@
  * Contains all DTOs and interfaces for the user module
  */
 
-import { UserRole } from './auth.types';
+// Internal modules
+import type { UserRole } from '@modules/accounts/types/auth.types';
 
 /**
  * User DTO interface

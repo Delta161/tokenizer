@@ -3,8 +3,11 @@
  * Provides middleware functions for route protection
  */
 
-import { Request, Response, NextFunction } from 'express';
-import { authService } from '../services/auth.service';
+// External packages
+import { NextFunction, Request, Response } from 'express';
+
+// Internal modules
+import { authService } from '@modules/accounts/services/auth.service';
 
 // Extend Express Request interface to include user property
 declare global {

@@ -3,10 +3,13 @@
  * Defines all routes for user management
  */
 
+// External packages
 import { Router } from 'express';
-import { userController } from '../controllers/user.controller';
-import { authGuard, roleGuard } from '../middleware/auth.middleware';
-import { UserRole } from '../types/auth.types';
+
+// Internal modules
+import { userController } from '@modules/accounts/controllers/user.controller';
+import { authGuard, roleGuard } from '@modules/accounts/middleware/auth.middleware';
+import type { UserRole } from '@modules/accounts/types/auth.types';
 
 // Create router
 const router = Router();

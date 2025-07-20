@@ -3,18 +3,21 @@
  * Handles HTTP requests for user management
  */
 
+// External packages
 import { Request, Response } from 'express';
-import { userService } from '../services/user.service';
+
+// Internal modules
+import { PAGINATION } from '@config/constants';
+import { userService } from '@modules/accounts/services/user.service';
+import type { UserFilterOptions, UserSortOptions } from '@modules/accounts/types/user.types';
+import { createPaginationResult } from '@utils/pagination';
 import { 
+  changePasswordSchema,
   createUserSchema, 
   updateUserSchema, 
-  changePasswordSchema,
-  userIdParamSchema,
-  userFilterSchema
-} from '../validators/user.validators';
-import { UserFilterOptions, UserSortOptions } from '../types/user.types';
-import { PAGINATION } from '../../../config/constants';
-import { createPaginationResult } from '../../../utils/pagination';
+  userFilterSchema,
+  userIdParamSchema
+} from '@modules/accounts/validators/user.validators';
 
 export class UserController {
   /**

@@ -3,8 +3,11 @@
  * Helper functions for authentication-related operations
  */
 
+// External packages
 import { Request } from 'express';
-import { UserRole } from '../types/auth.types';
+
+// Internal modules
+import type { UserRole } from '@modules/accounts/types/auth.types';
 
 /**
  * Check if a user has the required role

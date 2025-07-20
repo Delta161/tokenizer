@@ -3,8 +3,11 @@
  * Contains Zod schemas for validating auth-related requests
  */
 
+// External packages
 import { z } from 'zod';
-import { UserRole } from '../types/auth.types';
+
+// Internal modules
+import type { UserRole } from '@modules/accounts/types/auth.types';
 
 /**
  * Login credentials schema

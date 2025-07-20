@@ -3,10 +3,13 @@
  * Defines authentication routes
  */
 
+// External packages
 import { Router } from 'express';
 import passport from 'passport';
-import { authController } from '../controllers/auth.controller';
-import { authGuard } from '../middleware/auth.middleware';
+
+// Internal modules
+import { authController } from '@modules/accounts/controllers/auth.controller';
+import { authGuard } from '@modules/accounts/middleware/auth.middleware';
 
 // Create router
 const router = Router();

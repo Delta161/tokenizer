@@ -3,12 +3,15 @@
  * Handles HTTP requests for authentication
  */
 
+// External packages
 import { Request, Response } from 'express';
-import { authService } from '../services/auth.service';
-import { LoginCredentialsDTO, RegisterDataDTO, OAuthProfileDTO } from '../types/auth.types';
-import { loginSchema, registerSchema } from '../validators/auth.validators';
-import { setTokenCookies, clearTokenCookies } from '../utils/jwt';
-import { logger } from '../../../utils/logger';
+
+// Internal modules
+import { authService } from '@modules/accounts/services/auth.service';
+import type { LoginCredentialsDTO, OAuthProfileDTO, RegisterDataDTO } from '@modules/accounts/types/auth.types';
+import { clearTokenCookies, setTokenCookies } from '@modules/accounts/utils/jwt';
+import { loginSchema, registerSchema } from '@modules/accounts/validators/auth.validators';
+import { logger } from '@utils/logger';
 
 export class AuthController {
   /**

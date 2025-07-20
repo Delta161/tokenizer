@@ -1,8 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
-import { AuthenticatedRequest } from '../middleware/auth.middleware';
-import { KycService } from '../services/kyc.service';
-import { KycSubmissionSchema, KycUpdateSchema } from '../validators/kyc.validators';
-import { KycProvider } from '../types/kyc.types';
+// External packages
+import { NextFunction, Request, Response } from 'express';
+
+// Internal modules
+import type { AuthenticatedRequest } from '@modules/accounts/middleware/auth.middleware';
+import { KycService } from '@modules/accounts/services/kyc.service';
+import type { KycProvider } from '@modules/accounts/types/kyc.types';
+import { KycSubmissionSchema, KycUpdateSchema } from '@modules/accounts/validators/kyc.validators';
 
 export class KycController {
   constructor(private kycService: KycService) {}

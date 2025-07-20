@@ -3,8 +3,11 @@
  * Helper functions for user-related operations
  */
 
-import { User } from '@prisma/client';
-import { UserDTO } from '../types/user.types';
+// External packages
+import type { User } from '@prisma/client';
+
+// Internal modules
+import type { UserDTO } from '@modules/accounts/types/user.types';
 
 /**
  * Map Prisma User model to UserDTO

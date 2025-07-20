@@ -3,7 +3,8 @@
  * Maps OAuth provider profiles to a standardized format
  */
 
-import { UserRole } from '../types/auth.types';
+// Internal modules
+import type { UserRole } from '@modules/accounts/types/auth.types';
 
 /**
  * Normalized OAuth profile interface

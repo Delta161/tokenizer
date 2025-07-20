@@ -3,10 +3,13 @@
  * Handles JWT token generation, verification, and cookie management
  */
 
+// External packages
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { UserRole } from '../types/auth.types';
-import { logger } from '../../../utils/logger';
+
+// Internal modules
+import type { UserRole } from '@modules/accounts/types/auth.types';
+import { logger } from '@utils/logger';
 
 // Load JWT secret from environment variables
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-key';

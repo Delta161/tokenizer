@@ -1,5 +1,8 @@
+// External packages
 import { z } from 'zod';
-import { KycStatus } from '../types/kyc.types';
+
+// Internal modules
+import type { KycStatus } from '@modules/accounts/types/kyc.types';
 
 /**
  * Validator for KYC submission data

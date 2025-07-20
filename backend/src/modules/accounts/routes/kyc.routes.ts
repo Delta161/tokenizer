@@ -1,7 +1,10 @@
+// External packages
 import { Router } from 'express';
-import { authGuard, roleGuard } from '../middleware/auth.middleware';
-import { KycController } from '../controllers/kyc.controller';
-import { UserRole } from '../types/auth.types';
+
+// Internal modules
+import { KycController } from '@modules/accounts/controllers/kyc.controller';
+import { authGuard, roleGuard } from '@modules/accounts/middleware/auth.middleware';
+import type { UserRole } from '@modules/accounts/types/auth.types';
 
 /**
  * Create KYC routes

@@ -1,4 +1,5 @@
-import { KycRecord, User } from '@prisma/client';
+// External packages
+import type { KycRecord, User } from '@prisma/client';
 
 /**
  * KYC status enum

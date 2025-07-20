@@ -3,8 +3,11 @@
  * Helper functions for KYC-related operations
  */
 
-import { KycRecord } from '@prisma/client';
-import { KycStatus, KycRecordDTO } from '../types/kyc.types';
+// External packages
+import type { KycRecord } from '@prisma/client';
+
+// Internal modules
+import type { KycStatus, KycRecordDTO } from '@modules/accounts/types/kyc.types';
 
 /**
  * Map Prisma KycRecord model to KycRecordDTO

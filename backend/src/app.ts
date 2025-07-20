@@ -19,7 +19,6 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 // Import routes
 import { authRouter } from './modules/auth/auth.routes';
-import { createPropertyRoutes } from './modules/property';
 import { createClientRoutes } from './modules/client';
 import { createInvestorRoutes } from './modules/investor';
 import { createTokenRoutes } from './modules/token';

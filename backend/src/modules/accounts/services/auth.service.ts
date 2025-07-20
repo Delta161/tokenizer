@@ -3,13 +3,16 @@
  * Handles authentication business logic
  */
 
-import { PrismaClient, AuthProvider } from '@prisma/client';
+// External packages
+import { AuthProvider, PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { AuthResponseDTO, LoginCredentialsDTO, RegisterDataDTO, UserDTO, UserRole, OAuthProfileDTO } from '../types/auth.types';
-import { generateAccessToken, generateRefreshToken, verifyToken } from '../utils/jwt';
-import { logger } from '../../../utils/logger';
-import { mapOAuthProfile, validateNormalizedProfile } from '../utils/oauthProfileMapper';
+
+// Internal modules
+import type { AuthResponseDTO, LoginCredentialsDTO, OAuthProfileDTO, RegisterDataDTO, UserDTO, UserRole } from '@modules/accounts/types/auth.types';
+import { generateAccessToken, generateRefreshToken, verifyToken } from '@modules/accounts/utils/jwt';
+import { mapOAuthProfile, validateNormalizedProfile } from '@modules/accounts/utils/oauthProfileMapper';
+import { logger } from '@utils/logger';
 
 export class AuthService {
   private prisma: PrismaClient;
