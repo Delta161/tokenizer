@@ -11,7 +11,7 @@ import { logger } from '../../../utils/logger';
 
 const prisma = new PrismaClient();
 
-// Default callback URL
+// Default callback URL - this should be configured in .env
 const DEFAULT_CALLBACK_URL = 'http://localhost:3000/api/v1/auth/google/callback';
 
 /**
@@ -102,9 +102,7 @@ export const configureGoogleStrategy = (): void => {
                 authProvider: 'GOOGLE',
                 providerId: normalizedProfile.providerId,
                 avatarUrl: normalizedProfile.avatarUrl,
-                role: normalizedProfile.role || 'USER',
-                // For OAuth users, set a random password they can't use
-                password: Math.random().toString(36).slice(-10) + Math.random().toString(36).slice(-10)
+                role: normalizedProfile.role || 'USER'
               }
             });
             

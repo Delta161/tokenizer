@@ -11,10 +11,11 @@ import type { UserRole } from '@modules/accounts/types/auth.types';
 
 /**
  * Create user schema
+ * Note: Password is optional as we only support OAuth authentication
  */
 export const createUserSchema = z.object({
   email: z.string().email('Invalid email format'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters').optional(), // Optional as we only support OAuth authentication
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   role: z.nativeEnum(UserRole).optional()
@@ -31,12 +32,8 @@ export const updateUserSchema = z.object({
 }).strict();
 
 /**
- * Change password schema
+ * Change password schema removed - only OAuth authentication is supported
  */
-export const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1, 'Current password is required'),
-  newPassword: z.string().min(8, 'New password must be at least 8 characters')
-}).strict();
 
 /**
  * User ID param schema

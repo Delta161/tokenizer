@@ -1,7 +1,8 @@
 import { PrismaClient, Notification, Prisma } from '@prisma/client';
 import { NotificationDto, CreateNotificationDto } from './notifications.types';
 import { UserPublicDTO } from '../accounts/types/user.types';
-import { Logger } from '../../utils/logger';
+import { mapUserToPublicDTO } from '../accounts/utils/user.utils';
+import { logger } from '../../utils/logger';
 import { mapNotificationToDto } from './notifications.mapper';
 
 /**
@@ -9,7 +10,6 @@ import { mapNotificationToDto } from './notifications.mapper';
  */
 export class NotificationService {
   private prisma: PrismaClient;
-  private logger: Logger;
 
   /**
    * Create a new notification service
@@ -17,7 +17,6 @@ export class NotificationService {
    */
   constructor(prisma: PrismaClient) {
     this.prisma = prisma;
-    this.logger = new Logger('NotificationService');
   }
 
   /**
@@ -54,12 +53,12 @@ export class NotificationService {
           type,
           title,
           message,
-          metadata: metadata ? JSON.stringify(metadata) : null,
-          read: false,
+          // Skip metadata field for now as it's not in the database schema yet
+          isRead: false,
         },
       });
 
-      this.logger.info('Notification created', {
+      logger.info('Notification created', {
         notificationId: notification.id,
         userId,
         type,
@@ -69,7 +68,7 @@ export class NotificationService {
 
       return mapNotificationToDto(notification);
     } catch (error) {
-      this.logger.error('Failed to create notification', {
+      logger.error('Failed to create notification', {
         userId,
         type,
         title,
@@ -95,12 +94,12 @@ export class NotificationService {
           userId, // Ensure the notification belongs to the user
         },
         data: {
-          read: true,
+          isRead: true,
           readAt: new Date(),
         },
       });
 
-      this.logger.info('Notification marked as read', {
+      logger.info('Notification marked as read', {
         notificationId,
         userId,
         module: 'notifications',
@@ -109,7 +108,7 @@ export class NotificationService {
 
       return mapNotificationToDto(notification);
     } catch (error) {
-      this.logger.error('Failed to mark notification as read', {
+      logger.error('Failed to mark notification as read', {
         notificationId,
         userId,
         error: error instanceof Error ? error.message : String(error),
@@ -129,21 +128,21 @@ export class NotificationService {
   async getAllForUser(
     userId: string,
     options?: {
-      read?: boolean;
+      isRead?: boolean;
       type?: string;
       skip?: number;
       take?: number;
     }
   ): Promise<NotificationDto[]> {
     try {
-      const { read, type, skip = 0, take = 50 } = options || {};
+      const { isRead, type, skip = 0, take = 50 } = options || {};
 
       // Build where clause
       const where: Prisma.NotificationWhereInput = { userId };
 
       // Add optional filters
-      if (typeof read === 'boolean') {
-        where.read = read;
+      if (typeof isRead === 'boolean') {
+        where.isRead = isRead;
       }
 
       if (type) {
@@ -160,7 +159,7 @@ export class NotificationService {
 
       return notifications.map(mapNotificationToDto);
     } catch (error) {
-      this.logger.error('Failed to get notifications for user', {
+      logger.error('Failed to get notifications for user', {
         userId,
         options,
         error: error instanceof Error ? error.message : String(error),
@@ -181,13 +180,13 @@ export class NotificationService {
       const count = await this.prisma.notification.count({
         where: {
           userId,
-          read: false,
+          isRead: false,
         },
       });
 
       return count;
     } catch (error) {
-      this.logger.error('Failed to get unread notification count', {
+      logger.error('Failed to get unread notification count', {
         userId,
         error: error instanceof Error ? error.message : String(error),
         module: 'notifications',
@@ -207,15 +206,15 @@ export class NotificationService {
       const result = await this.prisma.notification.updateMany({
         where: {
           userId,
-          read: false,
+          isRead: false,
         },
         data: {
-          read: true,
+          isRead: true,
           readAt: new Date(),
         },
       });
 
-      this.logger.info('All notifications marked as read', {
+      logger.info('All notifications marked as read', {
         userId,
         count: result.count,
         module: 'notifications',
@@ -224,7 +223,7 @@ export class NotificationService {
 
       return result.count;
     } catch (error) {
-      this.logger.error('Failed to mark all notifications as read', {
+      logger.error('Failed to mark all notifications as read', {
         userId,
         error: error instanceof Error ? error.message : String(error),
         module: 'notifications',
@@ -263,7 +262,7 @@ export class NotificationService {
       const invalidUserIds = userIds.filter(id => !validUserIds.includes(id));
 
       if (invalidUserIds.length > 0) {
-        this.logger.warn('Some users not found for broadcast', {
+        logger.warn('Some users not found for broadcast', {
           invalidUserIds,
           module: 'notifications',
           eventType: 'broadcast_invalid_users'
@@ -275,7 +274,7 @@ export class NotificationService {
       }
 
       // Create notifications for all valid users
-      const metadataString = metadata ? JSON.stringify(metadata) : null;
+      // const metadataString = metadata ? JSON.stringify(metadata) : null;
       const now = new Date();
 
       const data = validUserIds.map(userId => ({
@@ -283,8 +282,8 @@ export class NotificationService {
         type,
         title,
         message,
-        metadata: metadataString,
-        read: false,
+        // Skip metadata field for now as it's not in the database schema yet
+        isRead: false,
         createdAt: now,
         updatedAt: now,
       }));
@@ -295,7 +294,7 @@ export class NotificationService {
         skipDuplicates: false,
       });
 
-      this.logger.info('Broadcast notifications created', {
+      logger.info('Broadcast notifications created', {
         userCount: result.count,
         type,
         module: 'notifications',
@@ -316,7 +315,7 @@ export class NotificationService {
 
       return createdNotifications.map(mapNotificationToDto);
     } catch (error) {
-      this.logger.error('Failed to create broadcast notifications', {
+      logger.error('Failed to create broadcast notifications', {
         userCount: userIds.length,
         type,
         title,
@@ -337,22 +336,15 @@ export class NotificationService {
     try {
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          role: true,
-        },
       });
 
       if (!user) {
         return null;
       }
-
-      return user as UserPublicDTO;
+      
+      return mapUserToPublicDTO(user);
     } catch (error) {
-      this.logger.error('Failed to get user for notification', {
+      logger.error('Failed to get user for notification', {
         userId,
         error: error instanceof Error ? error.message : String(error),
         module: 'notifications',
@@ -395,7 +387,7 @@ export class NotificationService {
 
       return mapNotificationToDto(notification);
     } catch (error) {
-      this.logger.error('Failed to get notification by ID', {
+      logger.error('Failed to get notification by ID', {
         userId,
         type,
         title,

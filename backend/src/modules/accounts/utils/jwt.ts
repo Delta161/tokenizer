@@ -12,12 +12,17 @@ import type { UserRole } from '@modules/accounts/types/auth.types';
 import { logger } from '@utils/logger';
 
 // Load JWT secret from environment variables
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-key';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'default-refresh-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+
+// Validate required environment variables
+if (!JWT_SECRET || !JWT_REFRESH_SECRET) {
+  throw new Error('JWT_SECRET and JWT_REFRESH_SECRET must be defined in environment variables');
+}
 
 // Token expiration times
-const ACCESS_TOKEN_EXPIRY = '1h'; // 1 hour
-const REFRESH_TOKEN_EXPIRY = '7d'; // 7 days
+const ACCESS_TOKEN_EXPIRY = process.env.JWT_ACCESS_TOKEN_EXPIRY || '1h';
+const REFRESH_TOKEN_EXPIRY = process.env.JWT_REFRESH_TOKEN_EXPIRY || '7d';
 
 /**
  * JWT payload interface

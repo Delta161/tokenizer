@@ -28,12 +28,7 @@ router.get('/profile', authGuard, userController.getUserById);
  */
 router.patch('/profile', authGuard, userController.updateUser);
 
-/**
- * @route   POST /api/users/profile/change-password
- * @desc    Change current user's password
- * @access  Authenticated user
- */
-router.post('/profile/change-password', authGuard, userController.changePassword);
+// Password change route removed - only OAuth authentication is supported
 
 /**
  * @route   GET /api/users
@@ -70,11 +65,6 @@ router.patch('/:userId', authGuard, roleGuard(UserRole.ADMIN), userController.up
  */
 router.delete('/:userId', authGuard, roleGuard(UserRole.ADMIN), userController.deleteUser);
 
-/**
- * @route   POST /api/users/:userId/change-password
- * @desc    Change user password
- * @access  Admin only
- */
-router.post('/:userId/change-password', authGuard, roleGuard(UserRole.ADMIN), userController.changePassword);
+// Password change route removed - only OAuth authentication is supported
 
 export const userRouter = router;

@@ -4,99 +4,52 @@
  */
 
 // External packages
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 // Internal modules
 import { authService } from '@modules/accounts/services/auth.service';
-import type { LoginCredentialsDTO, OAuthProfileDTO, RegisterDataDTO } from '@modules/accounts/types/auth.types';
+import type { OAuthProfileDTO } from '@modules/accounts/types/auth.types';
 import { clearTokenCookies, setTokenCookies } from '@modules/accounts/utils/jwt';
-import { loginSchema, registerSchema } from '@modules/accounts/validators/auth.validators';
 import { logger } from '@utils/logger';
 
 export class AuthController {
   /**
-   * Register a new user
+   * Register and login methods removed - only OAuth authentication is supported
    */
-  async register(req: Request, res: Response): Promise<void> {
-    try {
-      // Validate request body
-      const validatedData = registerSchema.parse(req.body) as RegisterDataDTO;
-
-      // Register user
-      const result = await authService.register(validatedData);
-
-      // Set token cookies
-      setTokenCookies(res, result.accessToken, result.refreshToken);
-
-      // Return response
-      res.status(201).json(result);
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        res.status(400).json({ error: 'Validation error', details: error.errors });
-        return;
-      }
-
-      res.status(400).json({ error: error.message });
-    }
-  }
-
-  /**
-   * Login a user
-   */
-  async login(req: Request, res: Response): Promise<void> {
-    try {
-      // Validate request body
-      const validatedData = loginSchema.parse(req.body) as LoginCredentialsDTO;
-
-      // Login user
-      const result = await authService.login(validatedData);
-
-      // Set token cookies
-      setTokenCookies(res, result.accessToken, result.refreshToken);
-
-      // Return response
-      res.status(200).json(result);
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        res.status(400).json({ error: 'Validation error', details: error.errors });
-        return;
-      }
-
-      res.status(401).json({ error: error.message });
-    }
-  }
 
   /**
    * Get user profile
    */
-  async getProfile(req: Request, res: Response): Promise<void> {
+  async getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // User is already attached to request by authGuard middleware
       const user = req.user;
 
       if (!user) {
-        res.status(401).json({ error: 'Not authenticated' });
-        return;
+        const error = new Error('Not authenticated');
+        (error as any).statusCode = 401;
+        return next(error);
       }
 
       // Return user data
       res.status(200).json({ user });
-    } catch (error: any) {
-      res.status(401).json({ error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
 
   /**
    * Verify JWT token
    */
-  async verifyToken(req: Request, res: Response): Promise<void> {
+  async verifyToken(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Get token from request
       const token = req.headers.authorization?.split(' ')[1];
 
       if (!token) {
-        res.status(401).json({ error: 'No token provided' });
-        return;
+        const error = new Error('No token provided');
+        (error as any).statusCode = 401;
+        return next(error);
       }
 
       // Verify token and get user
@@ -104,15 +57,16 @@ export class AuthController {
 
       // Return user data
       res.status(200).json({ valid: true, user });
-    } catch (error: any) {
-      res.status(200).json({ valid: false, error: error.message });
+    } catch (error) {
+      // Special case for token verification - we want to return valid: false instead of an error
+      res.status(200).json({ valid: false, error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
   /**
    * Handle OAuth authentication success
    */
-  async handleOAuthSuccess(req: Request, res: Response): Promise<void> {
+  async handleOAuthSuccess(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // User should be attached to request by Passport
       const profile = req.user as OAuthProfileDTO;
@@ -132,17 +86,18 @@ export class AuthController {
       // Redirect to frontend with success
       const redirectUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
       res.redirect(`${redirectUrl}/auth/callback?success=true`);
-    } catch (error: any) {
-      logger.error('OAuth authentication error', { error: error.message });
+    } catch (error) {
+      // Special case for OAuth - we want to redirect with error instead of using next(error)
+      logger.error('OAuth authentication error', { error: error instanceof Error ? error.message : 'Unknown error' });
       const redirectUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-      res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent(error.message)}`);
+      res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent(error instanceof Error ? error.message : 'Unknown error')}`);
     }
   }
   
   /**
    * Handle OAuth authentication error
    */
-  async handleOAuthError(req: Request, res: Response): Promise<void> {
+  async handleOAuthError(req: Request, res: Response, next: NextFunction): Promise<void> {
     const error = req.query.error || 'Unknown error';
     logger.error('OAuth error', { error });
     
@@ -153,30 +108,30 @@ export class AuthController {
   /**
    * Logout user
    */
-  async logout(req: Request, res: Response): Promise<void> {
+  async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Clear token cookies
       clearTokenCookies(res);
       
       // Return success response
       res.status(200).json({ success: true, message: 'Logged out successfully' });
-    } catch (error: any) {
-      logger.error('Logout error', { error: error.message });
-      res.status(500).json({ error: 'Logout failed' });
+    } catch (error) {
+      next(error);
     }
   }
   
   /**
    * Refresh access token using refresh token
    */
-  async refreshToken(req: Request, res: Response): Promise<void> {
+  async refreshToken(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Get refresh token from cookies
       const refreshToken = req.cookies.refreshToken;
       
       if (!refreshToken) {
-        res.status(401).json({ error: 'No refresh token provided' });
-        return;
+        const error = new Error('No refresh token provided');
+        (error as any).statusCode = 401;
+        return next(error);
       }
       
       // Verify token and get user
@@ -190,15 +145,15 @@ export class AuthController {
       
       // Return success response
       res.status(200).json({ success: true, accessToken });
-    } catch (error: any) {
-      res.status(401).json({ error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
   
   /**
    * Health check for auth service
    */
-  async healthCheck(req: Request, res: Response): Promise<void> {
+  async healthCheck(req: Request, res: Response, next: NextFunction): Promise<void> {
     const providers = [];
     
     // Check if Google OAuth is configured

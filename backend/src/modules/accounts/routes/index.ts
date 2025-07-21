@@ -17,8 +17,8 @@ import { kycService } from '../services/kyc.service';
 export function registerAccountsRoutes(): Router {
   const router = Router();
   
-  // Create KYC controller and routes
-  const kycController = new KycController(kycService);
+  // Create KYC controller and routes using the static factory method
+  const kycController = KycController.getInstance();
   const kycRouter = createKycRoutes(kycController);
   
   // Mount routes

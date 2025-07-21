@@ -50,8 +50,8 @@ export function initKycModule(prisma?: PrismaClient): {
   service: KycService;
   controller: KycController;
 } {
-  // Create controller instance using the singleton kycService
-  const kycController = new KycController(kycService);
+  // Create controller instance using the static factory method
+  const kycController = KycController.getInstance();
   
   // Create routes
   const routes = createKycRoutes(kycController);

@@ -3,7 +3,7 @@
  * Handles HTTP requests for property operations
  */
 
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { PropertyService, PropertyAccessError, PropertyValidationError } from '../services/property.service';
 import {
@@ -34,7 +34,7 @@ export class PropertyController {
    * Get all properties with filtering and pagination
    * Admin only
    */
-  getProperties = async (req: Request, res: Response): Promise<void> => {
+  getProperties = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       // Validate query parameters
       const queryValidation = propertyFilterSchema.safeParse(req.query);
@@ -70,17 +70,14 @@ export class PropertyController {
       });
     } catch (error) {
       console.error('Error fetching properties:', error);
-      res.status(500).json({
-        error: 'ServerError',
-        message: 'Failed to fetch properties'
-      });
+      next(error);
     }
   };
 
   /**
    * Get public properties (available to all users)
    */
-  getPublicProperties = async (req: Request, res: Response): Promise<void> => {
+  getPublicProperties = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       // Validate query parameters
       const queryValidation = propertyFilterSchema.safeParse(req.query);
@@ -106,17 +103,14 @@ export class PropertyController {
       });
     } catch (error) {
       console.error('Error fetching public properties:', error);
-      res.status(500).json({
-        error: 'ServerError',
-        message: 'Failed to fetch properties'
-      });
+      next(error);
     }
   };
 
   /**
    * Get properties for a specific client
    */
-  getClientProperties = async (req: Request, res: Response): Promise<void> => {
+  getClientProperties = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -166,17 +160,14 @@ export class PropertyController {
       });
     } catch (error) {
       console.error('Error fetching client properties:', error);
-      res.status(500).json({
-        error: 'ServerError',
-        message: 'Failed to fetch properties'
-      });
+      next(error);
     }
   };
 
   /**
    * Get a property by ID
    */
-  getPropertyById = async (req: Request, res: Response): Promise<void> => {
+  getPropertyById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       // Validate property ID
       const idValidation = propertyIdParamSchema.safeParse(req.params);
@@ -223,10 +214,7 @@ export class PropertyController {
       }
     } catch (error) {
       console.error('Error fetching property:', error);
-      res.status(500).json({
-        error: 'ServerError',
-        message: 'Failed to fetch property'
-      });
+      next(error);
     }
   };
 
@@ -234,7 +222,7 @@ export class PropertyController {
    * Create a new property
    * Client only
    */
-  createProperty = async (req: Request, res: Response): Promise<void> => {
+  createProperty = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -281,11 +269,8 @@ export class PropertyController {
         throw error;
       }
     } catch (error) {
-      console.error('Error creating property:', error);
-      res.status(500).json({
-        error: 'ServerError',
-        message: 'Failed to create property'
-      });
+      console.error('Error creating property:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -293,7 +278,7 @@ export class PropertyController {
    * Update a property
    * Client (owner) or Admin only
    */
-  updateProperty = async (req: Request, res: Response): Promise<void> => {
+  updateProperty = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -356,11 +341,8 @@ export class PropertyController {
         throw error;
       }
     } catch (error) {
-      console.error('Error updating property:', error);
-      res.status(500).json({
-        error: 'ServerError',
-        message: 'Failed to update property'
-      });
+      console.error('Error updating property:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -368,7 +350,7 @@ export class PropertyController {
    * Update property status
    * Admin only
    */
-  updatePropertyStatus = async (req: Request, res: Response): Promise<void> => {
+  updatePropertyStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       if (!req.user) {
         res.status(401).json({
@@ -420,11 +402,8 @@ export class PropertyController {
         message: `Property status updated to ${status}`
       });
     } catch (error) {
-      console.error('Error updating property status:', error);
-      res.status(500).json({
-        error: 'ServerError',
-        message: 'Failed to update property status'
-      });
+      console.error('Error updating property status:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 }

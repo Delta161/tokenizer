@@ -4,49 +4,73 @@
  */
 
 // Internal modules
-import type { UserRole } from '@modules/accounts/types/auth.types';
+import type { UserRole } from './auth.types';
 
 /**
  * User DTO interface
  */
+// Import AuthProvider enum from Prisma client
+import { AuthProvider } from '@prisma/client';
+
 export interface UserDTO {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  role: UserRole;
+  fullName: string;
+  providerId: string;
+  avatarUrl?: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date;
+  phone?: string;
+  preferredLanguage?: string;
+  role: UserRole;
+  timezone?: string;
+  authProvider: AuthProvider;
+}
+
+/**
+ * User Public DTO interface
+ * Used for public-facing user data
+ */
+export interface UserPublicDTO {
+  id: string;
+  email: string;
+  fullName: string;
+  role: UserRole;
 }
 
 /**
  * Create user DTO
+ * Note: Password is optional as we only support OAuth authentication
  */
 export interface CreateUserDTO {
   email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
+  providerId: string;
+  avatarUrl?: string;
   role?: UserRole;
+  phone?: string;
+  preferredLanguage?: string;
+  timezone?: string;
+  authProvider: AuthProvider;
 }
 
 /**
  * Update user DTO
  */
 export interface UpdateUserDTO {
-  firstName?: string;
-  lastName?: string;
+  fullName?: string;
   email?: string;
+  avatarUrl?: string;
+  phone?: string;
+  preferredLanguage?: string;
   role?: UserRole;
+  timezone?: string;
 }
 
 /**
- * Change password DTO
+ * Change password DTO removed - only OAuth authentication is supported
  */
-export interface ChangePasswordDTO {
-  currentPassword: string;
-  newPassword: string;
-}
 
 /**
  * User filter options
@@ -61,7 +85,7 @@ export interface UserFilterOptions {
 /**
  * User sort options
  */
-export type UserSortField = 'firstName' | 'lastName' | 'email' | 'createdAt' | 'role';
+export type UserSortField = 'fullName' | 'email' | 'createdAt' | 'role' | 'authProvider';
 
 /**
  * User sort options

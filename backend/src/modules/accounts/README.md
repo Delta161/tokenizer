@@ -37,15 +37,13 @@ accounts/
 
 ### Authentication
 
-- User registration and login
-- OAuth authentication (Google, Azure)
+- OAuth authentication only (Google, Azure)
 - JWT-based authentication with refresh tokens
 - Role-based access control
 
 ### User Management
 
 - CRUD operations for users
-- Password management
 - User profile management
 - Admin-only user operations
 

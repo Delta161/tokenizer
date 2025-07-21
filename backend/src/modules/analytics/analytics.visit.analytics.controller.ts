@@ -24,7 +24,7 @@ export class AnalyticsVisitAnalyticsController {
    * @param req - The HTTP request
    * @param res - The HTTP response
    */
-  getPropertyVisits = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  getPropertyVisits = async (req: AuthenticatedRequest, res: Response, next: Function): Promise<void> => {
     try {
       // Validate property ID
       const propertyIdResult = validatePropertyId(req.params.id);
@@ -74,11 +74,8 @@ export class AnalyticsVisitAnalyticsController {
         data: visitSummary
       });
     } catch (error) {
-      console.error('Error getting property visits:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to retrieve property visit data'
-      });
+      console.error('Error getting property visits:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -87,7 +84,7 @@ export class AnalyticsVisitAnalyticsController {
    * @param req - The HTTP request
    * @param res - The HTTP response
    */
-  getClientVisits = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  getClientVisits = async (req: AuthenticatedRequest, res: Response, next: Function): Promise<void> => {
     try {
       // Validate client ID
       const clientIdResult = validateClientId(req.params.id);
@@ -138,11 +135,8 @@ export class AnalyticsVisitAnalyticsController {
         data: visitBreakdown
       });
     } catch (error) {
-      console.error('Error getting client visits:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to retrieve client visit data'
-      });
+      console.error('Error getting client visits:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -151,7 +145,7 @@ export class AnalyticsVisitAnalyticsController {
    * @param req - The HTTP request
    * @param res - The HTTP response
    */
-  getTrendingProperties = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  getTrendingProperties = async (req: AuthenticatedRequest, res: Response, next: Function): Promise<void> => {
     try {
       // Check if user has required role (INVESTOR or higher)
       if (!req.user || !hasRole(req.user.role, UserRole.INVESTOR)) {
@@ -170,11 +164,8 @@ export class AnalyticsVisitAnalyticsController {
         data: trendingProperties
       });
     } catch (error) {
-      console.error('Error getting trending properties:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to retrieve trending properties data'
-      });
+      console.error('Error getting trending properties:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -195,7 +186,7 @@ export class AnalyticsVisitAnalyticsController {
 
       return !!client;
     } catch (error) {
-      console.error('Error checking client ownership:', error);
+      console.error('Error checking client ownership:', error instanceof Error ? error.message : 'Unknown error');
       return false;
     }
   };

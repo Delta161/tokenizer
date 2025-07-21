@@ -71,11 +71,8 @@ export class BlockchainController {
           existsInDatabase: !!token
         }
       });
-    } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ success: false, error: error.errors });
-      }
-      return res.status(400).json({ success: false, error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -84,11 +81,8 @@ export class BlockchainController {
       const { contractAddress } = TokenMetadataSchema.parse(req.params);
       const metadata = await this.blockchainService.getTokenMetadata(contractAddress);
       return res.json({ success: true, data: metadata });
-    } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ success: false, error: error.errors });
-      }
-      return res.status(400).json({ success: false, error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -97,11 +91,8 @@ export class BlockchainController {
       const { contractAddress, userWallet } = BalanceOfSchema.parse(req.query);
       const balance = await this.blockchainService.getBalanceOf(contractAddress, userWallet);
       return res.json({ success: true, data: { balance: balance.toString() } });
-    } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ success: false, error: error.errors });
-      }
-      return res.status(400).json({ success: false, error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -109,8 +100,8 @@ export class BlockchainController {
     try {
       const gasPrice = await this.blockchainService.getGasPrice();
       return res.json({ success: true, data: { gasPrice: gasPrice.toString() } });
-    } catch (error: any) {
-      return res.status(400).json({ success: false, error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -119,8 +110,8 @@ export class BlockchainController {
       const chainId = req.query.chainId ? parseInt(req.query.chainId as string) : DEFAULT_CHAIN_ID;
       const networkConfig = getNetworkConfig(chainId);
       return res.json({ success: true, data: networkConfig });
-    } catch (error: any) {
-      return res.status(400).json({ success: false, error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -129,11 +120,8 @@ export class BlockchainController {
       const { contractAddress, recipient, amount } = MintTokensSchema.parse(req.body);
       const result = await this.blockchainService.mintTokens(contractAddress, recipient, amount);
       return res.json({ success: true, data: result });
-    } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ success: false, error: error.errors });
-      }
-      return res.status(400).json({ success: false, error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -142,11 +130,8 @@ export class BlockchainController {
       const { contractAddress, recipient, amount } = TransferTokensSchema.parse(req.body);
       const result = await this.blockchainService.transferTokens(contractAddress, recipient, amount);
       return res.json({ success: true, data: result });
-    } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ success: false, error: error.errors });
-      }
-      return res.status(400).json({ success: false, error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -155,11 +140,8 @@ export class BlockchainController {
       const { txHash } = TransactionHashSchema.parse(req.body);
       const receipt = await this.blockchainService.getTransactionReceipt(txHash);
       return res.json({ success: true, data: receipt });
-    } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ success: false, error: error.errors });
-      }
-      return res.status(400).json({ success: false, error: error.message });
+    } catch (error) {
+      next(error);
     }
   }
 }

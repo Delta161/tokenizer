@@ -17,9 +17,7 @@ const router = Router();
 // Health check
 router.get('/health', authController.healthCheck.bind(authController));
 
-// Register routes
-router.post('/register', authController.register.bind(authController));
-router.post('/login', authController.login.bind(authController));
+// Only OAuth authentication is supported
 router.post('/logout', authController.logout.bind(authController));
 router.post('/refresh', authController.refreshToken.bind(authController));
 router.get('/profile', authGuard, authController.getProfile.bind(authController));

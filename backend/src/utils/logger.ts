@@ -3,7 +3,7 @@
  * Handles logging throughout the application
  */
 
-import winston from 'winston';
+import * as winston from 'winston';
 
 // Define log levels
 const levels = {

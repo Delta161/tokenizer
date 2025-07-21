@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { AdminService } from './admin.service.js';
 import { adminLogger } from './admin.logger.js';
 import {
@@ -22,7 +22,7 @@ export class AdminController {
   /**
    * Get all users with optional filtering
    */
-  getUsers = async (req: Request, res: Response) => {
+  getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const parseResult = userListQuerySchema.safeParse(req.query);
       
@@ -45,36 +45,29 @@ export class AdminController {
       const result = await this.adminService.getUsers(filters);
       
       return res.json(result);
-    } catch (error: any) {
-      adminLogger.error('Error getting users', { error: error.message });
-      return res.status(500).json({ error: 'Failed to get users' });
+    } catch (error) {
+      next(error);
     }
   };
 
   /**
    * Get user by ID
    */
-  getUserById = async (req: Request, res: Response) => {
+  getUserById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { userId } = req.params;
       const user = await this.adminService.getUserById(userId);
       
       return res.json(user);
-    } catch (error: any) {
-      adminLogger.error('Error getting user', { error: error.message, userId: req.params.userId });
-      
-      if (error.message === 'User not found') {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      
-      return res.status(500).json({ error: 'Failed to get user' });
+    } catch (error) {
+      next(error);
     }
   };
 
   /**
    * Update user role
    */
-  updateUserRole = async (req: AuthenticatedRequest, res: Response) => {
+  updateUserRole = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const { userId } = req.params;
       const parseResult = updateUserRoleSchema.safeParse(req.body);
@@ -97,25 +90,22 @@ export class AdminController {
       });
       
       return res.json(updatedUser);
-    } catch (error: any) {
+    } catch (error) {
+      // Log the error before passing it to the error handler
       adminLogger.error('Error updating user role', {
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         userId: req.params.userId,
         adminId: req.user?.id,
       });
       
-      if (error.message === 'User not found') {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      
-      return res.status(500).json({ error: 'Failed to update user role' });
+      next(error);
     }
   };
 
   /**
    * Update user active status
    */
-  updateUserStatus = async (req: AuthenticatedRequest, res: Response) => {
+  updateUserStatus = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const { userId } = req.params;
       const parseResult = updateUserStatusSchema.safeParse(req.body);
@@ -138,25 +128,22 @@ export class AdminController {
       });
       
       return res.json(updatedUser);
-    } catch (error: any) {
+    } catch (error) {
+      // Log the error before passing it to the error handler
       adminLogger.error('Error updating user status', {
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         userId: req.params.userId,
         adminId: req.user?.id,
       });
       
-      if (error.message === 'User not found') {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      
-      return res.status(500).json({ error: 'Failed to update user status' });
+      next(error);
     }
   };
 
   /**
    * Get all properties with optional filtering
    */
-  getProperties = async (req: Request, res: Response) => {
+  getProperties = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const parseResult = propertyListQuerySchema.safeParse(req.query);
       
@@ -175,36 +162,36 @@ export class AdminController {
       const result = await this.adminService.getProperties(filters);
       
       return res.json(result);
-    } catch (error: any) {
-      adminLogger.error('Error getting properties', { error: error.message });
-      return res.status(500).json({ error: 'Failed to get properties' });
+    } catch (error) {
+      adminLogger.error('Error getting properties', { 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+      next(error);
     }
   };
 
   /**
    * Get property by ID
    */
-  getPropertyById = async (req: Request, res: Response) => {
+  getPropertyById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { propertyId } = req.params;
       const property = await this.adminService.getPropertyById(propertyId);
       
       return res.json(property);
-    } catch (error: any) {
-      adminLogger.error('Error getting property', { error: error.message, propertyId: req.params.propertyId });
-      
-      if (error.message === 'Property not found') {
-        return res.status(404).json({ error: 'Property not found' });
-      }
-      
-      return res.status(500).json({ error: 'Failed to get property' });
+    } catch (error) {
+      adminLogger.error('Error getting property', { 
+        error: error instanceof Error ? error.message : 'Unknown error', 
+        propertyId: req.params.propertyId 
+      });
+      next(error);
     }
   };
 
   /**
    * Moderate a property (approve/reject)
    */
-  moderateProperty = async (req: AuthenticatedRequest, res: Response) => {
+  moderateProperty = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const { propertyId } = req.params;
       const parseResult = moderatePropertySchema.safeParse(req.body);
@@ -227,29 +214,21 @@ export class AdminController {
       });
       
       return res.json(updatedProperty);
-    } catch (error: any) {
+    } catch (error) {
       adminLogger.error('Error moderating property', {
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         propertyId: req.params.propertyId,
         adminId: req.user?.id,
       });
       
-      if (error.message === 'Property not found') {
-        return res.status(404).json({ error: 'Property not found' });
-      }
-      
-      if (error.message === 'Property is not in SUBMITTED status') {
-        return res.status(400).json({ error: 'Property is not in SUBMITTED status' });
-      }
-      
-      return res.status(500).json({ error: 'Failed to moderate property' });
+      next(error);
     }
   };
 
   /**
    * Get all tokens with optional filtering
    */
-  getTokens = async (req: Request, res: Response) => {
+  getTokens = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const parseResult = tokenListQuerySchema.safeParse(req.query);
       
@@ -270,16 +249,18 @@ export class AdminController {
       const result = await this.adminService.getTokens(filters);
       
       return res.json(result);
-    } catch (error: any) {
-      adminLogger.error('Error getting tokens', { error: error.message });
-      return res.status(500).json({ error: 'Failed to get tokens' });
+    } catch (error) {
+      adminLogger.error('Error getting tokens', { 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+      next(error);
     }
   };
 
   /**
    * Get token by ID
    */
-  getTokenById = async (req: Request, res: Response) => {
+  getTokenById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { tokenId } = req.params;
       const token = await this.adminService.getTokenById(tokenId);
@@ -290,35 +271,35 @@ export class AdminController {
       });
       
       return res.json(token);
-    } catch (error: any) {
-      adminLogger.error('Error getting token', { error: error.message, tokenId: req.params.tokenId });
-      
-      if (error.message === 'Token not found') {
-        return res.status(404).json({ error: 'Token not found' });
-      }
-      
-      return res.status(500).json({ error: 'Failed to get token' });
+    } catch (error) {
+      adminLogger.error('Error getting token', { 
+        error: error instanceof Error ? error.message : 'Unknown error', 
+        tokenId: req.params.tokenId 
+      });
+      next(error);
     }
   };
 
   /**
    * Get all KYC records with optional filtering
    */
-  getKycRecords = async (req: Request, res: Response) => {
+  getKycRecords = async (req: Request, res: Response, next: NextFunction) => {
     try {
       // TODO: Add KYC list query schema validation
       const result = await this.adminService.getKycRecords(req.query);
       return res.json(result);
-    } catch (error: any) {
-      adminLogger.error('Error getting KYC records', { error: error.message });
-      return res.status(500).json({ error: 'Failed to get KYC records' });
+    } catch (error) {
+      adminLogger.error('Error getting KYC records', { 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+      next(error);
     }
   };
 
   /**
    * Get KYC record by ID
    */
-  getKycRecordById = async (req: AuthenticatedRequest, res: Response) => {
+  getKycRecordById = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const { kycId } = req.params;
       const kycRecord = await this.adminService.getKycRecordById(kycId);
@@ -329,21 +310,19 @@ export class AdminController {
       });
       
       return res.json(kycRecord);
-    } catch (error: any) {
-      adminLogger.error('Error getting KYC record', { error: error.message, kycId: req.params.kycId });
-      
-      if (error.message === 'KYC record not found') {
-        return res.status(404).json({ error: 'KYC record not found' });
-      }
-      
-      return res.status(500).json({ error: 'Failed to get KYC record' });
+    } catch (error) {
+      adminLogger.error('Error getting KYC record', { 
+        error: error instanceof Error ? error.message : 'Unknown error', 
+        kycId: req.params.kycId 
+      });
+      next(error);
     }
   };
 
   /**
    * Send broadcast notification to users
    */
-  sendBroadcastNotification = async (req: AuthenticatedRequest, res: Response) => {
+  sendBroadcastNotification = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const parseResult = adminNotificationSchema.safeParse(req.body);
       
@@ -365,13 +344,13 @@ export class AdminController {
       });
       
       return res.json(result);
-    } catch (error: any) {
+    } catch (error) {
       adminLogger.error('Error sending broadcast notification', {
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         adminId: req.user?.id,
       });
       
-      return res.status(500).json({ error: 'Failed to send broadcast notification' });
+      next(error);
     }
   };
 }

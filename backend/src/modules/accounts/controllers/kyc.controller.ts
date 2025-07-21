@@ -5,10 +5,19 @@ import { NextFunction, Request, Response } from 'express';
 import type { AuthenticatedRequest } from '@modules/accounts/middleware/auth.middleware';
 import { KycService } from '@modules/accounts/services/kyc.service';
 import type { KycProvider } from '@modules/accounts/types/kyc.types';
-import { KycSubmissionSchema, KycUpdateSchema } from '@modules/accounts/validators/kyc.validators';
+import { KycSubmissionSchema, KycUpdateSchema } from '@modules/accounts/validators/kyc.validator';
 
 export class KycController {
-  constructor(private kycService: KycService) {}
+  private kycService: KycService;
+
+  constructor(kycService: KycService) {
+    this.kycService = kycService;
+  }
+  
+  // Static factory method to create instance with singleton service
+  static getInstance(): KycController {
+    return new KycController(kycService);
+  }
 
   /**
    * Get current user's KYC record
@@ -20,11 +29,9 @@ export class KycController {
   ): Promise<void> => {
     try {
       if (!req.user?.id) {
-        res.status(401).json({
-          success: false,
-          error: 'Authentication required'
-        });
-        return;
+        const error = new Error('Authentication required');
+        (error as any).statusCode = 401;
+        return next(error);
       }
 
       const kycRecord = await this.kycService.getByUserId(req.user.id);
@@ -48,11 +55,9 @@ export class KycController {
   ): Promise<void> => {
     try {
       if (!req.user?.id) {
-        res.status(401).json({
-          success: false,
-          error: 'Authentication required'
-        });
-        return;
+        const error = new Error('Authentication required');
+        (error as any).statusCode = 401;
+        return next(error);
       }
       
       const { provider } = req.params;
@@ -60,20 +65,16 @@ export class KycController {
       
       // Validate provider
       if (!Object.values(KycProvider).includes(provider as KycProvider)) {
-        res.status(400).json({
-          success: false,
-          error: `Unsupported provider: ${provider}`
-        });
-        return;
+        const error = new Error(`Unsupported provider: ${provider}`);
+        (error as any).statusCode = 400;
+        return next(error);
       }
       
       // Validate redirect URL
       if (!redirectUrl || typeof redirectUrl !== 'string') {
-        res.status(400).json({
-          success: false,
-          error: 'Invalid redirect URL'
-        });
-        return;
+        const error = new Error('Invalid redirect URL');
+        (error as any).statusCode = 400;
+        return next(error);
       }
       
       const session = await this.kycService.initiateProviderVerification(
@@ -107,21 +108,17 @@ export class KycController {
       const { userId } = req.params;
       
       if (!userId) {
-        res.status(400).json({
-          success: false,
-          error: 'User ID is required'
-        });
-        return;
+        const error = new Error('User ID is required');
+        (error as any).statusCode = 400;
+        return next(error);
       }
       
       const kycRecord = await this.kycService.syncKycStatus(userId);
       
       if (!kycRecord) {
-        res.status(404).json({
-          success: false,
-          error: 'KYC record not found or no provider information available'
-        });
-        return;
+        const error = new Error('KYC record not found or no provider information available');
+        (error as any).statusCode = 404;
+        return next(error);
       }
       
       res.json({
@@ -153,12 +150,10 @@ export class KycController {
       // Validate request body
       const validationResult = KycSubmissionSchema.safeParse(req.body);
       if (!validationResult.success) {
-        res.status(400).json({
-          success: false,
-          error: 'Validation error',
-          details: validationResult.error.format()
-        });
-        return;
+        const error = new Error('Validation error');
+        (error as any).statusCode = 400;
+        (error as any).details = validationResult.error.format();
+        return next(error);
       }
 
       const kycRecord = await this.kycService.submitKyc(
@@ -207,21 +202,17 @@ export class KycController {
       const { userId } = req.params;
 
       if (!userId) {
-        res.status(400).json({
-          success: false,
-          error: 'User ID is required'
-        });
-        return;
+        const error = new Error('User ID is required');
+        (error as any).statusCode = 400;
+        return next(error);
       }
 
       const kycRecord = await this.kycService.getByUserId(userId);
 
       if (!kycRecord) {
-        res.status(404).json({
-          success: false,
-          error: 'KYC record not found'
-        });
-        return;
+        const error = new Error('KYC record not found');
+        (error as any).statusCode = 404;
+        return next(error);
       }
 
       res.json({
@@ -245,22 +236,18 @@ export class KycController {
       const { userId } = req.params;
 
       if (!userId) {
-        res.status(400).json({
-          success: false,
-          error: 'User ID is required'
-        });
-        return;
+        const error = new Error('User ID is required');
+        (error as any).statusCode = 400;
+        return next(error);
       }
 
       // Validate request body
       const validationResult = KycUpdateSchema.safeParse(req.body);
       if (!validationResult.success) {
-        res.status(400).json({
-          success: false,
-          error: 'Validation error',
-          details: validationResult.error.format()
-        });
-        return;
+        const error = new Error('Validation error');
+        (error as any).statusCode = 400;
+        (error as any).details = validationResult.error.format();
+        return next(error);
       }
 
       const kycRecord = await this.kycService.updateKycStatus(

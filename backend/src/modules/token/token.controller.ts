@@ -43,12 +43,8 @@ export class TokenController {
         data: token 
       });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      res.status(400).json({ 
-        success: false, 
-        error: 'Error', 
-        message: errorMessage 
-      });
+      console.error('Error creating token:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -151,12 +147,8 @@ export class TokenController {
         message: 'Token updated' 
       });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      res.status(400).json({ 
-        success: false, 
-        error: 'Error', 
-        message: errorMessage 
-      });
+      console.error('Error updating token:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -248,12 +240,8 @@ export class TokenController {
         data: { balance }
       });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      res.status(400).json({ 
-        success: false, 
-        error: 'Error', 
-        message: errorMessage 
-      });
+      console.error('Error getting token balance:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
   
@@ -282,12 +270,8 @@ export class TokenController {
         data: metadata
       });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      res.status(400).json({ 
-        success: false, 
-        error: 'Error', 
-        message: errorMessage 
-      });
+      console.error('Error getting blockchain metadata:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 }

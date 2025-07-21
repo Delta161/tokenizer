@@ -23,7 +23,7 @@ export class AnalyticsVisitController {
    * @param req - The HTTP request object
    * @param res - The HTTP response object
    */
-  createVisit = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  createVisit = async (req: AuthenticatedRequest, res: Response, next: Function): Promise<void> => {
     try {
       // Validate the request body
       const validationResult = validateCreateVisit(req.body);
@@ -74,24 +74,8 @@ export class AnalyticsVisitController {
         data: { visit },
       } as VisitResponse);
     } catch (error) {
-      console.error('Error creating visit:', error);
-
-      // Handle specific errors
-      if (error instanceof Error && error.message === 'Property not found') {
-        res.status(404).json({
-          success: false,
-          message: 'Property not found',
-          error: 'The specified property does not exist',
-        } as VisitResponse);
-        return;
-      }
-
-      // Generic error response
-      res.status(500).json({
-        success: false,
-        message: 'Failed to record visit',
-        error: 'An unexpected error occurred',
-      } as VisitResponse);
+      console.error('Error creating visit:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 

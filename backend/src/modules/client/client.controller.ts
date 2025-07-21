@@ -72,22 +72,8 @@ export class ClientController {
         message: 'Client application submitted successfully. Pending approval.'
       });
     } catch (error) {
-      logger.error('Error processing client application:', error);
-      
-      if (error instanceof Error) {
-        res.status(400).json({
-          success: false,
-          error: 'Application error',
-          message: error.message
-        });
-        return;
-      }
-
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        message: 'Failed to process client application'
-      });
+      logger.error('Error processing client application:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -136,12 +122,8 @@ export class ClientController {
         data: clientProfile
       });
     } catch (error) {
-      logger.error('Error fetching current client profile:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        message: 'Failed to fetch client profile'
-      });
+      logger.error('Error fetching current client profile:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -203,12 +185,8 @@ export class ClientController {
         message: 'Client profile updated successfully'
       });
     } catch (error) {
-      logger.error('Error updating client profile:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        message: 'Failed to update client profile'
-      });
+      logger.error('Error updating client profile:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -260,12 +238,8 @@ export class ClientController {
         data: clientProfile
       });
     } catch (error) {
-      logger.error('Error fetching client profile by ID:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        message: 'Failed to fetch client profile'
-      });
+      logger.error('Error fetching client profile by ID:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -316,12 +290,8 @@ export class ClientController {
         }
       });
     } catch (error) {
-      logger.error('Error fetching all clients:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        message: 'Failed to fetch clients'
-      });
+      logger.error('Error fetching all clients:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 
@@ -388,12 +358,8 @@ export class ClientController {
         message: `Client status updated to ${status} successfully`
       });
     } catch (error) {
-      logger.error('Error updating client status:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        message: 'Failed to update client status'
-      });
+      logger.error('Error updating client status:', error instanceof Error ? error.message : 'Unknown error');
+      next(error);
     }
   };
 }

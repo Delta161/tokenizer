@@ -3,12 +3,9 @@
  * Defines types for the auth module
  */
 
-export enum UserRole {
-  USER = 'USER',
-  CLIENT = 'CLIENT',
-  ADMIN = 'ADMIN',
-  INVESTOR = 'INVESTOR'
-}
+// Import UserRole from Prisma client to ensure consistency
+import { UserRole } from '@prisma/client';
+export { UserRole };
 
 export interface UserDTO {
   id: string;
@@ -24,18 +21,7 @@ export interface UserDTO {
   lastLoginAt?: Date;
 }
 
-export interface LoginCredentialsDTO {
-  email: string;
-  password: string;
-}
-
-export interface RegisterDataDTO {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  role?: UserRole;
-}
+// Login credentials and register data DTOs removed - only OAuth authentication is supported
 
 export interface AuthResponseDTO {
   user: UserDTO;

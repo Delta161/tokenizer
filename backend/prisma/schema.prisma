@@ -198,6 +198,7 @@ model Notification {
   type      String
   title     String
   message   String
+  metadata  String?   // Stored as JSON string
   isRead    Boolean   @default(false)
   createdAt DateTime  @default(now())
   readAt    DateTime?

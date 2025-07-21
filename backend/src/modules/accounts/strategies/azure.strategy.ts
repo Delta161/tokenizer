@@ -11,7 +11,7 @@ import { logger } from '../../../utils/logger';
 
 const prisma = new PrismaClient();
 
-// Default redirect URL
+// Default redirect URL if not specified in environment variables
 const DEFAULT_REDIRECT_URL = 'http://localhost:3000/api/v1/auth/azure/callback';
 
 /**
@@ -96,9 +96,7 @@ export const configureAzureStrategy = (): void => {
               authProvider: 'AZURE',
               providerId: normalizedProfile.providerId,
               avatarUrl: normalizedProfile.avatarUrl,
-              role: normalizedProfile.role || 'USER',
-              // For OAuth users, set a random password they can't use
-              password: Math.random().toString(36).slice(-10) + Math.random().toString(36).slice(-10)
+              role: normalizedProfile.role || 'USER'
             }
           });
           

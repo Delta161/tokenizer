@@ -4,7 +4,7 @@
  */
 
 // External packages
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 // Internal modules
 import { PAGINATION } from '@config/constants';
@@ -12,18 +12,17 @@ import { userService } from '@modules/accounts/services/user.service';
 import type { UserFilterOptions, UserSortOptions } from '@modules/accounts/types/user.types';
 import { createPaginationResult } from '@utils/pagination';
 import { 
-  changePasswordSchema,
   createUserSchema, 
   updateUserSchema, 
   userFilterSchema,
   userIdParamSchema
-} from '@modules/accounts/validators/user.validators';
+} from '@modules/accounts/validators/user.validator';
 
 export class UserController {
   /**
    * Get all users
    */
-  async getUsers(req: Request, res: Response): Promise<void> {
+  async getUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Validate and parse query parameters
       const validatedQuery = userFilterSchema.parse(req.query);
@@ -56,19 +55,15 @@ export class UserController {
       
       // Return response
       res.status(200).json(result);
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        res.status(400).json({ error: 'Validation error', details: error.errors });
-      } else {
-        res.status(500).json({ error: error.message || 'Failed to get users' });
-      }
+    } catch (error) {
+      next(error);
     }
   }
 
   /**
  * Get user by ID
  */
-async getUserById(req: Request, res: Response): Promise<void> {
+async getUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     // Check if this is a profile request or a specific user request
     let userId: string;
@@ -87,21 +82,15 @@ async getUserById(req: Request, res: Response): Promise<void> {
     
     // Return response
     res.status(200).json({ user });
-  } catch (error: any) {
-    if (error.name === 'ZodError') {
-      res.status(400).json({ error: 'Validation error', details: error.errors });
-    } else if (error.statusCode === 404) {
-      res.status(404).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: error.message || 'Failed to get user' });
-    }
+  } catch (error) {
+    next(error);
   }
 }
 
   /**
    * Create a new user
    */
-  async createUser(req: Request, res: Response): Promise<void> {
+  async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Validate and parse request body
       const validatedData = createUserSchema.parse(req.body);
@@ -111,21 +100,15 @@ async getUserById(req: Request, res: Response): Promise<void> {
       
       // Return response
       res.status(201).json({ user });
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        res.status(400).json({ error: 'Validation error', details: error.errors });
-      } else if (error.statusCode === 400) {
-        res.status(400).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: error.message || 'Failed to create user' });
-      }
+    } catch (error) {
+      next(error);
     }
   }
 
   /**
    * Update user
    */
-  async updateUser(req: Request, res: Response): Promise<void> {
+  async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Check if this is a profile request or a specific user request
       let userId: string;
@@ -152,23 +135,15 @@ async getUserById(req: Request, res: Response): Promise<void> {
       
       // Return response
       res.status(200).json({ user });
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        res.status(400).json({ error: 'Validation error', details: error.errors });
-      } else if (error.statusCode === 404) {
-        res.status(404).json({ error: error.message });
-      } else if (error.statusCode === 400) {
-        res.status(400).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: error.message || 'Failed to update user' });
-      }
+    } catch (error) {
+      next(error);
     }
   }
 
   /**
    * Delete user
    */
-  async deleteUser(req: Request, res: Response): Promise<void> {
+  async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Validate and parse user ID parameter
       const { userId } = userIdParamSchema.parse(req.params);
@@ -178,54 +153,15 @@ async getUserById(req: Request, res: Response): Promise<void> {
       
       // Return response
       res.status(204).end();
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        res.status(400).json({ error: 'Validation error', details: error.errors });
-      } else if (error.statusCode === 404) {
-        res.status(404).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: error.message || 'Failed to delete user' });
-      }
+    } catch (error) {
+      next(error);
     }
   }
 
   /**
    * Change user password
    */
-  async changePassword(req: Request, res: Response): Promise<void> {
-    try {
-      // Check if this is a profile request or a specific user request
-      let userId: string;
-      
-      if (req.path === '/profile/change-password') {
-        // For profile requests, use the authenticated user's ID
-        userId = (req as any).user.id;
-      } else {
-        // For specific user requests, validate and parse the user ID parameter
-        const params = userIdParamSchema.parse(req.params);
-        userId = params.userId;
-      }
-      
-      // Validate and parse request body
-      const validatedData = changePasswordSchema.parse(req.body);
-      
-      // Change password
-      await userService.changePassword(userId, validatedData);
-      
-      // Return response
-      res.status(204).end();
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        res.status(400).json({ error: 'Validation error', details: error.errors });
-      } else if (error.statusCode === 404) {
-        res.status(404).json({ error: error.message });
-      } else if (error.statusCode === 400) {
-        res.status(400).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: error.message || 'Failed to change password' });
-      }
-    }
-  }
+  // changePassword method removed - only OAuth authentication is supported
 }
 
 // Create singleton instance

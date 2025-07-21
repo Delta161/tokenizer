@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 const tokenBlacklist = new Map<string, Date>();
 
 // Cleanup interval in milliseconds (default: 1 hour)
-const CLEANUP_INTERVAL = 60 * 60 * 1000;
+const CLEANUP_INTERVAL = parseInt(process.env.TOKEN_BLACKLIST_CLEANUP_INTERVAL || '3600000', 10);
 
 // Cleanup timer reference
 let cleanupTimer: NodeJS.Timeout | null = null;

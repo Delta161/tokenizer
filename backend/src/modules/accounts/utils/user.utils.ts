@@ -7,7 +7,7 @@
 import type { User } from '@prisma/client';
 
 // Internal modules
-import type { UserDTO } from '@modules/accounts/types/user.types';
+import type { UserDTO, UserPublicDTO } from '../types/user.types';
 
 /**
  * Map Prisma User model to UserDTO
@@ -16,10 +16,25 @@ import type { UserDTO } from '@modules/accounts/types/user.types';
  * @returns User DTO without sensitive fields
  */
 export const mapUserToDTO = (user: User): UserDTO => {
-  // Destructure to remove password and other sensitive fields
-  const { password, ...userDTO } = user;
+  // No password field in the User model, just return the user object
+  const userDTO = user;
   
   return userDTO as UserDTO;
+};
+
+/**
+ * Map Prisma User model to UserPublicDTO
+ * Contains only public-facing fields
+ * @param user Prisma User model
+ * @returns User Public DTO with only public fields
+ */
+export const mapUserToPublicDTO = (user: User): UserPublicDTO => {
+  return {
+    id: user.id,
+    email: user.email,
+    fullName: user.fullName,
+    role: user.role,
+  };
 };
 
 /**

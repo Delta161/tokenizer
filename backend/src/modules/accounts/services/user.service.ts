@@ -5,13 +5,11 @@
 
 // External packages
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
 
 // Internal modules
 import { PAGINATION } from '@config/constants';
 import { AppError } from '@middleware/errorHandler';
 import type { 
-  ChangePasswordDTO,
   CreateUserDTO, 
   UpdateUserDTO, 
   UserDTO, 
@@ -123,14 +121,10 @@ export class UserService {
       throw new AppError('User with this email already exists', 400);
     }
     
-    // Hash password
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    
     // Create user
     const user = await this.prisma.user.create({
       data: {
         email: data.email,
-        password: hashedPassword,
         firstName: data.firstName,
         lastName: data.lastName,
         role: data.role || 'USER'
@@ -213,32 +207,7 @@ export class UserService {
   /**
    * Change user password
    */
-  async changePassword(userId: string, data: ChangePasswordDTO): Promise<void> {
-    // Get user with password
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId }
-    });
-    
-    if (!user) {
-      throw new AppError('User not found', 404);
-    }
-    
-    // Verify current password
-    const isPasswordValid = await bcrypt.compare(data.currentPassword, user.password);
-    
-    if (!isPasswordValid) {
-      throw new AppError('Current password is incorrect', 400);
-    }
-    
-    // Hash new password
-    const hashedPassword = await bcrypt.hash(data.newPassword, 10);
-    
-    // Update password
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { password: hashedPassword }
-    });
-  }
+  // changePassword method removed - only OAuth authentication is supported
 }
 
 // Create singleton instance

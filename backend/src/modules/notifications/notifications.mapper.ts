@@ -7,15 +7,8 @@ import { NotificationDto } from './notifications.types';
  * @returns NotificationDto - The mapped notification DTO
  */
 export const mapNotificationToDto = (notification: Notification): NotificationDto => {
-  // Parse metadata if it exists
-  let metadata: Record<string, unknown> | undefined;
-  if (notification.metadata) {
-    try {
-      metadata = JSON.parse(notification.metadata as string);
-    } catch (error) {
-      console.error(`Failed to parse metadata for notification ${notification.id}:`, error);
-    }
-  }
+  // Metadata is not currently in the database schema
+  const metadata: Record<string, unknown> | undefined = undefined;
 
   return {
     id: notification.id,

@@ -9,7 +9,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 // Internal modules
-import type { AuthResponseDTO, LoginCredentialsDTO, OAuthProfileDTO, RegisterDataDTO, UserDTO, UserRole } from '@modules/accounts/types/auth.types';
+import type { AuthResponseDTO, OAuthProfileDTO, UserDTO, UserRole } from '@modules/accounts/types/auth.types';
 import { generateAccessToken, generateRefreshToken, verifyToken } from '@modules/accounts/utils/jwt';
 import { mapOAuthProfile, validateNormalizedProfile } from '@modules/accounts/utils/oauthProfileMapper';
 import { logger } from '@utils/logger';
@@ -22,92 +22,8 @@ export class AuthService {
   }
 
   /**
-   * Register a new user
+   * Register and login methods removed - only OAuth authentication is supported
    */
-  async register(data: RegisterDataDTO): Promise<AuthResponseDTO> {
-    // Check if user already exists
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email: data.email }
-    });
-
-    if (existingUser) {
-      throw new Error('User with this email already exists');
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-
-    // Create user
-    const user = await this.prisma.user.create({
-      data: {
-        email: data.email,
-        password: hashedPassword,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        role: data.role || UserRole.USER,
-        authProvider: 'EMAIL',
-        lastLoginAt: new Date()
-      }
-    });
-
-    // Generate tokens
-    const { accessToken, refreshToken } = this.generateTokens(this.sanitizeUser(user));
-
-    // Log registration
-    logger.info('User registered', { userId: user.id, email: user.email });
-
-    // Return user data and tokens
-    return {
-      user: this.sanitizeUser(user),
-      accessToken,
-      refreshToken
-    };
-  }
-
-  /**
-   * Login a user
-   */
-  async login(credentials: LoginCredentialsDTO): Promise<AuthResponseDTO> {
-    // Find user
-    const user = await this.prisma.user.findUnique({
-      where: { email: credentials.email }
-    });
-
-    if (!user) {
-      throw new Error('Invalid email or password');
-    }
-
-    // Check if user is using OAuth
-    if (user.authProvider !== 'EMAIL') {
-      throw new Error(`This account uses ${user.authProvider} authentication. Please sign in with ${user.authProvider}.`);
-    }
-
-    // Verify password
-    const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-
-    if (!isPasswordValid) {
-      throw new Error('Invalid email or password');
-    }
-
-    // Update last login timestamp
-    await this.prisma.user.update({
-      where: { id: user.id },
-      data: { lastLoginAt: new Date() }
-    });
-
-    // Generate tokens
-    const { accessToken, refreshToken } = this.generateTokens(this.sanitizeUser(user));
-
-    // Log login
-    logger.info('User logged in', { userId: user.id, email: user.email });
-
-    // Return user data and tokens
-    return {
-      user: this.sanitizeUser(user),
-      accessToken,
-      refreshToken
-    };
-  }
 
   /**
    * Verify JWT token and return user
@@ -208,8 +124,6 @@ export class AuthService {
             providerId: normalizedProfile.providerId,
             avatarUrl: normalizedProfile.avatarUrl,
             role: normalizedProfile.role || UserRole.USER,
-            // For OAuth users, set a random password they can't use
-            password: Math.random().toString(36).slice(-10) + Math.random().toString(36).slice(-10),
             lastLoginAt: new Date()
           }
         });
