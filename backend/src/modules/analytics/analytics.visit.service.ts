@@ -1,5 +1,6 @@
 import { PrismaClient, Visit } from '@prisma/client';
 import { CreateVisitDto } from './analytics.visit.types.js';
+import { prisma as sharedPrisma } from './utils/prisma';
 
 /**
  * Service class for handling visit-related operations
@@ -13,7 +14,7 @@ export class AnalyticsVisitService {
    * @param prisma - The Prisma client instance
    */
   constructor(prisma?: PrismaClient) {
-    this.prisma = prisma || new PrismaClient();
+    this.prisma = prisma || sharedPrisma;
   }
 
   /**

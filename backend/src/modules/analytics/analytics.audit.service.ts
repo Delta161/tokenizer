@@ -1,11 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { AuditLogFilter, AuditLogEntry } from './analytics.audit.types.js';
+import { prisma as sharedPrisma } from './utils/prisma';
 
 export class AnalyticsAuditService {
   private prisma: PrismaClient;
 
   constructor(prisma?: PrismaClient) {
-    this.prisma = prisma || new PrismaClient();
+    this.prisma = prisma || sharedPrisma;
   }
 
   /**

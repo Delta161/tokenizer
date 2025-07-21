@@ -45,7 +45,7 @@ export * from './types';
  * @param prisma PrismaClient instance (optional, will create new instance if not provided)
  * @returns Object containing routes and services
  */
-export function initKycModule(prisma?: PrismaClient): {
+export function initKycModule(): {
   routes: ReturnType<typeof createKycRoutes>;
   service: KycService;
   controller: KycController;
@@ -69,14 +69,14 @@ export function initKycModule(prisma?: PrismaClient): {
  * @param prisma PrismaClient instance (optional, will create new instance if not provided)
  * @returns Object containing all routes and services
  */
-export function initAccountsModule(prisma?: PrismaClient): {
+export function initAccountsModule(): {
   router: Router;
   userRouter: typeof userRouter;
   authRouter: typeof authRouter;
   kycRouter: ReturnType<typeof createKycRoutes>;
 } {
   // Initialize KYC module
-  const kycModule = initKycModule(prisma);
+  const kycModule = initKycModule();
   
   // Create combined router
   const router = Router();

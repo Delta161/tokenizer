@@ -3,10 +3,8 @@
  * Handles token blacklisting and cleanup
  */
 
-import { PrismaClient } from '@prisma/client';
 import { logger } from '@utils/logger';
-
-const prisma = new PrismaClient();
+import { prisma } from '../utils/prisma';
 
 // In-memory token blacklist for faster lookups
 const tokenBlacklist = new Map<string, Date>();

@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { FeatureFlagDto, UpdateFlagDto } from './analytics.flags.types.js';
+import { prisma as sharedPrisma } from './utils/prisma';
 
 /**
  * Service for managing feature flags
@@ -13,7 +14,7 @@ export class AnalyticsFlagsService {
    * @param prisma - Optional Prisma client instance
    */
   constructor(prisma?: PrismaClient) {
-    this.prisma = prisma || new PrismaClient();
+    this.prisma = prisma || sharedPrisma;
   }
 
   /**

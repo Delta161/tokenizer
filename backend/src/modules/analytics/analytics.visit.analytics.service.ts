@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { prisma as sharedPrisma } from './utils/prisma';
 import {
   PropertyVisitSummary,
   ClientVisitBreakdown,
@@ -19,7 +20,7 @@ export class AnalyticsVisitAnalyticsService {
    * @param prisma - The Prisma client instance
    */
   constructor(prisma?: PrismaClient) {
-    this.prisma = prisma || new PrismaClient();
+    this.prisma = prisma || sharedPrisma;
   }
 
   /**

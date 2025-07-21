@@ -17,3 +17,6 @@ export * from './user.utils';
 
 // KYC utilities
 export * from './kyc.utils';
+
+// Shared Prisma client
+export * from './prisma';

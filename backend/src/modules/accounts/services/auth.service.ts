@@ -182,7 +182,7 @@ export class AuthService {
   }
 }
 
-// Create singleton instance
-const prisma = new PrismaClient();
+// Create singleton instance using the shared prisma client
+import { prisma } from '../utils/prisma';
 export const authService = new AuthService(prisma);
 

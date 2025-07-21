@@ -210,7 +210,7 @@ export class UserService {
   // changePassword method removed - only OAuth authentication is supported
 }
 
-// Create singleton instance
-const prisma = new PrismaClient();
+// Create singleton instance using the shared prisma client
+import { prisma } from '../utils/prisma';
 export const userService = new UserService(prisma);
 

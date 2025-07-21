@@ -18,7 +18,7 @@ import { API_PREFIX, RATE_LIMIT } from './config/constants';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 // Import routes
-import { authRouter } from './modules/auth/auth.routes';
+import { authRouter } from './modules/accounts/routes/auth.routes';
 import { createClientRoutes } from './modules/client';
 import { createInvestorRoutes } from './modules/investor';
 import { createTokenRoutes } from './modules/token';

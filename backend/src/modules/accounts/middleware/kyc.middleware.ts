@@ -1,11 +1,11 @@
 // External packages
 import { Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
 
 // Internal modules
 import { AuthenticatedRequest } from '@modules/accounts/middleware/auth.middleware';
 import { KycService } from '@modules/accounts/services/kyc.service';
 import { logger } from '@utils/logger';
+import { prisma } from '../utils/prisma';
 
 // Create a singleton instance of the KYC service
 let kycService: KycService | null = null;
@@ -15,7 +15,7 @@ let kycService: KycService | null = null;
  */
 function getKycService(): KycService {
   if (!kycService) {
-    const prisma = new PrismaClient();
+    // Use the shared prisma client
     kycService = new KycService(prisma);
   }
   return kycService;

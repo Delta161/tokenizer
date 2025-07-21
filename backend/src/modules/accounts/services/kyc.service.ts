@@ -163,7 +163,7 @@ export class KycService {
   }
 }
 
-// Create singleton instance
-const prisma = new PrismaClient();
+// Create singleton instance using the shared prisma client
+import { prisma } from '../utils/prisma';
 export const kycService = new KycService(prisma);
 
