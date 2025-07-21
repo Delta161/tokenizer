@@ -25,6 +25,7 @@ See detailed documentation in [Accounts Module Refactor](./src/modules/accounts/
 
 - Created shared client in `utils/prisma.ts`
 - Updated services and middleware to use the shared client
+- Updated authentication strategies (Google and Azure) to use the shared client
 - Removed redundant PrismaClient instantiations
 - Updated module initialization functions
 

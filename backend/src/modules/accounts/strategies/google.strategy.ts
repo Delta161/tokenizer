@@ -5,11 +5,9 @@
 
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { PrismaClient } from '@prisma/client';
 import { mapGoogleProfile, validateNormalizedProfile } from '../utils/oauthProfileMapper';
 import { logger } from '@utils/logger';
-
-const prisma = new PrismaClient();
+import { prisma } from '../utils/prisma';
 
 // Default callback URL is configured in .env as GOOGLE_CALLBACK_URL
 

@@ -22,6 +22,8 @@ We've implemented a centralized approach to PrismaClient usage within the accoun
 - `services/kyc.service.ts`: Now uses the shared client
 - `services/token.service.ts`: Now uses the shared client
 - `middleware/kyc.middleware.ts`: Now uses the shared client
+- `strategies/azure.strategy.ts`: Now uses the shared client
+- `strategies/google.strategy.ts`: Now uses the shared client
 - `index.ts`: Removed prisma parameter from module initialization functions
 
 ## Benefits

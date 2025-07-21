@@ -5,11 +5,9 @@
 
 import passport from 'passport';
 import { BearerStrategy } from 'passport-azure-ad';
-import { PrismaClient } from '@prisma/client';
 import { mapAzureProfile, validateNormalizedProfile } from '../utils/oauthProfileMapper';
 import { logger } from '@utils/logger';
-
-const prisma = new PrismaClient();
+import { prisma } from '../utils/prisma';
 
 // Default redirect URL is configured in .env as AZURE_REDIRECT_URL
 
