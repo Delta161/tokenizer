@@ -178,3 +178,4 @@ export const clearTokenCookies = (res: Response): void => {
   res.clearCookie('accessToken');
   res.clearCookie('refreshToken', { path: process.env.API_AUTH_REFRESH_PATH || '/api/v1/auth/refresh' });
 };
+

@@ -198,7 +198,7 @@ You can also access the services directly for use in other modules:
 ```typescript
 import { authService, userService, kycService } from './modules/accounts';
 
-// Example: Check if a user has verified KYC
+```// Example: Check if a user has verified KYC
 async function checkUserKyc(userId: string) {
   const isVerified = await kycService.isKycVerified(userId);
   return isVerified;
@@ -229,3 +229,4 @@ The Accounts module is designed to be integrated with other modules in the appli
 - The `roleGuard` middleware can be used to enforce role-based access control
 - The `requireKycVerified` middleware can be used to ensure users have completed KYC
 - The services can be imported and used directly in other modules
+

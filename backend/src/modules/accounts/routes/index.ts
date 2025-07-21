@@ -33,3 +33,4 @@ export function registerAccountsRoutes(): Router {
 export { authRouter } from './auth.routes';
 export { userRouter } from './user.routes';
 export { createKycRoutes } from './kyc.routes';
+

@@ -166,3 +166,4 @@ async getUserById(req: Request, res: Response, next: NextFunction): Promise<void
 
 // Create singleton instance
 export const userController = new UserController();
+

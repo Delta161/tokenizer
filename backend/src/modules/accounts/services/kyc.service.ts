@@ -166,3 +166,4 @@ export class KycService {
 // Create singleton instance
 const prisma = new PrismaClient();
 export const kycService = new KycService(prisma);
+

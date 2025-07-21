@@ -267,3 +267,4 @@ export class KycController {
 
 // Create singleton instance
 export const kycController = new KycController(new KycService(null));
+

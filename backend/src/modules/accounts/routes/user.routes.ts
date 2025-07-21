@@ -68,3 +68,4 @@ router.delete('/:userId', authGuard, roleGuard(UserRole.ADMIN), userController.d
 // Password change route removed - only OAuth authentication is supported
 
 export const userRouter = router;
+

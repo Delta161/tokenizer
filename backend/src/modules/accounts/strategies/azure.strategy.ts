@@ -122,3 +122,4 @@ export const configureAzureStrategy = (): void => {
   
   logger.info('Azure AD strategy configured');
 };
+

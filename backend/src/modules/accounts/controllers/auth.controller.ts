@@ -176,3 +176,4 @@ export class AuthController {
 
 // Create singleton instance
 export const authController = new AuthController();
+

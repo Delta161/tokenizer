@@ -213,3 +213,4 @@ export class UserService {
 // Create singleton instance
 const prisma = new PrismaClient();
 export const userService = new UserService(prisma);
+

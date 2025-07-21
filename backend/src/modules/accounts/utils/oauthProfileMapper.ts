@@ -118,3 +118,4 @@ export const validateNormalizedProfile = (profile: NormalizedProfile): boolean =
   
   return true;
 };
+

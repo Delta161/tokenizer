@@ -185,3 +185,4 @@ export class AuthService {
 // Create singleton instance
 const prisma = new PrismaClient();
 export const authService = new AuthService(prisma);
+

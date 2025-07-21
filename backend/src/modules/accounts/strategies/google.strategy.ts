@@ -129,3 +129,4 @@ export const configureGoogleStrategy = (): void => {
   
   logger.info('Google OAuth strategy configured');
 };
+

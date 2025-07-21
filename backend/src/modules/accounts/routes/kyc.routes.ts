@@ -29,3 +29,4 @@ export function createKycRoutes(kycController: KycController): Router {
 }
 
 export default createKycRoutes;
+
