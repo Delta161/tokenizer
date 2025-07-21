@@ -3,8 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 
 // Internal modules
 import type { AuthenticatedRequest } from '@modules/accounts/middleware/auth.middleware';
-import { KycService } from '@modules/accounts/services/kyc.service';
-import type { KycProvider } from '@modules/accounts/types/kyc.types';
+import { KycService, kycService } from '@modules/accounts/services/kyc.service';
+import { KycProvider } from '@modules/accounts/types/kyc.types';
 import { KycSubmissionSchema, KycUpdateSchema } from '@modules/accounts/validators/kyc.validator';
 
 export class KycController {

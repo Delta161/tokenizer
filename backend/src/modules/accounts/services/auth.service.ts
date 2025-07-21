@@ -5,13 +5,13 @@
 
 // External packages
 import { AuthProvider, PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 // Internal modules
 import type { AuthResponseDTO, OAuthProfileDTO, UserDTO, UserRole } from '@modules/accounts/types/auth.types';
 import { generateAccessToken, generateRefreshToken, verifyToken } from '@modules/accounts/utils/jwt';
 import { mapOAuthProfile, validateNormalizedProfile } from '@modules/accounts/utils/oauthProfileMapper';
+import { formatFullName } from '@modules/accounts/utils/user.utils';
 import { logger } from '@utils/logger';
 
 export class AuthService {
@@ -118,8 +118,7 @@ export class AuthService {
         user = await this.prisma.user.create({
           data: {
             email: normalizedProfile.email,
-            firstName: normalizedProfile.firstName,
-            lastName: normalizedProfile.lastName,
+            fullName: formatFullName(normalizedProfile.firstName, normalizedProfile.lastName),
             authProvider: normalizedProfile.provider.toUpperCase() as AuthProvider,
             providerId: normalizedProfile.providerId,
             avatarUrl: normalizedProfile.avatarUrl,

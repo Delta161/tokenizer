@@ -9,7 +9,7 @@ import { Router } from 'express';
 // Internal modules
 import { userController } from '@modules/accounts/controllers/user.controller';
 import { authGuard, roleGuard } from '@modules/accounts/middleware/auth.middleware';
-import type { UserRole } from '@modules/accounts/types/auth.types';
+import { UserRole } from '@modules/accounts/types/auth.types';
 
 // Create router
 const router = Router();

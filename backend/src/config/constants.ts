@@ -34,7 +34,6 @@ export const RATE_LIMIT = {
  * Security constants
  */
 export const SECURITY = {
-  BCRYPT_ROUNDS: 10,
   PASSWORD_RESET_EXPIRES: 60 * 60 * 1000, // 1 hour
 };
 

@@ -3,10 +3,10 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "dev:new": "ts-node-dev --respawn --transpile-only --esm src/server.ts",
-    "start:new": "node dist/src/server.js",
+    "dev:new": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register --esm src/server.ts",
+    "start:new": "node --import ./tsconfig-paths-bootstrap.js dist/src/server.js",
     "build": "tsc",
-    "seed": "ts-node --transpile-only prisma/seed.ts"
+    "seed": "ts-node --transpile-only --require tsconfig-paths/register prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.11.1",
@@ -45,7 +45,7 @@
     "@typescript-eslint/parser": "^8.37.0",
     "eslint": "^9.31.0",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3"
   }
 }
-

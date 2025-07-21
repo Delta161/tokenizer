@@ -39,8 +39,7 @@ export class UserService {
     
     if (filters?.search) {
       where.OR = [
-        { firstName: { contains: filters.search, mode: 'insensitive' } },
-        { lastName: { contains: filters.search, mode: 'insensitive' } },
+        { fullName: { contains: filters.search, mode: 'insensitive' } },
         { email: { contains: filters.search, mode: 'insensitive' } }
       ];
     }
@@ -71,9 +70,9 @@ export class UserService {
         select: {
           id: true,
           email: true,
-          firstName: true,
-          lastName: true,
+          fullName: true,
           role: true,
+          authProvider: true,
           createdAt: true,
           updatedAt: true
         }
@@ -93,9 +92,9 @@ export class UserService {
       select: {
         id: true,
         email: true,
-        firstName: true,
-        lastName: true,
+        fullName: true,
         role: true,
+        authProvider: true,
         createdAt: true,
         updatedAt: true
       }
@@ -125,16 +124,21 @@ export class UserService {
     const user = await this.prisma.user.create({
       data: {
         email: data.email,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        role: data.role || 'USER'
+        fullName: data.fullName,
+        providerId: data.providerId,
+        avatarUrl: data.avatarUrl,
+        role: data.role || 'INVESTOR',
+        authProvider: data.authProvider,
+        phone: data.phone,
+        preferredLanguage: data.preferredLanguage,
+        timezone: data.timezone
       },
       select: {
         id: true,
         email: true,
-        firstName: true,
-        lastName: true,
+        fullName: true,
         role: true,
+        authProvider: true,
         createdAt: true,
         updatedAt: true
       }

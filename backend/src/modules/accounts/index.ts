@@ -25,7 +25,7 @@ export { kycService, KycService } from './services/kyc.service';
 export * from './services/token.service';
 
 // Import and re-export middleware
-export { authGuard, roleGuard } from './middleware/auth.middleware';
+export { authGuard, roleGuard, requireAuth, requireRole, optionalAuth, isAuthenticated, hasRole } from './middleware/auth.middleware';
 export { requireKycVerified } from './middleware/kyc.middleware';
 
 // Import and re-export validators

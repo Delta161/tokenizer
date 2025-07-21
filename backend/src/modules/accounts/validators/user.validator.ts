@@ -7,7 +7,8 @@
 import { z } from 'zod';
 
 // Internal modules
-import type { UserRole } from '@modules/accounts/types/auth.types';
+import { UserRole } from '@modules/accounts/types/auth.types';
+import { AuthProvider } from '@prisma/client';
 
 /**
  * Create user schema
@@ -15,20 +16,27 @@ import type { UserRole } from '@modules/accounts/types/auth.types';
  */
 export const createUserSchema = z.object({
   email: z.string().email('Invalid email format'),
-  password: z.string().min(8, 'Password must be at least 8 characters').optional(), // Optional as we only support OAuth authentication
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-  role: z.nativeEnum(UserRole).optional()
+  fullName: z.string().min(1, 'Full name is required'),
+  providerId: z.string().min(1, 'Provider ID is required'),
+  avatarUrl: z.string().url('Invalid avatar URL').optional(),
+  role: z.nativeEnum(UserRole).optional(),
+  phone: z.string().optional(),
+  preferredLanguage: z.string().optional(),
+  timezone: z.string().optional(),
+  authProvider: z.nativeEnum(AuthProvider)
 }).strict();
 
 /**
  * Update user schema
  */
 export const updateUserSchema = z.object({
-  firstName: z.string().min(1, 'First name is required').optional(),
-  lastName: z.string().min(1, 'Last name is required').optional(),
+  fullName: z.string().min(1, 'Full name is required').optional(),
   email: z.string().email('Invalid email format').optional(),
-  role: z.nativeEnum(UserRole).optional()
+  avatarUrl: z.string().url('Invalid avatar URL').optional(),
+  phone: z.string().optional(),
+  preferredLanguage: z.string().optional(),
+  role: z.nativeEnum(UserRole).optional(),
+  timezone: z.string().optional()
 }).strict();
 
 /**
@@ -52,6 +60,6 @@ export const userFilterSchema = z.object({
   createdBefore: z.string().datetime().optional(),
   page: z.number().int().positive().optional(),
   limit: z.number().int().positive().max(100).optional(),
-  sortBy: z.enum(['firstName', 'lastName', 'email', 'createdAt', 'role']).optional(),
+  sortBy: z.enum(['fullName', 'email', 'createdAt', 'role', 'authProvider']).optional(),
   sortDirection: z.enum(['asc', 'desc']).optional()
 }).strict();
