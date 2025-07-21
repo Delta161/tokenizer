@@ -54,6 +54,95 @@ accounts/
 - Admin KYC management
 - KYC status checks
 
+## API Endpoints
+
+### Authentication Routes (`/api/auth`)
+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/health` | Health check for auth service | Public |
+| POST | `/logout` | Log out the current user | Authenticated |
+| POST | `/refresh` | Refresh the access token | Public (with refresh token) |
+| GET | `/profile` | Get the current user's profile | Authenticated |
+| POST | `/verify-token` | Verify a JWT token | Public |
+| GET | `/google` | Initiate Google OAuth flow | Public |
+| GET | `/google/callback` | Handle Google OAuth callback | Public |
+| GET | `/azure` | Initiate Azure OAuth flow | Public |
+| GET | `/azure/callback` | Handle Azure OAuth callback | Public |
+| GET | `/error` | Handle OAuth errors | Public |
+
+### User Routes (`/api/users`)
+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/profile` | Get current user's profile | Authenticated |
+| PATCH | `/profile` | Update current user's profile | Authenticated |
+| GET | `/` | Get all users with pagination and filtering | Admin only |
+| POST | `/` | Create a new user | Admin only |
+| GET | `/:userId` | Get user by ID | Admin only |
+| PATCH | `/:userId` | Update user | Admin only |
+| DELETE | `/:userId` | Delete user | Admin only |
+
+### KYC Routes (`/api/kyc`)
+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/me` | Get current user's KYC status | Authenticated |
+| POST | `/submit` | Submit KYC information | Authenticated |
+| POST | `/provider/:provider/initiate` | Initiate verification with a KYC provider | Authenticated |
+| GET | `/admin` | Get all KYC records | Admin only |
+| GET | `/admin/:userId` | Get KYC record for a specific user | Admin only |
+| PATCH | `/admin/:userId` | Update KYC status for a user | Admin only |
+| POST | `/admin/:userId/sync` | Sync KYC status with provider | Admin only |
+
+## Core Services
+
+### Authentication Service (`auth.service.ts`)
+
+| Method | Description |
+|--------|-------------|
+| `verifyToken(token: string)` | Verify JWT token and return user |
+| `refreshToken(refreshToken: string)` | Generate new access token using refresh token |
+| `processOAuthLogin(profile: OAuthProfileDTO)` | Process OAuth login and return tokens |
+| `logout(userId: string)` | Invalidate user's refresh tokens |
+
+### User Service (`user.service.ts`)
+
+| Method | Description |
+|--------|-------------|
+| `getUsers(page, limit, filters, sort)` | Get all users with pagination and filtering |
+| `getUserById(userId: string)` | Get user by ID |
+| `createUser(data: CreateUserDTO)` | Create a new user |
+| `updateUser(userId: string, data: UpdateUserDTO)` | Update user |
+| `deleteUser(userId: string)` | Delete user (soft delete) |
+
+### KYC Service (`kyc.service.ts`)
+
+| Method | Description |
+|--------|-------------|
+| `getByUserId(userId: string)` | Get KYC record for a user |
+| `submitKyc(userId: string, data: KycSubmissionData)` | Submit or update KYC information |
+| `updateKycStatus(userId: string, data: KycUpdateData)` | Update KYC status |
+| `getAllKycRecords(page, limit, filters)` | Get all KYC records with pagination |
+| `isKycVerified(userId: string)` | Check if a user has verified KYC |
+| `initiateProviderVerification(userId, provider)` | Initiate verification with a KYC provider |
+| `syncKycStatus(userId: string)` | Sync KYC status with provider |
+
+## Middleware
+
+### Authentication Middleware (`auth.middleware.ts`)
+
+| Middleware | Description |
+|------------|-------------|
+| `authGuard` | Verifies JWT token and attaches user to request |
+| `roleGuard(roles: string[])` | Ensures user has required role(s) |
+
+### KYC Middleware (`kyc.middleware.ts`)
+
+| Middleware | Description |
+|------------|-------------|
+| `requireKycVerified` | Ensures user has verified KYC status |
+
 ## Usage
 
 ### Initialization
@@ -115,3 +204,28 @@ async function checkUserKyc(userId: string) {
   return isVerified;
 }
 ```
+
+## Error Handling
+
+All services and controllers in the Accounts module use a consistent error handling approach:
+
+- Services throw typed errors with appropriate messages
+- Controllers catch these errors and format them into standardized HTTP responses
+- HTTP status codes are used appropriately (400 for validation errors, 401 for authentication errors, etc.)
+
+## Security Considerations
+
+- All authentication is OAuth-based (Google, Azure) - no password authentication
+- JWT tokens are stored in HTTP-only cookies to prevent XSS attacks
+- Role-based access control is enforced for all admin operations
+- Input validation is performed using Zod schemas
+- KYC verification is required for sensitive operations
+
+## Integration with Other Modules
+
+The Accounts module is designed to be integrated with other modules in the application:
+
+- The `authGuard` middleware can be used to protect routes in other modules
+- The `roleGuard` middleware can be used to enforce role-based access control
+- The `requireKycVerified` middleware can be used to ensure users have completed KYC
+- The services can be imported and used directly in other modules
