@@ -1,16 +1,33 @@
 # Legacy Modules Cleanup
 
-This document outlines the process for cleaning up legacy `user`, `auth`, and `kyc` modules that have been merged into the consolidated `/src/modules/accounts` module.
+This document outlines the process for cleaning up legacy modules that have been merged into consolidated modules:
+
+1. Legacy `user`, `auth`, and `kyc` modules merged into `/src/modules/accounts`
+2. Legacy `audit`, `flags`, and `visit` modules merged into `/src/modules/analytics`
 
 ## Background
 
-As part of our backend refactoring, we've consolidated the following modules into a single `accounts` module:
+As part of our backend refactoring, we've consolidated related modules into cohesive modules:
+
+### Accounts Module
+
+The following modules have been consolidated into a single `accounts` module:
 
 - `/src/modules/auth` - Authentication functionality
 - `/src/modules/user` - User management functionality
 - `/src/modules/kyc` - Know Your Customer verification functionality
 
 All functionality from these modules has been migrated to `/src/modules/accounts` with improved architecture and better separation of concerns.
+
+### Analytics Module
+
+The following modules have been consolidated into a single `analytics` module:
+
+- `/src/modules/audit` - Audit logging functionality
+- `/src/modules/flags` - Feature flags functionality
+- `/src/modules/visit` - Visit tracking and analytics functionality
+
+All functionality from these modules has been migrated to `/src/modules/analytics` with improved architecture and better separation of concerns.
 
 ## Cleanup Plan
 
@@ -57,13 +74,21 @@ The cleanup process involves the following steps:
 - Ensure you have a backup of your codebase
 - Make sure all tests pass with the current structure
 
-### Running the Cleanup Script
+### Running the Cleanup Scripts
 
 1. Open PowerShell in the backend directory
-2. Run the cleanup script:
+2. Run the appropriate cleanup script:
+
+#### For Accounts Module:
 
 ```powershell
 ./scripts/execute-cleanup-plan.ps1
+```
+
+#### For Analytics Module:
+
+```powershell
+./scripts/cleanup-analytics-modules.ps1
 ```
 
 The script will:
