@@ -31,7 +31,7 @@ router.get('/google', passport.authenticate('google', {
 }));
 
 router.get('/google/callback', 
-  passport.authenticate('google', { session: false, failureRedirect: '/auth/error' }),
+  passport.authenticate('google', { session: false, failureRedirect: process.env.AUTH_ERROR_REDIRECT_PATH || '/auth/error' }),
   authController.handleOAuthSuccess.bind(authController)
 );
 
@@ -41,7 +41,7 @@ router.get('/azure', passport.authenticate('azure-ad-oauth2', {
 }));
 
 router.get('/azure/callback', 
-  passport.authenticate('azure-ad-oauth2', { session: false, failureRedirect: '/auth/error' }),
+  passport.authenticate('azure-ad-oauth2', { session: false, failureRedirect: process.env.AUTH_ERROR_REDIRECT_PATH || '/auth/error' }),
   authController.handleOAuthSuccess.bind(authController)
 );
 

@@ -166,7 +166,7 @@ export const setTokenCookies = (
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    path: '/api/v1/auth/refresh', // Only sent to refresh endpoint
+    path: process.env.API_AUTH_REFRESH_PATH || '/api/v1/auth/refresh', // Only sent to refresh endpoint
     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
   });
 };
@@ -176,5 +176,5 @@ export const setTokenCookies = (
  */
 export const clearTokenCookies = (res: Response): void => {
   res.clearCookie('accessToken');
-  res.clearCookie('refreshToken', { path: '/api/v1/auth/refresh' });
+  res.clearCookie('refreshToken', { path: process.env.API_AUTH_REFRESH_PATH || '/api/v1/auth/refresh' });
 };

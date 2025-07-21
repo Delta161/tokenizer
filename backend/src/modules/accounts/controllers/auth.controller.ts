@@ -73,7 +73,7 @@ export class AuthController {
       
       if (!profile) {
         logger.error('OAuth authentication failed: No profile data');
-        res.redirect('/auth/error?error=authentication_failed');
+        res.redirect(`${process.env.AUTH_ERROR_PATH || '/auth/error'}?error=authentication_failed`);
         return;
       }
       
@@ -84,12 +84,12 @@ export class AuthController {
       setTokenCookies(res, result.accessToken, result.refreshToken);
       
       // Redirect to frontend with success
-      const redirectUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      const redirectUrl = process.env.FRONTEND_URL;
       res.redirect(`${redirectUrl}/auth/callback?success=true`);
     } catch (error) {
       // Special case for OAuth - we want to redirect with error instead of using next(error)
       logger.error('OAuth authentication error', { error: error instanceof Error ? error.message : 'Unknown error' });
-      const redirectUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      const redirectUrl = process.env.FRONTEND_URL;
       res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent(error instanceof Error ? error.message : 'Unknown error')}`);
     }
   }
@@ -101,7 +101,7 @@ export class AuthController {
     const error = req.query.error || 'Unknown error';
     logger.error('OAuth error', { error });
     
-    const redirectUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const redirectUrl = process.env.FRONTEND_URL;
     res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent(error.toString())}`);
   }
   

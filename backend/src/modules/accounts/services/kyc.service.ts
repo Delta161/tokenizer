@@ -143,8 +143,9 @@ export class KycService {
     
     // This is a placeholder - in the actual implementation, we would call a provider service
     // For now, we'll return a mock session
+    const kycProviderBaseUrl = process.env.KYC_PROVIDER_BASE_URL || 'https://kyc-provider.example.com';
     return {
-      redirectUrl: `https://kyc-provider.example.com/verify?userId=${userId}&provider=${provider}&redirect=${encodeURIComponent(redirectUrl)}`,
+      redirectUrl: `${kycProviderBaseUrl}/verify?userId=${userId}&provider=${provider}&redirect=${encodeURIComponent(redirectUrl)}`,
       expiresAt: new Date(Date.now() + 3600000), // 1 hour from now
       referenceId: `kyc-${userId}-${Date.now()}`
     };

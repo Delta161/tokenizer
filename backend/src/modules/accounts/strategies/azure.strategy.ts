@@ -7,12 +7,11 @@ import passport from 'passport';
 import { BearerStrategy } from 'passport-azure-ad';
 import { PrismaClient } from '@prisma/client';
 import { mapAzureProfile, validateNormalizedProfile } from '../utils/oauthProfileMapper';
-import { logger } from '../../../utils/logger';
+import { logger } from '@utils/logger';
 
 const prisma = new PrismaClient();
 
-// Default redirect URL if not specified in environment variables
-const DEFAULT_REDIRECT_URL = 'http://localhost:3000/api/v1/auth/azure/callback';
+// Default redirect URL is configured in .env as AZURE_REDIRECT_URL
 
 /**
  * Configure Azure AD strategy for Passport
@@ -21,7 +20,7 @@ export const configureAzureStrategy = (): void => {
   const AZURE_CLIENT_ID = process.env.AZURE_CLIENT_ID;
   const AZURE_CLIENT_SECRET = process.env.AZURE_CLIENT_SECRET;
   const AZURE_TENANT_ID = process.env.AZURE_TENANT_ID;
-  const AZURE_REDIRECT_URL = process.env.AZURE_REDIRECT_URL || DEFAULT_REDIRECT_URL;
+  const AZURE_REDIRECT_URL = process.env.AZURE_REDIRECT_URL;
   
   if (!AZURE_CLIENT_ID || !AZURE_CLIENT_SECRET || !AZURE_TENANT_ID) {
     logger.warn('Azure AD credentials not configured. Azure authentication will not work.');

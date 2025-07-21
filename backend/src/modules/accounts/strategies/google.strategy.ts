@@ -7,12 +7,11 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { PrismaClient } from '@prisma/client';
 import { mapGoogleProfile, validateNormalizedProfile } from '../utils/oauthProfileMapper';
-import { logger } from '../../../utils/logger';
+import { logger } from '@utils/logger';
 
 const prisma = new PrismaClient();
 
-// Default callback URL - this should be configured in .env
-const DEFAULT_CALLBACK_URL = 'http://localhost:3000/api/v1/auth/google/callback';
+// Default callback URL is configured in .env as GOOGLE_CALLBACK_URL
 
 /**
  * Google authentication options
@@ -26,7 +25,7 @@ export const googleAuthOptions = {
  * Google callback options
  */
 export const googleCallbackOptions = {
-  failureRedirect: '/api/v1/auth/error?error=google_auth_failed'
+  failureRedirect: process.env.GOOGLE_AUTH_ERROR_REDIRECT_PATH || '/api/v1/auth/error?error=google_auth_failed'
 };
 
 /**
@@ -35,7 +34,7 @@ export const googleCallbackOptions = {
 export const configureGoogleStrategy = (): void => {
   const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
   const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-  const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || DEFAULT_CALLBACK_URL;
+  const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL;
   
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
     logger.warn('Google OAuth credentials not configured. Google authentication will not work.');
