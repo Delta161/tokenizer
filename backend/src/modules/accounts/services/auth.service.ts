@@ -122,7 +122,7 @@ export class AuthService {
             authProvider: normalizedProfile.provider.toUpperCase() as AuthProvider,
             providerId: normalizedProfile.providerId,
             avatarUrl: normalizedProfile.avatarUrl,
-            role: normalizedProfile.role || UserRole.USER,
+            role: normalizedProfile.role || UserRole.INVESTOR,
             lastLoginAt: new Date()
           }
         });
