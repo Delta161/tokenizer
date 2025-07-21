@@ -13,7 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
   
   // Getters
   const isAuthenticated = computed(() => !!user.value && !!token.value);
-  const userRole = computed(() => user.value?.role || 'guest');
+  const userRole = computed(() => user.value?.role || 'INVESTOR');
   
   // Actions
   async function login(credentials: LoginCredentials) {

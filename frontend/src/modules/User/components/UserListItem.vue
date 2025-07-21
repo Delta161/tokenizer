@@ -41,9 +41,9 @@ const userRoles = computed(() => {
 const primaryRole = computed(() => {
   if (!userRoles.value.length) return null
   
-  // Priority order: Admin > Manager > User
+  // Priority order: Admin > Client > Investor
   if (userRoles.value.includes(UserRole.ADMIN)) return UserRole.ADMIN
-  if (userRoles.value.includes(UserRole.MANAGER)) return UserRole.MANAGER
+  if (userRoles.value.includes(UserRole.CLIENT)) return UserRole.CLIENT
   return userRoles.value[0]
 })
 

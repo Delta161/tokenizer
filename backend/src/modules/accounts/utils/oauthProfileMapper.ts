@@ -65,7 +65,7 @@ export const mapGoogleProfile = (profile: GoogleProfile): NormalizedProfile => {
     lastName,
     displayName: profile.displayName,
     avatarUrl,
-    role: UserRole.USER
+    role: UserRole.INVESTOR
   };
 };
 
@@ -84,7 +84,7 @@ export const mapAzureProfile = (profile: AzureProfile): NormalizedProfile => {
     firstName,
     lastName,
     displayName: profile.displayName,
-    role: UserRole.USER
+    role: UserRole.INVESTOR
   };
 };
 

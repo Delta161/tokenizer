@@ -26,7 +26,7 @@ vi.mock('@prisma/client', () => {
 vi.mock('@modules/accounts/utils/jwt', () => ({
   generateAccessToken: vi.fn().mockReturnValue('mock-access-token'),
   generateRefreshToken: vi.fn().mockReturnValue('mock-refresh-token'),
-  verifyToken: vi.fn().mockReturnValue({ id: 'user-id', email: 'test@example.com', role: 'USER' }),
+  verifyToken: vi.fn().mockReturnValue({ id: 'user-id', email: 'test@example.com', role: 'INVESTOR' }),
 }));
 
 // Mock the OAuth profile mapper
@@ -64,7 +64,7 @@ describe('AuthService', () => {
         email: 'test@example.com',
         firstName: 'Test',
         lastName: 'User',
-        role: 'USER',
+        role: 'INVESTOR',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -108,7 +108,7 @@ describe('AuthService', () => {
         email: 'test@example.com',
         firstName: 'Test',
         lastName: 'User',
-        role: 'USER',
+        role: 'INVESTOR',
         authProvider: 'GOOGLE',
         providerId: 'google-id-123',
         avatarUrl: 'https://example.com/avatar.jpg',
@@ -152,7 +152,7 @@ describe('AuthService', () => {
         email: 'test@example.com',
         firstName: 'Test',
         lastName: 'User',
-        role: 'USER',
+        role: 'INVESTOR',
         authProvider: 'GOOGLE',
         providerId: 'google-id-123',
         createdAt: new Date(),

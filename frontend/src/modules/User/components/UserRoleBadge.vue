@@ -13,12 +13,10 @@ const badgeLabel = computed(() => {
   switch (props.role) {
     case UserRole.ADMIN:
       return 'Admin'
-    case UserRole.MANAGER:
-      return 'Manager'
-    case UserRole.USER:
-      return 'User'
-    case UserRole.GUEST:
-      return 'Guest'
+    case UserRole.CLIENT:
+      return 'Client'
+    case UserRole.INVESTOR:
+      return 'Investor'
     default:
       return props.role
   }
@@ -28,12 +26,10 @@ const badgeClass = computed(() => {
   switch (props.role) {
     case UserRole.ADMIN:
       return 'badge-admin'
-    case UserRole.MANAGER:
-      return 'badge-manager'
-    case UserRole.USER:
-      return 'badge-user'
-    case UserRole.GUEST:
-      return 'badge-guest'
+    case UserRole.CLIENT:
+      return 'badge-client'
+    case UserRole.INVESTOR:
+      return 'badge-investor'
     default:
       return 'badge-default'
   }

@@ -36,9 +36,8 @@ const selectedCount = computed(() => selectedUsers.value.size)
 const roleOptions = computed(() => [
   { value: '', label: 'All Roles' },
   { value: UserRole.ADMIN, label: 'Admin' },
-  { value: UserRole.MANAGER, label: 'Manager' },
-  { value: UserRole.USER, label: 'User' },
-  { value: UserRole.GUEST, label: 'Guest' }
+  { value: UserRole.CLIENT, label: 'Client' },
+  { value: UserRole.INVESTOR, label: 'Investor' }
 ])
 
 // Fetch users on mount

@@ -93,7 +93,7 @@ export const configureAzureStrategy = (): void => {
               authProvider: 'AZURE',
               providerId: normalizedProfile.providerId,
               avatarUrl: normalizedProfile.avatarUrl,
-              role: normalizedProfile.role || 'USER'
+              role: normalizedProfile.role || 'INVESTOR'
             }
           });
           

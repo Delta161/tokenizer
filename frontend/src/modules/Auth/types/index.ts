@@ -16,7 +16,7 @@ export interface User {
 /**
  * Available user roles in the system
  */
-export type UserRole = 'admin' | 'user' | 'investor' | 'property_owner' | 'guest';
+export type UserRole = 'ADMIN' | 'CLIENT' | 'INVESTOR';
 
 /**
  * Login credentials for authentication

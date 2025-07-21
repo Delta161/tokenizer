@@ -52,5 +52,5 @@ export const NormalizedProfileSchema = z.object({
   lastName: z.string().min(1, 'Last name is required'),
   displayName: z.string().optional(),
   avatarUrl: z.string().url('Invalid avatar URL').optional(),
-  role: z.enum(['USER', 'ADMIN', 'MANAGER']).optional()
+  role: z.enum(['INVESTOR', 'CLIENT', 'ADMIN']).optional()
 });

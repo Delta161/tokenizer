@@ -99,7 +99,7 @@ export const configureGoogleStrategy = (): void => {
                 authProvider: 'GOOGLE',
                 providerId: normalizedProfile.providerId,
                 avatarUrl: normalizedProfile.avatarUrl,
-                role: normalizedProfile.role || 'USER'
+                role: normalizedProfile.role || 'INVESTOR'
               }
             });
             

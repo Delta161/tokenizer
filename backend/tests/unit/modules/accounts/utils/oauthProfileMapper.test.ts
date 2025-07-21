@@ -42,7 +42,7 @@ describe('OAuth Profile Mapper', () => {
         lastName: 'User',
         displayName: 'Test User',
         avatarUrl: 'https://example.com/avatar.jpg',
-        role: 'USER',
+        role: 'INVESTOR',
       });
     });
 
@@ -65,7 +65,7 @@ describe('OAuth Profile Mapper', () => {
         lastName: '',
         displayName: undefined,
         avatarUrl: undefined,
-        role: 'USER',
+        role: 'INVESTOR',
       });
     });
   });
@@ -94,7 +94,7 @@ describe('OAuth Profile Mapper', () => {
         firstName: 'Test',
         lastName: 'User',
         displayName: 'Test User',
-        role: 'USER',
+        role: 'INVESTOR',
       });
     });
 
@@ -116,7 +116,7 @@ describe('OAuth Profile Mapper', () => {
         firstName: '',
         lastName: '',
         displayName: undefined,
-        role: 'USER',
+        role: 'INVESTOR',
       });
     });
 
