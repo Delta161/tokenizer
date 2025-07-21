@@ -71,6 +71,7 @@ export interface GoogleProfile {
   _json: any;
 }
 
+
 export interface AzureProfile {
   oid: string;
   displayName?: string;
