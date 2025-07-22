@@ -17,12 +17,31 @@ import { AuthProvider } from '@prisma/client';
 export const createUserSchema = z.object({
   email: z.string().email('Invalid email format'),
   fullName: z.string().min(1, 'Full name is required'),
-  providerId: z.string().min(1, 'Provider ID is required'),
+  providerId: z.string().optional(),
   avatarUrl: z.string().url('Invalid avatar URL').optional(),
-  role: z.nativeEnum(UserRole).optional(),
+  role: z.nativeEnum(UserRole).optional().default('INVESTOR'),
   phone: z.string().optional(),
   preferredLanguage: z.string().optional(),
   timezone: z.string().optional(),
+  authProvider: z.nativeEnum(AuthProvider).optional()
+}).refine(
+  // If providerId is present, authProvider must also be present
+  data => !(data.providerId && !data.authProvider),
+  {
+    message: 'Auth provider is required when provider ID is present',
+    path: ['authProvider']
+  }
+);
+
+/**
+ * Create user from OAuth profile schema
+ */
+export const createUserFromOAuthSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  fullName: z.string().min(1, 'Full name is required'),
+  providerId: z.string().min(1, 'Provider ID is required'),
+  avatarUrl: z.string().url('Invalid avatar URL').optional(),
+  role: z.nativeEnum(UserRole).optional().default('INVESTOR'),
   authProvider: z.nativeEnum(AuthProvider)
 }).strict();
 

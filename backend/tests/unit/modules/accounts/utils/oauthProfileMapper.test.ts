@@ -13,6 +13,7 @@ import {
   validateNormalizedProfile 
 } from '@modules/accounts/utils/oauthProfileMapper';
 import type { GoogleProfile, AzureProfile, NormalizedProfile } from '@modules/accounts/utils/oauthProfileMapper';
+import { NormalizedProfileSchema, RelaxedNormalizedProfileSchema } from '@modules/accounts/validators/auth.validator';
 
 describe('OAuth Profile Mapper', () => {
   describe('mapGoogleProfile', () => {
@@ -190,7 +191,7 @@ describe('OAuth Profile Mapper', () => {
     });
   });
 
-  describe('validateNormalizedProfile', () => {
+  describe('validateNormalizedProfile (deprecated)', () => {
     it('should validate a complete profile', () => {
       // Create a complete normalized profile
       const completeProfile: NormalizedProfile = {
@@ -298,14 +299,195 @@ describe('OAuth Profile Mapper', () => {
         email: 'test@example.com',
         displayName: 'Test User',
         firstName: '',
-        lastName: '',
-      } as NormalizedProfile;
+      };
 
       // Validate the profile
-      const result = validateNormalizedProfile(profileWithDisplayName);
+      const result = validateNormalizedProfile(profileWithDisplayName as NormalizedProfile);
 
       // Assertions
       expect(result).toBe(true);
+    });
+  });
+
+
+
+  describe('NormalizedProfileSchema', () => {
+    it('should validate a complete profile', () => {
+      // Create a complete normalized profile
+      const completeProfile = {
+        providerId: 'provider-id-123',
+        provider: 'google',
+        email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+        displayName: 'Test User',
+        avatarUrl: 'https://example.com/avatar.jpg',
+      };
+
+      // Validate the profile
+      const result = NormalizedProfileSchema.safeParse(completeProfile);
+
+      // Assertions
+      expect(result.success).toBe(true);
+    });
+
+    it('should validate a profile with minimal required fields', () => {
+      // Create a minimal normalized profile
+      const minimalProfile = {
+        providerId: 'provider-id-123',
+        provider: 'google',
+        email: 'test@example.com',
+        firstName: 'Test',
+        lastName: '',
+      };
+
+      // Validate the profile
+      const result = NormalizedProfileSchema.safeParse(minimalProfile);
+
+      // Assertions
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject a profile without providerId', () => {
+      // Create an invalid profile missing providerId
+      const invalidProfile = {
+        provider: 'google',
+        email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+      };
+
+      // Validate the profile
+      const result = NormalizedProfileSchema.safeParse(invalidProfile);
+
+      // Assertions
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject a profile without provider', () => {
+      // Create an invalid profile missing provider
+      const invalidProfile = {
+        providerId: 'provider-id-123',
+        email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+      };
+
+      // Validate the profile
+      const result = NormalizedProfileSchema.safeParse(invalidProfile);
+
+      // Assertions
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject a profile without email', () => {
+      // Create an invalid profile missing email
+      const invalidProfile = {
+        providerId: 'provider-id-123',
+        provider: 'google',
+        firstName: 'Test',
+        lastName: 'User',
+      };
+
+      // Validate the profile
+      const result = NormalizedProfileSchema.safeParse(invalidProfile);
+
+      // Assertions
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject a profile without any name fields', () => {
+      // Create an invalid profile missing all name fields
+      const invalidProfile = {
+        providerId: 'provider-id-123',
+        provider: 'google',
+        email: 'test@example.com',
+      };
+
+      // Validate the profile
+      const result = NormalizedProfileSchema.safeParse(invalidProfile);
+
+      // Assertions
+      expect(result.success).toBe(false);
+    });
+
+    it('should accept a profile with only displayName', () => {
+      // Create a profile with only displayName
+      const profileWithDisplayName = {
+        providerId: 'provider-id-123',
+        provider: 'google',
+        email: 'test@example.com',
+        displayName: 'Test User',
+        firstName: '',
+        lastName: '',
+      };
+
+      // Validate the profile
+      const result = NormalizedProfileSchema.safeParse(profileWithDisplayName);
+
+      // Assertions
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe('RelaxedNormalizedProfileSchema', () => {
+    it('should validate a complete profile', () => {
+      // Create a complete normalized profile
+      const completeProfile = {
+        providerId: 'provider-id-123',
+        provider: 'google',
+        email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+        displayName: 'Test User',
+        avatarUrl: 'https://example.com/avatar.jpg',
+      };
+
+      // Validate the profile
+      const result = RelaxedNormalizedProfileSchema.safeParse(completeProfile);
+
+      // Assertions
+      expect(result.success).toBe(true);
+    });
+
+    it('should validate a profile with only provider and providerId', () => {
+      // Create a minimal normalized profile
+      const minimalProfile = {
+        providerId: 'provider-id-123',
+        provider: 'google',
+      };
+
+      // Validate the profile
+      const result = RelaxedNormalizedProfileSchema.safeParse(minimalProfile);
+
+      // Assertions
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject a profile without providerId', () => {
+      // Create an invalid profile missing providerId
+      const invalidProfile = {
+        provider: 'google',
+      };
+
+      // Validate the profile
+      const result = RelaxedNormalizedProfileSchema.safeParse(invalidProfile);
+
+      // Assertions
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject a profile without provider', () => {
+      // Create an invalid profile missing provider
+      const invalidProfile = {
+        providerId: 'provider-id-123',
+      };
+
+      // Validate the profile
+      const result = RelaxedNormalizedProfileSchema.safeParse(invalidProfile);
+
+      // Assertions
+      expect(result.success).toBe(false);
     });
   });
 });

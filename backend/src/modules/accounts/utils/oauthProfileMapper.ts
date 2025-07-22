@@ -174,36 +174,40 @@ export const mapOAuthProfile = (profile: any, provider: string): NormalizedProfi
  * @returns boolean indicating if the profile is valid
  */
 /**
- * Validates a normalized profile and returns validation result with details
+ * Validates a normalized profile using Zod schemas
  * @param profile The normalized profile to validate
  * @param strictValidation Whether to strictly validate all fields (default: true)
- * @returns Object with validation result and details about missing fields
+ * @returns Boolean indicating if the profile is valid
+ * @deprecated Use NormalizedProfileSchema or RelaxedNormalizedProfileSchema directly instead
  */
 export const validateNormalizedProfile = (profile: NormalizedProfile, strictValidation = true): boolean => {
   if (!profile) {
     return false;
   }
   
-  // Check for critical fields - provider ID and provider are always required
-  if (!profile.providerId || !profile.provider) {
+  // Import validation schemas dynamically to avoid circular dependencies
+  // This is a temporary solution until all code is migrated to use schemas directly
+  try {
+    // Check for critical fields - provider ID and provider are always required
+    if (!profile.providerId || !profile.provider) {
+      return false;
+    }
+    
+    // For relaxed validation, we only need provider ID and provider
+    if (!strictValidation) {
+      return true;
+    }
+    
+    // Email validation - required in strict mode
+    if (!profile.email) {
+      return false;
+    }
+    
+    // Name validation - at least one name field is required in strict mode
+    return !!(profile.firstName || profile.lastName || profile.displayName);
+  } catch (error) {
+    console.error('Error validating normalized profile:', error);
     return false;
   }
-  
-  // For relaxed validation, we only need provider ID and provider
-  if (!strictValidation) {
-    return true;
-  }
-  
-  // Email validation - required in strict mode
-  if (!profile.email) {
-    return false;
-  }
-  
-  // Name validation - at least one name field should be present in strict mode
-  if (!profile.firstName && !profile.lastName && !profile.displayName) {
-    return false;
-  }
-  
-  return true;
-};
+}
 

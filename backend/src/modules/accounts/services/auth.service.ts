@@ -10,9 +10,11 @@ import jwt from 'jsonwebtoken';
 // Internal modules
 import type { AuthResponseDTO, OAuthProfileDTO, UserDTO, UserRole } from '@modules/accounts/types/auth.types';
 import { generateAccessToken, generateRefreshToken, verifyToken } from '@modules/accounts/utils/jwt';
-import { mapOAuthProfile, validateNormalizedProfile } from '@modules/accounts/utils/oauthProfileMapper';
+import { mapOAuthProfile } from '@modules/accounts/utils/oauthProfileMapper';
 import { formatFullName } from '@modules/accounts/utils/user.utils';
 import { logger } from '@utils/logger';
+import { NormalizedProfileSchema } from '@modules/accounts/validators/auth.validator';
+import { createUserFromOAuthSchema } from '@modules/accounts/validators/user.validator';
 
 export class AuthService {
   private prisma: PrismaClient;
@@ -82,23 +84,28 @@ export class AuthService {
       // Map OAuth profile to normalized format
       const normalizedProfile = mapOAuthProfile(profile, profile.provider);
       
-      // Validate profile
-      if (!validateNormalizedProfile(normalizedProfile)) {
+      // Validate profile using schema
+      const profileValidation = NormalizedProfileSchema.safeParse(normalizedProfile);
+      if (!profileValidation.success) {
+        this.logger.error('Invalid profile data', { errors: profileValidation.error.format() });
         throw new Error('Invalid profile data');
       }
+      
+      // Use validated data
+      const validatedProfile = profileValidation.data;
       
       // Find existing user by provider ID
       let user = await this.prisma.user.findFirst({
         where: {
-          authProvider: normalizedProfile.provider.toUpperCase() as AuthProvider,
-          providerId: normalizedProfile.providerId
+          authProvider: validatedProfile.provider.toUpperCase() as AuthProvider,
+          providerId: validatedProfile.providerId
         }
       });
       
       // If user not found by provider ID, try to find by email
-      if (!user && normalizedProfile.email) {
+      if (!user && validatedProfile.email) {
         user = await this.prisma.user.findUnique({
-          where: { email: normalizedProfile.email }
+          where: { email: validatedProfile.email }
         });
         
         // If user exists with this email but different provider, update provider info
@@ -106,8 +113,8 @@ export class AuthService {
           user = await this.prisma.user.update({
             where: { id: user.id },
             data: {
-              authProvider: normalizedProfile.provider.toUpperCase() as AuthProvider,
-              providerId: normalizedProfile.providerId
+              authProvider: validatedProfile.provider.toUpperCase() as AuthProvider,
+              providerId: validatedProfile.providerId
             }
           });
         }
@@ -117,34 +124,48 @@ export class AuthService {
       if (!user) {
         try {
           // Format the full name, with fallback to displayName if first/last name are missing
-          const fullName = formatFullName(normalizedProfile.firstName, normalizedProfile.lastName) || 
-                          normalizedProfile.displayName || 
+          const fullName = formatFullName(validatedProfile.firstName, validatedProfile.lastName) || 
+                          validatedProfile.displayName || 
                           'User';
           
           // Generate a placeholder email if missing
-          const email = normalizedProfile.email || 
-                       `${normalizedProfile.providerId}@placeholder.auth`;
+          const email = validatedProfile.email || 
+                       `${validatedProfile.providerId}@placeholder.auth`;
+          
+          // Validate user creation data
+          const userDataInput = {
+            email,
+            fullName,
+            authProvider: validatedProfile.provider.toUpperCase() as AuthProvider,
+            providerId: validatedProfile.providerId,
+            avatarUrl: validatedProfile.avatarUrl,
+            role: validatedProfile.role || UserRole.INVESTOR
+          };
+          
+          const userDataValidation = createUserFromOAuthSchema.safeParse(userDataInput);
+          if (!userDataValidation.success) {
+            this.logger.error('Invalid user data for creation', { errors: userDataValidation.error.format() });
+            throw new Error('Invalid user data for creation');
+          }
+          
+          // Use validated data
+          const userData = userDataValidation.data;
           
           user = await this.prisma.user.create({
             data: {
-              email,
-              fullName,
-              authProvider: normalizedProfile.provider.toUpperCase() as AuthProvider,
-              providerId: normalizedProfile.providerId,
-              avatarUrl: normalizedProfile.avatarUrl,
-              role: normalizedProfile.role || UserRole.INVESTOR,
+              ...userData,
               lastLoginAt: new Date()
             }
           });
           
           this.logger.info('Successfully created new user from OAuth profile', { 
             userId: user.id,
-            provider: normalizedProfile.provider
+            provider: validatedProfile.provider
           });
         } catch (error) {
           this.logger.error('Failed to create user from OAuth profile', { 
             error: error.message,
-            profile: normalizedProfile 
+            profile: validatedProfile 
           });
           throw new Error(`Failed to create user: ${error.message}`);
         }
@@ -157,7 +178,7 @@ export class AuthService {
         
         this.logger.debug('User logged in', {
           userId: user.id,
-          provider: normalizedProfile.provider
+          provider: validatedProfile.provider
         });
       }
       
@@ -166,10 +187,10 @@ export class AuthService {
       const { accessToken, refreshToken } = this.generateTokens(sanitizedUser);
       
       // Log OAuth login
-      logger.info(`User logged in via ${normalizedProfile.provider}`, {
+      logger.info(`User logged in via ${validatedProfile.provider}`, {
         userId: user.id,
         email: user.email,
-        provider: normalizedProfile.provider
+        provider: validatedProfile.provider
       });
       
       // Return user data and tokens
