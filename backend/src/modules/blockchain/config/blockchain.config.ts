@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { NetworkConfig } from '../types/blockchain.types.js';
+import { loadDeploymentConfig } from '../utils/blockchain.utils.js';
 
 dotenv.config();
 
@@ -26,7 +27,7 @@ export const CONTRACT_OWNER_ADDRESS = process.env.CONTRACT_OWNER_ADDRESS || '';
 /**
  * Path to contract artifacts
  */
-export const CONTRACT_ARTIFACTS_PATH = process.env.CONTRACT_ARTIFACTS_PATH || 'contracts';
+export const CONTRACT_ARTIFACTS_PATH = process.env.CONTRACT_ARTIFACTS_PATH || 'src/modules/blockchain/artifacts';
 
 /**
  * Default chain ID
@@ -34,7 +35,12 @@ export const CONTRACT_ARTIFACTS_PATH = process.env.CONTRACT_ARTIFACTS_PATH || 'c
 export const DEFAULT_CHAIN_ID = process.env.DEFAULT_CHAIN_ID ? parseInt(process.env.DEFAULT_CHAIN_ID) : 1;
 
 /**
- * Network configurations
+ * Load deployment configuration and merge with network configs
+ */
+const deploymentConfig = loadDeploymentConfig();
+
+/**
+ * Network configurations with contract addresses
  */
 export const NETWORKS: Record<string, NetworkConfig> = {
   // Ethereum Mainnet
@@ -43,6 +49,7 @@ export const NETWORKS: Record<string, NetworkConfig> = {
     name: 'Ethereum Mainnet',
     rpcUrl: process.env.MAINNET_RPC_URL || '',
     blockExplorerUrl: 'https://etherscan.io',
+    contracts: deploymentConfig.networks['1']?.contracts || {},
   },
   // Goerli Testnet
   '5': {
@@ -50,6 +57,7 @@ export const NETWORKS: Record<string, NetworkConfig> = {
     name: 'Goerli Testnet',
     rpcUrl: process.env.GOERLI_RPC_URL || '',
     blockExplorerUrl: 'https://goerli.etherscan.io',
+    contracts: deploymentConfig.networks['5']?.contracts || {},
   },
   // Sepolia Testnet
   '11155111': {
@@ -57,6 +65,15 @@ export const NETWORKS: Record<string, NetworkConfig> = {
     name: 'Sepolia Testnet',
     rpcUrl: process.env.SEPOLIA_RPC_URL || '',
     blockExplorerUrl: 'https://sepolia.etherscan.io',
+    contracts: deploymentConfig.networks['11155111']?.contracts || {},
+  },
+  // Hardhat Local
+  '31337': {
+    chainId: 31337,
+    name: 'Hardhat Local',
+    rpcUrl: 'http://127.0.0.1:8545',
+    blockExplorerUrl: 'http://localhost:8545',
+    contracts: deploymentConfig.networks['31337']?.contracts || {},
   },
   // Polygon Mainnet
   '137': {
@@ -69,6 +86,7 @@ export const NETWORKS: Record<string, NetworkConfig> = {
       symbol: 'MATIC',
       decimals: 18,
     },
+    contracts: {},
   },
   // Polygon Mumbai Testnet
   '80001': {
@@ -81,6 +99,7 @@ export const NETWORKS: Record<string, NetworkConfig> = {
       symbol: 'MATIC',
       decimals: 18,
     },
+    contracts: {},
   },
 };
 

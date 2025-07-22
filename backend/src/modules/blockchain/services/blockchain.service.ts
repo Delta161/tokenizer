@@ -20,6 +20,7 @@ import {
   formatAmount,
   parseAmount
 } from '../utils/blockchain.utils.js';
+import { NETWORKS } from '../config/blockchain.config.js';
 
 dotenv.config();
 
@@ -298,6 +299,56 @@ export class BlockchainService {
    */
   async getBlockNumber(): Promise<number> {
     return await this.provider.getBlockNumber();
+  }
+
+  /**
+   * Gets the contract address for a specific contract name from network configuration
+   * @param contractName The name of the contract (e.g., 'PropertyToken')
+   * @param chainId The chain ID (optional, uses config chainId if not provided)
+   * @returns The contract address
+   */
+  getContractAddress(contractName: string, chainId?: number): string {
+    const targetChainId = chainId || this.config.chainId;
+    
+    if (!targetChainId) {
+      throw new Error('Chain ID not specified in config or parameter');
+    }
+    
+    const network = NETWORKS[targetChainId.toString()];
+    if (!network) {
+      throw new Error(`Network configuration not found for chain ID: ${targetChainId}`);
+    }
+    
+    const contractAddress = network.contracts?.[contractName];
+    if (!contractAddress) {
+      throw new Error(`Contract '${contractName}' not found in network configuration for chain ID: ${targetChainId}`);
+    }
+    
+    if (contractAddress === '0x0000000000000000000000000000000000000000') {
+      throw new Error(`Contract '${contractName}' not deployed on chain ID: ${targetChainId}`);
+    }
+    
+    return contractAddress;
+  }
+
+  /**
+   * Gets all available contracts for the current network
+   * @param chainId The chain ID (optional, uses config chainId if not provided)
+   * @returns Record of contract names to addresses
+   */
+  getAvailableContracts(chainId?: number): Record<string, string> {
+    const targetChainId = chainId || this.config.chainId;
+    
+    if (!targetChainId) {
+      throw new Error('Chain ID not specified in config or parameter');
+    }
+    
+    const network = NETWORKS[targetChainId.toString()];
+    if (!network) {
+      throw new Error(`Network configuration not found for chain ID: ${targetChainId}`);
+    }
+    
+    return network.contracts || {};
   }
 }
 

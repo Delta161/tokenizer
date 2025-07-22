@@ -43,8 +43,20 @@ For the backend the following packages are used:
 
 ### 1. Architecture & Structure
 * **Modular Layout**:
-  • Every feature in `backend/modules/<module>/`
+  • Every feature in `backend/src/modules/<module>/`
   • Flat files: `<module>.<layer>.ts` plus `index.ts`
+  • Every module consist aout of the following folders: 
+    - **controllers**: validation → service calls → HTTP response
+    - **services**: business logic + Prisma queries
+    - **validators**: Zod schemas for body/params/query
+    - **types**: DTOs and shared interfaces
+    - **utils**: mappers, helpers, adapters
+    - **constants**: hardcoded values, environment variables should always in the .env file
+    - **env**: environment variables should always in the .env file
+    - **test**: test files for the module
+    - **test-utils**: test utils for the module
+    
+
 * **Layer Separation**:
   • **Routes**: only paths + middleware
   • **Controllers**: validation → service calls → HTTP response

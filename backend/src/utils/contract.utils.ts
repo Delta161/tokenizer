@@ -68,7 +68,15 @@ export function loadContractABI(filePath: string): any[] {
  * @returns The resolved path
  */
 export function resolveArtifactPath(fileName: string): string {
-  // Try to find the artifact in the contracts directory
+  // Try to find the artifact in the new blockchain module artifacts directory
+  const moduleArtifactsDir = path.resolve(process.cwd(), 'src/modules/blockchain/artifacts');
+  const moduleFilePath = path.join(moduleArtifactsDir, fileName);
+  
+  if (fs.existsSync(moduleFilePath)) {
+    return moduleFilePath;
+  }
+  
+  // Fallback to legacy contracts directory for backward compatibility
   const contractsDir = path.resolve(process.cwd(), 'contracts');
   const filePath = path.join(contractsDir, fileName);
   

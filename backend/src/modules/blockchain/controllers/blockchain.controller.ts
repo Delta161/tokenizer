@@ -4,7 +4,7 @@ import { BlockchainService } from '../services/blockchain.service.js';
 import { validateAddress, validateTxHash } from '../utils/blockchain.utils.js';
 import { z } from 'zod';
 import { Decimal } from '@prisma/client/runtime/library';
-import { DEFAULT_CHAIN_ID, getNetworkConfig } from '../config/blockchain.config.js';
+import { DEFAULT_CHAIN_ID, getNetworkConfig, NETWORKS } from '../config/blockchain.config.js';
 
 const TokenMetadataSchema = z.object({
   contractAddress: z.string().refine(validateAddress, {
@@ -140,6 +140,32 @@ export class BlockchainController {
       const { txHash } = TransactionHashSchema.parse(req.body);
       const receipt = await this.blockchainService.getTransactionReceipt(txHash);
       return res.json({ success: true, data: receipt });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getAvailableContracts(req: Request, res: Response, next: NextFunction) {
+    try {
+      const chainId = req.query.chainId ? parseInt(req.query.chainId as string) : DEFAULT_CHAIN_ID;
+      const contracts = this.blockchainService.getAvailableContracts(chainId);
+      return res.json({ success: true, data: contracts });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getContractAddress(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { contractName } = req.params;
+      const chainId = req.query.chainId ? parseInt(req.query.chainId as string) : DEFAULT_CHAIN_ID;
+      
+      if (!contractName) {
+        return res.status(400).json({ success: false, error: 'Contract name is required' });
+      }
+      
+      const address = this.blockchainService.getContractAddress(contractName, chainId);
+      return res.json({ success: true, data: { contractName, address, chainId } });
     } catch (error) {
       next(error);
     }

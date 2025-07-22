@@ -25,6 +25,7 @@ interface EnvironmentVariables {
   ETH_GAS_PRICE: string;
   CONTRACT_SIGNER_PRIVATE_KEY: string;
   CONTRACT_ARTIFACT_FILE: string;
+  CONTRACT_ARTIFACTS_PATH: string;
   INFURA_API_KEY: string;
 }
 
@@ -44,6 +45,7 @@ export const env: EnvironmentVariables = {
   ETH_GAS_PRICE: process.env.ETH_GAS_PRICE || '5000000000', // 5 gwei
   CONTRACT_SIGNER_PRIVATE_KEY: process.env.CONTRACT_SIGNER_PRIVATE_KEY || '',
   CONTRACT_ARTIFACT_FILE: process.env.CONTRACT_ARTIFACT_FILE || 'Token.json',
+  CONTRACT_ARTIFACTS_PATH: process.env.CONTRACT_ARTIFACTS_PATH || 'src/modules/blockchain/artifacts',
   INFURA_API_KEY: process.env.INFURA_API_KEY || '',
 };
 

@@ -1,6 +1,7 @@
 import { ethers, isAddress } from 'ethers';
 import path from 'path';
 import fs from 'fs';
+import { DeploymentConfig } from '../types/blockchain.types.js';
 
 /**
  * Validates an Ethereum address
@@ -34,7 +35,15 @@ export function loadContractABI(artifactPath: string): any {
  * @returns The full path to the artifact file
  */
 export function resolveArtifactPath(artifactFileName: string): string {
-  // First try to find in contracts directory
+  // First try to find in blockchain module artifacts directory
+  const moduleArtifactsPath = path.resolve(process.cwd(), 'src/modules/blockchain/artifacts');
+  const moduleArtifactPath = path.resolve(moduleArtifactsPath, artifactFileName);
+  
+  if (fs.existsSync(moduleArtifactPath)) {
+    return moduleArtifactPath;
+  }
+  
+  // For backward compatibility, try to find in contracts directory
   const contractsPath = path.resolve(process.cwd(), 'contracts');
   const artifactPath = path.resolve(contractsPath, artifactFileName);
   
@@ -104,4 +113,38 @@ export function getShortAddress(address: string): string {
     throw new Error('Invalid Ethereum address');
   }
   return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+}
+
+/**
+ * Load deployment configuration from deployments.json
+ * @returns Deployment configuration object
+ */
+export function loadDeploymentConfig(): DeploymentConfig {
+  try {
+    // First try to find in blockchain module artifacts directory
+    const moduleDeploymentsPath = path.resolve(process.cwd(), 'src/modules/blockchain/artifacts', 'deployments.json');
+    
+    // For backward compatibility, check the old location if not found in the module
+    const legacyDeploymentsPath = path.resolve(process.cwd(), 'contracts', 'deployments.json');
+    
+    // Determine which path to use
+    const deploymentsPath = fs.existsSync(moduleDeploymentsPath) 
+      ? moduleDeploymentsPath 
+      : fs.existsSync(legacyDeploymentsPath) 
+        ? legacyDeploymentsPath 
+        : null;
+    
+    if (!deploymentsPath) {
+      console.warn('deployments.json not found, using empty configuration');
+      return { networks: {} };
+    }
+    
+    const deploymentsContent = fs.readFileSync(deploymentsPath, 'utf8');
+    const deploymentConfig: DeploymentConfig = JSON.parse(deploymentsContent);
+    
+    return deploymentConfig;
+  } catch (error) {
+    console.error('Error loading deployment configuration:', error);
+    return { networks: {} };
+  }
 }

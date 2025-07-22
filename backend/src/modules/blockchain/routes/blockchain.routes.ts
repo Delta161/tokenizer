@@ -20,6 +20,8 @@ router.get('/metadata/:contractAddress', blockchainController.getTokenMetadata.b
 router.get('/balance', blockchainController.getBalanceOf.bind(blockchainController));
 router.get('/gas-price', blockchainController.getGasPrice.bind(blockchainController));
 router.get('/network-config', blockchainController.getNetworkConfig.bind(blockchainController));
+router.get('/contracts', blockchainController.getAvailableContracts.bind(blockchainController));
+router.get('/contracts/:contractName', blockchainController.getContractAddress.bind(blockchainController));
 
 // Protected routes (require authentication)
 router.post('/transaction-receipt', isAuthenticated, blockchainController.getTransactionReceipt.bind(blockchainController));

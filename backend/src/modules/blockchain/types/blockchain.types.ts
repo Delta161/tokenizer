@@ -86,6 +86,7 @@ export interface NetworkConfig {
   name: string;
   rpcUrl: string;
   blockExplorerUrl: string;
+  contracts?: Record<string, string>;
   nativeCurrency?: {
     name: string;
     symbol: string;
@@ -118,8 +119,20 @@ export interface TransactionReceipt {
 /**
  * Blockchain response
  */
-export interface BlockchainResponse<T> {
+export interface BlockchainResponse<T = any> {
   success: boolean;
   data?: T;
   error?: string;
+  transactionHash?: string;
+}
+
+/**
+ * Deployment configuration structure
+ */
+export interface DeploymentConfig {
+  networks: Record<string, {
+    name: string;
+    rpcUrl: string;
+    contracts: Record<string, string>;
+  }>;
 }
