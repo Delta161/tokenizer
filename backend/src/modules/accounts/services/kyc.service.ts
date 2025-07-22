@@ -6,10 +6,10 @@ import type {
   KycProvider, 
   KycProviderSession, 
   KycRecordWithUser, 
-  KycStatus, 
   KycSubmissionData, 
   KycUpdateData 
 } from '@modules/accounts/types/kyc.types';
+import { KycStatus } from '@modules/accounts/types/kyc.types';
 
 export class KycService {
   constructor(private prisma: PrismaClient) {}

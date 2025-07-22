@@ -94,8 +94,7 @@ export const configureGoogleStrategy = (): void => {
             user = await prisma.user.create({
               data: {
                 email: normalizedProfile.email,
-                firstName: normalizedProfile.firstName,
-                lastName: normalizedProfile.lastName,
+                fullName: normalizedProfile.fullName,
                 authProvider: 'GOOGLE',
                 providerId: normalizedProfile.providerId,
                 avatarUrl: normalizedProfile.avatarUrl,

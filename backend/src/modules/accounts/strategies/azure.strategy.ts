@@ -46,10 +46,38 @@ export const configureAzureStrategy = (): void => {
         // Map Azure profile to normalized format
         const normalizedProfile = mapAzureProfile(profile);
         
-        // Validate profile
-        if (!validateNormalizedProfile(normalizedProfile)) {
-          logger.error('Invalid Azure profile', { profile });
-          return done(new Error('Invalid profile data'));
+        // Log the raw and mapped profiles for debugging
+        logger.debug('Raw Azure profile', { profile });
+        logger.debug('Mapped profile', { normalizedProfile });
+        
+        // Try strict validation first (requires provider ID, provider, email, and at least one name field)
+        const isStrictlyValid = validateNormalizedProfile(normalizedProfile, true);
+        
+        // If strict validation fails, try with relaxed validation (only requires provider ID and provider)
+        // This allows authentication to proceed even with incomplete profile data
+        if (!isStrictlyValid) {
+          logger.warn('Azure profile failed strict validation, trying relaxed validation', { 
+            normalizedProfile,
+            missingFields: {
+              providerId: !normalizedProfile.providerId,
+              provider: !normalizedProfile.provider,
+              email: !normalizedProfile.email,
+              noNameInfo: !normalizedProfile.firstName && !normalizedProfile.lastName && !normalizedProfile.displayName
+            }
+          });
+          
+          // Check if profile passes relaxed validation (only provider ID and provider required)
+          const isRelaxedValid = validateNormalizedProfile(normalizedProfile, false);
+          
+          if (!isRelaxedValid) {
+            logger.error('Azure profile failed relaxed validation, authentication failed', { profile });
+            return done(new Error('Invalid profile data: Missing critical fields (provider ID or provider)'));
+          }
+          
+          // If we get here, the profile passed relaxed validation but failed strict validation
+          // We'll continue but log a warning
+          logger.warn('Proceeding with incomplete Azure profile', { normalizedProfile });
+        }
         }
         
         // Find existing user by provider ID
@@ -60,7 +88,7 @@ export const configureAzureStrategy = (): void => {
           }
         });
         
-        // If user not found by provider ID, try to find by email
+        // If user not found by provider ID and we have an email, try to find by email
         if (!user && normalizedProfile.email) {
           user = await prisma.user.findUnique({
             where: { email: normalizedProfile.email }
@@ -85,9 +113,13 @@ export const configureAzureStrategy = (): void => {
         
         // If user still not found, create new user
         if (!user) {
+          // Generate a placeholder email if missing
+          const email = normalizedProfile.email || 
+            `${normalizedProfile.providerId}@placeholder.azure.auth`;
+            
           user = await prisma.user.create({
             data: {
-              email: normalizedProfile.email,
+              email,
               firstName: normalizedProfile.firstName,
               lastName: normalizedProfile.lastName,
               authProvider: 'AZURE',

@@ -70,20 +70,44 @@ export const mapGoogleProfile = (profile: GoogleProfile): NormalizedProfile => {
 };
 
 /**
- * Map Azure AD OAuth profile to normalized profile
+ * Map Azure profile to normalized format
+ * 
+ * This function extracts user information from an Azure AD profile and normalizes it.
+ * It includes fallback mechanisms for missing fields:
+ * - Email: Uses mail or userPrincipalName
+ * - Names: Extracts first/last names from displayName if not provided directly
+ * - Provider ID: Ensures a non-empty value with fallback
  */
 export const mapAzureProfile = (profile: AzureProfile): NormalizedProfile => {
+  // Extract email with fallbacks
   const email = profile.mail || profile.userPrincipalName || '';
+  
+  // Extract name information with fallbacks
   const firstName = profile.givenName || '';
   const lastName = profile.surname || '';
   
+  // If we have a displayName but no first/last name, try to extract them
+  const displayName = profile.displayName || '';
+  let extractedFirstName = firstName;
+  let extractedLastName = lastName;
+  
+  if ((!firstName || !lastName) && displayName && displayName.includes(' ')) {
+    const nameParts = displayName.split(' ');
+    if (!firstName && nameParts.length > 0) {
+      extractedFirstName = nameParts[0];
+    }
+    if (!lastName && nameParts.length > 1) {
+      extractedLastName = nameParts.slice(1).join(' ');
+    }
+  }
+  
   return {
-    providerId: profile.oid,
+    providerId: profile.oid || '',
     provider: 'azure',
     email,
-    firstName,
-    lastName,
-    displayName: profile.displayName,
+    firstName: extractedFirstName,
+    lastName: extractedLastName,
+    displayName,
     role: UserRole.INVESTOR
   };
 };
@@ -104,15 +128,40 @@ export const mapOAuthProfile = (profile: any, provider: string): NormalizedProfi
 
 /**
  * Validate normalized profile
- * Ensures all required fields are present
+ * 
+ * This function validates a normalized profile to ensure it contains required fields.
+ * It supports two validation modes:
+ * 
+ * 1. Strict validation (default): Requires all of the following:
+ *    - providerId: Unique identifier from the OAuth provider
+ *    - provider: The OAuth provider name (e.g., 'azure', 'google')
+ *    - email: User's email address
+ *    - At least one name field (firstName, lastName, or displayName)
+ * 
+ * 2. Relaxed validation: Only requires:
+ *    - providerId: Unique identifier from the OAuth provider
+ *    - provider: The OAuth provider name
+ * 
+ * The relaxed validation allows authentication to proceed even with incomplete
+ * profile data, which can be useful for handling variations in OAuth provider responses.
+ * 
+ * @param profile The normalized profile to validate
+ * @param strictValidation Whether to strictly validate all fields (default: true)
+ * @returns boolean indicating if the profile is valid
  */
-export const validateNormalizedProfile = (profile: NormalizedProfile): boolean => {
-  if (!profile.providerId || !profile.provider || !profile.email) {
+export const validateNormalizedProfile = (profile: NormalizedProfile, strictValidation = true): boolean => {
+  // Check for critical fields - provider ID and provider are always required
+  if (!profile.providerId || !profile.provider) {
     return false;
   }
   
-  // At least one name field should be present
-  if (!profile.firstName && !profile.lastName && !profile.displayName) {
+  // Email validation - required in strict mode
+  if (strictValidation && !profile.email) {
+    return false;
+  }
+  
+  // Name validation - at least one name field should be present in strict mode
+  if (strictValidation && !profile.firstName && !profile.lastName && !profile.displayName) {
     return false;
   }
   

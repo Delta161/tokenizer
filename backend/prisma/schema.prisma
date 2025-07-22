@@ -16,6 +16,7 @@ model User {
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
   deletedAt         DateTime?
+  lastLoginAt       DateTime?
   phone             String?
   preferredLanguage String?
   role              UserRole       @default(INVESTOR)
