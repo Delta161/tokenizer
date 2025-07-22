@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue';
 import { useUserStore } from '../store';
 import type { User, UserUpdate } from '../types';
+import { mapBackendUserToFrontend } from '../utils/userMapper';
 
 /**
  * Composable for user functionality
@@ -71,14 +72,27 @@ export function useUser() {
    * Get user's full name
    */
   const getFullName = (user: User) => {
-    return `${user.firstName} ${user.lastName}`;
+    if (!user.firstName && !user.lastName) return 'User';
+    return [user.firstName, user.lastName].filter(Boolean).join(' ');
   };
   
   /**
    * Get user's initials for avatar
    */
   const getUserInitials = (user: User) => {
-    return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
+    if (!user.firstName && !user.lastName) return 'U';
+    
+    const firstInitial = user.firstName ? user.firstName.charAt(0) : '';
+    const lastInitial = user.lastName ? user.lastName.charAt(0) : '';
+    
+    // If we have both initials, use them
+    if (firstInitial && lastInitial) {
+      return `${firstInitial}${lastInitial}`.toUpperCase();
+    }
+    
+    // If we only have one name, use the first two letters of that name
+    const singleName = user.firstName || user.lastName || '';
+    return singleName.substring(0, 2).toUpperCase() || 'U';
   };
   
   return {

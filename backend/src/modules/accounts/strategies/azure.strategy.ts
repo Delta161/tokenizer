@@ -6,6 +6,7 @@
 import passport from 'passport';
 import { BearerStrategy } from 'passport-azure-ad';
 import { mapAzureProfile, validateNormalizedProfile } from '../utils/oauthProfileMapper';
+import { formatFullName } from '../utils/user.utils';
 import { logger } from '@utils/logger';
 import { prisma } from '../utils/prisma';
 
@@ -46,38 +47,54 @@ export const configureAzureStrategy = (): void => {
         // Map Azure profile to normalized format
         const normalizedProfile = mapAzureProfile(profile);
         
-        // Log the raw and mapped profiles for debugging
+        // Enhanced logging for debugging
         logger.debug('Raw Azure profile', { profile });
         logger.debug('Mapped profile', { normalizedProfile });
         
-        // Try strict validation first (requires provider ID, provider, email, and at least one name field)
-        const isStrictlyValid = validateNormalizedProfile(normalizedProfile, true);
+        // Log specific fields for better troubleshooting
+        logger.debug('Azure profile key fields', {
+          providerId: normalizedProfile.providerId,
+          email: normalizedProfile.email,
+          firstName: normalizedProfile.firstName,
+          lastName: normalizedProfile.lastName,
+          displayName: normalizedProfile.displayName
+        });
         
-        // If strict validation fails, try with relaxed validation (only requires provider ID and provider)
+        // Start with relaxed validation first (only requires provider ID and provider)
         // This allows authentication to proceed even with incomplete profile data
-        if (!isStrictlyValid) {
-          logger.warn('Azure profile failed strict validation, trying relaxed validation', { 
-            normalizedProfile,
+        const isRelaxedValid = validateNormalizedProfile(normalizedProfile, false);
+        
+        if (!isRelaxedValid) {
+          logger.error('Azure profile failed relaxed validation, authentication failed', { 
+            profile,
             missingFields: {
               providerId: !normalizedProfile.providerId,
-              provider: !normalizedProfile.provider,
+              provider: !normalizedProfile.provider
+            }
+          });
+          return done(new Error('Invalid profile data: Missing critical fields (provider ID or provider)'));
+        }
+        
+        // If we get here, the profile passed relaxed validation
+        // Now check if it would pass strict validation (requires email and name fields)
+        const isStrictlyValid = validateNormalizedProfile(normalizedProfile, true);
+        
+        if (!isStrictlyValid) {
+          // Profile passed relaxed but failed strict validation
+          // We'll continue but log detailed warnings about missing fields
+          logger.warn('Proceeding with incomplete Azure profile', { 
+            normalizedProfile,
+            missingFields: {
               email: !normalizedProfile.email,
               noNameInfo: !normalizedProfile.firstName && !normalizedProfile.lastName && !normalizedProfile.displayName
             }
           });
-          
-          // Check if profile passes relaxed validation (only provider ID and provider required)
-          const isRelaxedValid = validateNormalizedProfile(normalizedProfile, false);
-          
-          if (!isRelaxedValid) {
-            logger.error('Azure profile failed relaxed validation, authentication failed', { profile });
-            return done(new Error('Invalid profile data: Missing critical fields (provider ID or provider)'));
-          }
-          
-          // If we get here, the profile passed relaxed validation but failed strict validation
-          // We'll continue but log a warning
-          logger.warn('Proceeding with incomplete Azure profile', { normalizedProfile });
-        }
+        } else {
+          logger.info('Azure profile passed strict validation', { 
+            providerId: normalizedProfile.providerId,
+            hasEmail: !!normalizedProfile.email,
+            hasName: !!(normalizedProfile.firstName || normalizedProfile.lastName || normalizedProfile.displayName)
+          });
         }
         
         // Find existing user by provider ID
@@ -117,19 +134,42 @@ export const configureAzureStrategy = (): void => {
           const email = normalizedProfile.email || 
             `${normalizedProfile.providerId}@placeholder.azure.auth`;
             
-          user = await prisma.user.create({
-            data: {
+          try {
+            // Use formatFullName utility for consistent name formatting
+            const fullName = formatFullName(normalizedProfile.firstName, normalizedProfile.lastName);
+            
+            // Log user creation attempt
+            logger.info('Creating new user from Azure profile', {
               email,
-              firstName: normalizedProfile.firstName,
-              lastName: normalizedProfile.lastName,
-              authProvider: 'AZURE',
               providerId: normalizedProfile.providerId,
-              avatarUrl: normalizedProfile.avatarUrl,
-              role: normalizedProfile.role || 'INVESTOR'
-            }
-          });
+              hasName: !!fullName
+            });
+            
+            // If fullName is empty after formatting, use displayName or a placeholder
+            const finalFullName = fullName || normalizedProfile.displayName || 'Azure User';
+            
+            user = await prisma.user.create({
+              data: {
+                email,
+                fullName: finalFullName,
+                authProvider: 'AZURE',
+                providerId: normalizedProfile.providerId,
+                avatarUrl: normalizedProfile.avatarUrl,
+                role: normalizedProfile.role || 'INVESTOR'
+              }
+            });
+            
+            logger.info('Successfully created new user from Azure profile', { userId: user.id });
+          } catch (createError) {
+            logger.error('Failed to create user from Azure profile', { 
+              error: createError.message,
+              profile: normalizedProfile 
+            });
+            return done(new Error(`Failed to create user: ${createError.message}`));
+          }
           
-          logger.info('Created new user from Azure OAuth', {
+          // Previous log statement removed to avoid duplication
+          logger.debug('User details', {
             userId: user.id,
             email: user.email
           });
@@ -144,8 +184,19 @@ export const configureAzureStrategy = (): void => {
         // Return user
         return done(null, user, { scope: 'all' });
       } catch (error) {
-        logger.error('Azure authentication error', { error });
-        return done(error);
+        // Enhanced error logging with more context
+        logger.error('Azure authentication error', { 
+          errorMessage: error.message,
+          errorStack: error.stack,
+          profileInfo: profile ? {
+            oid: profile.oid,
+            hasEmail: !!profile.mail || !!profile.userPrincipalName,
+            hasName: !!profile.givenName || !!profile.surname || !!profile.displayName
+          } : 'No profile data'
+        });
+        
+        // Return a more user-friendly error message
+        return done(new Error(`Authentication failed: ${error.message}`));
       }
     })
   );

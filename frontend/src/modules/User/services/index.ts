@@ -1,4 +1,5 @@
 import type { User, UserUpdate, UserSearchParams, UserSearchResult } from '../types';
+import { mapBackendUserToFrontend, mapBackendUsersToFrontend, mapFrontendUserToBackend } from '../utils/userMapper';
 
 /**
  * User Service
@@ -30,7 +31,8 @@ export class UserService {
         throw new Error(error.message || 'Failed to fetch current user');
       }
       
-      return await response.json();
+      const backendUser = await response.json();
+      return mapBackendUserToFrontend(backendUser);
     } catch (error: any) {
       throw new Error(error.message || 'Failed to fetch current user');
     }
@@ -56,7 +58,8 @@ export class UserService {
         throw new Error(error.message || `Failed to fetch user with ID ${userId}`);
       }
       
-      return await response.json();
+      const backendUser = await response.json();
+      return mapBackendUserToFrontend(backendUser);
     } catch (error: any) {
       throw new Error(error.message || `Failed to fetch user with ID ${userId}`);
     }
@@ -70,13 +73,25 @@ export class UserService {
    */
   async updateUser(userId: string, userData: UserUpdate): Promise<User> {
     try {
+      // Convert frontend user data to backend format
+      const backendUserData = {
+        ...userData,
+        fullName: userData.firstName && userData.lastName ? 
+          `${userData.firstName} ${userData.lastName}`.trim() : 
+          undefined
+      };
+      
+      // Remove firstName and lastName as they don't exist in the backend model
+      if ('firstName' in backendUserData) delete backendUserData.firstName;
+      if ('lastName' in backendUserData) delete backendUserData.lastName;
+      
       const response = await fetch(`${this.apiUrl}/users/${userId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(backendUserData)
       });
       
       if (!response.ok) {
@@ -84,7 +99,8 @@ export class UserService {
         throw new Error(error.message || 'Failed to update user');
       }
       
-      return await response.json();
+      const updatedBackendUser = await response.json();
+      return mapBackendUserToFrontend(updatedBackendUser);
     } catch (error: any) {
       throw new Error(error.message || 'Failed to update user');
     }
@@ -120,7 +136,13 @@ export class UserService {
         throw new Error(error.message || 'Failed to search users');
       }
       
-      return await response.json();
+      const result = await response.json();
+      
+      // Map the users array to frontend format
+      return {
+        ...result,
+        users: mapBackendUsersToFrontend(result.users)
+      };
     } catch (error: any) {
       throw new Error(error.message || 'Failed to search users');
     }

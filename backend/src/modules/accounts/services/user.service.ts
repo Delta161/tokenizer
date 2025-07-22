@@ -178,8 +178,7 @@ export class UserService {
       select: {
         id: true,
         email: true,
-        firstName: true,
-        lastName: true,
+        fullName: true,
         role: true,
         createdAt: true,
         updatedAt: true

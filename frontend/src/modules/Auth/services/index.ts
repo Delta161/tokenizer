@@ -1,5 +1,6 @@
 // Auth Module Services
 import type { LoginCredentials, RegisterData, AuthResponse, PasswordResetRequest, PasswordResetConfirm } from '../types';
+import { mapBackendUserToFrontend } from '../../User/utils/userMapper';
 
 /**
  * Service for handling authentication-related API calls
@@ -28,7 +29,13 @@ class AuthService {
         throw new Error(error.message || 'Login failed');
       }
       
-      return await response.json();
+      const result = await response.json();
+      
+      // Map the backend user to frontend format
+      return {
+        ...result,
+        user: mapBackendUserToFrontend(result.user)
+      };
     } catch (error: any) {
       console.error('Login error:', error);
       throw error;
@@ -42,13 +49,23 @@ class AuthService {
    */
   async register(data: RegisterData): Promise<AuthResponse> {
     try {
+      // Convert frontend data to backend format
+      const backendData = {
+        ...data,
+        fullName: `${data.firstName} ${data.lastName}`.trim(),
+      };
+      
+      // Remove firstName and lastName as they don't exist in the backend model
+      delete backendData.firstName;
+      delete backendData.lastName;
+      
       const response = await fetch(`${this.apiBaseUrl}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include', // Include cookies for JWT
-        body: JSON.stringify(data),
+        body: JSON.stringify(backendData),
       });
       
       if (!response.ok) {
@@ -56,7 +73,13 @@ class AuthService {
         throw new Error(error.message || 'Registration failed');
       }
       
-      return await response.json();
+      const result = await response.json();
+      
+      // Map the backend user to frontend format
+      return {
+        ...result,
+        user: mapBackendUserToFrontend(result.user)
+      };
     } catch (error: any) {
       console.error('Registration error:', error);
       throw error;
@@ -99,7 +122,13 @@ class AuthService {
         throw new Error(error.message || 'Failed to get current user');
       }
       
-      return await response.json();
+      const result = await response.json();
+      
+      // Map the backend user to frontend format
+      return {
+        ...result,
+        user: mapBackendUserToFrontend(result.user)
+      };
     } catch (error: any) {
       console.error('Get current user error:', error);
       throw error;

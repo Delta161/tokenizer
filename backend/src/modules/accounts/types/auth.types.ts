@@ -10,8 +10,7 @@ export { UserRole };
 export interface UserDTO {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   role: UserRole;
   createdAt: Date;
   updatedAt: Date;

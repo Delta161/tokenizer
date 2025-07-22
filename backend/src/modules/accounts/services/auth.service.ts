@@ -115,22 +115,49 @@ export class AuthService {
       
       // If user still not found, create new user
       if (!user) {
-        user = await this.prisma.user.create({
-          data: {
-            email: normalizedProfile.email,
-            fullName: formatFullName(normalizedProfile.firstName, normalizedProfile.lastName),
-            authProvider: normalizedProfile.provider.toUpperCase() as AuthProvider,
-            providerId: normalizedProfile.providerId,
-            avatarUrl: normalizedProfile.avatarUrl,
-            role: normalizedProfile.role || UserRole.INVESTOR,
-            lastLoginAt: new Date()
-          }
-        });
+        try {
+          // Format the full name, with fallback to displayName if first/last name are missing
+          const fullName = formatFullName(normalizedProfile.firstName, normalizedProfile.lastName) || 
+                          normalizedProfile.displayName || 
+                          'User';
+          
+          // Generate a placeholder email if missing
+          const email = normalizedProfile.email || 
+                       `${normalizedProfile.providerId}@placeholder.auth`;
+          
+          user = await this.prisma.user.create({
+            data: {
+              email,
+              fullName,
+              authProvider: normalizedProfile.provider.toUpperCase() as AuthProvider,
+              providerId: normalizedProfile.providerId,
+              avatarUrl: normalizedProfile.avatarUrl,
+              role: normalizedProfile.role || UserRole.INVESTOR,
+              lastLoginAt: new Date()
+            }
+          });
+          
+          this.logger.info('Successfully created new user from OAuth profile', { 
+            userId: user.id,
+            provider: normalizedProfile.provider
+          });
+        } catch (error) {
+          this.logger.error('Failed to create user from OAuth profile', { 
+            error: error.message,
+            profile: normalizedProfile 
+          });
+          throw new Error(`Failed to create user: ${error.message}`);
+        }
       } else {
         // Update last login timestamp
         await this.prisma.user.update({
           where: { id: user.id },
           data: { lastLoginAt: new Date() }
+        });
+        
+        this.logger.debug('User logged in', {
+          userId: user.id,
+          provider: normalizedProfile.provider
         });
       }
       

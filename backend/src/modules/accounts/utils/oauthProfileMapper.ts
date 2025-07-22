@@ -79,6 +79,16 @@ export const mapGoogleProfile = (profile: GoogleProfile): NormalizedProfile => {
  * - Provider ID: Ensures a non-empty value with fallback
  */
 export const mapAzureProfile = (profile: AzureProfile): NormalizedProfile => {
+  if (!profile) {
+    throw new Error('Cannot map null or undefined Azure profile');
+  }
+  
+  // Ensure we have a valid provider ID (oid)
+  const providerId = profile.oid || '';
+  if (!providerId) {
+    throw new Error('Azure profile missing required oid (provider ID)');
+  }
+  
   // Extract email with fallbacks
   const email = profile.mail || profile.userPrincipalName || '';
   
@@ -91,18 +101,32 @@ export const mapAzureProfile = (profile: AzureProfile): NormalizedProfile => {
   let extractedFirstName = firstName;
   let extractedLastName = lastName;
   
-  if ((!firstName || !lastName) && displayName && displayName.includes(' ')) {
-    const nameParts = displayName.split(' ');
-    if (!firstName && nameParts.length > 0) {
-      extractedFirstName = nameParts[0];
-    }
-    if (!lastName && nameParts.length > 1) {
-      extractedLastName = nameParts.slice(1).join(' ');
+  // More robust name extraction from displayName
+  if (displayName) {
+    // If we're missing either first or last name, try to extract from displayName
+    if (!extractedFirstName || !extractedLastName) {
+      if (displayName.includes(' ')) {
+        // If display name has spaces, split into parts
+        const nameParts = displayName.split(' ').filter(Boolean); // Remove empty parts
+        
+        if (!extractedFirstName && nameParts.length > 0) {
+          extractedFirstName = nameParts[0];
+        }
+        
+        if (!extractedLastName && nameParts.length > 1) {
+          extractedLastName = nameParts.slice(1).join(' ');
+        }
+      } else {
+        // If no spaces in displayName, use it as firstName if firstName is empty
+        if (!extractedFirstName) {
+          extractedFirstName = displayName;
+        }
+      }
     }
   }
   
   return {
-    providerId: profile.oid || '',
+    providerId,
     provider: 'azure',
     email,
     firstName: extractedFirstName,
@@ -149,19 +173,34 @@ export const mapOAuthProfile = (profile: any, provider: string): NormalizedProfi
  * @param strictValidation Whether to strictly validate all fields (default: true)
  * @returns boolean indicating if the profile is valid
  */
+/**
+ * Validates a normalized profile and returns validation result with details
+ * @param profile The normalized profile to validate
+ * @param strictValidation Whether to strictly validate all fields (default: true)
+ * @returns Object with validation result and details about missing fields
+ */
 export const validateNormalizedProfile = (profile: NormalizedProfile, strictValidation = true): boolean => {
+  if (!profile) {
+    return false;
+  }
+  
   // Check for critical fields - provider ID and provider are always required
   if (!profile.providerId || !profile.provider) {
     return false;
   }
   
+  // For relaxed validation, we only need provider ID and provider
+  if (!strictValidation) {
+    return true;
+  }
+  
   // Email validation - required in strict mode
-  if (strictValidation && !profile.email) {
+  if (!profile.email) {
     return false;
   }
   
   // Name validation - at least one name field should be present in strict mode
-  if (strictValidation && !profile.firstName && !profile.lastName && !profile.displayName) {
+  if (!profile.firstName && !profile.lastName && !profile.displayName) {
     return false;
   }
   
