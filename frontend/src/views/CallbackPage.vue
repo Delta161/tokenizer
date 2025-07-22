@@ -48,7 +48,7 @@ onMounted(async () => {
     if (success === 'true') {
       // The backend should have set cookies with the JWT tokens
       // We can verify by calling the profile endpoint
-      const response = await api.get('/accounts/auth/profile');
+      const response = await api.get('/api/accounts/auth/profile');
       
       // Store user data if needed
       if (response.data && response.data.user) {

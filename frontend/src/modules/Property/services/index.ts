@@ -15,7 +15,7 @@ export class PropertyService {
   private apiBaseUrl: string;
   
   constructor() {
-    this.apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+    this.apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
   }
   
   /**

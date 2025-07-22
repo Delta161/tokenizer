@@ -6,7 +6,7 @@ import { mapBackendUserToFrontend } from '../../User/utils/userMapper';
  * Service for handling authentication-related API calls
  */
 class AuthService {
-  private apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  private apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
   
   /**
    * Login with email and password

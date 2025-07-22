@@ -38,7 +38,7 @@ async function handleRegister(data: RegisterData) {
 // Handle OAuth registration
 async function handleOAuthLogin(provider: string) {
   // Redirect to OAuth provider
-  window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/auth/${provider}`;
+  window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/accounts/auth/${provider}`;
 }
 </script>
 
