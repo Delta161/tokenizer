@@ -1,19 +1,19 @@
-import { Logger } from '../../utils/logger.js';
+import { logger } from '@utils/logger';
 import { UserRole, PropertyStatus, KycStatus } from '@prisma/client';
 
 /**
  * Logger for admin module actions
  */
-export class AdminLogger extends Logger {
-  constructor() {
-    super('AdminModule');
-  }
+export class AdminLogger {
+  private readonly module = 'AdminModule';
+
+  constructor() {}
 
   /**
    * Log user role update
    */
   logUserRoleUpdate(userId: string, adminId: string, oldRole: UserRole, newRole: UserRole): void {
-    this.info(
+    logger.info(
       `Admin ${adminId} updated user ${userId} role from ${oldRole} to ${newRole}`,
       {
         action: 'USER_ROLE_UPDATE',
@@ -21,6 +21,7 @@ export class AdminLogger extends Logger {
         userId,
         oldRole,
         newRole,
+        module: this.module,
       }
     );
   }
@@ -29,7 +30,7 @@ export class AdminLogger extends Logger {
    * Log user status update
    */
   logUserStatusUpdate(userId: string, adminId: string, oldStatus: boolean, newStatus: boolean): void {
-    this.info(
+    logger.info(
       `Admin ${adminId} updated user ${userId} status from ${oldStatus ? 'active' : 'inactive'} to ${newStatus ? 'active' : 'inactive'}`,
       {
         action: 'USER_STATUS_UPDATE',
@@ -37,6 +38,7 @@ export class AdminLogger extends Logger {
         userId,
         oldStatus,
         newStatus,
+        module: this.module,
       }
     );
   }
@@ -45,7 +47,7 @@ export class AdminLogger extends Logger {
    * Log property moderation
    */
   logPropertyModeration(propertyId: string, adminId: string, status: PropertyStatus, comment: string): void {
-    this.info(
+    logger.info(
       `Admin ${adminId} moderated property ${propertyId} with status ${status}`,
       {
         action: 'PROPERTY_MODERATION',
@@ -53,6 +55,7 @@ export class AdminLogger extends Logger {
         propertyId,
         status,
         comment,
+        module: this.module,
       }
     );
   }
@@ -61,7 +64,7 @@ export class AdminLogger extends Logger {
    * Log broadcast notification
    */
   logBroadcastNotification(adminId: string, title: string, targetRoles: UserRole[], recipientCount: number): void {
-    this.info(
+    logger.info(
       `Admin ${adminId} sent broadcast notification "${title}" to ${recipientCount} users with roles ${targetRoles.join(', ')}`,
       {
         action: 'BROADCAST_NOTIFICATION',
@@ -69,6 +72,7 @@ export class AdminLogger extends Logger {
         title,
         targetRoles,
         recipientCount,
+        module: this.module,
       }
     );
   }
@@ -77,12 +81,13 @@ export class AdminLogger extends Logger {
    * Log KYC record view
    */
   logKycRecordView(kycId: string, adminId: string): void {
-    this.info(
+    logger.info(
       `Admin ${adminId} viewed KYC record ${kycId}`,
       {
         action: 'KYC_RECORD_VIEW',
         adminId,
         kycId,
+        module: this.module,
       }
     );
   }
@@ -91,12 +96,13 @@ export class AdminLogger extends Logger {
    * Log token inspection
    */
   logTokenInspection(tokenId: string, adminId: string): void {
-    this.info(
+    logger.info(
       `Admin ${adminId} inspected token ${tokenId}`,
       {
         action: 'TOKEN_INSPECTION',
         adminId,
         tokenId,
+        module: this.module,
       }
     );
   }

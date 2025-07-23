@@ -1,6 +1,6 @@
 import { NotificationDto, NotificationChannel, NotificationConfig } from '../notifications.types';
 import { UserPublicDTO } from '../../accounts/types/user.types';
-import { Logger } from '../../../utils/logger';
+import { logger } from '@utils/logger';
 
 /**
  * Type for channel-specific dispatch results
@@ -25,7 +25,7 @@ interface MultiChannelDispatchResult {
 export class NotificationDispatcherService {
   private channels: Map<string, NotificationChannel> = new Map();
   private config: NotificationConfig;
-  private logger: Logger;
+  private readonly module = 'NotificationDispatcher';
 
   /**
    * Create a new notification dispatcher
@@ -37,7 +37,6 @@ export class NotificationDispatcherService {
     config: NotificationConfig
   ) {
     this.config = config;
-    this.logger = new Logger('NotificationDispatcher');
 
     // Register all available channels
     availableChannels.forEach(channel => {
@@ -46,7 +45,10 @@ export class NotificationDispatcherService {
 
     // Log registered channels
     const channelIds = Array.from(this.channels.keys());
-    this.logger.info(`Notification channels registered: ${channelIds.join(', ')}`);
+    logger.info(`Notification channels registered: ${channelIds.join(', ')}`, {
+      module: this.module,
+      eventType: 'notification_event'
+    });
   }
 
   /**
@@ -64,8 +66,12 @@ export class NotificationDispatcherService {
     const dispatchTimestamp = new Date();
 
     // Log dispatch attempt
-    this.logger.info(
-      `Dispatching notification ${notification.id} to user ${user.id} via ${this.channels.size} channels`
+    logger.info(
+      `Dispatching notification ${notification.id} to user ${user.id} via ${this.channels.size} channels`,
+      {
+        module: this.module,
+        eventType: 'notification_event'
+      }
     );
 
     // Create promises for all channel dispatches
@@ -73,8 +79,12 @@ export class NotificationDispatcherService {
       try {
         // Check if channel is available for this user
         if (!channel.isAvailableFor(user, notification)) {
-          this.logger.info(
-            `Channel ${channel.channelId} not available for user ${user.id} for notification ${notification.id}`
+          logger.info(
+            `Channel ${channel.channelId} not available for user ${user.id} for notification ${notification.id}`,
+            {
+              module: this.module,
+              eventType: 'notification_event'
+            }
           );
           return;
         }
@@ -88,8 +98,12 @@ export class NotificationDispatcherService {
         }
       } catch (error) {
         // This should not happen as dispatchToChannel handles errors internally
-        this.logger.error(
-          `Unexpected error in channel dispatch for ${channel.channelId}: ${error instanceof Error ? error.message : String(error)}`
+        logger.error(
+          `Unexpected error in channel dispatch for ${channel.channelId}: ${error instanceof Error ? error.message : String(error)}`,
+          {
+            module: this.module,
+            eventType: 'notification_event'
+          }
         );
 
         channelResults.push({
@@ -104,12 +118,12 @@ export class NotificationDispatcherService {
     await Promise.all(dispatchPromises);
 
     // Log dispatch result
-    this.logger.info(`Notification dispatch complete for ${notification.id}`, {
+    logger.info(`Notification dispatch complete for ${notification.id}`, {
       notificationId: notification.id,
       userId: user.id,
       success: anySuccess,
       channelResults,
-      module: 'notifications',
+      module: this.module,
       eventType: 'notification_event'
     });
 
@@ -151,12 +165,12 @@ export class NotificationDispatcherService {
       };
     } catch (error) {
       // Log the error
-      this.logger.error(`Channel dispatch failed: ${error instanceof Error ? error.message : String(error)}`, {
+      logger.error(`Channel dispatch failed: ${error instanceof Error ? error.message : String(error)}`, {
         error: error instanceof Error ? error.message : String(error),
         notificationId: notification.id,
         userId: user.id,
         channel: channel.channelId,
-        module: 'notifications',
+        module: this.module,
         eventType: 'notification_delivery_failure'
       });
 
@@ -178,9 +192,9 @@ export class NotificationDispatcherService {
 
     // Check if channel is enabled in config
     if (channelConfig?.enabled === false) {
-      this.logger.info(`Channel disabled by configuration: ${channelId}`, {
+      logger.info(`Channel disabled by configuration: ${channelId}`, {
         channel: channelId,
-        module: 'notifications',
+        module: this.module,
         eventType: 'notification_event'
       });
       return;
@@ -188,9 +202,9 @@ export class NotificationDispatcherService {
 
     // Register or update the channel
     this.channels.set(channelId, channel);
-    this.logger.info(`Channel registered: ${channelId}`, {
+    logger.info(`Channel registered: ${channelId}`, {
       channel: channelId,
-      module: 'notifications',
+      module: this.module,
       eventType: 'notification_event'
     });
   }

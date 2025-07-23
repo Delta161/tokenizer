@@ -1,8 +1,7 @@
 import { PrismaClient, UserRole, PropertyStatus, KycStatus } from '@prisma/client';
-import { Logger } from '../../utils/logger.js';
+import { logger } from '@utils/logger';
 
 const prisma = new PrismaClient();
-const logger = new Logger('AdminAnalyticsService');
 
 export class AdminAnalyticsService {
   /**

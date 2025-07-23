@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
 import { NotificationService } from './notifications.service';
 import { validateNotificationBroadcast } from './notifications.validators';
-import { Logger } from '../../utils/logger';
+import { logger } from '@utils/logger';
 
 /**
  * Controller for notification-related API endpoints
  */
 export class NotificationController {
   private notificationService: NotificationService;
-  private logger: Logger;
+  private readonly module = 'NotificationController';
 
   /**
    * Create a new notification controller
@@ -16,7 +16,6 @@ export class NotificationController {
    */
   constructor(notificationService: NotificationService) {
     this.notificationService = notificationService;
-    this.logger = new Logger('NotificationController');
   }
 
   /**
@@ -63,10 +62,10 @@ export class NotificationController {
         data: notifications,
       });
     } catch (error) {
-      this.logger.error('Error getting notifications', {
+      logger.error('Error getting notifications', {
         userId: req.user?.id,
         error: error instanceof Error ? error.message : String(error),
-        module: 'notifications',
+        module: this.module,
         eventType: 'get_notifications_error'
       });
 
@@ -103,10 +102,10 @@ export class NotificationController {
         data: { count },
       });
     } catch (error) {
-      this.logger.error('Error getting unread count', {
+      logger.error('Error getting unread count', {
         userId: req.user?.id,
         error: error instanceof Error ? error.message : String(error),
-        module: 'notifications',
+        module: this.module,
         eventType: 'get_unread_count_error'
       });
 
@@ -155,11 +154,11 @@ export class NotificationController {
         data: notification,
       });
     } catch (error) {
-      this.logger.error('Error marking notification as read', {
+      logger.error('Error marking notification as read', {
         userId: req.user?.id,
         notificationId: req.params.id,
         error: error instanceof Error ? error.message : String(error),
-        module: 'notifications',
+        module: this.module,
         eventType: 'mark_notification_read_error'
       });
 
@@ -205,10 +204,10 @@ export class NotificationController {
         data: { count },
       });
     } catch (error) {
-      this.logger.error('Error marking all notifications as read', {
+      logger.error('Error marking all notifications as read', {
         userId: req.user?.id,
         error: error instanceof Error ? error.message : String(error),
-        module: 'notifications',
+        module: this.module,
         eventType: 'mark_all_read_error'
       });
 
@@ -263,10 +262,10 @@ export class NotificationController {
         message: `Sent ${notifications.length} notifications`,
       });
     } catch (error) {
-      this.logger.error('Error sending broadcast notification', {
+      logger.error('Error sending broadcast notification', {
         userId: req.user?.id,
         error: error instanceof Error ? error.message : String(error),
-        module: 'notifications',
+        module: this.module,
         eventType: 'broadcast_notification_error'
       });
 

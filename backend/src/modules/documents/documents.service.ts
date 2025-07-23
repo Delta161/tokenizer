@@ -5,7 +5,7 @@ import { Readable } from 'stream';
 import { getFilePath, sanitizeFilename } from './upload.middleware.js';
 import { DocumentStatsDto } from './documents.types.js';
 import { LocalStorageAdapter, StorageAdapter } from './storage.adapter.js';
-import logger from '../../utils/logger.js';
+import { logger } from '@utils/logger';
 
 export class DocumentService {
   private prisma: PrismaClient;

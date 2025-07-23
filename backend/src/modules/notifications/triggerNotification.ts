@@ -3,7 +3,7 @@ import { NotificationService } from './notifications.service';
 import { NotificationDispatcherService, createNotificationDispatcher } from './delivery';
 import { NotificationConfig } from './notifications.config';
 import { UserPublicDTO } from '../accounts/types/user.types';
-import { Logger } from '../../utils/logger';
+import { logger } from '@utils/logger';
 import { CreateNotificationDto, NotificationDto } from './notifications.types';
 
 /**
@@ -36,7 +36,7 @@ export interface NotificationTriggerInterface {
 export class NotificationTrigger implements NotificationTriggerInterface {
   private notificationService: NotificationService;
   private dispatcher: NotificationDispatcherService;
-  private logger: Logger;
+  private readonly module = 'NotificationTrigger';
   
   /**
    * Create a new notification trigger
@@ -49,7 +49,6 @@ export class NotificationTrigger implements NotificationTriggerInterface {
   ) {
     this.notificationService = notificationService;
     this.dispatcher = dispatcher;
-    this.logger = new Logger('NotificationTrigger');
   }
   
   /**
@@ -76,10 +75,10 @@ export class NotificationTrigger implements NotificationTriggerInterface {
       const user = await this.notificationService.getUserForNotification(userId);
       
       if (!user) {
-        this.logger.error(`User not found for notification delivery: ${userId}`, {
+        logger.error(`User not found for notification delivery: ${userId}`, {
           userId,
           notificationId: notification.id,
-          module: 'notifications',
+          module: this.module,
           eventType: 'notification_delivery_failure'
         });
         return notification;
@@ -90,12 +89,12 @@ export class NotificationTrigger implements NotificationTriggerInterface {
       
       return notification;
     } catch (error) {
-      this.logger.error(`Failed to trigger notification: ${error instanceof Error ? error.message : String(error)}`, {
+      logger.error(`Failed to trigger notification: ${error instanceof Error ? error.message : String(error)}`, {
         userId: notificationData.userId,
         type: notificationData.type,
         title: notificationData.title,
         error: error instanceof Error ? error.message : String(error),
-        module: 'notifications',
+        module: this.module,
         eventType: 'notification_delivery_failure'
       });
       return null;
@@ -157,11 +156,11 @@ export class NotificationTrigger implements NotificationTriggerInterface {
           
           return this.dispatcher.dispatchNotification(user, notification)
             .catch(error => {
-              this.logger.error(`Failed to dispatch broadcast notification: ${error instanceof Error ? error.message : String(error)}`, {
+              logger.error(`Failed to dispatch broadcast notification: ${error instanceof Error ? error.message : String(error)}`, {
                 userId: user.id,
                 notificationId: notification.id,
                 error: error instanceof Error ? error.message : String(error),
-                module: 'notifications',
+                module: this.module,
                 eventType: 'notification_delivery_failure'
               });
               return null;
@@ -173,12 +172,12 @@ export class NotificationTrigger implements NotificationTriggerInterface {
       
       return notifications;
     } catch (error) {
-      this.logger.error(`Failed to trigger broadcast notification: ${error instanceof Error ? error.message : String(error)}`, {
+      logger.error(`Failed to trigger broadcast notification: ${error instanceof Error ? error.message : String(error)}`, {
         userCount: userIds.length,
         type: notificationData.type,
         title: notificationData.title,
         error: error instanceof Error ? error.message : String(error),
-        module: 'notifications',
+        module: this.module,
         eventType: 'notification_delivery_failure'
       });
       return [];

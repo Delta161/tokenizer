@@ -1,13 +1,13 @@
 import { NotificationChannel, NotificationDto } from '../../notifications.types';
 import { UserPublicDTO } from '../../../accounts/types/user.types';
-import { Logger } from '../../../../utils/logger';
+import { logger } from '@utils/logger';
 
 /**
  * Abstract base class for notification channels
  * Provides common functionality for all channel implementations
  */
 export abstract class BaseNotificationChannel implements NotificationChannel {
-  protected logger: Logger;
+  protected readonly module: string;
 
   /**
    * Channel identifier
@@ -15,7 +15,7 @@ export abstract class BaseNotificationChannel implements NotificationChannel {
   abstract readonly channelId: string;
   
   constructor() {
-    this.logger = new Logger(`NotificationChannel:${this.constructor.name}`);
+    this.module = `NotificationChannel:${this.constructor.name}`;
   }
 
   /**
@@ -69,12 +69,27 @@ export abstract class BaseNotificationChannel implements NotificationChannel {
     error?: string
   ): void {
     if (success) {
-      this.logger.info(
-        `Successfully delivered notification ${notification.id} to user ${user.id} via ${this.channelId}`
+      logger.info(
+        `Successfully delivered notification ${notification.id} to user ${user.id} via ${this.channelId}`,
+        {
+          module: this.module,
+          notificationId: notification.id,
+          userId: user.id,
+          channel: this.channelId,
+          eventType: 'notification_delivery_success'
+        }
       );
     } else {
-      this.logger.error(
-        `Failed to deliver notification ${notification.id} to user ${user.id} via ${this.channelId}: ${error}`
+      logger.error(
+        `Failed to deliver notification ${notification.id} to user ${user.id} via ${this.channelId}: ${error}`,
+        {
+          module: this.module,
+          notificationId: notification.id,
+          userId: user.id,
+          channel: this.channelId,
+          error,
+          eventType: 'notification_delivery_failure'
+        }
       );
     }
   }

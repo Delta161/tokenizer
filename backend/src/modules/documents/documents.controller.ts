@@ -5,7 +5,7 @@ import { UploadDocumentSchema, GetDocumentSchema, DeleteDocumentSchema, ListDocu
 import { mapDocumentToDto, mapToPaginatedDocumentsDto } from './documents.mapper.js';
 import { LocalStorageAdapter } from './storage.adapter.js';
 import { getFilePath } from './upload.middleware.js';
-import logger from '../../utils/logger.js';
+import { logger } from '@utils/logger';
 
 export class DocumentController {
   private documentService: DocumentService;

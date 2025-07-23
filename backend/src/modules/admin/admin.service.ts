@@ -1,10 +1,9 @@
 import { PrismaClient, UserRole, PropertyStatus } from '@prisma/client';
 import { UpdateUserRoleDto, UpdateUserStatusDto, ModeratePropertyDto, AdminNotificationDto } from './admin.types.js';
-import { Logger } from '../../utils/logger.js';
+import { logger } from '@utils/logger';
 import { NotificationTrigger } from '../notifications/services/notification.trigger.js';
 
 const prisma = new PrismaClient();
-const logger = new Logger('AdminService');
 
 export class AdminService {
   private notificationTrigger: NotificationTrigger;

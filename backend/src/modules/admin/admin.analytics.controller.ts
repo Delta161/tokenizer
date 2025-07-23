@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { AdminAnalyticsService } from './admin.analytics.service.js';
-import { adminLogger } from './admin.logger.js';
+import { adminLogger } from './admin.logger';
 import { dateRangeQuerySchema, propertySubmissionQuerySchema } from './admin.validators.js';
 
 export class AdminAnalyticsController {

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AdminService } from './admin.service.js';
-import { adminLogger } from './admin.logger.js';
+import { adminLogger } from './admin.logger';
 import {
   updateUserRoleSchema,
   updateUserStatusSchema,
