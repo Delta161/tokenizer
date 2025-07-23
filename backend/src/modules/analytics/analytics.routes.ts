@@ -4,7 +4,7 @@ import { AnalyticsFlagsController } from './analytics.flags.controller.js';
 import { AnalyticsVisitController } from './analytics.visit.controller.js';
 import { AnalyticsVisitAnalyticsController } from './analytics.visit.analytics.controller.js';
 import { requireAuth, optionalAuth, requireRole } from '../accounts/middleware/auth.middleware.js';
-import { validateBody, validateParams } from '../utils/validation.middleware.js';
+import { validateBody, validateParams } from '../../middleware/validation.middleware.js';
 import { UpdateFlagSchema, FlagKeyParamSchema } from './analytics.flags.validators.js';
 
 /**

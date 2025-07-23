@@ -24,7 +24,7 @@ export class AppError extends Error {
 /**
  * Error handler middleware
  */
-export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
+export const errorHandler = (err: Error, req: Request, res: Response): void => {
   // Default error status and message
   let statusCode = 500;
   let message = 'Internal Server Error';

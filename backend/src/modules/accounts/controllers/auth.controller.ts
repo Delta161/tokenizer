@@ -27,7 +27,7 @@ export class AuthController {
 
       if (!user) {
         const error = new Error('Not authenticated');
-        (error as any).statusCode = 401;
+        (error as unknown as { statusCode: number }).statusCode = 401;
         return next(error);
       }
 
@@ -48,7 +48,7 @@ export class AuthController {
 
       if (!token) {
         const error = new Error('No token provided');
-        (error as any).statusCode = 401;
+        (error as unknown as { statusCode: number }).statusCode = 401;
         return next(error);
       }
 
@@ -130,7 +130,7 @@ export class AuthController {
       
       if (!refreshToken) {
         const error = new Error('No refresh token provided');
-        (error as any).statusCode = 401;
+        (error as unknown as { statusCode: number }).statusCode = 401;
         return next(error);
       }
       

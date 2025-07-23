@@ -4,16 +4,15 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import { PrismaClient } from '@prisma/client';
 import { initializeAuth, authRouter as authRoutes } from './src/modules/accounts/index.js';
-import { createPropertyRoutes } from './src/modules/property/index.js';
 import { createInvestorRoutes } from './src/modules/investor/index.js';
 import { initBlockchainModule } from './src/modules/blockchain/index.js';
 // Token and KYC modules have been migrated to the new structure
+import { createTokenRoutes } from './src/modules/token/index.js';
 import { initKycModule } from './src/modules/accounts/index.js';
 import { initNotificationModule, mountNotificationRoutes } from './src/modules/notifications/index.js';
 import { initAdminModule } from './src/modules/admin/index.js';
 import { initDocumentModule, mountDocumentRoutes } from './src/modules/documents/index.js';
-import { auditRouter } from './src/modules/audit/index.js';
-import { flagsRoutes } from './src/modules/flags/index.js';
+import { initAnalyticsModule } from './src/modules/analytics/index.js';
 
 const app = express();
 
@@ -49,13 +48,13 @@ const blockchainModule = initBlockchainModule();
 const kycModule = initKycModule(prisma);
 const notificationModule = initNotificationModule(prisma);
 const documentModule = initDocumentModule(prisma);
+const analyticsModule = initAnalyticsModule(prisma);
 
 // Initialize admin module with Prisma client and notification trigger
 const adminModule = initAdminModule(prisma, notificationModule.trigger);
 
 // Routes
 app.use('/auth', authRoutes);
-app.use('/api/properties', createPropertyRoutes());
 app.use('/api/investors', createInvestorRoutes());
 app.use('/api/blockchain', blockchainModule);
 // Token and KYC routes have been migrated to the new structure
@@ -76,11 +75,9 @@ mountDocumentRoutes(app, documentModule.routes, '/api/documents');
 // Admin routes
 app.use('/api/admin', adminModule);
 
-// Audit routes
-app.use('/api', auditRouter);
-
-// Feature Flags routes
-app.use('/api', flagsRoutes);
+// Analytics routes (includes audit and flags)
+app.use('/api/analytics/audit', analyticsModule.auditRouter);
+app.use('/api/analytics/flags', analyticsModule.flagsRouter);
 
 export default app;
 

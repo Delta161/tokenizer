@@ -7,6 +7,17 @@ The database is port 5432.
 Prisma is used for communication with the database
 The backend test server is http://localhost:3000
 The prisma client is located at : backend\node_modules\@prisma\client
+Save all files temporarly created for testing purposes in the backend\src\tmp folder
+Delete all files in the backend\src\tmp folder after each test
+Do not make backups of files before you delete them.
+Validation and Sanitization must be done by Zod 4.0.5
+The backend is using Zod 4.0.5 for validation and sanitization.
+The backend is using Prisma 6.11.1 for database communication.
+All http errors must be handled by http-errors package.
+
+
+
+
 For the backend the following packages are used:
 
 - PostgreSQL
@@ -73,6 +84,18 @@ For the backend the following packages are used:
 * **Authentication**: OAuth 2.0 (Google & Azure) only, JWT in HTTP-only cookies, always apply `requireAuth` on protected routes
 * **Authorization**: `requireRole('<ROLE>')` for role gating; never trust client-supplied IDs
 * **Validation**: Rigorously validate every input with Zod; reject extra fields
+* **Test**:
+  • Write tests for every public method
+  • Use `supertest` for integration tests
+  • Mock dependencies with `sinon`
+  • Test edge cases and error scenarios
+* **Test Utils**:
+  • `test-utils` folder for test utils
+  • `test-utils/setup.ts` for test setup
+  • `test-utils/teardown.ts` for test teardown
+  • `test-utils/factories.ts` for test data factories
+  • `test-utils/mocks.ts` for test mocks
+  • `test-utils/constants.ts` for test constants
 
 ### 3. Data & Schema
 * **Prisma First**:

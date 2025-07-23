@@ -70,7 +70,7 @@ async getUserById(req: Request, res: Response, next: NextFunction): Promise<void
     
     if (req.path === '/profile') {
       // For profile requests, use the authenticated user's ID
-      userId = (req as any).user.id;
+      userId = (req as any as { user: { id: string } }).user.id;
     } else {
       // For specific user requests, validate and parse the user ID parameter
       const params = userIdParamSchema.parse(req.params);

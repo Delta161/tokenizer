@@ -17,7 +17,7 @@ export const DEFAULT_GAS_PRICE = process.env.GAS_PRICE ? parseInt(process.env.GA
 /**
  * Private key for signing transactions
  */
-export const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
+export const PRIVATE_KEY = process.env.CONTRACT_SIGNER_PRIVATE_KEY || '';
 
 /**
  * Contract owner address

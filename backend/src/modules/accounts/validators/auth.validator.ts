@@ -7,7 +7,6 @@
 import { z } from 'zod';
 
 // Internal modules
-import type { UserRole } from '@modules/accounts/types/auth.types';
 
 /**
  * Token verification schema
@@ -70,11 +69,11 @@ export const NormalizedProfileSchema = z.object({
 export const RelaxedNormalizedProfileSchema = z.object({
   provider: z.string().min(1, 'Provider is required'),
   providerId: z.string().min(1, 'Provider ID is required'),
-  email: z.string().optional(),
+  email: z.string().email('Invalid email format').optional(),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   displayName: z.string().optional(),
-  avatarUrl: z.string().optional(),
+  avatarUrl: z.string().url('Invalid avatar URL').optional(),
   role: z.enum(['INVESTOR', 'CLIENT', 'ADMIN']).optional(),
   _json: z.any().optional()
 });

@@ -4,7 +4,8 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { authService } from '../modules/auth/auth.service';
+import { AuthService } from '../services/auth.service';
+const authService = new AuthService();
 
 // Extend Express Request interface to include user property
 declare global {

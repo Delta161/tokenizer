@@ -32,10 +32,10 @@ export {
   InvestorVerificationUpdateResponse,
   WalletCreateResponse,
   WalletVerificationUpdateResponse,
-  ErrorResponse,
   InvestorIdParams,
   WalletIdParams,
-  InvestorListQuery
+  InvestorListQuery,
+  ErrorResponse
 } from './investor.types.js';
 
 // Export validators
@@ -68,3 +68,6 @@ export {
   hasRequiredVerificationFields,
   isWalletVerified
 } from './investor.mapper.js';
+
+// Export error response
+export { ErrorResponse, createErrorResponse } from './error.response.js';
