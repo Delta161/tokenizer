@@ -1,4 +1,5 @@
-import { PrismaClient, UserRole, PropertyStatus, KycStatus } from '@prisma/client';
+import { PrismaClient, UserRole, PropertyStatus } from '@prisma/client';
+import { KycStatus } from '@modules/accounts/types/kyc.types';
 import { logger } from '@utils/logger';
 
 const prisma = new PrismaClient();

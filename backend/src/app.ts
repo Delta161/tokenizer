@@ -2,16 +2,23 @@
  * Express Application Setup
  */
 
+// Load environment variables first
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+// Note: express-async-errors is not compatible with Express 5.x
+// Async errors will be handled by the global error handler
+
+// Core Express imports
 import express, { Express } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
-import { PrismaClient } from '@prisma/client';
 
 // Import configuration
-import { env } from './config/env';
 import { API_PREFIX, RATE_LIMIT } from './config/constants';
 
 // Import middleware
@@ -27,27 +34,29 @@ import { initExamplesModule } from './modules/examples';
 import { initBlockchainModule } from './modules/blockchain';
 import { registerAnalyticsModule } from './modules/analytics/analytics.module.js';
 
-// Initialize Prisma client
-const prisma = new PrismaClient();
-
 // Create Express application
 const app: Express = express();
 
-// Apply middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: env.CORS_ORIGIN }));
+// Security middleware
 app.use(helmet());
+app.use(cors({ 
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  credentials: true 
+}));
 app.use(compression());
 
-// Setup request logging
-if (env.NODE_ENV === 'development') {
+// Request logging middleware
+if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 } else {
   app.use(morgan('combined'));
 }
 
-// Apply rate limiting
+// Body parsing middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Rate limiting
 app.use(
   rateLimit({
     windowMs: RATE_LIMIT.WINDOW_MS,
@@ -57,28 +66,30 @@ app.use(
   })
 );
 
+// Global authentication/session middleware would go here
+// TODO: Add session middleware when implemented
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Mount API routes
+// Mount feature routers
 app.use(`${API_PREFIX}/auth`, authRouter);
-// Add other module routes here as they are implemented
-// app.use(`${API_PREFIX}/users`, userRouter);
 app.use(`${API_PREFIX}/clients`, createClientRoutes());
 app.use(`${API_PREFIX}/investors`, createInvestorRoutes());
 app.use(`${API_PREFIX}/tokens`, createTokenRoutes());
-app.use(`${API_PREFIX}/projects`, createProjectsRoutes(prisma));
+app.use(`${API_PREFIX}/projects`, createProjectsRoutes());
 app.use(`${API_PREFIX}/examples`, initExamplesModule());
 app.use(`${API_PREFIX}/blockchain`, initBlockchainModule());
 
-// Register the analytics module
-registerAnalyticsModule(app, prisma);
-// etc.
+// Mount analytics module
+registerAnalyticsModule(app);
 
-// Apply error handling middleware
+// 404 handler for unmatched routes
 app.use(notFoundHandler);
+
+// Global error handling middleware (must be last)
 app.use(errorHandler);
 
 export default app;

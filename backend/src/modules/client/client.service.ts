@@ -2,12 +2,17 @@ import { PrismaClient, ClientStatus, UserRole, Prisma } from '@prisma/client';
 import { ClientApplicationDTO, ClientUpdateDTO, ClientPublicDTO } from './client.types';
 import { mapClientToPublicDTO, mapClientsToPublicDTOs } from './client.mapper';
 import { logger } from '../../utils/logger';
+import { prisma as sharedPrisma } from './utils/prisma';
 
 /**
  * Service for client-related operations
  */
 export class ClientService {
-  constructor(private prisma: PrismaClient) {}
+  private prisma: PrismaClient;
+
+  constructor(prisma?: PrismaClient) {
+    this.prisma = prisma || sharedPrisma;
+  }
 
   /**
    * Apply as a client

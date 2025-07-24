@@ -11,14 +11,22 @@ import jwt from 'jsonwebtoken';
 import type { UserRole } from '@modules/accounts/types/auth.types';
 import { logger } from '@utils/logger';
 
-// Load JWT secret from environment variables
-const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+// JWT secret getters with validation
+const getJWTSecret = (): string => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET must be defined in environment variables');
+  }
+  return secret;
+};
 
-// Validate required environment variables
-if (!JWT_SECRET || !JWT_REFRESH_SECRET) {
-  throw new Error('JWT_SECRET and JWT_REFRESH_SECRET must be defined in environment variables');
-}
+const getJWTRefreshSecret = (): string => {
+  const secret = process.env.JWT_REFRESH_SECRET;
+  if (!secret) {
+    throw new Error('JWT_REFRESH_SECRET must be defined in environment variables');
+  }
+  return secret;
+};
 
 // Token expiration times
 const ACCESS_TOKEN_EXPIRY = process.env.JWT_ACCESS_TOKEN_EXPIRY || '1h';
@@ -47,7 +55,7 @@ export interface RefreshTokenPayload {
  * Generate access token
  */
 export const generateAccessToken = (payload: JWTPayload): string => {
-  return jwt.sign(payload, JWT_SECRET, {
+  return jwt.sign(payload, getJWTSecret(), {
     expiresIn: ACCESS_TOKEN_EXPIRY
   });
 };
@@ -58,7 +66,7 @@ export const generateAccessToken = (payload: JWTPayload): string => {
 export const generateRefreshToken = (userId: string): string => {
   return jwt.sign(
     { userId, type: 'refresh' } as RefreshTokenPayload,
-    JWT_REFRESH_SECRET,
+    getJWTRefreshSecret(),
     { expiresIn: REFRESH_TOKEN_EXPIRY }
   );
 };
@@ -68,7 +76,7 @@ export const generateRefreshToken = (userId: string): string => {
  */
 export const verifyToken = (token: string): JWTPayload => {
   try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload;
+    return jwt.verify(token, getJWTSecret()) as JWTPayload;
   } catch (error) {
     if (error instanceof Error) {
       logger.error('Token verification failed', { error: error.message });
@@ -87,7 +95,7 @@ export const verifyToken = (token: string): JWTPayload => {
  */
 export const verifyRefreshToken = (token: string): RefreshTokenPayload => {
   try {
-    const decoded = jwt.verify(token, JWT_REFRESH_SECRET) as RefreshTokenPayload;
+    const decoded = jwt.verify(token, getJWTRefreshSecret()) as RefreshTokenPayload;
     
     // Ensure it's a refresh token
     if (decoded.type !== 'refresh') {

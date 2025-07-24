@@ -5,12 +5,11 @@ import { authGuard, roleGuard } from '../accounts';
 
 /**
  * Create client routes with proper middleware
- * @param prisma - Prisma client instance
  * @returns Express router with client routes
  */
-export function createClientRoutes(prisma: PrismaClient = new PrismaClient()): Router {
+export function createClientRoutes(): Router {
   const router = Router();
-  const clientController = new ClientController(prisma);
+  const clientController = new ClientController();
 
   /**
    * POST /clients/apply

@@ -35,7 +35,6 @@ export {
   InvestorIdParams,
   WalletIdParams,
   InvestorListQuery,
-  ErrorResponse
 } from './investor.types.js';
 
 // Export validators

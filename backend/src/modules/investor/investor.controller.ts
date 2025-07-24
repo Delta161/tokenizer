@@ -14,7 +14,11 @@ import {
 import { AuthenticatedRequest } from '../accounts/types/auth.types.js';
 
 export class InvestorController {
-  constructor(private prisma: PrismaClient) {}
+  private prisma?: PrismaClient;
+
+  constructor(prisma?: PrismaClient) {
+    this.prisma = prisma;
+  }
 
   private getService(): InvestorService {
     return new InvestorService(this.prisma);

@@ -2,10 +2,30 @@
  * Server Entry Point
  */
 
-import app from '../app.js';
-import { env, validateEnv } from './config/env';
+import app from './app';
 import { logger } from './utils/logger';
 import { prisma } from './prisma/client';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load environment variables
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+// Simple environment validation
+const validateEnv = (): void => {
+  const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET'];
+  
+  for (const envVar of requiredEnvVars) {
+    if (!process.env[envVar]) {
+      console.warn(`Warning: Environment variable ${envVar} is not set.`);
+    }
+  }
+  
+  // Warn about using default JWT_SECRET in production
+  if (process.env.NODE_ENV === 'production' && process.env.JWT_SECRET === 'super-secret-key') {
+    console.warn('Warning: Using default JWT_SECRET in production environment!');
+  }
+};
 
 // Validate environment variables
 validateEnv();
@@ -17,9 +37,12 @@ process.on('uncaughtException', (error) => {
 });
 
 // Start server
-const server = app.listen(env.PORT, () => {
-  logger.info(`Server running in ${env.NODE_ENV} mode on port ${env.PORT}`);
-  logger.info(`API available at http://localhost:${env.PORT}/api/v1`);
+const PORT = parseInt(process.env.PORT || '3000', 10);
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
+const server = app.listen(PORT, () => {
+  logger.info(`Server running in ${NODE_ENV} mode on port ${PORT}`);
+  logger.info(`API available at http://localhost:${PORT}/api/v1`);
 });
 
 // Handle unhandled promise rejections

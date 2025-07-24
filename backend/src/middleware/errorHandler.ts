@@ -1,40 +1,33 @@
 /**
  * Error Handler Middleware
- * Handles errors in a consistent way
+ * Handles errors in a consistent way using http-errors
  */
 
 import { Request, Response, NextFunction } from 'express';
+import createError from 'http-errors';
 import { logger } from '../utils/logger';
 
 /**
- * Custom error class with status code
+ * Check if error is an HTTP error from http-errors package
  */
-export class AppError extends Error {
-  statusCode: number;
-  isOperational: boolean;
-
-  constructor(message: string, statusCode: number, isOperational = true) {
-    super(message);
-    this.statusCode = statusCode;
-    this.isOperational = isOperational;
-    Error.captureStackTrace(this, this.constructor);
-  }
-}
+const isHttpError = (err: any): err is createError.HttpError => {
+  return err && typeof err.status === 'number' && typeof err.statusCode === 'number';
+};
 
 /**
  * Error handler middleware
  */
-export const errorHandler = (err: Error, req: Request, res: Response): void => {
+export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
   // Default error status and message
   let statusCode = 500;
   let message = 'Internal Server Error';
   let isOperational = false;
 
-  // Handle known errors
-  if (err instanceof AppError) {
+  // Handle HTTP errors from http-errors package
+  if (isHttpError(err)) {
     statusCode = err.statusCode;
     message = err.message;
-    isOperational = err.isOperational;
+    isOperational = true;
   } else if (err.name === 'ZodError') {
     // Handle validation errors
     statusCode = 400;
@@ -72,6 +65,21 @@ export const errorHandler = (err: Error, req: Request, res: Response): void => {
  * Not found middleware
  */
 export const notFoundHandler = (req: Request, res: Response, next: NextFunction): void => {
-  const err = new AppError(`Not Found - ${req.originalUrl}`, 404);
+  const err = createError(404, `Not Found - ${req.originalUrl}`);
   next(err);
 };
+
+/**
+ * Helper functions to create common HTTP errors
+ */
+export const createBadRequest = (message?: string) => createError(400, message || 'Bad Request');
+export const createUnauthorized = (message?: string) => createError(401, message || 'Unauthorized');
+export const createForbidden = (message?: string) => createError(403, message || 'Forbidden');
+export const createNotFound = (message?: string) => createError(404, message || 'Not Found');
+export const createConflict = (message?: string) => createError(409, message || 'Conflict');
+export const createInternalServerError = (message?: string) => createError(500, message || 'Internal Server Error');
+
+/**
+ * Export http-errors for use in other modules
+ */
+export { createError };

@@ -1,5 +1,6 @@
 import { logger } from '@utils/logger';
-import { UserRole, PropertyStatus, KycStatus } from '@prisma/client';
+import { UserRole, PropertyStatus } from '@prisma/client';
+import { KycStatus } from '@modules/accounts/types/kyc.types';
 
 /**
  * Logger for admin module actions

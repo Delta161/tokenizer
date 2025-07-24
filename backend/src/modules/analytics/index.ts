@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { Router } from 'express';
+import { prisma } from './utils/prisma.js';
 
 // Audit module components
 import { AnalyticsAuditService } from './analytics.audit.service.js';
@@ -43,15 +43,14 @@ export {
 
 /**
  * Initialize the analytics module
- * @param prisma - The Prisma client instance
  * @returns Object containing all routers for the analytics module
  */
-export function initAnalyticsModule(prisma: PrismaClient) {
+export function initAnalyticsModule() {
   // Initialize services
-  const auditService = new AnalyticsAuditService(prisma);
-  const flagsService = new AnalyticsFlagsService(prisma);
-  const visitService = new AnalyticsVisitService(prisma);
-  const visitAnalyticsService = new AnalyticsVisitAnalyticsService(prisma);
+  const auditService = new AnalyticsAuditService();
+  const flagsService = new AnalyticsFlagsService();
+  const visitService = new AnalyticsVisitService();
+  const visitAnalyticsService = new AnalyticsVisitAnalyticsService();
 
   // Initialize controllers
   const auditController = new AnalyticsAuditController(auditService);

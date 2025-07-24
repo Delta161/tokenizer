@@ -5,12 +5,11 @@ import { authGuard, roleGuard } from '../accounts/middleware/auth.middleware.js'
 
 /**
  * Creates and configures the investor routes
- * @param prisma PrismaClient instance for database access
  * @returns Configured Express router
  */
-export function createInvestorRoutes(prisma: PrismaClient = new PrismaClient()): Router {
+export function createInvestorRoutes(): Router {
   const router = Router();
-  const controller = new InvestorController(prisma);
+  const controller = new InvestorController();
 
   // Public routes - no authentication required
   // None for investor module

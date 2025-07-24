@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { UserRole, PropertyStatus, KycStatus } from '@prisma/client';
+import { UserRole, PropertyStatus } from '@prisma/client';
+import { KycStatus } from '@modules/accounts/types/kyc.types';
 
 /**
  * Validator for updating user role

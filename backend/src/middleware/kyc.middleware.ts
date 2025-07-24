@@ -2,7 +2,7 @@
 import { Response, NextFunction } from 'express';
 
 // Internal modules
-import { AuthenticatedRequest } from '@modules/accounts/middleware/auth.middleware';
+import { AuthenticatedRequest } from './auth.middleware';
 import { KycService } from '@modules/accounts/services/kyc.service';
 import { logger } from '@utils/logger';
 import { prisma } from '../utils/prisma';

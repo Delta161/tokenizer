@@ -17,7 +17,7 @@ import { logger } from '../../utils/logger';
 export class ClientController {
   private clientService: ClientService;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma?: PrismaClient) {
     this.clientService = new ClientService(prisma);
   }
 

@@ -9,7 +9,7 @@ import passport from 'passport';
 
 // Internal modules
 import { authController } from '@modules/accounts/controllers/auth.controller';
-import { authGuard } from '@modules/accounts/middleware/auth.middleware';
+import { authGuard } from '@/middleware/auth.middleware';
 
 // Create router
 const router = Router();

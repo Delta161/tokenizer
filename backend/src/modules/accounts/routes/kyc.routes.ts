@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 // Internal modules
 import { KycController } from '@modules/accounts/controllers/kyc.controller';
-import { authGuard, roleGuard } from '@modules/accounts/middleware/auth.middleware';
+import { authGuard, roleGuard } from '@/middleware/auth.middleware';
 import { UserRole } from '@modules/accounts/types/auth.types';
 
 /**

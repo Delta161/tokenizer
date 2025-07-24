@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { TokenController } from './token.controller';
-import { authGuard } from '../accounts/middleware/auth.middleware';
-import { roleGuard } from '../accounts/middleware/auth.middleware';
+import { authGuard } from '@/middleware/auth.middleware';
+import { roleGuard } from '@/middleware/auth.middleware';
 import { UserRole } from '@prisma/client';
-import { kycVerifiedGuard } from '../accounts/middleware/kyc.middleware';
+import { requireKycVerified } from '@/middleware/kyc.middleware';
 import { BlockchainService, getBlockchainConfig } from '../blockchain/services/blockchain.service.js';
 
 /**
@@ -32,7 +32,7 @@ export function createTokenRoutes(): Router {
   router.get(
     '/blockchain/balance',
     authGuard,
-    kycVerifiedGuard,
+    requireKycVerified,
     controller.getTokenBalance
   );
 

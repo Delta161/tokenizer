@@ -33,7 +33,15 @@ export class BlockchainService {
   constructor(config: BlockchainConfig) {
     this.config = config;
     this.provider = new ethers.JsonRpcProvider(config.rpcUrl);
-    this.wallet = new ethers.Wallet(config.privateKey || '', this.provider);
+    
+    // Only initialize wallet if we have a valid private key
+    if (config.privateKey && config.privateKey !== '' && !config.privateKey.match(/^0x0+$/)) {
+      this.wallet = new ethers.Wallet(config.privateKey, this.provider);
+    } else {
+      // Create a dummy wallet for read-only operations
+      console.warn('No valid private key provided. Wallet operations will be disabled.');
+      this.wallet = ethers.Wallet.createRandom().connect(this.provider);
+    }
   }
 
   /**

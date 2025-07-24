@@ -14,9 +14,14 @@ import {
   mapInvestorsToPublicDTOs,
   mapWalletToPublicDTO
 } from './investor.mapper.js';
+import { prisma as sharedPrisma } from './utils/prisma';
 
 export class InvestorService {
-  constructor(private prisma: PrismaClient) {}
+  private prisma: PrismaClient;
+
+  constructor(prisma?: PrismaClient) {
+    this.prisma = prisma || sharedPrisma;
+  }
 
   /**
    * Apply as an investor
