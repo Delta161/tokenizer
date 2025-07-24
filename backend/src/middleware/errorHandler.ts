@@ -17,7 +17,7 @@ const isHttpError = (err: any): err is createError.HttpError => {
 /**
  * Error handler middleware
  */
-export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
+export const errorHandler = (err: Error, req: Request, res: Response, _next: NextFunction): void => {
   // Default error status and message
   let statusCode = 500;
   let message = 'Internal Server Error';
@@ -64,7 +64,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
 /**
  * Not found middleware
  */
-export const notFoundHandler = (req: Request, res: Response, next: NextFunction): void => {
+export const notFoundHandler = (req: Request, _res: Response, next: NextFunction): void => {
   const err = createError(404, `Not Found - ${req.originalUrl}`);
   next(err);
 };

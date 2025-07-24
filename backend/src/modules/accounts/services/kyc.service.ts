@@ -2,14 +2,13 @@
 import { KycRecord, PrismaClient } from '@prisma/client';
 
 // Internal modules
-import type { 
-  KycProvider, 
-  KycProviderSession, 
-  KycRecordWithUser, 
-  KycSubmissionData, 
-  KycUpdateData 
+import { KycStatus,
+  type KycProvider, 
+  type KycProviderSession, 
+  type KycRecordWithUser, 
+  type KycSubmissionData, 
+  type KycUpdateData 
 } from '@modules/accounts/types/kyc.types';
-import { KycStatus } from '@modules/accounts/types/kyc.types';
 
 export class KycService {
   constructor(private prisma: PrismaClient) {}

@@ -5,16 +5,18 @@
 
 // External packages
 import { AuthProvider, PrismaClient } from '@prisma/client';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import jwt from 'jsonwebtoken';
 
 // Internal modules
-import type { AuthResponseDTO, OAuthProfileDTO, UserDTO, UserRole } from '@modules/accounts/types/auth.types';
+import { UserRole, type AuthResponseDTO, type OAuthProfileDTO, type UserDTO } from '@modules/accounts/types/auth.types';
 import { generateAccessToken, generateRefreshToken, verifyToken } from '@modules/accounts/utils/jwt';
 import { mapOAuthProfile } from '@modules/accounts/utils/oauthProfileMapper';
 import { formatFullName } from '@modules/accounts/utils/user.utils';
 import { logger } from '@utils/logger';
 import { NormalizedProfileSchema } from '@modules/accounts/validators/auth.validator';
 import { createUserFromOAuthSchema } from '@modules/accounts/validators/user.validator';
+import { prisma } from '@modules/accounts/utils/prisma';
 
 export class AuthService {
   private prisma: PrismaClient;
@@ -46,7 +48,8 @@ export class AuthService {
 
       // Return sanitized user
       return this.sanitizeUser(user);
-    } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_error) {
       throw new Error('Invalid token');
     }
   }
@@ -87,7 +90,7 @@ export class AuthService {
       // Validate profile using schema
       const profileValidation = NormalizedProfileSchema.safeParse(normalizedProfile);
       if (!profileValidation.success) {
-        this.logger.error('Invalid profile data', { errors: profileValidation.error.format() });
+        logger.error('Invalid profile data', { errors: profileValidation.error.format() });
         throw new Error('Invalid profile data');
       }
       
@@ -144,7 +147,7 @@ export class AuthService {
           
           const userDataValidation = createUserFromOAuthSchema.safeParse(userDataInput);
           if (!userDataValidation.success) {
-            this.logger.error('Invalid user data for creation', { errors: userDataValidation.error.format() });
+            logger.error('Invalid user data for creation', { errors: userDataValidation.error.format() });
             throw new Error('Invalid user data for creation');
           }
           
@@ -158,16 +161,17 @@ export class AuthService {
             }
           });
           
-          this.logger.info('Successfully created new user from OAuth profile', { 
+          logger.info('Successfully created new user from OAuth profile', { 
             userId: user.id,
             provider: validatedProfile.provider
           });
         } catch (error) {
-          this.logger.error('Failed to create user from OAuth profile', { 
-            error: error.message,
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          logger.error('Failed to create user from OAuth profile', { 
+            error: errorMessage,
             profile: validatedProfile 
           });
-          throw new Error(`Failed to create user: ${error.message}`);
+          throw new Error(`Failed to create user: ${errorMessage}`);
         }
       } else {
         // Update last login timestamp
@@ -176,9 +180,10 @@ export class AuthService {
           data: { lastLoginAt: new Date() }
         });
         
-        this.logger.debug('User logged in', {
+        logger.debug('User logged in', {
           userId: user.id,
-          provider: validatedProfile.provider
+          provider: validatedProfile.provider,
+          email: user.email
         });
       }
       
@@ -224,12 +229,13 @@ export class AuthService {
    * Sanitize user object by removing sensitive data
    */
   private sanitizeUser(user: any): UserDTO {
-    const { password, ...sanitizedUser } = user;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { _password, ...sanitizedUser } = user;
     return sanitizedUser as UserDTO;
   }
 }
 
-// Create singleton instance using the shared prisma client
-import { prisma } from '../utils/prisma';
+// At the bottom
 export const authService = new AuthService(prisma);
+  
 

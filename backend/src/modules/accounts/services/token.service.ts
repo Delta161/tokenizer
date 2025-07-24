@@ -26,7 +26,7 @@ export const blacklistToken = async (
 ): Promise<void> => {
   try {
     // Add to database
-    await prisma.blacklistedToken.create({
+    await prisma.blacklisted_token.create({
       data: {
         token,
         userId,

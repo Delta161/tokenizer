@@ -58,7 +58,7 @@ export const validateParams = (schema: ZodSchema) => {
       }
       
       // Replace request params with validated data
-      req.params = validation.data as Record<string, string>;
+      req.params = validation.data;
       next();
     } catch (error) {
       res.status(500).json({
@@ -90,7 +90,7 @@ export const validateQuery = (schema: ZodSchema) => {
       }
       
       // Replace request query with validated data
-      req.query = validation.data as Record<string, string | string[]>;
+      req.query = validation.data;
       next();
     } catch (error) {
       res.status(500).json({

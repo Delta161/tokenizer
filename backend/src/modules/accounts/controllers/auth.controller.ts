@@ -66,7 +66,7 @@ export class AuthController {
   /**
    * Handle OAuth authentication success
    */
-  async handleOAuthSuccess(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async handleOAuthSuccess(req: Request, res: Response, _next: NextFunction): Promise<void> {
     try {
       // User should be attached to request by Passport
       const profile = req.user as OAuthProfileDTO;
@@ -97,7 +97,7 @@ export class AuthController {
   /**
    * Handle OAuth authentication error
    */
-  async handleOAuthError(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async handleOAuthError(req: Request, res: Response, _next: NextFunction): Promise<void> {
     const error = req.query.error || 'Unknown error';
     logger.error('OAuth error', { error });
     
@@ -108,7 +108,7 @@ export class AuthController {
   /**
    * Logout user
    */
-  async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async logout(req: Request, res: Response, _next: NextFunction): Promise<void> {
     try {
       // Clear token cookies
       clearTokenCookies(res);
@@ -116,7 +116,7 @@ export class AuthController {
       // Return success response
       res.status(200).json({ success: true, message: 'Logged out successfully' });
     } catch (error) {
-      next(error);
+      _next(error);
     }
   }
   
@@ -153,7 +153,7 @@ export class AuthController {
   /**
    * Health check for auth service
    */
-  async healthCheck(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async healthCheck(req: Request, res: Response, _next: NextFunction): Promise<void> {
     const providers = [];
     
     // Check if Google OAuth is configured
