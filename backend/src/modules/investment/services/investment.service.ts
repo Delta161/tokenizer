@@ -1,10 +1,16 @@
 import { PrismaClient, PropertyStatus } from '@prisma/client';
-import { InvestmentCreateDTO, InvestmentUpdateStatusDTO, InvestmentPublicDTO, InvestmentListQuery } from './investment.types';
-import { mapInvestmentToPublicDTO, mapInvestmentsToPublicDTOs } from './investment.mapper';
+import { InvestmentCreateDTO, InvestmentUpdateStatusDTO, InvestmentPublicDTO, InvestmentListQuery } from '../types/investment.types';
+import { mapInvestmentToPublicDTO, mapInvestmentsToPublicDTOs } from '../utils/investment.mapper';
 import { isAddress } from 'ethers';
+import { prisma } from '../utils/prisma';
 
 export class InvestmentService {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prismaClient: PrismaClient) {}
+  
+  // Use the shared prisma instance for operations that don't need transaction context
+  private get prisma() {
+    return this.prismaClient || prisma;
+  }
 
   async create(investorId: string, dto: InvestmentCreateDTO): Promise<InvestmentPublicDTO> {
     // Validate token and property

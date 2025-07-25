@@ -1,9 +1,11 @@
 import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { InvestmentService } from './investment.service';
-import { investmentCreateSchema, investmentUpdateStatusSchema } from './investment.validators';
-import { InvestmentCreateDTO } from './investment.types';
+import { InvestmentService } from '../services/investment.service';
+import { investmentCreateSchema, investmentUpdateStatusSchema } from '../validators/investment.validators';
+import { InvestmentCreateDTO } from '../types/investment.types';
 import { ZodError } from 'zod';
+import createError from 'http-errors';
+import { prisma } from '../utils/prisma';
 
 // Define AuthenticatedRequest interface
 interface AuthenticatedRequest extends Request {
@@ -14,7 +16,11 @@ interface AuthenticatedRequest extends Request {
 }
 
 export class InvestmentController {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prismaClient: PrismaClient) {}
+
+  private get prisma() {
+    return this.prismaClient || prisma;
+  }
 
   private getService() {
     return new InvestmentService(this.prisma);

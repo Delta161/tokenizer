@@ -5,7 +5,7 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
 import { AnalyticsFlagsService } from '../analytics/index.js';
-import { authGuard } from '../accounts/middleware/auth.middleware';
+import { authGuard } from '../../middleware/auth.middleware';
 
 const router = Router();
 

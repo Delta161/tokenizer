@@ -4,9 +4,9 @@
  */
 
 import { PrismaClient } from '@prisma/client';
-import { createInvestmentRoutes } from './investment.routes';
-import { InvestmentController } from './investment.controller';
-import { InvestmentService } from './investment.service';
+import { createInvestmentRoutes } from './routes/investment.routes';
+import { InvestmentController } from './controllers/investment.controller';
+import { InvestmentService } from './services/investment.service';
 
 /**
  * Initialize investment module
@@ -26,17 +26,17 @@ export function initInvestmentModule(prisma: PrismaClient) {
 }
 
 // Export types
-export * from './investment.types';
+export * from './types/investment.types';
 
 // Export validators
-export * from './investment.validators';
+export * from './validators/investment.validators';
 
 // Export service and controller
-export { InvestmentService } from './investment.service';
-export { InvestmentController } from './investment.controller';
+export { InvestmentService } from './services/investment.service';
+export { InvestmentController } from './controllers/investment.controller';
 
 // Export routes
-export { createInvestmentRoutes } from './investment.routes';
+export { createInvestmentRoutes } from './routes/investment.routes';
 
 // Export mappers
-export { mapInvestmentToPublicDTO, mapInvestmentsToPublicDTOs } from './investment.mapper';
+export { mapInvestmentToPublicDTO, mapInvestmentsToPublicDTOs } from './utils/investment.mapper';

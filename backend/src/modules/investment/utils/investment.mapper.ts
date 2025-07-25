@@ -1,5 +1,5 @@
 import { Investment } from '@prisma/client';
-import { InvestmentPublicDTO } from './investment.types';
+import { InvestmentPublicDTO } from '../types/investment.types';
 
 export function mapInvestmentToPublicDTO(investment: Investment): InvestmentPublicDTO {
   return {

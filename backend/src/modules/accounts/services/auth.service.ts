@@ -17,6 +17,7 @@ import { logger } from '@utils/logger';
 import { NormalizedProfileSchema } from '@modules/accounts/validators/auth.validator';
 import { createUserFromOAuthSchema } from '@modules/accounts/validators/user.validator';
 import { prisma } from '@modules/accounts/utils/prisma';
+import { createNotFound, createUnauthorized, createBadRequest } from '@middleware/errorHandler';
 
 export class AuthService {
   private prisma: PrismaClient;
@@ -43,14 +44,14 @@ export class AuthService {
       });
 
       if (!user) {
-        throw new Error('User not found');
+        throw createNotFound('User not found');
       }
 
       // Return sanitized user
       return this.sanitizeUser(user);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
-      throw new Error('Invalid token');
+      throw createUnauthorized('Invalid token');
     }
   }
 
@@ -91,7 +92,7 @@ export class AuthService {
       const profileValidation = NormalizedProfileSchema.safeParse(normalizedProfile);
       if (!profileValidation.success) {
         logger.error('Invalid profile data', { errors: profileValidation.error.format() });
-        throw new Error('Invalid profile data');
+        throw createBadRequest('Invalid profile data');
       }
       
       // Use validated data
@@ -148,7 +149,7 @@ export class AuthService {
           const userDataValidation = createUserFromOAuthSchema.safeParse(userDataInput);
           if (!userDataValidation.success) {
             logger.error('Invalid user data for creation', { errors: userDataValidation.error.format() });
-            throw new Error('Invalid user data for creation');
+            throw createBadRequest('Invalid user data for creation');
           }
           
           // Use validated data
@@ -171,7 +172,7 @@ export class AuthService {
             error: errorMessage,
             profile: validatedProfile 
           });
-          throw new Error(`Failed to create user: ${errorMessage}`);
+          throw createBadRequest(`Failed to create user: ${errorMessage}`);
         }
       } else {
         // Update last login timestamp

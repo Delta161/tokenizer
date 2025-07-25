@@ -1,3 +1,7 @@
 2025-07-24 14:50:06:506 [32minfo[39m: [32mServer running in development mode on port 3000[39m
 2025-07-24 14:50:06:506 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
 2025-07-24 14:50:16:5016 [33mwarn[39m: [33m404 - Not Found - /api/v1?ide_webview_request_time=1753361416618 - /api/v1?ide_webview_request_time=1753361416618 - GET - ::1[39m
+2025-07-25 10:24:58:2458 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-25 10:24:58:2458 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-25 10:54:49:5449 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-25 10:54:49:5449 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m

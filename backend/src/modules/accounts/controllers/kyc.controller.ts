@@ -6,12 +6,7 @@ import type { AuthenticatedRequest } from '@/middleware/auth.middleware';
 import { KycService, kycService } from '@modules/accounts/services/kyc.service';
 import { KycProvider } from '@modules/accounts/types/kyc.types';
 import { KycSubmissionSchema, KycUpdateSchema } from '@modules/accounts/validators/kyc.validator';
-
-// Error interface for proper typing
-interface AppError extends Error {
-  statusCode?: number;
-  details?: Record<string, unknown>;
-}
+import { createUnauthorized, createBadRequest, createNotFound } from '@middleware/errorHandler';
 
 export class KycController {
   private kycService: KycService;
@@ -35,9 +30,7 @@ export class KycController {
   ): Promise<void> => {
     try {
       if (!req.user?.id) {
-        const error: AppError = new Error('Authentication required');
-        error.statusCode = 401;
-        return next(error);
+        return next(createUnauthorized('Authentication required'));
       }
 
       const kycRecord = await this.kycService.getByUserId(req.user.id);
@@ -61,9 +54,7 @@ export class KycController {
   ): Promise<void> => {
     try {
       if (!req.user?.id) {
-        const error = new Error('Authentication required');
-        (error as AppError).statusCode = 401;
-        return next(error);
+        return next(createUnauthorized('Authentication required'));
       }
       
       const { provider } = req.params;
@@ -71,16 +62,12 @@ export class KycController {
       
       // Validate provider
       if (!Object.values(KycProvider).includes(provider as KycProvider)) {
-        const error: AppError = new Error(`Unsupported provider: ${provider}`);
-        error.statusCode = 400;
-        return next(error);
+        return next(createBadRequest(`Unsupported provider: ${provider}`));
       }
       
       // Validate redirect URL
       if (!redirectUrl || typeof redirectUrl !== 'string') {
-        const error: AppError = new Error('Invalid redirect URL');
-        error.statusCode = 400;
-        return next(error);
+        return next(createBadRequest('Invalid redirect URL'));
       }
       
       const session = await this.kycService.initiateProviderVerification(
@@ -114,17 +101,13 @@ export class KycController {
       const { userId } = req.params;
       
       if (!userId) {
-        const error: AppError = new Error('User ID is required');
-        error.statusCode = 400;
-        return next(error);
+        return next(createBadRequest('User ID is required'));
       }
       
       const kycRecord = await this.kycService.syncKycStatus(userId);
       
       if (!kycRecord) {
-        const error: AppError = new Error('KYC record not found or no provider information available');
-        error.statusCode = 404;
-        return next(error);
+        return next(createNotFound('KYC record not found or no provider information available'));
       }
       
       res.json({
@@ -146,18 +129,13 @@ export class KycController {
   ): Promise<void> => {
     try {
       if (!req.user?.id) {
-        res.status(401).json({
-          success: false,
-          error: 'Authentication required'
-        });
-        return;
+        return next(createUnauthorized('Authentication required'));
       }
 
       // Validate request body
       const validationResult = KycSubmissionSchema.safeParse(req.body);
       if (!validationResult.success) {
-        const error: AppError = new Error('Validation error');
-        error.statusCode = 400;
+        const error = createBadRequest('Validation error');
         error.details = validationResult.error.format();
         return next(error);
       }
@@ -208,17 +186,13 @@ export class KycController {
       const { userId } = req.params;
 
       if (!userId) {
-        const error: AppError = new Error('User ID is required');
-        error.statusCode = 400;
-        return next(error);
+        return next(createBadRequest('User ID is required'));
       }
 
       const kycRecord = await this.kycService.getByUserId(userId);
 
       if (!kycRecord) {
-        const error: AppError = new Error('KYC record not found');
-        error.statusCode = 404;
-        return next(error);
+        return next(createNotFound('KYC record not found'));
       }
 
       res.json({
@@ -242,16 +216,13 @@ export class KycController {
       const { userId } = req.params;
 
       if (!userId) {
-        const error: AppError = new Error('User ID is required');
-        error.statusCode = 400;
-        return next(error);
+        return next(createBadRequest('User ID is required'));
       }
 
       // Validate request body
       const validationResult = KycUpdateSchema.safeParse(req.body);
       if (!validationResult.success) {
-        const error: AppError = new Error('Validation error');
-        error.statusCode = 400;
+        const error = createBadRequest('Validation error');
         error.details = validationResult.error.format();
         return next(error);
       }

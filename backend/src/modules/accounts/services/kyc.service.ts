@@ -9,6 +9,7 @@ import { KycStatus,
   type KycSubmissionData, 
   type KycUpdateData 
 } from '@modules/accounts/types/kyc.types';
+import { createNotFound } from '@middleware/errorHandler';
 
 export class KycService {
   constructor(private prisma: PrismaClient) {}
@@ -37,7 +38,7 @@ export class KycService {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      throw createNotFound('User not found');
     }
 
     // Create or update KYC record
@@ -72,7 +73,7 @@ export class KycService {
     });
 
     if (!existingRecord) {
-      throw new Error('KYC record not found');
+      throw createNotFound('KYC record not found');
     }
 
     // Update KYC record based on status
@@ -137,7 +138,7 @@ export class KycService {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      throw createNotFound('User not found');
     }
     
     // This is a placeholder - in the actual implementation, we would call a provider service

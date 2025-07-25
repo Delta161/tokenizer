@@ -3,7 +3,7 @@ import { AuthenticatedRequest } from '../accounts/types/auth.types.js';
 import { AnalyticsVisitAnalyticsService } from './analytics.visit.analytics.service.js';
 import { validatePropertyId, validateClientId, validateTimeRange } from './analytics.visit.analytics.validators.js';
 import { UserRole } from '@prisma/client';
-import { hasRole } from '../accounts/middleware/auth.middleware.js';
+import { hasRole } from '../../middleware/auth.middleware.js';
 
 /**
  * Controller class for handling visit analytics-related HTTP requests
