@@ -30,6 +30,11 @@ import { authRoutes } from '@/modules/Auth/views';
       name: 'add-project',
       component: () => import('@/components/AddProjectForm.vue')
     },
+    {
+      path: '/sections-demo',
+      name: 'sections-demo',
+      component: () => import('@/views/DemoPage.vue')
+    },
     // Add auth routes from Auth module
     ...authRoutes,
     // {

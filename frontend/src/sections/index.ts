@@ -27,6 +27,11 @@ const sections: SectionRegistry = {
   // Common sections
   'common/header': () => import('./common/HeaderSection.vue'),
   'common/footer': () => import('./common/FooterSection.vue'),
+  'common/hero': () => import('./common/HeroSection.vue'),
+  'common/features': () => import('./common/FeatureSection.vue'),
+  'common/not-found': () => import('./common/NotFoundSection.vue'),
+  'common/error': () => import('./common/ErrorSection.vue'),
+  'common/loading': () => import('./common/LoadingSection.vue'),
 };
 
 /**
