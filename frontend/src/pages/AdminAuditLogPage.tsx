@@ -3,7 +3,7 @@ import { Container, Typography, Box, Breadcrumbs, Link } from '@mui/material';
 import { Home, Security } from '@mui/icons-material';
 import AuditLogTable from '../components/AuditLog/AuditLogTable';
 
-const AdminAuditLogPage = () => {
+const AdminAuditLogPage: React.FC = () => {
   return (
     <Container maxWidth="xl">
       <Box sx={{ mt: 4, mb: 4 }}>

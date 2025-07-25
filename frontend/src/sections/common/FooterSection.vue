@@ -88,21 +88,21 @@ const props = withDefaults(defineProps<Props>(), {
   <footer 
     class="footer-section" 
     :style="{
-      backgroundColor,
-      color: textColor
+      backgroundColor: props.backgroundColor,
+      color: props.textColor
     }"
   >
     <div class="container">
       <div class="footer-content">
         <div class="company-info">
           <div class="logo-container">
-            <img v-if="logo" :src="logo" :alt="logoAlt" class="logo" />
-            <h2 v-else class="company-name">{{ companyName }}</h2>
+            <img v-if="props.logo" :src="props.logo" :alt="props.logoAlt" class="logo" />
+            <h2 v-else class="company-name">{{ props.companyName }}</h2>
           </div>
-          <p class="company-description">{{ description }}</p>
+          <p class="company-description">{{ props.description }}</p>
           <div class="social-links">
             <a 
-              v-for="(social, index) in socialLinks" 
+              v-for="(social, index) in props.socialLinks" 
               :key="index"
               :href="social.url"
               :aria-label="social.label"
@@ -115,7 +115,7 @@ const props = withDefaults(defineProps<Props>(), {
         
         <div class="footer-links">
           <div 
-            v-for="(column, index) in columns" 
+            v-for="(column, index) in props.columns" 
             :key="index"
             class="footer-column"
           >
@@ -130,7 +130,7 @@ const props = withDefaults(defineProps<Props>(), {
       </div>
       
       <div class="footer-bottom">
-        <p class="copyright">{{ copyrightText }}</p>
+        <p class="copyright">{{ props.copyrightText }}</p>
       </div>
     </div>
   </footer>

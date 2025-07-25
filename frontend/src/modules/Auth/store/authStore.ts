@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { User, LoginCredentials, RegisterData, PasswordResetRequest, PasswordResetConfirm } from '../types'
 import { authService } from '../services'
+import { useRouter } from 'vue-router'
 
 export const useAuthStore = defineStore('auth', () => {
   // State
@@ -9,7 +10,11 @@ export const useAuthStore = defineStore('auth', () => {
   const loading = ref(false)
   const error = ref<string | null>(null)
   const isAuthenticated = ref(false)
-  const token = ref<string | null>(null)
+  const accessToken = ref<string | null>(null)
+  const refreshToken = ref<string | null>(null)
+  const tokenExpiresAt = ref<number | null>(null)
+  const refreshTokenExpiresAt = ref<number | null>(null)
+  const sessionTimeoutTimer = ref<number | null>(null)
   
   // Getters
   const fullName = computed(() => {
@@ -30,15 +35,38 @@ export const useAuthStore = defineStore('auth', () => {
   })
   
   // Actions
+  // Initialize auth from localStorage on app start
+  function initializeAuth() {
+    const storedUser = localStorage.getItem('user')
+    const storedAccessToken = localStorage.getItem('accessToken')
+    const storedRefreshToken = localStorage.getItem('refreshToken')
+    const storedTokenExpiresAt = localStorage.getItem('tokenExpiresAt')
+    const storedRefreshTokenExpiresAt = localStorage.getItem('refreshTokenExpiresAt')
+    
+    if (storedUser) user.value = JSON.parse(storedUser)
+    if (storedAccessToken) accessToken.value = storedAccessToken
+    if (storedRefreshToken) refreshToken.value = storedRefreshToken
+    if (storedTokenExpiresAt) tokenExpiresAt.value = parseInt(storedTokenExpiresAt)
+    if (storedRefreshTokenExpiresAt) refreshTokenExpiresAt.value = parseInt(storedRefreshTokenExpiresAt)
+    
+    isAuthenticated.value = !!accessToken.value && !!user.value
+    
+    // Check if token is expired and needs refresh
+    if (isAuthenticated.value && tokenExpiresAt.value && Date.now() >= tokenExpiresAt.value) {
+      refreshAccessToken()
+    }
+    
+    // Set up session timeout monitoring
+    setupSessionTimeoutMonitoring()
+  }
+  
   async function login(credentials: LoginCredentials) {
     loading.value = true
     error.value = null
     
     try {
       const response = await authService.login(credentials)
-      user.value = response.user
-      token.value = response.token
-      isAuthenticated.value = true
+      setAuthData(response)
       return response
     } catch (err: any) {
       console.error('Error in login:', err)
@@ -55,9 +83,7 @@ export const useAuthStore = defineStore('auth', () => {
     
     try {
       const response = await authService.register(data)
-      user.value = response.user
-      token.value = response.token
-      isAuthenticated.value = true
+      setAuthData(response)
       return response
     } catch (err: any) {
       console.error('Error in register:', err)
@@ -74,12 +100,12 @@ export const useAuthStore = defineStore('auth', () => {
     
     try {
       await authService.logout()
-      user.value = null
-      token.value = null
-      isAuthenticated.value = false
+      clearAuthData()
     } catch (err: any) {
       console.error('Error in logout:', err)
       error.value = err.message || 'Failed to logout. Please try again.'
+      // Even if the API call fails, clear local auth data
+      clearAuthData()
       throw err
     } finally {
       loading.value = false
@@ -92,16 +118,13 @@ export const useAuthStore = defineStore('auth', () => {
     
     try {
       const response = await authService.getCurrentUser()
-      user.value = response.user
-      token.value = response.token
+      user.value = response
       isAuthenticated.value = true
       return response
     } catch (err: any) {
       console.error('Error in getCurrentUser:', err)
       error.value = err.message || 'Failed to get current user.'
-      user.value = null
-      token.value = null
-      isAuthenticated.value = false
+      clearAuthData()
       throw err
     } finally {
       loading.value = false
@@ -138,13 +161,178 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
   
+  // Helper function to set auth data from login/register response
+  function setAuthData(response: any) {
+    user.value = response.user
+    accessToken.value = response.accessToken
+    refreshToken.value = response.refreshToken
+    isAuthenticated.value = true
+    
+    // Parse JWT to get expiration times
+    if (accessToken.value) {
+      const tokenData = parseJwt(accessToken.value)
+      if (tokenData && tokenData.exp) {
+        tokenExpiresAt.value = tokenData.exp * 1000 // Convert to milliseconds
+      }
+    }
+    
+    if (refreshToken.value) {
+      const refreshTokenData = parseJwt(refreshToken.value)
+      if (refreshTokenData && refreshTokenData.exp) {
+        refreshTokenExpiresAt.value = refreshTokenData.exp * 1000 // Convert to milliseconds
+      }
+    }
+    
+    // Store in localStorage
+    localStorage.setItem('user', JSON.stringify(user.value))
+    localStorage.setItem('accessToken', accessToken.value)
+    localStorage.setItem('refreshToken', refreshToken.value)
+    if (tokenExpiresAt.value) localStorage.setItem('tokenExpiresAt', tokenExpiresAt.value.toString())
+    if (refreshTokenExpiresAt.value) localStorage.setItem('refreshTokenExpiresAt', refreshTokenExpiresAt.value.toString())
+    
+    // Set up session timeout monitoring
+    setupSessionTimeoutMonitoring()
+  }
+  
+  // Helper function to clear auth data on logout
+  function clearAuthData() {
+    user.value = null
+    accessToken.value = null
+    refreshToken.value = null
+    tokenExpiresAt.value = null
+    refreshTokenExpiresAt.value = null
+    isAuthenticated.value = false
+    
+    // Clear localStorage
+    localStorage.removeItem('user')
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('tokenExpiresAt')
+    localStorage.removeItem('refreshTokenExpiresAt')
+    
+    // Clear any session timeout timers
+    if (sessionTimeoutTimer.value) {
+      window.clearTimeout(sessionTimeoutTimer.value)
+      sessionTimeoutTimer.value = null
+    }
+  }
+  
+  // Parse JWT token to get payload data
+  function parseJwt(token: string) {
+    try {
+      const base64Url = token.split('.')[1]
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      }).join(''))
+      return JSON.parse(jsonPayload)
+    } catch (e) {
+      console.error('Error parsing JWT:', e)
+      return null
+    }
+  }
+  
+  // Refresh the access token using the refresh token
+  async function refreshAccessToken() {
+    if (!refreshToken.value) {
+      clearAuthData()
+      return false
+    }
+    
+    try {
+      const response = await authService.refreshToken(refreshToken.value)
+      
+      // Update tokens
+      accessToken.value = response.accessToken
+      if (response.refreshToken) {
+        refreshToken.value = response.refreshToken
+      }
+      
+      // Update expiration times
+      if (accessToken.value) {
+        const tokenData = parseJwt(accessToken.value)
+        if (tokenData && tokenData.exp) {
+          tokenExpiresAt.value = tokenData.exp * 1000
+        }
+      }
+      
+      if (response.refreshToken) {
+        const refreshTokenData = parseJwt(response.refreshToken)
+        if (refreshTokenData && refreshTokenData.exp) {
+          refreshTokenExpiresAt.value = refreshTokenData.exp * 1000
+        }
+      }
+      
+      // Update localStorage
+      localStorage.setItem('accessToken', accessToken.value)
+      if (response.refreshToken) localStorage.setItem('refreshToken', refreshToken.value)
+      if (tokenExpiresAt.value) localStorage.setItem('tokenExpiresAt', tokenExpiresAt.value.toString())
+      if (refreshTokenExpiresAt.value) localStorage.setItem('refreshTokenExpiresAt', refreshTokenExpiresAt.value.toString())
+      
+      isAuthenticated.value = true
+      return true
+    } catch (err) {
+      console.error('Error refreshing token:', err)
+      clearAuthData()
+      return false
+    }
+  }
+  
+  // Set up monitoring for token expiration
+  function setupSessionTimeoutMonitoring() {
+    // Clear any existing timers
+    if (sessionTimeoutTimer.value) {
+      window.clearTimeout(sessionTimeoutTimer.value)
+      sessionTimeoutTimer.value = null
+    }
+    
+    // If we have a token expiration time, set up a timer to refresh before it expires
+    if (tokenExpiresAt.value) {
+      const currentTime = Date.now()
+      const timeUntilExpiry = tokenExpiresAt.value - currentTime
+      
+      // If token is already expired, try to refresh immediately
+      if (timeUntilExpiry <= 0) {
+        refreshAccessToken()
+        return
+      }
+      
+      // Set timer to refresh 1 minute before expiry
+      const refreshTime = Math.max(timeUntilExpiry - 60000, 0) // 1 minute before expiry, minimum 0
+      sessionTimeoutTimer.value = window.setTimeout(() => {
+        refreshAccessToken()
+      }, refreshTime)
+    }
+  }
+  
+  // Check if the current token is valid or needs refresh
+  function checkTokenValidity() {
+    if (!accessToken.value || !tokenExpiresAt.value) {
+      return false
+    }
+    
+    const currentTime = Date.now()
+    
+    // If token is expired, try to refresh
+    if (currentTime >= tokenExpiresAt.value) {
+      return refreshAccessToken()
+    }
+    
+    return true
+  }
+  
+  // Initialize auth on store creation
+  initializeAuth()
+  
   return {
     // State
     user,
     loading,
     error,
     isAuthenticated,
-    token,
+    accessToken,
+    refreshToken,
+    tokenExpiresAt,
     
     // Getters
     fullName,
@@ -158,6 +346,9 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     getCurrentUser,
     requestPasswordReset,
-    confirmPasswordReset
+    confirmPasswordReset,
+    refreshAccessToken,
+    checkTokenValidity,
+    initializeAuth
   }
 })

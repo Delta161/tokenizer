@@ -16,6 +16,7 @@ import { RouterLink } from 'vue-router'
         <RouterLink to="/projects" class="nav-link">Properties</RouterLink>
         <RouterLink to="/dashboard" class="nav-link">Dashboard</RouterLink>
         <RouterLink to="/sections-demo" class="nav-link">Sections Demo</RouterLink>
+        <RouterLink to="/error-handling-demo" class="nav-link">Error Handling</RouterLink>
       </div>
       
       <div class="nav-actions">

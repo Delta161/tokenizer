@@ -18,6 +18,11 @@ const sectionComponent = computed(() => {
 <template>
   <component 
     :is="sectionComponent" 
-    v-bind="data || {}"
+    v-if="props.data"
+    v-bind="props.data"
+  />
+  <component 
+    :is="sectionComponent" 
+    v-else
   />
 </template>

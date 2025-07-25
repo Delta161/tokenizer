@@ -1,13 +1,21 @@
+// This file is deprecated and will be removed in a future version.
+// Please use authStore.ts instead.
+
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import authService from '../services/auth.service';
 import { useRouter } from 'vue-router';
+import { useAuthStore as useNewAuthStore } from './authStore';
 
 /**
- * Auth Store
- * Manages authentication state and actions
+ * Auth Store (Legacy)
+ * This store is deprecated and will be removed in a future version.
+ * Please use authStore.ts instead.
  */
-export const useAuthStore = defineStore('auth', () => {
+export const useAuthStore = defineStore('auth-legacy', () => {
+  // Get the new auth store
+  const newAuthStore = useNewAuthStore();
+  
   // State
   const user = ref(null);
   const token = ref('');
@@ -27,16 +35,13 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
 
     try {
-      // Call the auth service login method
-      const response = await authService.login(credentials);
+      // Use the new auth store login method
+      const response = await newAuthStore.login(credentials);
       
-      // Update state with response data
+      // Update legacy state with response data
       user.value = response.user;
-      token.value = response.token;
+      token.value = newAuthStore.accessToken;
       isAuthenticated.value = true;
-      
-      // Store token in localStorage for persistence
-      localStorage.setItem('token', response.token);
       
       return response;
     } catch (err) {
@@ -53,16 +58,13 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
 
     try {
-      // Call the auth service register method
-      const response = await authService.register(userData);
+      // Use the new auth store register method
+      const response = await newAuthStore.register(userData);
       
-      // Update state with response data
+      // Update legacy state with response data
       user.value = response.user;
-      token.value = response.token;
+      token.value = newAuthStore.accessToken;
       isAuthenticated.value = true;
-      
-      // Store token in localStorage for persistence
-      localStorage.setItem('token', response.token);
       
       return response;
     } catch (err) {
@@ -79,20 +81,13 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
 
     try {
-      // Call the auth service logout method
-      await authService.logout();
+      // Use the new auth store logout method
+      await newAuthStore.logout();
       
-      // Clear state
+      // Clear legacy state
       user.value = null;
       token.value = '';
       isAuthenticated.value = false;
-      
-      // Remove token from localStorage
-      localStorage.removeItem('token');
-      
-      // Redirect to login page
-      const router = useRouter();
-      router.push('/login');
     } catch (err) {
       console.error('Logout error:', err);
       error.value = err.response?.data?.message || 'Logout failed. Please try again.';
@@ -107,10 +102,10 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
 
     try {
-      // Call the auth service getCurrentUser method
-      const userData = await authService.getCurrentUser();
+      // Use the new auth store getCurrentUser method
+      const userData = await newAuthStore.getCurrentUser();
       
-      // Update state with response data
+      // Update legacy state with response data
       user.value = userData;
       isAuthenticated.value = true;
       
@@ -129,8 +124,8 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
 
     try {
-      // Call the auth service requestPasswordReset method
-      return await authService.requestPasswordReset(email);
+      // Use the new auth store requestPasswordReset method
+      return await newAuthStore.requestPasswordReset(email);
     } catch (err) {
       console.error('Password reset request error:', err);
       error.value = err.response?.data?.message || 'Failed to request password reset. Please try again.';
@@ -145,8 +140,8 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
 
     try {
-      // Call the auth service resetPassword method
-      return await authService.resetPassword(token, password);
+      // Use the new auth store resetPassword method
+      return await newAuthStore.resetPassword(token, password);
     } catch (err) {
       console.error('Password reset error:', err);
       error.value = err.response?.data?.message || 'Failed to reset password. Please try again.';
@@ -158,17 +153,19 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Initialize from localStorage if token exists
   function initializeFromStorage() {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      token.value = storedToken;
+    // Use the new auth store initializeAuth method
+    newAuthStore.initializeAuth();
+    
+    // Update legacy state
+    if (newAuthStore.isAuthenticated) {
+      user.value = newAuthStore.user;
+      token.value = newAuthStore.accessToken;
       isAuthenticated.value = true;
-      // Fetch user data
-      fetchCurrentUser().catch(() => {
-        // If fetching fails, clear auth state
-        logout();
-      });
     }
   }
+
+  // Initialize the store
+  initializeFromStorage();
 
   return {
     // State
@@ -188,6 +185,10 @@ export const useAuthStore = defineStore('auth', () => {
     fetchCurrentUser,
     requestPasswordReset,
     resetPassword,
-    initializeFromStorage
+    initializeFromStorage,
+    
+    // Alias to new store methods for compatibility
+    checkAuth: () => newAuthStore.checkTokenValidity(),
+    refreshToken: () => newAuthStore.refreshAccessToken()
   };
 });

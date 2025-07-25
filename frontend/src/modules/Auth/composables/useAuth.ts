@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { useAuthStore } from '../store';
+import { useAuthStore } from '../store/authStore';
 import type { User, LoginCredentials, RegisterData } from '../types';
 
 /**
@@ -30,7 +30,11 @@ export function useAuth() {
   };
 
   const checkAuth = async () => {
-    return authStore.checkAuth();
+    return authStore.checkTokenValidity();
+  };
+
+  const refreshToken = async () => {
+    return authStore.refreshAccessToken();
   };
 
   /**
@@ -66,6 +70,7 @@ export function useAuth() {
     register,
     logout,
     checkAuth,
+    refreshToken,
     hasRole,
     hasAnyRole
   };

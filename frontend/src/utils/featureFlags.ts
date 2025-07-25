@@ -8,21 +8,31 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
 
+// Define types for feature flags
+interface FeatureFlag {
+  key: string;
+  enabled: boolean;
+}
+
+interface FeatureFlagsState {
+  [key: string]: boolean;
+}
+
 // Store for feature flags
-const featureFlags = ref({});
-const isLoading = ref(true);
-const error = ref(null);
+const featureFlags = ref<FeatureFlagsState>({});
+const isLoading = ref<boolean>(true);
+const error = ref<string | null>(null);
 
 /**
  * Fetch all feature flags from the API
  */
-async function fetchFeatureFlags() {
+async function fetchFeatureFlags(): Promise<void> {
   isLoading.value = true;
   error.value = null;
   
   try {
-    const response = await axios.get('/api/flags');
-    featureFlags.value = response.data.reduce((acc, flag) => {
+    const response = await axios.get<FeatureFlag[]>('/api/flags');
+    featureFlags.value = response.data.reduce((acc: FeatureFlagsState, flag: FeatureFlag) => {
       acc[flag.key] = flag.enabled;
       return acc;
     }, {});
@@ -40,7 +50,7 @@ async function fetchFeatureFlags() {
  * @param {boolean} defaultValue - Default value if flag is not found
  * @returns {boolean} - Whether the feature is enabled
  */
-function isFeatureEnabled(key, defaultValue = false) {
+function isFeatureEnabled(key: string, defaultValue: boolean = false): boolean {
   return featureFlags.value[key] ?? defaultValue;
 }
 
@@ -70,7 +80,7 @@ export function useFeatureFlags() {
 /**
  * Example usage in a Vue component:
  * 
- * <script setup>
+ * <script setup lang="ts">
  * import { useFeatureFlags } from '@/utils/featureFlags';
  * 
  * const { 

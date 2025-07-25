@@ -18,7 +18,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import api from '@/api';
+import apiClient from '@/services/apiClient';
 
 const router = useRouter();
 const loading = ref(true);
@@ -48,7 +48,7 @@ onMounted(async () => {
     if (success === 'true') {
       // The backend should have set cookies with the JWT tokens
       // We can verify by calling the profile endpoint
-      const response = await api.get('/api/accounts/auth/profile');
+      const response = await apiClient.get('/api/accounts/auth/profile');
       
       // Store user data if needed
       if (response.data && response.data.user) {

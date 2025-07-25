@@ -9,26 +9,27 @@ interface SectionRegistry {
 // Dynamic section registry
 const sections: SectionRegistry = {
   // Auth sections
-  'auth/login': () => import('./auth/LoginSection.vue'),
-  'auth/register': () => import('./auth/RegisterSection.vue'),
+  // 'auth/login': () => import('./auth/LoginSection.vue'),
+  // 'auth/register': () => import('./auth/RegisterSection.vue'),
   
   // Dashboard sections
-  'dashboard/summary': () => import('./dashboard/SummarySection.vue'),
-  'dashboard/stats': () => import('./dashboard/StatsSection.vue'),
+  // 'dashboard/summary': () => import('./dashboard/SummarySection.vue'),
+  // 'dashboard/stats': () => import('./dashboard/StatsSection.vue'),
   
   // Property sections
-  'property/list': () => import('./property/PropertyListSection.vue'),
-  'property/detail': () => import('./property/PropertyDetailSection.vue'),
+  // 'property/list': () => import('./property/PropertyListSection.vue'),
+  // 'property/detail': () => import('./property/PropertyDetailSection.vue'),
   
   // Investment sections
-  'investment/opportunities': () => import('./investment/OpportunitiesSection.vue'),
-  'investment/portfolio': () => import('./investment/PortfolioSection.vue'),
+  // 'investment/opportunities': () => import('./investment/OpportunitiesSection.vue'),
+  // 'investment/portfolio': () => import('./investment/PortfolioSection.vue'),
   
   // Common sections
-  'common/header': () => import('./common/HeaderSection.vue'),
+  // 'common/header': () => import('./common/HeaderSection.vue'),
   'common/footer': () => import('./common/FooterSection.vue'),
   'common/hero': () => import('./common/HeroSection.vue'),
   'common/features': () => import('./common/FeatureSection.vue'),
+  'common/stats': () => import('./common/StatsSection.vue'),
   'common/not-found': () => import('./common/NotFoundSection.vue'),
   'common/error': () => import('./common/ErrorSection.vue'),
   'common/loading': () => import('./common/LoadingSection.vue'),

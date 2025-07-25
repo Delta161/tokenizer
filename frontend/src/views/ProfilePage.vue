@@ -43,18 +43,27 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import api from '@/api';
+import apiClient from '../services/apiClient';
+import { useAuthStore } from '../modules/Auth/store/authStore';
+
+interface User {
+  id?: string;
+  email?: string;
+  fullName?: string;
+  profileImage?: string;
+  [key: string]: any;
+}
 
 const router = useRouter();
 const loading = ref(true);
-const error = ref(null);
-const user = ref({});
+const error = ref<string | null>(null);
+const user = ref<User>({});
 
 // Function to get initials from name
-function getInitials(name) {
+function getInitials(name?: string): string {
   if (!name) return '?';
   return name
     .split(' ')
@@ -64,16 +73,16 @@ function getInitials(name) {
 }
 
 // Function to go back to login page
-function goToLogin() {
+function goToLogin(): void {
   router.push('/login');
 }
 
 // Function to logout
-async function logout() {
+async function logout(): Promise<void> {
   try {
-    await api.post('/accounts/auth/logout');
+    const authStore = useAuthStore();
+    await authStore.logout();
     localStorage.removeItem('user');
-    localStorage.removeItem('token');
     router.push('/login');
   } catch (err) {
     console.error('Logout error:', err);
@@ -83,13 +92,13 @@ async function logout() {
 }
 
 // Function to refresh profile data
-async function refreshProfile() {
+async function refreshProfile(): Promise<void> {
   loading.value = true;
   error.value = null;
   
   try {
     await fetchProfileData();
-  } catch (err) {
+  } catch (err: any) {
     console.error('Error refreshing profile:', err);
     error.value = err.response?.data?.message || 'Failed to refresh profile data';
   } finally {
@@ -98,9 +107,9 @@ async function refreshProfile() {
 }
 
 // Function to fetch profile data
-async function fetchProfileData() {
+async function fetchProfileData(): Promise<void> {
   try {
-    const response = await api.get('/accounts/auth/profile');
+    const response = await apiClient.get('/accounts/auth/profile');
     
     if (response.data && response.data.user) {
       user.value = response.data.user;
@@ -108,7 +117,7 @@ async function fetchProfileData() {
     } else {
       throw new Error('Invalid response format');
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error('Error fetching profile:', err);
     
     // If 401 Unauthorized, the interceptor will handle the redirect
@@ -150,32 +159,10 @@ onMounted(async () => {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top-color: #3498db;
-  animation: spin 1s ease-in-out infinite;
-  margin-bottom: 1rem;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.error {
-  color: #e74c3c;
+.profile-content h1 {
+  margin-bottom: 2rem;
+  color: #333;
   text-align: center;
-  padding: 2rem;
 }
 
 .profile-header {
@@ -183,12 +170,12 @@ onMounted(async () => {
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #eee;
 }
 
 .avatar {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   overflow: hidden;
   margin-right: 1.5rem;
@@ -206,21 +193,17 @@ onMounted(async () => {
   justify-content: center;
   background-color: #3498db;
   color: white;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
 }
 
-.user-info {
-  flex: 1;
-}
-
 .user-info h2 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.5rem;
+  margin: 0;
+  color: #333;
 }
 
 .user-info p {
-  margin: 0;
+  margin: 0.5rem 0 0;
   color: #666;
 }
 
@@ -228,30 +211,32 @@ onMounted(async () => {
   margin-bottom: 2rem;
 }
 
+.profile-details h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
 .json-data {
-  background-color: #f5f5f5;
+  background-color: #f8f8f8;
   padding: 1rem;
   border-radius: 4px;
   overflow: auto;
-  max-height: 300px;
   font-family: monospace;
-  font-size: 0.875rem;
-  white-space: pre-wrap;
+  font-size: 0.9rem;
 }
 
 .actions {
   display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .button {
   padding: 0.75rem 1.5rem;
-  background-color: #3498db;
-  color: white;
   border: none;
   border-radius: 4px;
-  font-size: 1rem;
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -266,5 +251,35 @@ onMounted(async () => {
 
 .button-danger:hover {
   background-color: #c0392b;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 2rem;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error h2 {
+  color: #e74c3c;
+  margin-bottom: 1rem;
+}
+
+.error p {
+  margin-bottom: 1.5rem;
+  color: #666;
 }
 </style>

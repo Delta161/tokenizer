@@ -51,22 +51,22 @@ const props = withDefaults(defineProps<Props>(), {
   <section 
     class="feature-section" 
     :style="{
-      backgroundColor,
-      color: textColor
+      backgroundColor: props.backgroundColor,
+      color: props.textColor
     }"
   >
     <div class="container">
       <div class="section-header">
-        <h2 class="title">{{ title }}</h2>
-        <p class="subtitle">{{ subtitle }}</p>
+        <h2 class="title">{{ props.title }}</h2>
+        <p class="subtitle">{{ props.subtitle }}</p>
       </div>
       
       <div 
         class="features-grid" 
-        :class="`columns-${columns}`"
+        :class="`columns-${props.columns}`"
       >
         <div 
-          v-for="(feature, index) in features" 
+          v-for="(feature, index) in props.features" 
           :key="index"
           class="feature-card"
         >

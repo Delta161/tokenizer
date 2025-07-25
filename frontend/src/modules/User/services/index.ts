@@ -1,5 +1,6 @@
 import type { User, UserUpdate, UserSearchParams, UserSearchResult } from '../types';
 import { mapBackendUserToFrontend, mapBackendUsersToFrontend, mapFrontendUserToBackend } from '../utils/userMapper';
+import apiClient from '@/services/apiClient';
 
 /**
  * User Service
@@ -9,7 +10,7 @@ export class UserService {
   private apiUrl: string;
   
   constructor() {
-    this.apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+    this.apiUrl = '/users';
   }
   
   /**
@@ -18,23 +19,10 @@ export class UserService {
    */
   async getCurrentUser(): Promise<User> {
     try {
-      const response = await fetch(`${this.apiUrl}/users/me`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to fetch current user');
-      }
-      
-      const backendUser = await response.json();
-      return mapBackendUserToFrontend(backendUser);
+      const response = await apiClient.get(`${this.apiUrl}/me`);
+      return mapBackendUserToFrontend(response.data);
     } catch (error: any) {
-      throw new Error(error.message || 'Failed to fetch current user');
+      throw new Error(error.response?.data?.message || 'Failed to fetch current user');
     }
   }
   
@@ -45,23 +33,10 @@ export class UserService {
    */
   async getUserById(userId: string): Promise<User> {
     try {
-      const response = await fetch(`${this.apiUrl}/users/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || `Failed to fetch user with ID ${userId}`);
-      }
-      
-      const backendUser = await response.json();
-      return mapBackendUserToFrontend(backendUser);
+      const response = await apiClient.get(`${this.apiUrl}/${userId}`);
+      return mapBackendUserToFrontend(response.data);
     } catch (error: any) {
-      throw new Error(error.message || `Failed to fetch user with ID ${userId}`);
+      throw new Error(error.response?.data?.message || `Failed to fetch user with ID ${userId}`);
     }
   }
   
@@ -85,24 +60,10 @@ export class UserService {
       if ('firstName' in backendUserData) delete backendUserData.firstName;
       if ('lastName' in backendUserData) delete backendUserData.lastName;
       
-      const response = await fetch(`${this.apiUrl}/users/${userId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(backendUserData)
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to update user');
-      }
-      
-      const updatedBackendUser = await response.json();
-      return mapBackendUserToFrontend(updatedBackendUser);
+      const response = await apiClient.patch(`${this.apiUrl}/${userId}`, backendUserData);
+      return mapBackendUserToFrontend(response.data);
     } catch (error: any) {
-      throw new Error(error.message || 'Failed to update user');
+      throw new Error(error.response?.data?.message || 'Failed to update user');
     }
   }
   
@@ -114,37 +75,24 @@ export class UserService {
   async searchUsers(params: UserSearchParams): Promise<UserSearchResult> {
     try {
       // Convert params to query string
-      const queryParams = new URLSearchParams();
+      const queryParams: Record<string, any> = {};
       
-      if (params.query) queryParams.append('query', params.query);
-      if (params.role) queryParams.append('role', params.role);
-      if (params.page) queryParams.append('page', params.page.toString());
-      if (params.limit) queryParams.append('limit', params.limit.toString());
-      if (params.sortBy) queryParams.append('sortBy', params.sortBy);
-      if (params.sortOrder) queryParams.append('sortOrder', params.sortOrder);
+      if (params.query) queryParams.query = params.query;
+      if (params.role) queryParams.role = params.role;
+      if (params.page) queryParams.page = params.page;
+      if (params.limit) queryParams.limit = params.limit;
+      if (params.sortBy) queryParams.sortBy = params.sortBy;
+      if (params.sortOrder) queryParams.sortOrder = params.sortOrder;
       
-      const response = await fetch(`${this.apiUrl}/users?${queryParams.toString()}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to search users');
-      }
-      
-      const result = await response.json();
+      const response = await apiClient.get(this.apiUrl, { params: queryParams });
       
       // Map the users array to frontend format
       return {
-        ...result,
-        users: mapBackendUsersToFrontend(result.users)
+        ...response.data,
+        users: mapBackendUsersToFrontend(response.data.users)
       };
     } catch (error: any) {
-      throw new Error(error.message || 'Failed to search users');
+      throw new Error(error.response?.data?.message || 'Failed to search users');
     }
   }
   
@@ -155,20 +103,9 @@ export class UserService {
    */
   async deleteUser(userId: string): Promise<void> {
     try {
-      const response = await fetch(`${this.apiUrl}/users/${userId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || `Failed to delete user with ID ${userId}`);
-      }
+      await apiClient.delete(`${this.apiUrl}/${userId}`);
     } catch (error: any) {
-      throw new Error(error.message || `Failed to delete user with ID ${userId}`);
+      throw new Error(error.response?.data?.message || `Failed to delete user with ID ${userId}`);
     }
   }
 }

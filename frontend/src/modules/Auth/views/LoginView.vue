@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '../store';
+import { useAuthStore } from '../store/authStore';
 import { LoginForm, OAuthButtons } from '../components';
 import type { LoginCredentials } from '../types';
 
@@ -37,7 +37,7 @@ async function handleOAuthLogin(provider: string) {
 // Check if user is already authenticated
 onMounted(async () => {
   try {
-    await authStore.checkAuth();
+    await authStore.checkTokenValidity();
     if (authStore.isAuthenticated) {
       router.push({ name: 'dashboard' });
     }

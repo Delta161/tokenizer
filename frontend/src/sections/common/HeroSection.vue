@@ -27,26 +27,26 @@ const props = withDefaults(defineProps<Props>(), {
 <template>
   <section 
     class="hero-section" 
-    :class="`text-${alignment}`"
+    :class="`text-${props.alignment}`"
     :style="{
-      backgroundImage: `url(${backgroundImage})`,
-      color: textColor
+      backgroundImage: `url(${props.backgroundImage})`,
+      color: props.textColor
     }"
   >
     <div 
       class="overlay" 
-      :style="{ opacity: overlayOpacity }"
+      :style="{ opacity: props.overlayOpacity }"
     ></div>
     <div class="container">
-      <h1 class="title">{{ title }}</h1>
-      <p class="subtitle">{{ subtitle }}</p>
+      <h1 class="title">{{ props.title }}</h1>
+      <p class="subtitle">{{ props.subtitle }}</p>
       <div class="cta-container">
         <a 
-          v-if="ctaText" 
-          :href="ctaLink" 
+          v-if="props.ctaText" 
+          :href="props.ctaLink" 
           class="cta-button"
         >
-          {{ ctaText }}
+          {{ props.ctaText }}
         </a>
       </div>
     </div>

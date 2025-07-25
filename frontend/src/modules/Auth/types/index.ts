@@ -41,7 +41,16 @@ export interface RegisterData {
  */
 export interface AuthResponse {
   user: User;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
+}
+
+/**
+ * Token refresh response from the API
+ */
+export interface TokenRefreshResponse {
+  accessToken: string;
+  refreshToken?: string;
 }
 
 /**

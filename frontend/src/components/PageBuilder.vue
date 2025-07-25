@@ -17,7 +17,7 @@ const props = defineProps<Props>();
 
 <template>
   <div class="page-builder">
-    <template v-for="(section, index) in sections" :key="section.id">
+    <template v-for="(section, index) in props.sections" :key="section.id">
       <SectionRenderer 
         :section-key="section.type" 
         :data="section.data"

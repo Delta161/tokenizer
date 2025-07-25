@@ -197,10 +197,11 @@ For the backend the following packages are used:
 
 
 
-
+##### FRONTEND #####
 
 The folder named "frontend" is the frontend folder.
 In the frontend folder, Vue.js is used.
 The frontend test server is http://localhost:5173
+All communication between frontend and backend must happen trough the Standadized API Client. 
 
 

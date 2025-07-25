@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/modules/Auth/store/authStore';
+import router from '@/router';
 
 /**
  * Centralized API client using Axios
@@ -16,20 +17,37 @@ const apiClient = axios.create({
 
 // Request interceptor for adding auth token
 apiClient.interceptors.request.use(
-  (config) => {
-    // Get auth token from Pinia store
-    // Note: In a real implementation, you might need to handle the store initialization differently
-    // since this runs before the Vue app is mounted
+  async (config) => {
+    // Skip token for auth endpoints that don't require authentication
+    const isAuthEndpoint = config.url?.includes('/auth/login') || 
+                          config.url?.includes('/auth/register') || 
+                          config.url?.includes('/auth/refresh');
+    
+    if (isAuthEndpoint) {
+      return config;
+    }
+    
     try {
       const authStore = useAuthStore();
-      if (authStore.isAuthenticated && authStore.user?.token) {
-        config.headers.Authorization = `Bearer ${authStore.user.token}`;
+      
+      // Check if token is valid or needs refresh
+      if (authStore.isAuthenticated) {
+        // If token is expired, try to refresh it
+        if (authStore.tokenExpiresAt && Date.now() >= authStore.tokenExpiresAt) {
+          await authStore.refreshAccessToken();
+        }
+        
+        // Add token to request header
+        if (authStore.accessToken) {
+          config.headers.Authorization = `Bearer ${authStore.accessToken}`;
+        }
       }
     } catch (error) {
-      // Fallback to localStorage if store isn't available
-      const token = localStorage.getItem('token');
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      console.error('Error in request interceptor:', error);
+      // If store isn't available, try localStorage as fallback
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
       }
     }
     return config;
@@ -38,38 +56,89 @@ apiClient.interceptors.request.use(
 );
 
 // Response interceptor for global error handling
+import errorHandler from './errorHandler';
+
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    // Get the original request config
+    const originalRequest = error.config;
+    
     // Handle different error scenarios
     if (error.response) {
-      // Server responded with an error status
       const { status } = error.response;
       
       // Handle authentication errors
       if (status === 401) {
-        // Clear token and redirect to login
-        localStorage.removeItem('token');
+        // If this is not a retry and not a refresh token request
+        if (!originalRequest._retry && !originalRequest.url?.includes('/auth/refresh')) {
+          originalRequest._retry = true;
+          
+          try {
+            const authStore = useAuthStore();
+            
+            // Try to refresh the token
+            const refreshed = await authStore.refreshAccessToken();
+            
+            if (refreshed) {
+              // Update the authorization header
+              originalRequest.headers.Authorization = `Bearer ${authStore.accessToken}`;
+              // Retry the original request
+              return apiClient(originalRequest);
+            } else {
+              // If refresh failed, logout and redirect to login
+              await authStore.logout();
+              router.push('/login');
+            }
+          } catch (refreshError) {
+            // Process the refresh error
+            errorHandler.processError(refreshError);
+            
+            // Clear auth data and redirect to login
+            try {
+              const authStore = useAuthStore();
+              await authStore.logout();
+            } catch (e) {
+              // Store not available, clear localStorage manually
+              localStorage.removeItem('accessToken');
+              localStorage.removeItem('refreshToken');
+              localStorage.removeItem('user');
+            }
+            router.push('/login');
+          }
+        } else {
+          // This is either a retry that failed or a refresh token request that failed
+          // Clear auth data and redirect to login
+          try {
+            const authStore = useAuthStore();
+            await authStore.logout();
+          } catch (e) {
+            // Store not available
+          }
+          router.push('/login');
+        }
+      }
+      
+      // Handle session timeout (403 with specific message)
+      if (status === 403 && error.response.data?.message?.includes('session')) {
+        console.warn('Session timeout detected');
         try {
           const authStore = useAuthStore();
-          authStore.logout();
+          await authStore.logout();
         } catch (e) {
           // Store not available
         }
-        window.location.href = '/login';
+        router.push('/login');
       }
       
-      // Log other errors
-      console.error(
-        `API Error: ${status}`,
-        error.response.data?.message || 'Unknown error'
-      );
+      // Process the error through our error handler
+      errorHandler.processError(error);
     } else if (error.request) {
       // Request was made but no response received
-      console.error('Network Error: No response received', error.request);
+      errorHandler.processError(error);
     } else {
       // Error in setting up the request
-      console.error('Request Error:', error.message);
+      errorHandler.processError(error);
     }
     
     return Promise.reject(error);

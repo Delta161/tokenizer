@@ -18,12 +18,40 @@ import {
   IconButton,
   Tooltip,
   Pagination,
+  SelectChangeEvent,
 } from '@mui/material';
 import { FilterList, Refresh, Info } from '@mui/icons-material';
 import { format } from 'date-fns';
 
+// Define types for audit logs and filters
+interface User {
+  email: string;
+  id: string;
+}
+
+interface AuditLog {
+  id: string;
+  actionType: string;
+  entityType: string;
+  entityId?: string;
+  user?: User;
+  createdAt: string;
+  metadata?: Record<string, any>;
+}
+
+interface AuditLogFilters {
+  userId?: string;
+  actionType: string;
+  entityType: string;
+  entityId?: string;
+  fromDate: string;
+  toDate: string;
+  limit: number;
+  offset: number;
+}
+
 // Action type to color mapping
-const actionTypeColors = {
+const actionTypeColors: Record<string, 'success' | 'info' | 'warning' | 'error' | 'default'> = {
   PROPERTY_CREATED: 'success',
   PROPERTY_UPDATED: 'info',
   PROPERTY_APPROVED: 'success',
@@ -43,7 +71,7 @@ const actionTypeColors = {
 };
 
 // Mock API call - replace with actual API call in production
-const fetchAuditLogs = async (filters) => {
+const fetchAuditLogs = async (filters: AuditLogFilters): Promise<AuditLog[]> => {
   try {
     const queryParams = new URLSearchParams();
     
@@ -53,8 +81,8 @@ const fetchAuditLogs = async (filters) => {
     if (filters.entityId) queryParams.append('entityId', filters.entityId);
     if (filters.fromDate) queryParams.append('fromDate', filters.fromDate);
     if (filters.toDate) queryParams.append('toDate', filters.toDate);
-    if (filters.limit) queryParams.append('limit', filters.limit);
-    if (filters.offset) queryParams.append('offset', filters.offset);
+    if (filters.limit) queryParams.append('limit', filters.limit.toString());
+    if (filters.offset) queryParams.append('offset', filters.offset.toString());
     
     const response = await fetch(`/api/audit/logs?${queryParams}`);
     if (!response.ok) throw new Error('Failed to fetch audit logs');
@@ -65,10 +93,10 @@ const fetchAuditLogs = async (filters) => {
   }
 };
 
-const AuditLogTable = () => {
-  const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
+const AuditLogTable: React.FC = () => {
+  const [logs, setLogs] = useState<AuditLog[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [filters, setFilters] = useState<AuditLogFilters>({
     actionType: '',
     entityType: '',
     fromDate: '',
@@ -76,17 +104,17 @@ const AuditLogTable = () => {
     limit: 10,
     offset: 0,
   });
-  const [showFilters, setShowFilters] = useState(false);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   
   // Available entity types for filtering
-  const entityTypes = ['Property', 'Investment', 'User', 'Document'];
+  const entityTypes: string[] = ['Property', 'Investment', 'User', 'Document'];
   
   // Available action types for filtering
-  const actionTypes = Object.keys(actionTypeColors);
+  const actionTypes: string[] = Object.keys(actionTypeColors);
   
-  const loadAuditLogs = async () => {
+  const loadAuditLogs = async (): Promise<void> => {
     setLoading(true);
     try {
       const data = await fetchAuditLogs({
@@ -108,7 +136,7 @@ const AuditLogTable = () => {
     loadAuditLogs();
   }, [page, filters.limit]);
   
-  const handleFilterChange = (event) => {
+  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent): void => {
     const { name, value } = event.target;
     setFilters(prev => ({
       ...prev,
@@ -116,16 +144,16 @@ const AuditLogTable = () => {
     }));
   };
   
-  const handlePageChange = (event, newPage) => {
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, newPage: number): void => {
     setPage(newPage);
   };
   
-  const applyFilters = () => {
+  const applyFilters = (): void => {
     setPage(1); // Reset to first page when applying filters
     loadAuditLogs();
   };
   
-  const resetFilters = () => {
+  const resetFilters = (): void => {
     setFilters({
       actionType: '',
       entityType: '',
@@ -138,7 +166,7 @@ const AuditLogTable = () => {
     loadAuditLogs();
   };
   
-  const formatMetadata = (metadata) => {
+  const formatMetadata = (metadata: Record<string, any> | undefined): string => {
     if (!metadata) return 'None';
     
     try {
