@@ -10,6 +10,7 @@ import { Request, Response, NextFunction } from 'express';
 import { authService } from '@modules/accounts/services/auth.service';
 import type { OAuthProfileDTO } from '@modules/accounts/types/auth.types';
 import { clearTokenCookies, setTokenCookies } from '@modules/accounts/utils/jwt';
+import { createUnauthorized } from '@middleware/errorHandler';
 import { logger } from '@utils/logger';
 
 export class AuthController {
@@ -26,9 +27,7 @@ export class AuthController {
       const user = req.user;
 
       if (!user) {
-        const error = new Error('Not authenticated');
-        (error as unknown as { statusCode: number }).statusCode = 401;
-        return next(error);
+        return next(createUnauthorized('Not authenticated'));
       }
 
       // Return user data
@@ -47,9 +46,7 @@ export class AuthController {
       const token = req.headers.authorization?.split(' ')[1];
 
       if (!token) {
-        const error = new Error('No token provided');
-        (error as unknown as { statusCode: number }).statusCode = 401;
-        return next(error);
+        return next(createUnauthorized('No token provided'));
       }
 
       // Verify token and get user
@@ -129,9 +126,7 @@ export class AuthController {
       const refreshToken = req.cookies.refreshToken;
       
       if (!refreshToken) {
-        const error = new Error('No refresh token provided');
-        (error as unknown as { statusCode: number }).statusCode = 401;
-        return next(error);
+        return next(createUnauthorized('No refresh token provided'));
       }
       
       // Verify token and get user

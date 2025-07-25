@@ -8,7 +8,7 @@ import { PrismaClient } from '@prisma/client';
 
 // Internal modules
 import { PAGINATION } from '@config/constants';
-import { AppError } from '@middleware/errorHandler';
+import { createBadRequest, createNotFound } from '@middleware/errorHandler';
 import type { 
   CreateUserDTO, 
   UpdateUserDTO, 
@@ -101,7 +101,7 @@ export class UserService {
     });
     
     if (!user) {
-      throw new AppError('User not found', 404);
+      throw createNotFound('User not found');
     }
     
     return user as UserDTO;
@@ -117,7 +117,7 @@ export class UserService {
     });
     
     if (existingUser) {
-      throw new AppError('User with this email already exists', 400);
+      throw createBadRequest('User with this email already exists');
     }
     
     // Create user
@@ -157,7 +157,7 @@ export class UserService {
     });
     
     if (!existingUser) {
-      throw new AppError('User not found', 404);
+      throw createNotFound('User not found');
     }
     
     // Check if email is being updated and is already taken
@@ -167,7 +167,7 @@ export class UserService {
       });
       
       if (emailTaken) {
-        throw new AppError('Email is already taken', 400);
+        throw createBadRequest('Email is already taken');
       }
     }
     
@@ -198,7 +198,7 @@ export class UserService {
     });
     
     if (!existingUser) {
-      throw new AppError('User not found', 404);
+      throw createNotFound('User not found');
     }
     
     // Delete user

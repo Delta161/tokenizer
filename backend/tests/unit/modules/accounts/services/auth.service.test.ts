@@ -87,7 +87,10 @@ describe('AuthService', () => {
       mockPrisma.user.findUnique = vi.fn().mockResolvedValue(null);
 
       // Call the method and expect it to throw
-      await expect(authService.verifyToken('valid-token')).rejects.toThrow('User not found');
+      await expect(authService.verifyToken('valid-token')).rejects.toMatchObject({
+        message: 'User not found',
+        statusCode: 404
+      });
 
       // Verify the mock was called
       expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
