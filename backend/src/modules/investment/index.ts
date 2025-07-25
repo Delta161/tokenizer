@@ -7,6 +7,7 @@ import { PrismaClient } from '@prisma/client';
 import { createInvestmentRoutes } from './routes/investment.routes';
 import { InvestmentController } from './controllers/investment.controller';
 import { InvestmentService } from './services/investment.service';
+import { logger } from '@/utils/logger';
 
 /**
  * Initialize investment module
@@ -14,10 +15,14 @@ import { InvestmentService } from './services/investment.service';
  * @returns Object containing routes and services
  */
 export function initInvestmentModule(prisma: PrismaClient) {
+  logger.info('Initializing investment module');
+  
   const investmentRoutes = createInvestmentRoutes(prisma);
   const investmentController = new InvestmentController(prisma);
   const investmentService = new InvestmentService(prisma);
 
+  logger.info('Investment module initialized successfully');
+  
   return {
     routes: investmentRoutes,
     controller: investmentController,

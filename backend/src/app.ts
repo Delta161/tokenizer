@@ -24,6 +24,9 @@ import { API_PREFIX, RATE_LIMIT } from './config/constants';
 // Import middleware
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
+// Import prisma client
+import { prisma } from './prisma/client';
+
 // Import routes
 import { authRouter } from './modules/accounts/routes/auth.routes';
 import { createClientRoutes } from './modules/client';
@@ -33,6 +36,7 @@ import { createProjectsRoutes } from './modules/projects';
 import { initExamplesModule } from './modules/examples';
 import { initBlockchainModule } from './modules/blockchain';
 import { registerAnalyticsModule } from './modules/analytics/analytics.module.js';
+import { initInvestmentModule } from './modules/investment';
 
 // Create Express application
 const app: Express = express();
@@ -82,6 +86,7 @@ app.use(`${API_PREFIX}/tokens`, createTokenRoutes());
 app.use(`${API_PREFIX}/projects`, createProjectsRoutes());
 app.use(`${API_PREFIX}/examples`, initExamplesModule());
 app.use(`${API_PREFIX}/blockchain`, initBlockchainModule());
+app.use(`${API_PREFIX}/investments`, initInvestmentModule(prisma).routes);
 
 // Mount analytics module
 registerAnalyticsModule(app);
