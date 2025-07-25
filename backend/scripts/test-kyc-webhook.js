@@ -60,7 +60,7 @@ async function main() {
     const signature = signPayload(payload);
     
     // Send webhook request
-    const response = await fetch('http://localhost:3000/api/kyc/webhook/sumsub', {
+    const response = await fetch('http://localhost:3000/api/v1/kyc/webhook/sumsub', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

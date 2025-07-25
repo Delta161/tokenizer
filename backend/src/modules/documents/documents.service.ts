@@ -6,6 +6,8 @@ import { getFilePath, sanitizeFilename } from './upload.middleware.js';
 import { DocumentStatsDto } from './documents.types.js';
 import { LocalStorageAdapter, StorageAdapter } from './storage.adapter.js';
 import { logger } from '@utils/logger';
+import { PAGINATION } from '@config/constants';
+import { getSkipValue } from '@utils/pagination';
 
 export class DocumentService {
   private prisma: PrismaClient;
@@ -292,9 +294,9 @@ export class DocumentService {
     }
 
     const isAdmin = user.role === UserRole.ADMIN;
-    const page = filter.page || 1;
-    const limit = filter.limit || 10;
-    const skip = (page - 1) * limit;
+    const page = filter.page || PAGINATION.DEFAULT_PAGE;
+    const limit = filter.limit || PAGINATION.DEFAULT_LIMIT;
+    const skip = getSkipValue(page, limit);
 
     // Build where clause based on filters and permissions
     let where: any = {};

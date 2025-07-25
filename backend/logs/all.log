@@ -31,3 +31,60 @@
 2025-07-25 12:13:48:1348 [32minfo[39m: [32mServer running in development mode on port 3000[39m
 2025-07-25 12:13:48:1348 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
 2025-07-25 12:14:48:1448 [33mwarn[39m: [33m404 - Not Found - /api/v1?ide_webview_request_time=1753438488863 - /api/v1?ide_webview_request_time=1753438488863 - GET - ::1[39m
+2025-07-25 16:29:55:2955 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-25 16:29:55:2955 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-25 16:29:55:2955 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-25 16:29:55:2955 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-25 16:29:55:2955 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-25 16:29:55:2955 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-25 16:30:04:304 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/kyc/webhook/sumsub - /api/kyc/webhook/sumsub - POST - ::1[39m
+2025-07-25 16:32:54:3254 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/kyc/webhook/sumsub - /api/v1/kyc/webhook/sumsub - POST - ::1[39m
+2025-07-25 16:36:29:3629 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/kyc/webhook/sumsub - /api/v1/kyc/webhook/sumsub - POST - ::1[39m
+2025-07-25 16:47:35:4735 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-25 16:47:35:4735 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-25 16:47:35:4735 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-25 16:47:35:4735 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-25 16:47:35:4735 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-25 16:47:35:4735 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-25 16:47:53:4753 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `this.prisma.kycRecord.findFirst()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\services\kyc.service.ts:32:53[39m
+
+[31m  29 ): Promise<KycRecord | null> {[39m
+[31m  30   try {[39m
+[31m  31     // Find KYC record by provider and reference ID[39m
+[31m→ 32     const kycRecord = await this.prisma.kycRecord.findFirst({[39m
+[31m           where: {[39m
+[31m             provider: "sumsub",[39m
+[31m             providerReference: "sumsub_test_1753454873152_l83dmtma",[39m
+[31m             ~~~~~~~~~~~~~~~~~[39m
+[31m         ?   AND?: KycRecordWhereInput | KycRecordWhereInput[],[39m
+[31m         ?   OR?: KycRecordWhereInput[],[39m
+[31m         ?   NOT?: KycRecordWhereInput | KycRecordWhereInput[],[39m
+[31m         ?   id?: StringFilter | String,[39m
+[31m         ?   userId?: StringFilter | String,[39m
+[31m         ?   status?: StringFilter | String,[39m
+[31m         ?   documentType?: StringNullableFilter | String | Null,[39m
+[31m         ?   country?: StringNullableFilter | String | Null,[39m
+[31m         ?   verifiedAt?: DateTimeNullableFilter | DateTime | Null,[39m
+[31m         ?   rejectedAt?: DateTimeNullableFilter | DateTime | Null,[39m
+[31m         ?   rejectionReason?: StringNullableFilter | String | Null,[39m
+[31m         ?   createdAt?: DateTimeFilter | DateTime,[39m
+[31m         ?   updatedAt?: DateTimeFilter | DateTime,[39m
+[31m         ?   referenceId?: StringNullableFilter | String | Null,[39m
+[31m         ?   providerData?: JsonNullableFilter,[39m
+[31m         ?   user?: UserScalarRelationFilter | UserWhereInput[39m
+[31m           }[39m
+[31m         })[39m
+
+[31mUnknown argument `providerReference`. Available options are marked with ?.[39m
+2025-07-25 16:47:53:4753 [31merror[39m: [31mTypeError: import_accounts.accountsLogger.error is not a function[39m
+2025-07-25 16:53:49:5349 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-25 16:53:49:5349 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-25 16:53:49:5349 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-25 16:53:49:5349 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-25 16:53:49:5349 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-25 16:53:49:5349 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-25 16:55:59:5559 [31merror[39m: [31mAccount error during handleSumsubWebhook: KYC record not found for referenceId: sumsub_test_1753455358716_8ps1rxf0[39m
+2025-07-25 16:55:59:5559 [33mwarn[39m: [33m404 - NOT_FOUND - KYC record not found - /api/v1/kyc/webhook/sumsub - POST - ::1[39m
+2025-07-25 16:58:25:5825 [32minfo[39m: [32mKYC status updated for user 3606600c-4b4c-44a4-a6ab-5414bf5a8050 from PENDING to PENDING[39m

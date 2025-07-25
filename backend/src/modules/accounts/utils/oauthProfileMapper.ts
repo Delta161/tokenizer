@@ -4,7 +4,7 @@
  */
 
 // Internal modules
-import type { UserRole } from '@modules/accounts/types/auth.types';
+import { UserRole } from '@prisma/client';
 
 /**
  * Normalized OAuth profile interface
@@ -97,7 +97,7 @@ export const mapAzureProfile = (profile: AzureProfile): NormalizedProfile => {
   const lastName = profile.surname || '';
   
   // If we have a displayName but no first/last name, try to extract them
-  const displayName = profile.displayName || '';
+  const displayName = profile.displayName || undefined;
   let extractedFirstName = firstName;
   let extractedLastName = lastName;
   

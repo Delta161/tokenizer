@@ -94,17 +94,23 @@ export const clientIdParamSchema = z.object({
  * Client list query validation schema
  */
 export const clientListQuerySchema = z.object({
+  page: z.coerce.number()
+    .int('Page must be an integer')
+    .positive('Page must be a positive number')
+    .optional()
+    .default(1),
   limit: z.coerce.number()
     .int('Limit must be an integer')
     .positive('Limit must be a positive number')
     .max(100, 'Limit cannot exceed 100')
     .optional()
-    .default(50),
-  offset: z.coerce.number()
-    .int('Offset must be an integer')
-    .nonnegative('Offset must be a non-negative number')
+    .default(10),
+  sortBy: z.enum(['createdAt', 'companyName', 'status'])
     .optional()
-    .default(0),
+    .default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc'])
+    .optional()
+    .default('desc'),
   status: z.nativeEnum(ClientStatus)
     .optional()
 });

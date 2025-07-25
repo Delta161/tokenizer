@@ -37,6 +37,7 @@ import { initExamplesModule } from './modules/examples';
 import { initBlockchainModule } from './modules/blockchain';
 import { registerAnalyticsModule } from './modules/analytics/analytics.module.js';
 import { initInvestmentModule } from './modules/investment';
+import { initKycModule } from './modules/accounts';
 
 // Create Express application
 const app: Express = express();
@@ -87,6 +88,13 @@ app.use(`${API_PREFIX}/projects`, createProjectsRoutes());
 app.use(`${API_PREFIX}/examples`, initExamplesModule());
 app.use(`${API_PREFIX}/blockchain`, initBlockchainModule());
 app.use(`${API_PREFIX}/investments`, initInvestmentModule(prisma).routes);
+
+// Initialize KYC module and mount routes
+const kycModule = initKycModule();
+app.use(`${API_PREFIX}/kyc`, kycModule.routes);
+
+// Also mount KYC routes directly at /api/kyc for backward compatibility
+app.use('/api/kyc', kycModule.routes);
 
 // Mount analytics module
 registerAnalyticsModule(app);

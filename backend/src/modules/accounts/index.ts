@@ -46,10 +46,15 @@ export * from './types';
  * @returns Object containing routes and services
  */
 export function initKycModule(): {
-  routes: ReturnType<typeof createKycRoutes>;
-  service: KycService;
-  controller: KycController;
+  routes: any;
+  service: any;
+  controller: any;
 } {
+  // Import controller, service, and routes directly to ensure they're loaded
+  const { KycController } = require('./controllers/kyc.controller');
+  const { kycService } = require('./services/kyc.service');
+  const { createKycRoutes } = require('./routes/kyc.routes');
+  
   // Create controller instance using the static factory method
   const kycController = KycController.getInstance();
   

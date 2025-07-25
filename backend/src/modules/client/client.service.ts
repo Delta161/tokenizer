@@ -3,6 +3,8 @@ import { ClientApplicationDTO, ClientUpdateDTO, ClientPublicDTO } from './client
 import { mapClientToPublicDTO, mapClientsToPublicDTOs } from './client.mapper';
 import { logger } from '../../utils/logger';
 import { prisma as sharedPrisma } from './utils/prisma';
+import { PAGINATION } from '../../config/constants';
+import { PaginationParams, SortingParams, PaginationMeta, calculatePaginationMeta, getSkipValue } from '../../utils/pagination';
 
 /**
  * Service for client-related operations
@@ -162,26 +164,49 @@ export class ClientService {
   /**
    * Get all clients with optional filtering and pagination
    * For admin use
-   * @param limit Maximum number of clients to return
-   * @param offset Number of clients to skip
-   * @param status Optional status filter
-   * @returns Array of client profiles
+   * @param params Pagination and filtering parameters
+   * @returns Object containing client profiles and pagination metadata
    */
-  async getAllClients(
-    limit: number = 50,
-    offset: number = 0,
-    status?: ClientStatus
-  ): Promise<ClientPublicDTO[]> {
+  async getAllClients(params: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+    status?: ClientStatus;
+  }): Promise<{ data: ClientPublicDTO[]; meta: PaginationMeta }> {
+    const {
+      page = PAGINATION.DEFAULT_PAGE,
+      limit = PAGINATION.DEFAULT_LIMIT,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      status
+    } = params;
+    
     const where = status ? { status } : {};
+    const skip = getSkipValue(page, limit);
+    
+    // Validate sortBy field to prevent injection
+    const validSortFields = ['createdAt', 'companyName', 'status'];
+    const orderBy = {
+      [validSortFields.includes(sortBy) ? sortBy : 'createdAt']: sortOrder
+    };
 
-    const clients = await this.prisma.client.findMany({
-      where,
-      take: limit,
-      skip: offset,
-      orderBy: { createdAt: 'desc' }
-    });
+    const [clients, totalItems] = await Promise.all([
+      this.prisma.client.findMany({
+        where,
+        take: limit,
+        skip,
+        orderBy
+      }),
+      this.prisma.client.count({ where })
+    ]);
 
-    return mapClientsToPublicDTOs(clients);
+    const meta = calculatePaginationMeta(page, limit, totalItems);
+    
+    return {
+      data: mapClientsToPublicDTOs(clients),
+      meta
+    };
   }
 
   /**
@@ -267,22 +292,43 @@ export class ClientService {
   /**
    * Get clients by status with pagination
    * @param status Client status
-   * @param limit Maximum number of clients to return
-   * @param offset Number of clients to skip
-   * @returns Array of client profiles
+   * @param params Pagination and sorting parameters
+   * @returns Object containing client profiles and pagination metadata
    */
   async getClientsByStatus(
     status: ClientStatus,
-    limit: number = 50,
-    offset: number = 0
-  ): Promise<ClientPublicDTO[]> {
-    const clients = await this.prisma.client.findMany({
-      where: { status },
-      take: limit,
-      skip: offset,
-      orderBy: { createdAt: 'desc' }
-    });
+    params: PaginationParams & SortingParams
+  ): Promise<{ data: ClientPublicDTO[]; meta: PaginationMeta }> {
+    const {
+      page = PAGINATION.DEFAULT_PAGE,
+      limit = PAGINATION.DEFAULT_LIMIT,
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = params;
+    
+    const skip = getSkipValue(page, limit);
+    
+    // Validate sortBy field to prevent injection
+    const validSortFields = ['createdAt', 'companyName', 'status'];
+    const orderBy = {
+      [validSortFields.includes(sortBy) ? sortBy : 'createdAt']: sortOrder
+    };
 
-    return mapClientsToPublicDTOs(clients);
+    const [clients, totalItems] = await Promise.all([
+      this.prisma.client.findMany({
+        where: { status },
+        take: limit,
+        skip,
+        orderBy
+      }),
+      this.prisma.client.count({ where: { status } })
+    ]);
+
+    const meta = calculatePaginationMeta(page, limit, totalItems);
+    
+    return {
+      data: mapClientsToPublicDTOs(clients),
+      meta
+    };
   }
 }

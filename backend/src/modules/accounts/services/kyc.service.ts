@@ -10,9 +10,58 @@ import { KycStatus,
   type KycUpdateData 
 } from '@modules/accounts/types/kyc.types';
 import { createNotFound } from '@middleware/errorHandler';
+import { getSkipValue } from '@utils/pagination';
 
 export class KycService {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) {}
+
+  /**
+   * Update KYC record by provider reference
+   * @param provider KYC provider name
+   * @param referenceId Provider reference ID
+   * @param data Update data
+   * @returns Updated KYC record
+   */
+  public async updateByProviderReference(
+    provider: string,
+    referenceId: string,
+    data: KycUpdateData
+  ): Promise<KycRecord | null> {
+    try {
+      // Find KYC record by provider and reference ID
+      const kycRecord = await this.prisma.kycRecord.findFirst({
+        where: {
+          provider,
+          referenceId // Using referenceId field from the schema instead of providerReference
+        }
+      });
+
+      if (!kycRecord) {
+        return null;
+      }
+
+      // Update KYC record
+      const updatedRecord = await this.prisma.kycRecord.update({
+        where: {
+          id: kycRecord.id
+        },
+        data: {
+          status: data.status,
+          rejectionReason: data.rejectionReason,
+          verifiedAt: data.status === KycStatus.VERIFIED ? new Date() : kycRecord.verifiedAt
+        }
+      });
+
+      return updatedRecord;
+    } catch (error) {
+      // Use the logAccountError method instead of error directly
+      accountsLogger.logAccountError('updateByProviderReference', error, {
+        provider,
+        referenceId
+      });
+      throw error;
+    }
+  }
 
   /**
    * Get KYC record for a user
@@ -38,7 +87,15 @@ export class KycService {
     });
 
     if (!user) {
-      throw createNotFound('User not found');
+      throw createNotFound(
+        'User not found',
+        'USER_NOT_FOUND',
+        { 
+          userId,
+          resource: 'user',
+          suggestion: 'Verify the user ID is correct'
+        }
+      );
     }
 
     // Create or update KYC record
@@ -67,13 +124,38 @@ export class KycService {
   async updateKycStatus(userId: string, data: KycUpdateData): Promise<KycRecord> {
     const { status, rejectionReason } = data;
 
+    // Check if user exists
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!user) {
+      throw createNotFound(
+        'User not found',
+        'USER_NOT_FOUND',
+        { 
+          userId,
+          resource: 'user',
+          suggestion: 'Verify the user ID is correct'
+        }
+      );
+    }
+
     // Check if KYC record exists
     const existingRecord = await this.prisma.kycRecord.findUnique({
       where: { userId }
     });
 
     if (!existingRecord) {
-      throw createNotFound('KYC record not found');
+      throw createNotFound(
+        'KYC record not found',
+        'KYC_RECORD_NOT_FOUND',
+        { 
+          userId,
+          resource: 'kycRecord',
+          suggestion: 'The user may not have submitted KYC information yet'
+        }
+      );
     }
 
     // Update KYC record based on status
@@ -91,24 +173,35 @@ export class KycService {
   }
 
   /**
-   * Get all KYC records (admin only)
-   * @returns List of KYC records with user information
+   * Get all KYC records (admin only) with pagination
+   * @param page Page number
+   * @param limit Number of records per page
+   * @returns List of KYC records with user information and total count
    */
-  async getAllKycRecords(): Promise<KycRecordWithUser[]> {
-    return this.prisma.kycRecord.findMany({
-      include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            fullName: true
+  async getAllKycRecords(page: number = 1, limit: number = 10): Promise<{ kycRecords: KycRecordWithUser[], total: number }> {
+    const skip = getSkipValue(page, limit);
+    
+    const [kycRecords, total] = await Promise.all([
+      this.prisma.kycRecord.findMany({
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              fullName: true
+            }
           }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        skip,
+        take: limit
+      }),
+      this.prisma.kycRecord.count()
+    ]);
+    
+    return { kycRecords, total };
   }
 
   /**
@@ -138,7 +231,15 @@ export class KycService {
     });
 
     if (!user) {
-      throw createNotFound('User not found');
+      throw createNotFound(
+        'User not found',
+        'USER_NOT_FOUND',
+        { 
+          userId,
+          resource: 'user',
+          suggestion: 'Verify the user ID is correct'
+        }
+      );
     }
     
     // This is a placeholder - in the actual implementation, we would call a provider service

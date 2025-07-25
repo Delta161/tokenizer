@@ -20,8 +20,15 @@ export const KycUpdateSchema = z.object({
     errorMap: () => ({ message: 'Status must be PENDING, VERIFIED, or REJECTED' })
   }),
   rejectionReason: z.string().max(500).optional().nullable()
-    .refine(
-      (val, ctx) => !(ctx.parent.status === KycStatus.REJECTED && !val),
-      'Rejection reason is required when status is REJECTED'
-    )
+});
+
+// Add a superRefine to validate the relationship between status and rejectionReason
+export const KycUpdateSchemaWithRefinement = KycUpdateSchema.superRefine((data, ctx) => {
+  if (data.status === KycStatus.REJECTED && !data.rejectionReason) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Rejection reason is required when status is REJECTED',
+      path: ['rejectionReason']
+    });
+  }
 });

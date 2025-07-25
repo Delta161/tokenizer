@@ -13,6 +13,7 @@ import {
   propertyIdParamSchema,
   propertyFilterSchema
 } from '../validators/property.validators';
+import { createPaginationResult, getSkipValue } from '@utils/pagination';
 
 // Extend Express Request interface to include user property
 declare global {
@@ -58,15 +59,24 @@ export class PropertyController {
         return;
       }
 
-      const properties = await this.propertyService.getProperties({
+      const { properties, total } = await this.propertyService.getProperties({
         status,
         pagination: { page, limit },
         sort: sortBy && sortDirection ? { field: sortBy, direction: sortDirection } : undefined
       });
 
+      const result = createPaginationResult({
+        data: properties,
+        total,
+        page,
+        limit,
+        skip: getSkipValue(page, limit)
+      });
+
       res.status(200).json({
         success: true,
-        data: properties
+        data: result.data,
+        meta: result.meta
       });
     } catch (error) {
       console.error('Error fetching properties:', error);

@@ -11,6 +11,7 @@ import { authService } from '@modules/accounts/services/auth.service';
 import type { OAuthProfileDTO } from '@modules/accounts/types/auth.types';
 import { clearTokenCookies, setTokenCookies } from '@modules/accounts/utils/jwt';
 import { logger } from '@utils/logger';
+import { accountsLogger } from '@modules/accounts/utils/accounts.logger';
 import { createUnauthorized } from '@middleware/errorHandler';
 
 export class AuthController {
@@ -70,6 +71,7 @@ export class AuthController {
       
       if (!profile) {
         logger.error('OAuth authentication failed: No profile data');
+        accountsLogger.logAuthError('unknown', 'No profile data', profile?.provider || 'oauth');
         res.redirect(`${process.env.AUTH_ERROR_PATH || '/auth/error'}?error=authentication_failed`);
         return;
       }
@@ -80,14 +82,20 @@ export class AuthController {
       // Set token cookies
       setTokenCookies(res, result.accessToken, result.refreshToken);
       
+      // Log successful login
+      accountsLogger.logUserLogin(result.user.id, result.user.email, profile.provider);
+      
       // Redirect to frontend with success
       const redirectUrl = process.env.FRONTEND_URL;
       res.redirect(`${redirectUrl}/auth/callback?success=true`);
     } catch (error) {
       // Special case for OAuth - we want to redirect with error instead of using next(error)
-      logger.error('OAuth authentication error', { error: error instanceof Error ? error.message : 'Unknown error' });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      logger.error('OAuth authentication error', { error: errorMessage });
+      accountsLogger.logAuthError(profile?.email || 'unknown', errorMessage, profile?.provider || 'oauth');
+      
       const redirectUrl = process.env.FRONTEND_URL;
-      res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent(error instanceof Error ? error.message : 'Unknown error')}`);
+      res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent(errorMessage)}`);
     }
   }
   
@@ -96,7 +104,11 @@ export class AuthController {
    */
   async handleOAuthError(req: Request, res: Response, _next: NextFunction): Promise<void> {
     const error = req.query.error || 'Unknown error';
-    logger.error('OAuth error', { error });
+    const provider = req.query.provider || 'unknown';
+    const email = req.query.email || 'unknown';
+    
+    logger.error('OAuth error', { error, provider });
+    accountsLogger.logAuthError(email.toString(), error.toString(), provider.toString());
     
     const redirectUrl = process.env.FRONTEND_URL;
     res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent(error.toString())}`);
@@ -107,8 +119,16 @@ export class AuthController {
    */
   async logout(req: Request, res: Response, _next: NextFunction): Promise<void> {
     try {
+      // Get user ID from request if available
+      const userId = req.user?.id;
+      
       // Clear token cookies
       clearTokenCookies(res);
+      
+      // Log logout if user was authenticated
+      if (userId) {
+        accountsLogger.logUserLogout(userId);
+      }
       
       // Return success response
       res.status(200).json({ success: true, message: 'Logged out successfully' });
@@ -126,6 +146,7 @@ export class AuthController {
       const refreshToken = req.cookies.refreshToken;
       
       if (!refreshToken) {
+        accountsLogger.logAccountError('token_refresh', 'No refresh token provided', { ip: req.ip });
         return next(createUnauthorized('No refresh token provided'));
       }
       
@@ -138,9 +159,14 @@ export class AuthController {
       // Set new token cookies
       setTokenCookies(res, accessToken, newRefreshToken);
       
+      // Log token refresh
+      logger.debug('Token refreshed successfully', { userId: user.id });
+      
       // Return success response
       res.status(200).json({ success: true, accessToken });
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      accountsLogger.logAccountError('token_refresh', errorMessage, { ip: req.ip });
       next(error);
     }
   }

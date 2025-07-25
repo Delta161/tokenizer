@@ -23,6 +23,8 @@ import {
   FeaturedProjectsQuerySchema
 } from '../validators';
 import { mapToProjectDTO } from '../utils';
+import { PAGINATION } from '@config/constants';
+import { createPaginationResult, getSkipValue } from '@utils/pagination';
 
 export class ProjectController {
   private prisma: PrismaClient;
@@ -61,16 +63,19 @@ public listProjects = async (req: Request, res: Response): Promise<void> => {
     // Use the service to get projects
      const { projects, total } = await this.projectService.listProjects(options);
 
-     // Prepare and send response
+     // Prepare and send response using standardized pagination
+     const result = createPaginationResult({
+       data: projects,
+       total,
+       page: options.page,
+       limit: options.limit,
+       skip: getSkipValue(options.page, options.limit)
+     });
+     
      const response: ProjectListResponse = {
        success: true,
-       data: projects,
-       pagination: {
-         page: options.page,
-         limit: options.limit,
-         total,
-         hasMore: options.page * options.limit < total,
-       },
+       data: result.data,
+       meta: result.meta
      };
 
     res.status(200).json(response);

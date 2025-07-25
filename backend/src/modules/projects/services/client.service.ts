@@ -2,6 +2,8 @@ import { PrismaClient, ClientStatus, UserRole, Prisma } from '@prisma/client';
 import { ClientApplicationDTO, ClientUpdateDTO, ClientPublicDTO } from '../types';
 import { mapClientToDTO } from '../utils/mappers';
 import { logger } from '../../../utils/logger';
+import { PAGINATION } from '@config/constants';
+import { getSkipValue } from '@utils/pagination';
 
 /**
  * Service for client-related operations
@@ -148,16 +150,26 @@ export class ClientService {
   }
 
   /**
-   * Get all clients with optional filtering
-   * @param options Filter options
-   * @returns List of clients
+   * Get all clients with optional filtering and pagination
+   * @param options Filter and pagination options
+   * @returns List of clients and total count
    */
   async getClients(options?: {
     status?: ClientStatus;
+    page?: number;
     limit?: number;
-    offset?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
   }): Promise<{ clients: ClientPublicDTO[]; total: number }> {
-    const { status, limit = 50, offset = 0 } = options || {};
+    const { 
+      status, 
+      page = PAGINATION.DEFAULT_PAGE, 
+      limit = PAGINATION.DEFAULT_LIMIT, 
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = options || {};
+    
+    const skip = getSkipValue(page, limit);
 
     // Build where clause
     const where: Prisma.ClientWhereInput = {};
@@ -165,16 +177,20 @@ export class ClientService {
       where.status = status;
     }
 
-    // Get total count
-    const total = await this.prisma.client.count({ where });
+    // Build orderBy
+    const orderBy: any = {};
+    orderBy[sortBy] = sortOrder;
 
-    // Get clients with pagination
-    const clients = await this.prisma.client.findMany({
-      where,
-      take: limit,
-      skip: offset,
-      orderBy: { createdAt: 'desc' }
-    });
+    // Get total count and clients in parallel
+    const [total, clients] = await Promise.all([
+      this.prisma.client.count({ where }),
+      this.prisma.client.findMany({
+        where,
+        take: limit,
+        skip,
+        orderBy
+      })
+    ]);
 
     return {
       clients: clients.map(mapClientToDTO),

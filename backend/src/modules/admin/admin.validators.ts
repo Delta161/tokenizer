@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { UserRole, PropertyStatus } from '@prisma/client';
 import { KycStatus } from '@modules/accounts/types/kyc.types';
+import { PAGINATION } from '@/config/constants';
 
 /**
  * Validator for updating user role
@@ -60,9 +61,36 @@ export const adminNotificationSchema = z.object({
 });
 
 /**
+ * Common pagination validator
+ */
+export const paginationSchema = z.object({
+  page: z.string()
+    .refine(val => !val || (!isNaN(Number(val)) && Number(val) > 0), {
+      message: 'Page must be a positive number',
+    })
+    .optional()
+    .transform(val => val ? Number(val) : PAGINATION.DEFAULT_PAGE),
+  
+  limit: z.string()
+    .refine(val => !val || (!isNaN(Number(val)) && Number(val) > 0 && Number(val) <= PAGINATION.MAX_LIMIT), {
+      message: `Limit must be a positive number not exceeding ${PAGINATION.MAX_LIMIT}`,
+    })
+    .optional()
+    .transform(val => val ? Number(val) : PAGINATION.DEFAULT_LIMIT),
+});
+
+/**
+ * Common sorting validator
+ */
+export const sortingSchema = z.object({
+  sortBy: z.string().optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional().default('asc'),
+});
+
+/**
  * Validator for user list query parameters
  */
-export const userListQuerySchema = z.object({
+export const userListQuerySchema = paginationSchema.merge(sortingSchema).extend({
   role: z.nativeEnum(UserRole, {
     errorMap: () => ({ message: 'Invalid user role' }),
   }).optional(),
@@ -80,89 +108,42 @@ export const userListQuerySchema = z.object({
       message: 'Invalid date format for registrationDateTo',
     })
     .optional(),
-  
-  limit: z.string()
-    .refine(val => !val || (!isNaN(Number(val)) && Number(val) > 0), {
-      message: 'Limit must be a positive number',
-    })
-    .optional(),
-  
-  offset: z.string()
-    .refine(val => !val || (!isNaN(Number(val)) && Number(val) >= 0), {
-      message: 'Offset must be a non-negative number',
-    })
-    .optional(),
 });
 
 /**
  * Validator for property list query parameters
  */
-export const propertyListQuerySchema = z.object({
+export const propertyListQuerySchema = paginationSchema.merge(sortingSchema).extend({
   status: z.nativeEnum(PropertyStatus, {
     errorMap: () => ({ message: 'Invalid property status' }),
   }).optional(),
-  
-  limit: z.string()
-    .refine(val => !val || (!isNaN(Number(val)) && Number(val) > 0), {
-      message: 'Limit must be a positive number',
-    })
-    .optional(),
-  
-  offset: z.string()
-    .refine(val => !val || (!isNaN(Number(val)) && Number(val) >= 0), {
-      message: 'Offset must be a non-negative number',
-    })
-    .optional(),
 });
 
 /**
  * Validator for token list query parameters
  */
-export const tokenListQuerySchema = z.object({
+export const tokenListQuerySchema = paginationSchema.merge(sortingSchema).extend({
   symbol: z.string().optional(),
   
   chainId: z.string()
     .refine(val => !val || !isNaN(Number(val)), {
       message: 'Chain ID must be a number',
     })
-    .optional(),
+    .optional()
+    .transform(val => val ? Number(val) : undefined),
   
   propertyId: z.string().uuid('Invalid property ID format').optional(),
-  
-  limit: z.string()
-    .refine(val => !val || (!isNaN(Number(val)) && Number(val) > 0), {
-      message: 'Limit must be a positive number',
-    })
-    .optional(),
-  
-  offset: z.string()
-    .refine(val => !val || (!isNaN(Number(val)) && Number(val) >= 0), {
-      message: 'Offset must be a non-negative number',
-    })
-    .optional(),
 });
 
 /**
  * Validator for KYC list query parameters
  */
-export const kycListQuerySchema = z.object({
+export const kycListQuerySchema = paginationSchema.merge(sortingSchema).extend({
   status: z.nativeEnum(KycStatus, {
     errorMap: () => ({ message: 'Invalid KYC status' }),
   }).optional(),
   
   userId: z.string().uuid('Invalid user ID format').optional(),
-  
-  limit: z.string()
-    .refine(val => !val || (!isNaN(Number(val)) && Number(val) > 0), {
-      message: 'Limit must be a positive number',
-    })
-    .optional(),
-  
-  offset: z.string()
-    .refine(val => !val || (!isNaN(Number(val)) && Number(val) >= 0), {
-      message: 'Offset must be a non-negative number',
-    })
-    .optional(),
 });
 
 /**

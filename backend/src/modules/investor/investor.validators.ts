@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { Blockchain } from '@prisma/client';
+import { PAGINATION } from '@config/constants';
 import { isAddress } from 'ethers';
 
 /**
@@ -82,8 +83,10 @@ export const walletIdParamSchema = z.object({
  * Validation schema for investor listing query parameters
  */
 export const investorListQuerySchema = z.object({
-  limit: z.coerce.number().min(1).max(100).default(10),
-  offset: z.coerce.number().min(0).default(0),
+  page: z.coerce.number().min(1).default(PAGINATION.DEFAULT_PAGE),
+  limit: z.coerce.number().min(1).max(100).default(PAGINATION.DEFAULT_LIMIT),
+  sortBy: z.string().optional(),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
   isVerified: z.enum(['true', 'false']).optional().transform(val => val === 'true'),
   country: z.string().optional(),
 });

@@ -15,6 +15,8 @@ import {
   mapWalletToPublicDTO
 } from './investor.mapper.js';
 import { prisma as sharedPrisma } from './utils/prisma';
+import { PAGINATION } from '@config/constants';
+import { getSkipValue } from '@utils/pagination';
 
 export class InvestorService {
   private prisma: PrismaClient;
@@ -179,23 +181,45 @@ export class InvestorService {
   /**
    * Get all investors with optional filtering and pagination
    * @param query Query parameters for filtering and pagination
-   * @returns List of investor profiles
+   * @returns List of investor profiles and total count
    */
-  async getAllInvestors(query: InvestorListQuery): Promise<InvestorPublicDTO[]> {
-    const { limit = 10, offset = 0, isVerified, country } = query;
+  async getAllInvestors(query: InvestorListQuery): Promise<{ investors: InvestorPublicDTO[], total: number }> {
+    const { page = PAGINATION.DEFAULT_PAGE, limit = PAGINATION.DEFAULT_LIMIT, sortBy, sortOrder = 'desc', isVerified, country } = query;
+    const skip = getSkipValue(page, limit);
 
-    const investors = await this.prisma.investor.findMany({
-      where: {
-        isVerified: isVerified !== undefined ? isVerified : undefined,
-        country: country ? country : undefined,
-      },
-      include: { wallets: true },
-      take: limit,
-      skip: offset,
-      orderBy: { createdAt: 'desc' }
-    });
+    // Build where clause based on filters
+    const where: any = {};
+    if (isVerified !== undefined) {
+      where.isVerified = isVerified;
+    }
+    if (country) {
+      where.country = country;
+    }
 
-    return mapInvestorsToPublicDTOs(investors);
+    // Build orderBy based on sort options
+    const orderBy: any = {};
+    if (sortBy) {
+      orderBy[sortBy] = sortOrder;
+    } else {
+      orderBy.createdAt = 'desc';
+    }
+
+    // Get investors and total count in parallel
+    const [investors, total] = await Promise.all([
+      this.prisma.investor.findMany({
+        where,
+        include: { wallets: true },
+        take: limit,
+        skip,
+        orderBy
+      }),
+      this.prisma.investor.count({ where })
+    ]);
+
+    return { 
+      investors: mapInvestorsToPublicDTOs(investors),
+      total
+    };
   }
 
   /**
@@ -203,15 +227,19 @@ export class InvestorService {
    * @param query Query parameters for filtering
    * @returns Total count of matching investors
    */
-  async getInvestorCount(query: Omit<InvestorListQuery, 'limit' | 'offset'>): Promise<number> {
+  async getInvestorCount(query: Omit<InvestorListQuery, 'page' | 'limit' | 'sortBy' | 'sortOrder'>): Promise<number> {
     const { isVerified, country } = query;
-
-    return this.prisma.investor.count({
-      where: {
-        isVerified: isVerified !== undefined ? isVerified : undefined,
-        country: country ? country : undefined,
-      }
-    });
+    
+    // Build where clause based on filters
+    const where: any = {};
+    if (isVerified !== undefined) {
+      where.isVerified = isVerified;
+    }
+    if (country) {
+      where.country = country;
+    }
+    
+    return this.prisma.investor.count({ where });
   }
 
   /**

@@ -274,20 +274,20 @@ export class ClientController {
         return;
       }
 
-      const { limit = 50, offset = 0, status } = queryValidation.data;
+      const { page, limit, sortBy, sortOrder, status } = queryValidation.data;
 
-      const clients = await this.clientService.getAllClients(limit, offset, status);
-      const totalCount = await this.clientService.getClientCount(status);
+      const result = await this.clientService.getAllClients({
+        page,
+        limit,
+        sortBy,
+        sortOrder,
+        status
+      });
 
       res.status(200).json({
         success: true,
-        data: clients,
-        pagination: {
-          limit,
-          offset,
-          total: totalCount,
-          hasMore: offset + limit < totalCount
-        }
+        data: result.data,
+        meta: result.meta
       });
     } catch (error) {
       logger.error('Error fetching all clients:', error instanceof Error ? error.message : 'Unknown error');

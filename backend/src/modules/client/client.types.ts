@@ -68,11 +68,13 @@ export interface ClientProfileResponse {
 export interface ClientListResponse {
   success: true;
   data: ClientPublicDTO[];
-  pagination?: {
-    limit: number;
-    offset: number;
-    total: number;
-    hasMore: boolean;
+  meta: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
   };
 }
 
@@ -123,7 +125,9 @@ export interface ClientIdParams {
  * Query parameters for client listing
  */
 export interface ClientListQuery {
+  page?: number;
   limit?: number;
-  offset?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
   status?: ClientStatus;
 }

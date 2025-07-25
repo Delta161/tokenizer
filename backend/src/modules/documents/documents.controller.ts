@@ -6,6 +6,8 @@ import { mapDocumentToDto, mapToPaginatedDocumentsDto } from './documents.mapper
 import { LocalStorageAdapter } from './storage.adapter.js';
 import { getFilePath } from './upload.middleware.js';
 import { logger } from '@utils/logger';
+import { PAGINATION } from '@config/constants';
+import { createPaginationResult, getSkipValue } from '@utils/pagination';
 
 export class DocumentController {
   private documentService: DocumentService;
@@ -222,15 +224,22 @@ export class DocumentController {
         validationResult.data
       );
 
-      // Return paginated document DTOs
-      res.status(200).json(
-        mapToPaginatedDocumentsDto(
-          documents.map(doc => mapDocumentToDto(doc, req)),
-          total,
-          validationResult.data.page || 1,
-          validationResult.data.limit || 10
-        )
+      // Map documents to DTOs
+      const documentDtos = documents.map(doc => mapDocumentToDto(doc, req.protocol + '://' + req.get('host')));
+      
+      // Create pagination result
+      const result = createPaginationResult(
+        documentDtos,
+        total,
+        {
+          page: validationResult.data.page || PAGINATION.DEFAULT_PAGE,
+          limit: validationResult.data.limit || PAGINATION.DEFAULT_LIMIT,
+          skip: getSkipValue(validationResult.data.page || PAGINATION.DEFAULT_PAGE, validationResult.data.limit || PAGINATION.DEFAULT_LIMIT)
+        }
       );
+      
+      // Return response
+      res.status(200).json(result);
     } catch (error) {
       logger.error('Error listing documents', { module: 'documents', method: 'listDocuments' }, error instanceof Error ? error : new Error(String(error)));
       res.status(500).json({

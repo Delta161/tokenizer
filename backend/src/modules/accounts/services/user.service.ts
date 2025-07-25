@@ -9,6 +9,7 @@ import { PrismaClient } from '@prisma/client';
 // Internal modules
 import { PAGINATION } from '@config/constants';
 import { createNotFound, createBadRequest } from '@middleware/errorHandler';
+import { getSkipValue } from '@utils/pagination';
 import type { 
   CreateUserDTO, 
   UpdateUserDTO, 
@@ -27,8 +28,9 @@ export class UserService {
   /**
    * Get all users with pagination and filtering
    */
-  async getUsers(page = 1, limit = PAGINATION.DEFAULT_LIMIT, filters?: UserFilterOptions, sort?: UserSortOptions): Promise<{ users: UserDTO[], total: number }> {
-    const skip = (page - 1) * limit;
+  async getUsers(page = PAGINATION.DEFAULT_PAGE, limit = PAGINATION.DEFAULT_LIMIT, filters?: UserFilterOptions, sort?: UserSortOptions): Promise<{ users: UserDTO[], total: number }> {
+    // Calculate skip value using the utility function
+    const skip = getSkipValue(page, limit);
     
     // Build filter conditions
     const where: any = {};

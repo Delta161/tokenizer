@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ClientStatus } from '@prisma/client';
+import { PAGINATION } from '@config/constants';
 
 /**
  * Client application validation schema
@@ -94,17 +95,22 @@ export const clientIdParamSchema = z.object({
  * Client list query validation schema
  */
 export const clientListQuerySchema = z.object({
+  page: z.coerce.number()
+    .int('Page must be an integer')
+    .positive('Page must be a positive number')
+    .optional()
+    .default(PAGINATION.DEFAULT_PAGE),
   limit: z.coerce.number()
     .int('Limit must be an integer')
     .positive('Limit must be a positive number')
     .max(100, 'Limit cannot exceed 100')
     .optional()
-    .default(50),
-  offset: z.coerce.number()
-    .int('Offset must be an integer')
-    .nonnegative('Offset must be a non-negative number')
+    .default(PAGINATION.DEFAULT_LIMIT),
+  sortBy: z.string()
+    .optional(),
+  sortOrder: z.enum(['asc', 'desc'])
     .optional()
-    .default(0),
+    .default('desc'),
   status: z.nativeEnum(ClientStatus)
     .optional()
 });

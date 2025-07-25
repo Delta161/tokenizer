@@ -9,6 +9,7 @@ import {
   userListQuerySchema,
   propertyListQuerySchema,
   tokenListQuerySchema,
+  kycListQuerySchema,
 } from './admin.validators.js';
 import { AuthenticatedRequest } from '../accounts/types/auth.types.js';
 
@@ -28,14 +29,15 @@ export class AdminController {
       
       if (!parseResult.success) {
         return res.status(400).json({
+          success: false,
           error: 'Invalid query parameters',
           details: parseResult.error.format(),
         });
       }
 
-      const { role, email, registrationDateFrom, registrationDateTo, limit, offset } = parseResult.data;
+      const { role, email, registrationDateFrom, registrationDateTo, page, limit, sortBy, sortOrder } = parseResult.data;
       
-      const filters: any = { limit, offset };
+      const filters: any = { page, limit, sortBy, sortOrder };
       
       if (role) filters.role = role;
       if (email) filters.email = email;
@@ -46,7 +48,15 @@ export class AdminController {
       
       return res.json(result);
     } catch (error) {
-      next(error);
+      adminLogger.error('Error getting users', { 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+      
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to retrieve users',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   };
 
@@ -149,14 +159,15 @@ export class AdminController {
       
       if (!parseResult.success) {
         return res.status(400).json({
+          success: false,
           error: 'Invalid query parameters',
           details: parseResult.error.format(),
         });
       }
 
-      const { status, limit, offset } = parseResult.data;
+      const { status, page, limit, sortBy, sortOrder } = parseResult.data;
       
-      const filters: any = { limit, offset };
+      const filters: any = { page, limit, sortBy, sortOrder };
       if (status) filters.status = status;
 
       const result = await this.adminService.getProperties(filters);
@@ -166,7 +177,12 @@ export class AdminController {
       adminLogger.error('Error getting properties', { 
         error: error instanceof Error ? error.message : 'Unknown error' 
       });
-      next(error);
+      
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to retrieve properties',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   };
 
@@ -234,16 +250,17 @@ export class AdminController {
       
       if (!parseResult.success) {
         return res.status(400).json({
+          success: false,
           error: 'Invalid query parameters',
           details: parseResult.error.format(),
         });
       }
 
-      const { symbol, chainId, propertyId, limit, offset } = parseResult.data;
+      const { symbol, chainId, propertyId, page, limit, sortBy, sortOrder } = parseResult.data;
       
-      const filters: any = { limit, offset };
+      const filters: any = { page, limit, sortBy, sortOrder };
       if (symbol) filters.symbol = symbol;
-      if (chainId) filters.chainId = parseInt(chainId, 10);
+      if (chainId) filters.chainId = chainId; // Already transformed to number in validator
       if (propertyId) filters.propertyId = propertyId;
 
       const result = await this.adminService.getTokens(filters);
@@ -253,7 +270,12 @@ export class AdminController {
       adminLogger.error('Error getting tokens', { 
         error: error instanceof Error ? error.message : 'Unknown error' 
       });
-      next(error);
+      
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to retrieve tokens',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   };
 
@@ -285,14 +307,35 @@ export class AdminController {
    */
   getKycRecords = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // TODO: Add KYC list query schema validation
-      const result = await this.adminService.getKycRecords(req.query);
+      const parseResult = kycListQuerySchema.safeParse(req.query);
+      
+      if (!parseResult.success) {
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid query parameters',
+          details: parseResult.error.format(),
+        });
+      }
+
+      const { status, userId, page, limit, sortBy, sortOrder } = parseResult.data;
+      
+      const filters: any = { page, limit, sortBy, sortOrder };
+      if (status) filters.status = status;
+      if (userId) filters.userId = userId;
+
+      const result = await this.adminService.getKycRecords(filters);
+      
       return res.json(result);
     } catch (error) {
       adminLogger.error('Error getting KYC records', { 
         error: error instanceof Error ? error.message : 'Unknown error' 
       });
-      next(error);
+      
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to retrieve KYC records',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
     }
   };
 

@@ -9,6 +9,7 @@ import { Router } from 'express';
 // Internal modules
 import { userController } from '@modules/accounts/controllers/user.controller';
 import { authGuard, roleGuard } from '@/middleware/auth.middleware';
+import { paginationMiddleware } from '@/middleware/pagination';
 import { UserRole } from '@modules/accounts/types/auth.types';
 
 // Create router
@@ -35,7 +36,7 @@ router.patch('/profile', authGuard, userController.updateUser);
  * @desc    Get all users with pagination and filtering
  * @access  Admin only
  */
-router.get('/', authGuard, roleGuard(UserRole.ADMIN), userController.getUsers);
+router.get('/', authGuard, roleGuard(UserRole.ADMIN), paginationMiddleware, userController.getUsers);
 
 /**
  * @route   POST /api/users

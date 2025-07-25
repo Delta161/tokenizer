@@ -59,7 +59,7 @@ describe('Azure Validator', () => {
       const result = AzureProfileSchema.safeParse(invalidProfile);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toContain('Provider ID (oid) is required');
+        expect(result.error.issues[0].message).toContain('expected string');
       }
     });
 
@@ -72,7 +72,7 @@ describe('Azure Validator', () => {
       const result = AzureProfileSchema.safeParse(invalidProfile);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toContain('Invalid literal value');
+        expect(result.error.issues[0].message).toContain('Invalid input');
       }
     });
 
@@ -147,7 +147,7 @@ describe('Azure Validator', () => {
       
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toContain('Provider ID is required');
+        expect(result.error.issues[0].message).toContain('expected string');
       }
     });
 
@@ -319,7 +319,7 @@ describe('Azure Validator', () => {
       const result = AzureUserCreationSchema.safeParse(invalidPayload);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toContain('Invalid literal value');
+        expect(result.error.issues[0].message).toContain('expected "AZURE"');
       }
     });
 

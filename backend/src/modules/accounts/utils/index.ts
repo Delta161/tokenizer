@@ -20,3 +20,6 @@ export * from './kyc.utils';
 
 // Shared Prisma client
 export * from './prisma';
+
+// Accounts logger
+export * from './accounts.logger';

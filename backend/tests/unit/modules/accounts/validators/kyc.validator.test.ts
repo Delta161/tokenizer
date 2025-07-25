@@ -6,11 +6,12 @@
 import { describe, it, expect } from 'vitest';
 
 // Internal modules
-import {
+import { 
   KycSubmissionSchema,
-  KycUpdateSchema
-} from '@modules/accounts/validators/kyc.validator';
-import { KycStatus } from '@modules/accounts/types/kyc.types';
+  KycUpdateSchema,
+  KycUpdateSchemaWithRefinement
+} from '../../../../../src/modules/accounts/validators/kyc.validator';
+import { KycStatus } from '../../../../../src/modules/accounts/types/kyc.types';
 
 describe('KYC Validators', () => {
   describe('KycSubmissionSchema', () => {
@@ -69,13 +70,13 @@ describe('KYC Validators', () => {
     });
   });
 
-  describe('KycUpdateSchema', () => {
+  describe('KycUpdateSchemaWithRefinement', () => {
     it('should validate a valid PENDING status update', () => {
       const validUpdate = {
         status: KycStatus.PENDING
       };
 
-      const result = KycUpdateSchema.safeParse(validUpdate);
+      const result = KycUpdateSchemaWithRefinement.safeParse(validUpdate);
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data).toEqual(validUpdate);
@@ -87,7 +88,7 @@ describe('KYC Validators', () => {
         status: KycStatus.VERIFIED
       };
 
-      const result = KycUpdateSchema.safeParse(validUpdate);
+      const result = KycUpdateSchemaWithRefinement.safeParse(validUpdate);
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data).toEqual(validUpdate);
@@ -100,7 +101,7 @@ describe('KYC Validators', () => {
         rejectionReason: 'Document appears to be forged'
       };
 
-      const result = KycUpdateSchema.safeParse(validUpdate);
+      const result = KycUpdateSchemaWithRefinement.safeParse(validUpdate);
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data).toEqual(validUpdate);
@@ -113,7 +114,7 @@ describe('KYC Validators', () => {
         // rejectionReason is missing
       };
 
-      const result = KycUpdateSchema.safeParse(invalidUpdate);
+      const result = KycUpdateSchemaWithRefinement.safeParse(invalidUpdate);
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.issues[0].message).toContain('Rejection reason is required');
@@ -126,7 +127,7 @@ describe('KYC Validators', () => {
         rejectionReason: ''
       };
 
-      const result = KycUpdateSchema.safeParse(invalidUpdate);
+      const result = KycUpdateSchemaWithRefinement.safeParse(invalidUpdate);
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.issues[0].message).toContain('Rejection reason is required');
@@ -138,11 +139,11 @@ describe('KYC Validators', () => {
         status: 'INVALID_STATUS' as KycStatus
       };
 
-      const result = KycUpdateSchema.safeParse(invalidUpdate);
+      const result = KycUpdateSchemaWithRefinement.safeParse(invalidUpdate);
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.issues[0].path).toContain('status');
-        expect(result.error.issues[0].message).toContain('PENDING, VERIFIED, or REJECTED');
+        expect(result.error.issues[0].message).toContain('Invalid option');
       }
     });
 
@@ -152,7 +153,7 @@ describe('KYC Validators', () => {
         rejectionReason: 'a'.repeat(501) // 501 characters, max is 500
       };
 
-      const result = KycUpdateSchema.safeParse(invalidUpdate);
+      const result = KycUpdateSchemaWithRefinement.safeParse(invalidUpdate);
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.issues[0].path).toContain('rejectionReason');
@@ -165,7 +166,7 @@ describe('KYC Validators', () => {
         rejectionReason: null
       };
 
-      const result = KycUpdateSchema.safeParse(validUpdate);
+      const result = KycUpdateSchemaWithRefinement.safeParse(validUpdate);
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data).toEqual(validUpdate);

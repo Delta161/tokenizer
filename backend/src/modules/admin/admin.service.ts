@@ -1,7 +1,16 @@
 import { PrismaClient, UserRole, PropertyStatus } from '@prisma/client';
-import { UpdateUserRoleDto, UpdateUserStatusDto, ModeratePropertyDto, AdminNotificationDto } from './admin.types.js';
+import { 
+  UpdateUserRoleDto, 
+  UpdateUserStatusDto, 
+  ModeratePropertyDto, 
+  AdminNotificationDto,
+  PaginationParams,
+  SortingParams,
+  PaginationMeta
+} from './admin.types.js';
 import { logger } from '@utils/logger';
 import { NotificationTrigger } from '../notifications/services/notification.trigger.js';
+import { PAGINATION } from '@/config/constants';
 
 const prisma = new PrismaClient();
 
@@ -13,6 +22,27 @@ export class AdminService {
   }
 
   /**
+   * Helper function to calculate pagination metadata
+   */
+  private calculatePaginationMeta(page: number, limit: number, totalItems: number): PaginationMeta {
+    const totalPages = Math.ceil(totalItems / limit);
+    
+    return {
+      currentPage: page,
+      totalPages,
+      totalItems,
+      itemsPerPage: limit
+    };
+  }
+
+  /**
+   * Helper function to get skip value from page and limit
+   */
+  private getSkipValue(page: number, limit: number): number {
+    return (page - 1) * limit;
+  }
+
+  /**
    * Get all users with optional filtering
    */
   async getUsers(filters: {
@@ -20,10 +50,21 @@ export class AdminService {
     email?: string;
     registrationDateFrom?: Date;
     registrationDateTo?: Date;
+    page?: number;
     limit?: number;
-    offset?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
   }) {
-    const { role, email, registrationDateFrom, registrationDateTo, limit = 10, offset = 0 } = filters;
+    const { 
+      role, 
+      email, 
+      registrationDateFrom, 
+      registrationDateTo, 
+      page = PAGINATION.DEFAULT_PAGE, 
+      limit = PAGINATION.DEFAULT_LIMIT,
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = filters;
 
     const where: any = {};
     
@@ -50,6 +91,10 @@ export class AdminService {
       }
     }
 
+    const skip = this.getSkipValue(page, limit);
+    const orderBy: any = {};
+    orderBy[sortBy] = sortOrder;
+
     const [users, total] = await Promise.all([
       prisma.user.findMany({
         where,
@@ -63,14 +108,20 @@ export class AdminService {
           createdAt: true,
           updatedAt: true,
         },
-        skip: offset,
+        skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy,
       }),
       prisma.user.count({ where }),
     ]);
 
-    return { users, total };
+    const meta = this.calculatePaginationMeta(page, limit, total);
+
+    return { 
+      success: true, 
+      users, 
+      meta,
+    };
   }
 
   /**
@@ -187,15 +238,27 @@ export class AdminService {
    */
   async getProperties(filters: {
     status?: PropertyStatus;
+    page?: number;
     limit?: number;
-    offset?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
   }) {
-    const { status, limit = 10, offset = 0 } = filters;
+    const { 
+      status, 
+      page = PAGINATION.DEFAULT_PAGE, 
+      limit = PAGINATION.DEFAULT_LIMIT,
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = filters;
 
     const where: any = {};
     if (status) {
       where.status = status;
     }
+
+    const skip = this.getSkipValue(page, limit);
+    const orderBy: any = {};
+    orderBy[sortBy] = sortOrder;
 
     const [properties, total] = await Promise.all([
       prisma.property.findMany({
@@ -218,14 +281,20 @@ export class AdminService {
             },
           },
         },
-        skip: offset,
+        skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy,
       }),
       prisma.property.count({ where }),
     ]);
 
-    return { properties, total };
+    const meta = this.calculatePaginationMeta(page, limit, total);
+
+    return { 
+      success: true, 
+      properties, 
+      meta 
+    };
   }
 
   /**
@@ -331,10 +400,20 @@ export class AdminService {
     symbol?: string;
     chainId?: number;
     propertyId?: string;
+    page?: number;
     limit?: number;
-    offset?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
   }) {
-    const { symbol, chainId, propertyId, limit = 10, offset = 0 } = filters;
+    const { 
+      symbol, 
+      chainId, 
+      propertyId, 
+      page = PAGINATION.DEFAULT_PAGE, 
+      limit = PAGINATION.DEFAULT_LIMIT,
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = filters;
 
     const where: any = {};
     
@@ -352,6 +431,10 @@ export class AdminService {
     if (propertyId) {
       where.propertyId = propertyId;
     }
+
+    const skip = this.getSkipValue(page, limit);
+    const orderBy: any = {};
+    orderBy[sortBy] = sortOrder;
 
     const [tokens, total] = await Promise.all([
       prisma.token.findMany({
@@ -371,14 +454,20 @@ export class AdminService {
             },
           },
         },
-        skip: offset,
+        skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy,
       }),
       prisma.token.count({ where }),
     ]);
 
-    return { tokens, total };
+    const meta = this.calculatePaginationMeta(page, limit, total);
+
+    return { 
+      success: true, 
+      tokens, 
+      meta 
+    };
   }
 
   /**
@@ -417,8 +506,22 @@ export class AdminService {
   /**
    * Get all KYC records with optional filtering
    */
-  async getKycRecords(filters: any) {
-    const { status, userId, limit = 10, offset = 0 } = filters;
+  async getKycRecords(filters: {
+    status?: string;
+    userId?: string;
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }) {
+    const { 
+      status, 
+      userId, 
+      page = PAGINATION.DEFAULT_PAGE, 
+      limit = PAGINATION.DEFAULT_LIMIT,
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = filters;
 
     const where: any = {};
     
@@ -429,6 +532,10 @@ export class AdminService {
     if (userId) {
       where.userId = userId;
     }
+
+    const skip = this.getSkipValue(page, limit);
+    const orderBy: any = {};
+    orderBy[sortBy] = sortOrder;
 
     const [kycRecords, total] = await Promise.all([
       prisma.kycRecord.findMany({
@@ -447,14 +554,20 @@ export class AdminService {
             },
           },
         },
-        skip: offset,
+        skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy,
       }),
       prisma.kycRecord.count({ where }),
     ]);
 
-    return { kycRecords, total };
+    const meta = this.calculatePaginationMeta(page, limit, total);
+
+    return { 
+      success: true, 
+      kycRecords, 
+      meta 
+    };
   }
 
   /**

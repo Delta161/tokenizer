@@ -12,6 +12,7 @@ import {
   parseInvestorListQuery
 } from './investor.validators.js';
 import { AuthenticatedRequest } from '../accounts/types/auth.types.js';
+import { createPaginationResult, getSkipValue } from '@utils/pagination';
 
 export class InvestorController {
   private prisma?: PrismaClient;
@@ -176,19 +177,21 @@ export class InvestorController {
         return;
       }
 
-      const { limit, offset, ...filters } = parseResult.data;
-      const investors = await this.getService().getAllInvestors({ limit, offset, ...filters });
-      const total = await this.getService().getInvestorCount(filters);
+      const { page, limit, sortBy, sortOrder, ...filters } = parseResult.data;
+      const { investors, total } = await this.getService().getAllInvestors({ page, limit, sortBy, sortOrder, ...filters });
+
+      const result = createPaginationResult({
+        data: investors,
+        total,
+        page,
+        limit,
+        skip: getSkipValue(page, limit)
+      });
 
       res.status(200).json({
         success: true,
-        data: investors,
-        pagination: {
-          limit,
-          offset,
-          total,
-          hasMore: offset + investors.length < total
-        }
+        data: result.data,
+        meta: result.meta
       });
     } catch (error) {
       console.error('Error getting all investors:', error);

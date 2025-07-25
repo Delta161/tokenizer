@@ -2,6 +2,32 @@ import { UserRole, PropertyStatus } from '@prisma/client';
 import { KycStatus } from '@modules/accounts/types/kyc.types';
 
 /**
+ * Pagination parameters
+ */
+export interface PaginationParams {
+  page?: number;
+  limit?: number;
+}
+
+/**
+ * Sorting parameters
+ */
+export interface SortingParams {
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+/**
+ * Paginated response metadata
+ */
+export interface PaginationMeta {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+}
+
+/**
  * DTO for updating a user's role
  */
 export interface UpdateUserRoleDto {
@@ -35,49 +61,42 @@ export interface AdminNotificationDto {
 /**
  * Query parameters for listing users
  */
-export interface UserListQueryParams {
+export interface UserListQueryParams extends PaginationParams, SortingParams {
   role?: UserRole;
   email?: string;
   registrationDateFrom?: string;
   registrationDateTo?: string;
-  limit?: number;
-  offset?: number;
 }
 
 /**
  * Query parameters for listing properties
  */
-export interface PropertyListQueryParams {
+export interface PropertyListQueryParams extends PaginationParams, SortingParams {
   status?: PropertyStatus;
-  limit?: number;
-  offset?: number;
 }
 
 /**
  * Query parameters for listing tokens
  */
-export interface TokenListQueryParams {
+export interface TokenListQueryParams extends PaginationParams, SortingParams {
   symbol?: string;
   chainId?: number;
   propertyId?: string;
-  limit?: number;
-  offset?: number;
 }
 
 /**
  * Query parameters for listing KYC records
  */
-export interface KycListQueryParams {
+export interface KycListQueryParams extends PaginationParams, SortingParams {
   status?: KycStatus;
   userId?: string;
-  limit?: number;
-  offset?: number;
 }
 
 /**
  * Response for user list
  */
 export interface UserListResponse {
+  success: boolean;
   users: Array<{
     id: string;
     email: string;
@@ -88,13 +107,16 @@ export interface UserListResponse {
     createdAt: Date;
     updatedAt: Date;
   }>;
-  total: number;
+  meta: PaginationMeta;
+  error?: string;
+  message?: string;
 }
 
 /**
  * Response for property list
  */
 export interface PropertyListResponse {
+  success: boolean;
   properties: Array<{
     id: string;
     title: string;
@@ -111,13 +133,16 @@ export interface PropertyListResponse {
       email: string;
     };
   }>;
-  total: number;
+  meta: PaginationMeta;
+  error?: string;
+  message?: string;
 }
 
 /**
  * Response for token list
  */
 export interface TokenListResponse {
+  success: boolean;
   tokens: Array<{
     id: string;
     symbol: string;
@@ -131,13 +156,16 @@ export interface TokenListResponse {
       title: string;
     };
   }>;
-  total: number;
+  meta: PaginationMeta;
+  error?: string;
+  message?: string;
 }
 
 /**
  * Response for KYC record list
  */
 export interface KycListResponse {
+  success: boolean;
   kycRecords: Array<{
     id: string;
     status: KycStatus;
@@ -150,7 +178,9 @@ export interface KycListResponse {
       email: string;
     };
   }>;
-  total: number;
+  meta: PaginationMeta;
+  error?: string;
+  message?: string;
 }
 
 /**

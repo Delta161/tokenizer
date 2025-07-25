@@ -6,48 +6,97 @@
     "dev:old": "node server.js",
     "start:old": "node server.js",
     "build": "tsc",
-    "seed": "ts-node --transpile-only --require tsconfig-paths/register prisma/seed.ts"
+    "seed": "ts-node --transpile-only --require tsconfig-paths/register prisma/seed.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
+
   "dependencies": {
+
     "@prisma/client": "^6.11.1",
+
     "@types/cookie-parser": "^1.4.9",
+
     "@types/jsonwebtoken": "^9.0.10",
+
     "@types/pino": "^7.0.4",
+
     "compression": "^1.8.1",
+
     "cookie-parser": "^1.4.7",
+
     "cors": "^2.8.5",
+
     "dotenv": "^17.2.0",
+
     "ethers": "^6.15.0",
+
     "express": "^5.1.0",
+
     "express-rate-limit": "^8.0.1",
+
     "express-session": "^1.18.2",
+
     "express-validator": "^7.2.1",
+
     "hardhat": "^2.26.0",
+
     "helmet": "^8.1.0",
+
     "jsonwebtoken": "^9.0.2",
+
     "morgan": "^1.10.1",
+
     "multer": "^2.0.2",
+
     "node-fetch": "^3.3.2",
+
     "passport": "^0.7.0",
+
     "passport-apple": "^2.0.2",
+
     "passport-azure-ad": "^4.3.5",
+
     "passport-google-oauth20": "^2.0.0",
+
     "prisma": "^6.11.1",
+
     "winston": "^3.17.0",
+
     "zod": "^4.0.5"
+
   },
+
   "devDependencies": {
+
     "@types/express": "^5.0.3",
+
     "@types/multer": "^2.0.0",
+
     "@types/node": "^24.0.13",
+
     "@types/passport": "^1.0.17",
+
     "@types/passport-google-oauth20": "^2.0.16",
+
     "@typescript-eslint/eslint-plugin": "^8.37.0",
+
     "@typescript-eslint/parser": "^8.37.0",
+
     "eslint": "^9.31.0",
+
     "ts-node-dev": "^2.0.0",
+
     "tsconfig-paths": "^4.2.0",
+
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+
+    "typescript": "^5.8.3",
+
+    "vitest": "^3.2.4"
+
   }
+
 }
+

@@ -69,11 +69,11 @@ export const NormalizedProfileSchema = z.object({
 export const RelaxedNormalizedProfileSchema = z.object({
   provider: z.string().min(1, 'Provider is required'),
   providerId: z.string().min(1, 'Provider ID is required'),
-  email: z.string().email('Invalid email format').optional(),
+  email: z.string().optional(), // Removed email validation to make it truly relaxed
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   displayName: z.string().optional(),
-  avatarUrl: z.string().url('Invalid avatar URL').optional(),
+  avatarUrl: z.string().optional(), // Removed URL validation to make it truly relaxed
   role: z.enum(['INVESTOR', 'CLIENT', 'ADMIN']).optional(),
   _json: z.any().optional()
 });

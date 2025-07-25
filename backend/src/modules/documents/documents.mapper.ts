@@ -58,13 +58,18 @@ export const mapToPaginatedDocumentsDto = (
   page: number,
   limit: number
 ): PaginatedDocumentsDto => {
+  const totalPages = Math.ceil(total / limit);
+  
   return {
+    success: true,
     data: mapDocumentsToDto(documents, baseUrl),
-    pagination: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
+    meta: {
+      currentPage: page,
+      totalPages,
+      totalItems: total,
+      itemsPerPage: limit,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1
+    }
   };
 };

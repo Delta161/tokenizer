@@ -15,6 +15,8 @@ import {
   PropertyPaginationOptions
 } from '../types';
 import { mapPropertyToDTO } from '../utils/mappers';
+import { PAGINATION } from '@config/constants';
+import { getSkipValue } from '@utils/pagination';
 
 // Custom error classes for better error handling
 export class PropertyNotFoundError extends Error {
@@ -47,60 +49,63 @@ export class PropertyService {
 
   /**
    * Get properties with filtering, sorting, and pagination
-   * @param filter Filter options
-   * @param sort Sort options
-   * @param pagination Pagination options
+   * @param options Options for filtering, sorting, and pagination
    * @returns Properties and count
    */
-  async getProperties(
-    filter: PropertyFilterOptions = {},
-    sort: PropertySortOptions = { field: 'createdAt', direction: 'desc' },
-    pagination: PropertyPaginationOptions = { page: 1, limit: 10 }
-  ): Promise<{ properties: PropertyDTO[]; total: number }> {
+  async getProperties(options: {
+    status?: PropertyStatus;
+    clientId?: string;
+    pagination?: PropertyPaginationOptions;
+    sort?: PropertySortOptions;
+  } = {}): Promise<{ properties: PropertyDTO[]; total: number }> {
     try {
       // Build where clause based on filters
       const where: Prisma.PropertyWhereInput = {};
       
-      if (filter.status) {
-        where.status = filter.status;
+      if (options.status) {
+        where.status = options.status;
       }
       
-      if (filter.clientId) {
-        where.clientId = filter.clientId;
+      if (options.clientId) {
+        where.clientId = options.clientId;
       }
       
       // Calculate pagination values
-      const page = pagination.page || 1;
-      const limit = pagination.limit || 10;
-      const skip = (page - 1) * limit;
+      const page = options.pagination?.page || PAGINATION.DEFAULT_PAGE;
+      const limit = options.pagination?.limit || PAGINATION.DEFAULT_LIMIT;
+      const skip = getSkipValue(page, limit);
       
       // Build orderBy based on sort options
+      const sortField = options.sort?.field || 'createdAt';
+      const sortDirection = options.sort?.direction || 'desc';
       const orderBy: Prisma.PropertyOrderByWithRelationInput = {
-        [sort.field]: sort.direction
+        [sortField]: sortDirection
       };
       
-      // Get total count for pagination
-      const total = await this.prisma.property.count({ where });
-      
-      // Get paginated properties
-      const properties = await this.prisma.property.findMany({
-        where,
-        orderBy,
-        skip,
-        take: limit,
-        include: {
-          client: {
-            select: {
-              companyName: true,
-              user: {
-                select: {
-                  email: true
+      // Get properties and total count in parallel
+      const [properties, total] = await Promise.all([
+        this.prisma.property.findMany({
+          where,
+          orderBy,
+          skip,
+          take: limit,
+          include: {
+            client: {
+              select: {
+                companyName: true,
+                user: {
+                  select: {
+                    email: true
+                  }
                 }
               }
             }
           }
-        }
-      });
+        }),
+        this.prisma.property.count({
+          where
+        })
+      ]);
       
       // Map to DTOs
       const propertyDTOs = properties.map(property => mapPropertyToDTO(property));

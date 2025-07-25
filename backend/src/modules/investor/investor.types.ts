@@ -111,12 +111,16 @@ export interface InvestorProfileResponse {
 export interface InvestorListResponse {
   success: true;
   data: InvestorPublicDTO[];
-  pagination?: {
-    limit: number;
-    offset: number;
-    total: number;
-    hasMore: boolean;
+  meta: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
   };
+  error?: string;
+  message?: string;
 }
 
 /**
@@ -188,8 +192,10 @@ export interface WalletIdParams {
  * Query parameters for investor listing
  */
 export interface InvestorListQuery {
+  page?: number;
   limit?: number;
-  offset?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
   isVerified?: boolean;
   country?: string;
 }

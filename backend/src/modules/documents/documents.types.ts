@@ -53,13 +53,18 @@ export interface DocumentWithRelations extends Document {
  * Paginated response for document listings
  */
 export interface PaginatedDocumentsDto {
+  success: boolean;
   data: DocumentDto[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
+  meta: {
+    currentPage: number;
     totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
   };
+  error?: string;
+  message?: string;
 }
 
 /**

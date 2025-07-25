@@ -6,6 +6,7 @@ import { AuthenticatedRequest } from './auth.middleware';
 import { KycService } from '@modules/accounts/services/kyc.service';
 import { logger } from '@utils/logger';
 import { prisma } from '../prisma/client';
+import { accountsLogger } from '@modules/accounts/utils/accounts.logger';
 
 // Create a singleton instance of the KYC service
 let kycService: KycService | null = null;
@@ -32,34 +33,95 @@ export const requireKycVerified = async (
 ): Promise<void> => {
   try {
     if (!req.user?.id) {
+      logger.warn('KYC verification attempted without authentication', {
+        action: 'KYC_CHECK_UNAUTHENTICATED',
+        module: 'accounts',
+        path: req.path,
+        method: req.method
+      });
+      
+      accountsLogger.logAuthError('requireKycVerified', new Error('Authentication required'), {
+        path: req.path,
+        method: req.method
+      });
+      
       res.status(401).json({
         success: false,
-        error: 'Authentication required',
-        message: 'You must be logged in to access this resource'
+        message: 'Authentication required',
+        errorCode: 'AUTH_REQUIRED',
+        details: {
+          requiredAction: 'login',
+          suggestion: 'Please login to access this resource'
+        }
       });
       return;
     }
+
+    logger.info(`Checking KYC verification status for user ${req.user.id}`, {
+      action: 'KYC_VERIFICATION_CHECK',
+      module: 'accounts',
+      userId: req.user.id,
+      path: req.path,
+      method: req.method
+    });
 
     const service = getKycService();
     const isVerified = await service.isKycVerified(req.user.id);
 
     if (!isVerified) {
+      logger.warn(`KYC verification required for user ${req.user.id} to access ${req.path}`, {
+        action: 'KYC_VERIFICATION_REQUIRED',
+        module: 'accounts',
+        userId: req.user.id,
+        path: req.path,
+        method: req.method
+      });
+      
+      // Log KYC verification requirement
+      accountsLogger.logKycVerificationRequired(req.user.id, req.path);
+      
       res.status(403).json({
         success: false,
-        error: 'KYC verification required',
-        message: 'You must complete KYC verification to access this resource',
-        kycStatus: 'NOT_VERIFIED'
+        message: 'KYC verification required',
+        errorCode: 'KYC_VERIFICATION_REQUIRED',
+        details: {
+          userId: req.user.id,
+          kycStatus: 'NOT_VERIFIED',
+          requiredAction: 'Complete KYC verification process',
+          kycEndpoint: '/api/kyc/me'
+        }
       });
       return;
     }
 
+    logger.info(`KYC verification successful for user ${req.user.id}`, {
+      action: 'KYC_VERIFICATION_SUCCESS',
+      module: 'accounts',
+      userId: req.user.id,
+      path: req.path,
+      method: req.method
+    });
+
     next();
   } catch (error) {
-    logger.error('KYC verification middleware error', { module: 'accounts' }, error instanceof Error ? error : new Error(String(error)));
+    const userId = req.user?.id;
+    logger.error('KYC verification middleware error', { 
+      module: 'accounts',
+      userId,
+      path: req.path,
+      method: req.method
+    }, error instanceof Error ? error : new Error(String(error)));
+    
+    // Log error with accountsLogger
+    accountsLogger.logAccountError('requireKycVerified', error, { userId, path: req.path });
+    
     res.status(500).json({
       success: false,
-      error: 'Internal server error',
-      message: 'An error occurred while checking KYC verification status'
+      message: 'An error occurred while checking KYC verification status',
+      errorCode: 'KYC_CHECK_ERROR',
+      details: {
+        serverIssue: true
+      }
     });
   }
 };

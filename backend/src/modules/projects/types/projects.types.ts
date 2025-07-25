@@ -76,13 +76,15 @@ export interface ClientProfileResponse {
  * Client list response wrapper
  */
 export interface ClientListResponse {
-  success: true;
+  success: boolean;
   data: ClientPublicDTO[];
-  pagination?: {
-    limit: number;
-    offset: number;
-    total: number;
-    hasMore: boolean;
+  meta?: {
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    }
   };
 }
 
@@ -124,8 +126,10 @@ export interface ClientIdParams {
  * Query parameters for client listing
  */
 export interface ClientListQuery {
+  page?: number;
   limit?: number;
-  offset?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
   status?: ClientStatus;
 }
 
@@ -344,11 +348,13 @@ export interface ProjectDTO {
 export interface ProjectListResponse {
   success: boolean;
   data: ProjectDTO[];
-  pagination?: {
-    page: number;
-    limit: number;
-    total: number;
-    hasMore: boolean;
+  meta: {
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    }
   };
   error?: string;
   message?: string;

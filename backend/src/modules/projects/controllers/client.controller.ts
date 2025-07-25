@@ -10,6 +10,8 @@ import {
 } from '../validators/client.validators';
 import { AuthenticatedRequest } from '../../auth/auth.types';
 import { logger } from '../../../utils/logger';
+import { PAGINATION } from '../../../config/constants';
+import { createPaginationResult, getSkipValue } from '../../../utils/pagination';
 
 /**
  * Controller for client-related operations
@@ -246,18 +248,22 @@ export class ClientController {
 
       const { clients, total } = await this.clientService.listClients(validation.data);
 
-      const limit = validation.data.limit || 10;
-      const offset = validation.data.offset || 0;
+      const page = validation.data.page || PAGINATION.DEFAULT_PAGE;
+      const limit = validation.data.limit || PAGINATION.DEFAULT_LIMIT;
+      const skip = getSkipValue(page, limit);
+      
+      const result = createPaginationResult({
+        data: clients,
+        total,
+        page,
+        limit,
+        skip
+      });
 
       res.status(200).json({
         success: true,
-        data: clients,
-        pagination: {
-          limit,
-          offset,
-          total,
-          hasMore: offset + clients.length < total
-        }
+        data: result.data,
+        meta: result.meta
       });
     } catch (error) {
       logger.error('Error listing clients:', error);

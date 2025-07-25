@@ -1,1 +1,35 @@
 2025-07-25 11:32:34:3234 [31merror[39m: [31mToken verification failed[39m
+2025-07-25 16:47:53:4753 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `this.prisma.kycRecord.findFirst()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\services\kyc.service.ts:32:53[39m
+
+[31m  29 ): Promise<KycRecord | null> {[39m
+[31m  30   try {[39m
+[31m  31     // Find KYC record by provider and reference ID[39m
+[31m→ 32     const kycRecord = await this.prisma.kycRecord.findFirst({[39m
+[31m           where: {[39m
+[31m             provider: "sumsub",[39m
+[31m             providerReference: "sumsub_test_1753454873152_l83dmtma",[39m
+[31m             ~~~~~~~~~~~~~~~~~[39m
+[31m         ?   AND?: KycRecordWhereInput | KycRecordWhereInput[],[39m
+[31m         ?   OR?: KycRecordWhereInput[],[39m
+[31m         ?   NOT?: KycRecordWhereInput | KycRecordWhereInput[],[39m
+[31m         ?   id?: StringFilter | String,[39m
+[31m         ?   userId?: StringFilter | String,[39m
+[31m         ?   status?: StringFilter | String,[39m
+[31m         ?   documentType?: StringNullableFilter | String | Null,[39m
+[31m         ?   country?: StringNullableFilter | String | Null,[39m
+[31m         ?   verifiedAt?: DateTimeNullableFilter | DateTime | Null,[39m
+[31m         ?   rejectedAt?: DateTimeNullableFilter | DateTime | Null,[39m
+[31m         ?   rejectionReason?: StringNullableFilter | String | Null,[39m
+[31m         ?   createdAt?: DateTimeFilter | DateTime,[39m
+[31m         ?   updatedAt?: DateTimeFilter | DateTime,[39m
+[31m         ?   referenceId?: StringNullableFilter | String | Null,[39m
+[31m         ?   providerData?: JsonNullableFilter,[39m
+[31m         ?   user?: UserScalarRelationFilter | UserWhereInput[39m
+[31m           }[39m
+[31m         })[39m
+
+[31mUnknown argument `providerReference`. Available options are marked with ?.[39m
+2025-07-25 16:47:53:4753 [31merror[39m: [31mTypeError: import_accounts.accountsLogger.error is not a function[39m
+2025-07-25 16:55:59:5559 [31merror[39m: [31mAccount error during handleSumsubWebhook: KYC record not found for referenceId: sumsub_test_1753455358716_8ps1rxf0[39m
