@@ -17,7 +17,8 @@ const sections: SectionRegistry = {
   // 'dashboard/stats': () => import('./dashboard/StatsSection.vue'),
   
   // Property sections
-  // 'property/list': () => import('./property/PropertyListSection.vue'),
+  'property/list': () => import('./property/PropertyListSection.vue'),
+  'property/card': () => import('./property/PropertyCardSection.vue'),
   // 'property/detail': () => import('./property/PropertyDetailSection.vue'),
   
   // Investment sections

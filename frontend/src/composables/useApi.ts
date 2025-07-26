@@ -1,8 +1,8 @@
 import { ref } from 'vue'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios from 'axios'
 import { useLoading } from './useLoading'
-import apiClient from '@/services/apiClient'
-import { useAuthStore } from '@/modules/Auth/store/authStore'
+// Import apiClient lazily to avoid circular dependency
 import errorHandler from '@/services/errorHandler'
 
 /**
@@ -22,11 +22,29 @@ export function useApi(options: ApiOptions = {}) {
   // Use the provided loading composable
   const { isLoading, error, withLoading, clearError, setError } = useLoading()
   
-  // Use the provided axios instance or the centralized apiClient
-  const api = options.axiosInstance || apiClient
+  // Use the provided axios instance or create a new one
+  let api: AxiosInstance;
   
-  // Get auth store for token management
-  const authStore = useAuthStore()
+  if (options.axiosInstance) {
+    api = options.axiosInstance;
+  } else {
+    // Lazy import to avoid circular dependency
+    try {
+      // Try to import apiClient dynamically
+      const apiClientModule = require('@/services/apiClient').default;
+      api = apiClientModule;
+    } catch (e) {
+      // Fallback to creating a new axios instance
+      api = axios.create({
+        baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
+        withCredentials: true,
+        timeout: 15000,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+  }
   
   /**
    * Make a GET request
@@ -149,7 +167,8 @@ export function useApi(options: ApiOptions = {}) {
   }
   
   /**
-   * Handle API errors and set the error message
+   * Handle API errors with consistent error handling
+   * @param err - The error object from axios
    */
   function handleApiError(err: any): void {
     // Process the error through our error handler
@@ -157,6 +176,18 @@ export function useApi(options: ApiOptions = {}) {
     
     // Set the error message in the loading state
     setError(appError.message);
+    
+    // Handle authentication errors
+    if (appError.statusCode === 401) {
+      // If unauthorized, clear local storage
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('tokenExpiresAt')
+      localStorage.removeItem('refreshToken')
+      localStorage.removeItem('user')
+      
+      // Redirect to login page
+      window.location.href = '/login'
+    }
     
     // Show a notification for the error
     errorHandler.showErrorNotification(appError);

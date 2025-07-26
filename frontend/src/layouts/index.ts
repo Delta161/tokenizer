@@ -1,12 +1,15 @@
 import DefaultLayout from './DefaultLayout.vue'
 import AuthLayout from './AuthLayout.vue'
+import PropertiesLayout from './PropertiesLayout.vue'
 
 export {
   DefaultLayout,
-  AuthLayout
+  AuthLayout,
+  PropertiesLayout
 }
 
 export default {
   DefaultLayout,
-  AuthLayout
+  AuthLayout,
+  PropertiesLayout
 }

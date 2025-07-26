@@ -1,6 +1,28 @@
 // Auth Module Services
 import type { LoginCredentials, RegisterData, AuthResponse, PasswordResetRequest, PasswordResetConfirm } from '../types';
-import { mapBackendUserToFrontend } from '../../User/utils/userMapper';
+// Import User type from Accounts module instead of directly from User
+import { User } from '../../Accounts';
+
+// Define a mapper function that matches the expected interface
+const mapBackendUserToFrontend = (backendUser: any): User => {
+  // Extract first and last name from fullName
+  const nameParts = backendUser.fullName ? backendUser.fullName.split(' ') : ['', ''];
+  const firstName = nameParts[0] || '';
+  const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+  
+  // Create the frontend user object
+  return {
+    id: backendUser.id,
+    email: backendUser.email,
+    firstName,
+    lastName,
+    role: backendUser.role,
+    createdAt: backendUser.createdAt,
+    updatedAt: backendUser.updatedAt,
+    profile: backendUser.profile,
+    settings: backendUser.settings
+  };
+};
 
 /**
  * Service for handling authentication-related API calls

@@ -47,7 +47,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import apiClient from '../services/apiClient';
-import { useAuthStore } from '../modules/Auth/store/authStore';
+import { useAuthStore } from '../modules/Accounts';
 
 interface User {
   id?: string;

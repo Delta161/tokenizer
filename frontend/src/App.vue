@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
-import { useAuthStore } from './modules/Auth/store/authStore'
+import { useAuthStore } from './modules/Accounts'
 import ErrorBanner from './components/ErrorBanner.vue'
 import NotificationContainer from './components/NotificationContainer.vue'
 import DefaultLayout from './layouts/DefaultLayout.vue'
 import AuthLayout from './layouts/AuthLayout.vue'
+import PropertiesLayout from './layouts/PropertiesLayout.vue'
 
 // Get route and auth store
 const route = useRoute()
@@ -17,6 +18,8 @@ const layoutComponent = computed(() => {
     return DefaultLayout
   } else if (route.meta.layout === 'AuthLayout') {
     return AuthLayout
+  } else if (route.meta.layout === 'PropertiesLayout') {
+    return PropertiesLayout
   }
   return null
 })

@@ -16,6 +16,7 @@ const toggleMobileMenu = () => {
       <div class="mobile-nav-links">
         <RouterLink to="/" class="nav-link" @click="toggleMobileMenu">Home</RouterLink>
         <RouterLink to="/projects" class="nav-link" @click="toggleMobileMenu">Properties</RouterLink>
+        <RouterLink to="/properties-list" class="nav-link" @click="toggleMobileMenu">Properties List</RouterLink>
         <RouterLink to="/dashboard" class="nav-link" @click="toggleMobileMenu">Dashboard</RouterLink>
         <RouterLink to="/sections-demo" class="nav-link" @click="toggleMobileMenu">Sections Demo</RouterLink>
         <RouterLink to="/error-handling-demo" class="nav-link" @click="toggleMobileMenu">Error Handling</RouterLink>
@@ -38,6 +39,7 @@ const toggleMobileMenu = () => {
       <div class="nav-links desktop-nav">
         <RouterLink to="/" class="nav-link">Home</RouterLink>
         <RouterLink to="/projects" class="nav-link">Properties</RouterLink>
+        <RouterLink to="/properties-list" class="nav-link">Properties List</RouterLink>
         <RouterLink to="/dashboard" class="nav-link">Dashboard</RouterLink>
         <RouterLink to="/sections-demo" class="nav-link">Sections Demo</RouterLink>
         <RouterLink to="/error-handling-demo" class="nav-link">Error Handling</RouterLink>

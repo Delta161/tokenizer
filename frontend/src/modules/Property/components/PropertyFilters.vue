@@ -101,7 +101,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { usePropertySearch } from '../composables/usePropertySearch';
-import { useAuth } from '@/modules/Auth/composables/useAuth';
+import { useAuth } from '@/modules/Accounts';
 
 const props = defineProps<{
   showMyPropertiesToggle?: boolean;

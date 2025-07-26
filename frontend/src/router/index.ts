@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '../modules/Auth/store/authStore'
+import { useAuthStore, authRoutes } from '../modules/Accounts'
+import { userRoutes } from '../modules/Accounts/views/userRoutes'
 
-// Import module routes
-import { authRoutes } from '../modules/Auth/views'
-import { userRoutes } from '../modules/User/views'
+// Import module routes - lazy import to avoid circular dependencies
+import { ProjectsView, ProjectDetailView } from '../modules/ProjectsConsolidated'
 
 // Import layouts
 const DefaultLayout = () => import('../layouts/DefaultLayout.vue')
@@ -55,7 +55,7 @@ const router = createRouter({
     {
       path: '/projects',
       name: 'projects',
-      component: () => import('@/views/Home.vue'),
+      component: ProjectsView,
       meta: {
         requiresAuth: false,
         layout: 'DefaultLayout'
@@ -64,7 +64,7 @@ const router = createRouter({
     {
       path: '/project/:id',
       name: 'project-detail',
-      component: () => import('@/views/Home.vue'),
+      component: ProjectDetailView,
       meta: {
         requiresAuth: false,
         layout: 'DefaultLayout'
@@ -77,6 +77,35 @@ const router = createRouter({
       meta: {
         requiresAuth: false,
         layout: 'DefaultLayout'
+      }
+    },
+    
+    // Properties routes
+    {
+      path: '/properties',
+      name: 'properties',
+      component: () => import('@/views/PropertiesView.vue'),
+      meta: {
+        requiresAuth: false,
+        layout: 'PropertiesLayout'
+      }
+    },
+    {
+      path: '/properties-list',
+      name: 'properties-list',
+      component: () => import('@/views/PropertiesListView.vue'),
+      meta: {
+        requiresAuth: false,
+        layout: 'DefaultLayout'
+      }
+    },
+    {
+      path: '/property/:id',
+      name: 'property-detail',
+      component: () => import('@/views/PropertyDetailView.vue'),
+      meta: {
+        requiresAuth: false,
+        layout: 'PropertiesLayout'
       }
     },
     
@@ -138,10 +167,8 @@ const router = createRouter({
       }
     },
     
-    // Auth module routes
+    // Accounts module routes (consolidated Auth and User routes)
     ...authRoutes,
-    
-    // User module routes
     ...userRoutes,
     
     // 404 route
@@ -218,6 +245,9 @@ router.beforeResolve((to, from, next) => {
   switch (layout) {
     case 'AuthLayout':
       layoutComponent = AuthLayout
+      break
+    case 'PropertiesLayout':
+      layoutComponent = () => import('../layouts/PropertiesLayout.vue')
       break
     case 'DefaultLayout':
     default:

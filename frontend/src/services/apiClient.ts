@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { useAuthStore } from '@/modules/Auth/store/authStore';
+// Avoid circular dependency by not importing useAuthStore here
+// We'll get the auth token directly from localStorage
 import router from '@/router';
 
 /**
@@ -28,27 +29,25 @@ apiClient.interceptors.request.use(
     }
     
     try {
-      const authStore = useAuthStore();
+      // Get token directly from localStorage to avoid circular dependency
+      const accessToken = localStorage.getItem('accessToken');
+      const tokenExpiresAt = localStorage.getItem('tokenExpiresAt');
       
-      // Check if token is valid or needs refresh
-      if (authStore.isAuthenticated) {
-        // If token is expired, try to refresh it
-        if (authStore.tokenExpiresAt && Date.now() >= authStore.tokenExpiresAt) {
-          await authStore.refreshAccessToken();
-        }
-        
-        // Add token to request header
-        if (authStore.accessToken) {
-          config.headers.Authorization = `Bearer ${authStore.accessToken}`;
+      // Check if token exists
+      if (accessToken) {
+        // Check if token is expired
+        if (tokenExpiresAt && Date.now() >= parseInt(tokenExpiresAt)) {
+          // Token is expired, we'll let the response interceptor handle refresh
+          // or redirect to login if refresh fails
+        } else {
+          // Add token to request header
+          config.headers.Authorization = `Bearer ${accessToken}`;
         }
       }
     } catch (error) {
       console.error('Error in request interceptor:', error);
-      // If store isn't available, try localStorage as fallback
-      const accessToken = localStorage.getItem('accessToken');
-      if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-      }
+      // Continue with request even if there's an error getting the token
+      // The server will reject unauthorized requests
     }
     return config;
   },
@@ -75,19 +74,30 @@ apiClient.interceptors.response.use(
           originalRequest._retry = true;
           
           try {
-            const authStore = useAuthStore();
+            // Try to refresh the token by calling the refresh endpoint directly
+            const refreshResponse = await axios.post(
+              `${apiClient.defaults.baseURL}/auth/refresh`,
+              {},
+              { withCredentials: true }
+            );
             
-            // Try to refresh the token
-            const refreshed = await authStore.refreshAccessToken();
-            
-            if (refreshed) {
+            if (refreshResponse.data.accessToken) {
+              // Store the new token
+              localStorage.setItem('accessToken', refreshResponse.data.accessToken);
+              if (refreshResponse.data.expiresAt) {
+                localStorage.setItem('tokenExpiresAt', refreshResponse.data.expiresAt.toString());
+              }
+              
               // Update the authorization header
-              originalRequest.headers.Authorization = `Bearer ${authStore.accessToken}`;
+              originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`;
               // Retry the original request
               return apiClient(originalRequest);
             } else {
               // If refresh failed, logout and redirect to login
-              await authStore.logout();
+              localStorage.removeItem('accessToken');
+              localStorage.removeItem('tokenExpiresAt');
+              localStorage.removeItem('refreshToken');
+              localStorage.removeItem('user');
               router.push('/login');
             }
           } catch (refreshError) {
@@ -95,15 +105,10 @@ apiClient.interceptors.response.use(
             errorHandler.processError(refreshError);
             
             // Clear auth data and redirect to login
-            try {
-              const authStore = useAuthStore();
-              await authStore.logout();
-            } catch (e) {
-              // Store not available, clear localStorage manually
-              localStorage.removeItem('accessToken');
-              localStorage.removeItem('refreshToken');
-              localStorage.removeItem('user');
-            }
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('tokenExpiresAt');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
             router.push('/login');
           }
         } else {

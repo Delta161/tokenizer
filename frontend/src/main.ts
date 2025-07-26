@@ -8,8 +8,8 @@ import App from './App.vue'
 import router from './router/index'
 
 // Import module initializations
-import { initAuthModule } from './modules/Auth'
-import { initUserModule } from './modules/User'
+import { initAccountsModule } from './modules/Accounts'
+import { initProjectsConsolidatedModule } from './modules/ProjectsConsolidated'
 
 // Initialize the application
 const app = createApp(App)
@@ -24,8 +24,8 @@ app.use(createPinia())
 app.use(router)
 
 // Initialize modules
-initAuthModule()
-initUserModule()
+initAccountsModule()
+initProjectsConsolidatedModule()
 
 // Mount the app
 app.mount('#app')
