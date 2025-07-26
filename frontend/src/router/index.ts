@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../modules/Accounts'
 import { authRoutes } from '../modules/Accounts/views/authRoutes'
 import { userRoutes } from '../modules/Accounts/views/userRoutes'
+import { kycRoutes } from '../modules/Accounts/views/kycRoutes'
 
 // Import module routes - lazy import to avoid circular dependencies
 import { ProjectsView, ProjectDetailView } from '../modules/ProjectsConsolidated'
@@ -168,9 +169,10 @@ const router = createRouter({
       }
     },
     
-    // Accounts module routes (consolidated Auth and User routes)
+    // Accounts module routes (consolidated Auth, User, and KYC routes)
     ...authRoutes,
     ...userRoutes,
+    ...kycRoutes,
     
     // 404 route
     {

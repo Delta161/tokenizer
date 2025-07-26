@@ -204,4 +204,6 @@ In the frontend folder, Vue.js is used.
 The frontend test server is http://localhost:5173
 All communication between frontend and backend must happen trough the Standadized API Client. 
 All styling must be done by tailwindcss.
+Only oAuth 2.0 login will be possible.
+No password reset will be possible.
 

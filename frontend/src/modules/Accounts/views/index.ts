@@ -6,6 +6,7 @@
 
 export { userRoutes } from './userRoutes';
 export { authRoutes } from './authRoutes';
+export { kycRoutes } from './kycRoutes';
 
 // Export view components for Auth
 export { default as LoginView } from './LoginView.vue';
@@ -18,3 +19,7 @@ export { default as UserProfileView } from './UserProfileView.vue';
 export { default as UserSettingsView } from './UserSettingsView.vue';
 export { default as UserListView } from './UserListView.vue';
 export { default as UserDetailView } from './UserDetailView.vue';
+
+// Export view components for KYC
+export { default as KycVerificationPage } from './KycVerificationPage.vue';
+export { default as KycCallbackPage } from './KycCallbackPage.vue';

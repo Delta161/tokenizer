@@ -135,35 +135,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
   
-  async function requestPasswordReset(email: string) {
-    loading.value = true
-    error.value = null
-    
-    try {
-      await AuthService.requestPasswordReset(email)
-    } catch (err: any) {
-      console.error('Error in requestPasswordReset:', err)
-      error.value = err.message || 'Failed to request password reset. Please try again.'
-      throw err
-    } finally {
-      loading.value = false
-    }
-  }
-  
-  async function confirmPasswordReset(token: string, password: string) {
-    loading.value = true
-    error.value = null
-    
-    try {
-      await AuthService.resetPassword(token, password)
-    } catch (err: any) {
-      console.error('Error in confirmPasswordReset:', err)
-      error.value = err.message || 'Failed to confirm password reset. Please try again.'
-      throw err
-    } finally {
-      loading.value = false
-    }
-  }
+  // Password reset functions removed - only OAuth authentication is supported
   
   // Helper function to set auth data from login/register response
   function setAuthData(response: any) {
@@ -350,8 +322,6 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     logout,
     getCurrentUser,
-    requestPasswordReset,
-    confirmPasswordReset,
     refreshAccessToken,
     checkTokenValidity,
     initializeAuth

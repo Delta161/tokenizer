@@ -21,8 +21,24 @@ import { UserService } from './services/userService';
 import { useUser, useUserSearch } from './composables';
 import type { User, UserProfile, UserSettings, UserRole, UserUpdate, UserSearchParams, UserSearchResult } from './types/userTypes';
 
+// Import from KYC functionality
+import { useKycStore } from './store/kycStore';
+import { kycRoutes } from './views/kycRoutes';
+import { KycService } from './services/kycService';
+import { useKyc } from './composables/useKyc';
+import type { KycRecord, KycSubmissionData, KycProviderSession } from './types/kycTypes';
+import { KycStatus, KycProvider } from './types/kycTypes';
+
+// Import data transformation mappers
+import * as mappers from './utils/mappers';
+
 // Re-export types for external use
 export type { User, UserProfile, UserSettings, UserRole, UserUpdate, UserSearchParams, UserSearchResult };
+export type { KycRecord, KycSubmissionData, KycProviderSession };
+export { KycStatus, KycProvider };
+
+// Re-export mappers for external use
+export { mappers };
 
 // Create a User namespace for backward compatibility
 export namespace User {
@@ -52,7 +68,8 @@ import {
   RegisterForm,
   ForgotPasswordForm,
   ResetPasswordForm,
-  OAuthButtons
+  OAuthButtons,
+  KycVerificationStatus
 } from './components';
 
 /**
@@ -70,6 +87,11 @@ export function initAccountsModule() {
   console.log('User functionality initialized within Accounts module');
   const userStore = useUserStore();
   userStore.fetchCurrentUser();
+  
+  // Initialize KYC functionality
+  console.log('KYC functionality initialized within Accounts module');
+  const kycStore = useKycStore();
+  kycStore.fetchKycRecord();
 }
 
 // Export consolidated components, services, and types
@@ -88,22 +110,29 @@ export {
   UserListItem,
   UserRoleBadge,
   
+  // KYC Components
+  KycVerificationStatus,
+  
   // Routes
   authRoutes,
   userRoutes,
+  kycRoutes,
   
   // Stores
   useAuthStore,
   useUserStore,
+  useKycStore,
   
   // Services
   AuthService,
   UserService,
+  KycService,
   
   // Composables
   useAuth,
   useUser,
   useUserSearch,
+  useKyc,
   
   // Types
   AuthTypes,

@@ -1,5 +1,12 @@
 import apiClient from '@/services/apiClient';
-import type { LoginCredentials, RegisterData, AuthResponse } from '../types/authTypes';
+import type { LoginCredentials, RegisterData, AuthResponse, TokenRefreshResponse } from '../types/authTypes';
+import { handleServiceError } from '../utils/errorHandling';
+import {
+  mapBackendAuthResponseToFrontend,
+  mapLoginCredentialsToBackend,
+  mapRegisterDataToBackend,
+  mapBackendTokenRefreshToFrontend
+} from '../utils/mappers';
 
 /**
  * Auth Service
@@ -13,11 +20,11 @@ export const AuthService = {
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post('/accounts/auth/login', credentials);
-      return response.data;
+      const backendCredentials = mapLoginCredentialsToBackend(credentials);
+      const response = await apiClient.post('/accounts/auth/login', backendCredentials);
+      return mapBackendAuthResponseToFrontend(response.data);
     } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+      return handleServiceError(error, 'Failed to login. Please check your credentials.');
     }
   },
 
@@ -28,11 +35,11 @@ export const AuthService = {
    */
   async register(userData: RegisterData): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post('/accounts/auth/register', userData);
-      return response.data;
+      const backendUserData = mapRegisterDataToBackend(userData);
+      const response = await apiClient.post('/accounts/auth/register', backendUserData);
+      return mapBackendAuthResponseToFrontend(response.data);
     } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
+      return handleServiceError(error, 'Failed to register. Please check your information.');
     }
   },
 
@@ -45,8 +52,7 @@ export const AuthService = {
       const response = await apiClient.post('/accounts/auth/logout');
       return response.data;
     } catch (error) {
-      console.error('Logout error:', error);
-      throw error;
+      return handleServiceError(error, 'Failed to logout properly.');
     }
   },
 
@@ -57,56 +63,26 @@ export const AuthService = {
   async getCurrentUser(): Promise<AuthResponse['user']> {
     try {
       const response = await apiClient.get('/accounts/auth/profile');
-      return response.data;
+      const authResponse = mapBackendAuthResponseToFrontend({ user: response.data });
+      return authResponse.user;
     } catch (error) {
-      console.error('Get current user error:', error);
-      throw error;
+      return handleServiceError(error, 'Failed to retrieve user profile.');
     }
   },
 
-  /**
-   * Request password reset
-   * @param email - User email
-   * @returns Promise with success message
-   */
-  async requestPasswordReset(email: string): Promise<{ message: string }> {
-    try {
-      const response = await apiClient.post('/accounts/auth/password-reset-request', { email });
-      return response.data;
-    } catch (error) {
-      console.error('Password reset request error:', error);
-      throw error;
-    }
-  },
-
-  /**
-   * Reset password with token
-   * @param token - Reset token
-   * @param password - New password
-   * @returns Promise with success message
-   */
-  async resetPassword(token: string, password: string): Promise<{ message: string }> {
-    try {
-      const response = await apiClient.post('/accounts/auth/password-reset', { token, password });
-      return response.data;
-    } catch (error) {
-      console.error('Password reset error:', error);
-      throw error;
-    }
-  },
+  // Password reset functionality removed - only OAuth authentication is supported
   
   /**
    * Refresh access token using refresh token
    * @param refreshToken - Refresh token
    * @returns Promise with new access token and optionally new refresh token
    */
-  async refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken?: string }> {
+  async refreshToken(refreshToken: string): Promise<TokenRefreshResponse> {
     try {
       const response = await apiClient.post('/accounts/auth/refresh', { refreshToken });
-      return response.data;
+      return mapBackendTokenRefreshToFrontend(response.data);
     } catch (error) {
-      console.error('Token refresh error:', error);
-      throw error;
+      return handleServiceError(error, 'Failed to refresh authentication token.');
     }
   }
 };

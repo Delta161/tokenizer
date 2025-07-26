@@ -39,18 +39,4 @@ export interface TokenRefreshResponse {
   refreshToken?: string;
 }
 
-/**
- * Password reset request data
- */
-export interface PasswordResetRequest {
-  email: string;
-}
-
-/**
- * Password reset confirmation data
- */
-export interface PasswordResetConfirm {
-  token: string;
-  password: string;
-  confirmPassword: string;
-}
+// Password reset types removed - only OAuth authentication is supported

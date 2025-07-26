@@ -18,4 +18,6 @@ export const LoginForm = defineAsyncComponent(() => import('./LoginForm.vue'));
 export const OAuthButtons = defineAsyncComponent(() => import('./OAuthButtons.vue'));
 export const RegisterForm = defineAsyncComponent(() => import('./RegisterForm.vue'));
 export const ForgotPasswordForm = defineAsyncComponent(() => import('./ForgotPasswordForm.vue'));
-export const ResetPasswordForm = defineAsyncComponent(() => import('./ResetPasswordForm.vue'));
+
+// KYC Components
+export const KycVerificationStatus = defineAsyncComponent(() => import('./KycVerificationStatus.vue'));
