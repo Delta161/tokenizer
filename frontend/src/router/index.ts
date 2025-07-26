@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore, authRoutes } from '../modules/Accounts'
+import { useAuthStore } from '../modules/Accounts'
+import { authRoutes } from '../modules/Accounts/views/authRoutes'
 import { userRoutes } from '../modules/Accounts/views/userRoutes'
 
 // Import module routes - lazy import to avoid circular dependencies

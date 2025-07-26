@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { RegisterData } from '../types';
+import type { RegisterData } from '../types/authTypes';
 
 // Define props
 defineProps<{

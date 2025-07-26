@@ -1,22 +1,8 @@
-// Auth Module Types
-
 /**
- * User interface representing an authenticated user
+ * Auth Types
+ * 
+ * This file defines the types used for authentication in the Accounts module.
  */
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: UserRole;
-  createdAt: string;
-  updatedAt: string;
-}
-
-/**
- * Available user roles in the system
- */
-export type UserRole = 'ADMIN' | 'CLIENT' | 'INVESTOR';
 
 /**
  * Login credentials for authentication
@@ -40,7 +26,7 @@ export interface RegisterData {
  * Authentication response from the API
  */
 export interface AuthResponse {
-  user: User;
+  user: import('./userTypes').User;
   accessToken: string;
   refreshToken: string;
 }

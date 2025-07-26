@@ -6,3 +6,4 @@
 
 export { useUser } from './useUser';
 export { useUserSearch } from './useUserSearch';
+export { useAuth } from './useAuth';

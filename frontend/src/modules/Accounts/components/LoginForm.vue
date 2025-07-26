@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { LoginCredentials } from '../types';
+import type { LoginCredentials } from '../types/authTypes';
 
 // Define props
 defineProps<{

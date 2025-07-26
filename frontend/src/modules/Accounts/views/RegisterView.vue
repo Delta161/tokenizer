@@ -1,43 +1,51 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ForgotPasswordForm } from '../components';
-import { AuthService } from '../services';
+import { useAuthStore } from '../store/authStore';
+import { RegisterForm, OAuthButtons } from '../components';
+import type { RegisterData } from '../types/authTypes';
 
 // Component state
 const isLoading = ref(false);
 const errorMessage = ref<string | null>(null);
 const successMessage = ref<string | null>(null);
 
-// Get router
+// Get router and auth store
 const router = useRouter();
-const authService = new AuthService();
+const authStore = useAuthStore();
 
-// Handle forgot password form submission
-async function handleForgotPassword(email: string) {
+// Handle registration form submission
+async function handleRegister(data: RegisterData) {
   isLoading.value = true;
   errorMessage.value = null;
   successMessage.value = null;
   
   try {
-    await authService.requestPasswordReset({ email });
-    successMessage.value = 'Password reset instructions have been sent to your email.';
+    await authStore.register(data);
+    successMessage.value = 'Registration successful! You can now log in.';
+    
+    // Redirect to login after a short delay
+    setTimeout(() => {
+      router.push({ name: 'login' });
+    }, 2000);
   } catch (error: any) {
-    errorMessage.value = error.message || 'Failed to send reset instructions. Please try again.';
+    errorMessage.value = error.message || 'Registration failed. Please try again.';
   } finally {
     isLoading.value = false;
   }
 }
+
+// Handle OAuth registration
+async function handleOAuthLogin(provider: string) {
+  // Redirect to OAuth provider
+  window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/accounts/auth/${provider}`;
+}
 </script>
 
 <template>
-  <div class="forgot-password-view">
-    <div class="forgot-password-container">
-      <h1>Reset Password</h1>
-      
-      <p class="description">
-        Enter your email address and we'll send you instructions to reset your password.
-      </p>
+  <div class="register-view">
+    <div class="register-container">
+      <h1>Create Account</h1>
       
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
@@ -47,14 +55,20 @@ async function handleForgotPassword(email: string) {
         {{ successMessage }}
       </div>
       
-      <ForgotPasswordForm 
-        @submit="handleForgotPassword" 
+      <RegisterForm 
+        @submit="handleRegister" 
         :is-loading="isLoading" 
       />
       
+      <div class="divider">
+        <span>OR</span>
+      </div>
+      
+      <OAuthButtons @login="handleOAuthLogin" />
+      
       <div class="links">
         <router-link :to="{ name: 'login' }">
-          Back to Sign In
+          Already have an account? Sign in
         </router-link>
       </div>
     </div>
@@ -62,7 +76,7 @@ async function handleForgotPassword(email: string) {
 </template>
 
 <style scoped>
-.forgot-password-view {
+.register-view {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -71,7 +85,7 @@ async function handleForgotPassword(email: string) {
   background-color: var(--color-background);
 }
 
-.forgot-password-container {
+.register-container {
   width: 100%;
   max-width: 400px;
   padding: 2rem;
@@ -81,18 +95,11 @@ async function handleForgotPassword(email: string) {
 }
 
 h1 {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   font-size: 1.75rem;
   font-weight: 600;
   text-align: center;
   color: var(--color-heading);
-}
-
-.description {
-  margin-bottom: 1.5rem;
-  text-align: center;
-  color: var(--color-text-light);
-  font-size: 0.875rem;
 }
 
 .error-message {
@@ -110,6 +117,30 @@ h1 {
   border-radius: 4px;
   background-color: rgba(16, 185, 129, 0.1);
   color: #10b981;
+  font-size: 0.875rem;
+}
+
+.divider {
+  position: relative;
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--color-border);
+}
+
+.divider span {
+  position: relative;
+  padding: 0 0.75rem;
+  background-color: var(--color-background-soft);
+  color: var(--color-text-light);
   font-size: 0.875rem;
 }
 

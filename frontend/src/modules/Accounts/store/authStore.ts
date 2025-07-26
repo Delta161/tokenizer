@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { User, LoginCredentials, RegisterData, PasswordResetRequest, PasswordResetConfirm } from '../types'
-import { authService } from '../services'
-import { useRouter } from 'vue-router'
+import type { LoginCredentials, RegisterData, PasswordResetRequest, PasswordResetConfirm } from '../types/authTypes'
+import type { User } from '../types/userTypes'
+import { AuthService } from '../services/authService'
 
 export const useAuthStore = defineStore('auth', () => {
   // State
@@ -32,6 +32,10 @@ export const useAuthStore = defineStore('auth', () => {
   
   const isInvestor = computed(() => {
     return user.value?.role === 'INVESTOR'
+  })
+
+  const userRole = computed(() => {
+    return user.value?.role || ''
   })
   
   // Actions
@@ -65,7 +69,7 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     
     try {
-      const response = await authService.login(credentials)
+      const response = await AuthService.login(credentials)
       setAuthData(response)
       return response
     } catch (err: any) {
@@ -82,7 +86,7 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     
     try {
-      const response = await authService.register(data)
+      const response = await AuthService.register(data)
       setAuthData(response)
       return response
     } catch (err: any) {
@@ -99,7 +103,7 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     
     try {
-      await authService.logout()
+      await AuthService.logout()
       clearAuthData()
     } catch (err: any) {
       console.error('Error in logout:', err)
@@ -117,7 +121,7 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     
     try {
-      const response = await authService.getCurrentUser()
+      const response = await AuthService.getCurrentUser()
       user.value = response
       isAuthenticated.value = true
       return response
@@ -131,12 +135,12 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
   
-  async function requestPasswordReset(data: PasswordResetRequest) {
+  async function requestPasswordReset(email: string) {
     loading.value = true
     error.value = null
     
     try {
-      await authService.requestPasswordReset(data)
+      await AuthService.requestPasswordReset(email)
     } catch (err: any) {
       console.error('Error in requestPasswordReset:', err)
       error.value = err.message || 'Failed to request password reset. Please try again.'
@@ -146,12 +150,12 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
   
-  async function confirmPasswordReset(data: PasswordResetConfirm) {
+  async function confirmPasswordReset(token: string, password: string) {
     loading.value = true
     error.value = null
     
     try {
-      await authService.confirmPasswordReset(data)
+      await AuthService.resetPassword(token, password)
     } catch (err: any) {
       console.error('Error in confirmPasswordReset:', err)
       error.value = err.message || 'Failed to confirm password reset. Please try again.'
@@ -240,7 +244,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
     
     try {
-      const response = await authService.refreshToken(refreshToken.value)
+      const response = await AuthService.refreshToken(refreshToken.value)
       
       // Update tokens
       accessToken.value = response.accessToken
@@ -339,6 +343,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAdmin,
     isClient,
     isInvestor,
+    userRole,
     
     // Actions
     login,

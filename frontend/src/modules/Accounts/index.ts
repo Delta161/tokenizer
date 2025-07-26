@@ -7,12 +7,12 @@
 
 import { defineAsyncComponent } from 'vue';
 
-// Import from Auth module
-import { useAuthStore } from '../Auth/store/authStore';
-import { authRoutes } from '../Auth/views';
-import * as AuthService from '../Auth/services';
-import * as AuthTypes from '../Auth/types';
-import * as AuthComposables from '../Auth/composables';
+// Import from Auth functionality (now part of Accounts)
+import { useAuthStore } from './store/authStore';
+import { authRoutes } from './views';
+import * as AuthService from './services/authService';
+import * as AuthTypes from './types/authTypes';
+import { useAuth } from './composables/useAuth';
 
 // Import from User functionality (now part of Accounts)
 import { useUserStore } from './store/userStore';
@@ -42,15 +42,18 @@ export namespace User {
 }
 
 // Components from Accounts module
-import { UserProfileCard, UserSettingsForm, UserAvatar, UserListItem, UserRoleBadge } from './components';
-
-
-// Lazy-loaded components from Auth module
-const LoginForm = defineAsyncComponent(() => import('../Auth/components/LoginForm.vue'));
-const RegisterForm = defineAsyncComponent(() => import('../Auth/components/RegisterForm.vue'));
-const ForgotPasswordForm = defineAsyncComponent(() => import('../Auth/components/ForgotPasswordForm.vue'));
-const ResetPasswordForm = defineAsyncComponent(() => import('../Auth/components/ResetPasswordForm.vue'));
-const OAuthButtons = defineAsyncComponent(() => import('../Auth/components/OAuthButtons.vue'));
+import { 
+  UserProfileCard, 
+  UserSettingsForm, 
+  UserAvatar, 
+  UserListItem, 
+  UserRoleBadge,
+  LoginForm,
+  RegisterForm,
+  ForgotPasswordForm,
+  ResetPasswordForm,
+  OAuthButtons
+} from './components';
 
 /**
  * Initialize the Accounts module
@@ -59,18 +62,14 @@ const OAuthButtons = defineAsyncComponent(() => import('../Auth/components/OAuth
 export function initAccountsModule() {
   console.log('Accounts module initialized');
   
-  // Initialize Auth module
-  import('../Auth/store/authStore').then(({ useAuthStore }) => {
-    const authStore = useAuthStore();
-    authStore.initializeAuth();
-  });
+  // Initialize Auth functionality
+  const authStore = useAuthStore();
+  authStore.initializeAuth();
   
   // Initialize User functionality
-console.log('User functionality initialized within Accounts module');
-import('./store/userStore').then(({ useUserStore }) => {
+  console.log('User functionality initialized within Accounts module');
   const userStore = useUserStore();
   userStore.fetchCurrentUser();
-});
 }
 
 // Export consolidated components, services, and types
@@ -102,7 +101,7 @@ export {
   UserService,
   
   // Composables
-  AuthComposables,
+  useAuth,
   useUser,
   useUserSearch,
   

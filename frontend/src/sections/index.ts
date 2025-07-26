@@ -8,10 +8,6 @@ interface SectionRegistry {
 
 // Dynamic section registry
 const sections: SectionRegistry = {
-  // Auth sections
-  // 'auth/login': () => import('./auth/LoginSection.vue'),
-  // 'auth/register': () => import('./auth/RegisterSection.vue'),
-  
   // Dashboard sections
   // 'dashboard/summary': () => import('./dashboard/SummarySection.vue'),
   // 'dashboard/stats': () => import('./dashboard/StatsSection.vue'),

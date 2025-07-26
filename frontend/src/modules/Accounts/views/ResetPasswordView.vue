@@ -2,8 +2,8 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ResetPasswordForm } from '../components';
-import { AuthService } from '../services';
-import type { PasswordResetConfirm } from '../types';
+import { AuthService } from '../services/authService';
+import type { PasswordResetConfirm } from '../types/authTypes';
 
 // Component state
 const isLoading = ref(false);
@@ -15,7 +15,6 @@ const isTokenValid = ref(false);
 // Get route, router, and auth service
 const route = useRoute();
 const router = useRouter();
-const authService = new AuthService();
 
 // Get token from route params
 const token = route.params.token as string;
@@ -50,12 +49,7 @@ async function handleResetPassword(data: { password: string; confirmPassword: st
   successMessage.value = null;
   
   try {
-    const resetData: PasswordResetConfirm = {
-      token,
-      password: data.password
-    };
-    
-    await authService.confirmPasswordReset(resetData);
+    await AuthService.resetPassword(token, data.password);
     successMessage.value = 'Your password has been reset successfully.';
     
     // Redirect to login after a short delay

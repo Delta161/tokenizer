@@ -1,21 +1,19 @@
+/**
+ * Auth Routes
+ * 
+ * This file defines the routes for authentication in the Accounts module.
+ */
+
+import type { RouteRecordRaw } from 'vue-router';
 import { defineAsyncComponent } from 'vue';
 
-// Lazy-loaded view components
+// Lazy-loaded components
 const LoginView = defineAsyncComponent(() => import('./LoginView.vue'));
 const RegisterView = defineAsyncComponent(() => import('./RegisterView.vue'));
 const ForgotPasswordView = defineAsyncComponent(() => import('./ForgotPasswordView.vue'));
 const ResetPasswordView = defineAsyncComponent(() => import('./ResetPasswordView.vue'));
 
-// Export view components
-export {
-  LoginView,
-  RegisterView,
-  ForgotPasswordView,
-  ResetPasswordView
-};
-
-// Export route configuration
-export const authRoutes = [
+export const authRoutes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',

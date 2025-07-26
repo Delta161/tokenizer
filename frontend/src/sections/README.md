@@ -15,7 +15,6 @@ The sections system consists of:
 
 ```
 src/sections/
-├── auth/              # Authentication-related sections
 ├── common/            # Common sections used across the application
 ├── dashboard/         # Dashboard-specific sections
 ├── investment/        # Investment-related sections
@@ -149,11 +148,6 @@ const sections: SectionRegistry = {
 - `common/not-found`: Displayed when a requested section is not found
 - `common/error`: Displayed when there's an error loading a section
 - `common/loading`: Displayed while a section is loading
-
-### Auth Sections
-
-- `auth/login`: Login form
-- `auth/register`: Registration form
 
 ### Dashboard Sections
 

@@ -36,8 +36,17 @@ The frontend uses the following environment variables:
 
 - `VITE_API_BASE_URL`: The base URL of the API (default: http://localhost:3000)
 
+## Architecture
+
+Authentication functionality is implemented in the `Accounts` module, which handles:
+- User authentication (login, registration, password reset)
+- OAuth authentication (Google, Azure)
+- User profile management
+- Authorization and access control
+
 ## Files
 
+- `src/modules/Accounts`: Module containing all authentication and user account functionality
 - `src/api.js`: Axios instance for API requests
 - `src/router/index.js`: Vue Router configuration
 - `src/views/LoginPage.vue`: Login page with OAuth buttons

@@ -1,33 +1,11 @@
 import apiClient from '@/services/apiClient';
+import type { LoginCredentials, RegisterData, AuthResponse } from '../types/authTypes';
 
 /**
  * Auth Service
  * Handles all API calls related to authentication
  */
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-interface RegisterData {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-}
-
-interface AuthResponse {
-  user: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-  };
-  accessToken: string;
-  refreshToken: string;
-}
-
-const authService = {
+export const AuthService = {
   /**
    * Login user with email and password
    * @param credentials - User login credentials
@@ -132,5 +110,3 @@ const authService = {
     }
   }
 };
-
-export default authService;
