@@ -99,6 +99,15 @@ const router = createRouter({
         layout: 'DefaultLayout'
       }
     },
+    {
+      path: '/button-demo',
+      name: 'button-demo',
+      component: () => import('@/views/ButtonDemo.vue'),
+      meta: {
+        requiresAuth: false,
+        layout: 'DefaultLayout'
+      }
+    },
     
     // Login and callback routes
     {
