@@ -1,15 +1,40 @@
+/**
+ * Admin Module Index
+ * Exports all components of the admin module
+ * Consolidates admin and analytics functionality
+ */
+
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { AdminController } from './admin.controller.js';
-import { AdminService } from './admin.service.js';
-import { createAdminRouter } from './admin.routes.js';
-import { AdminAnalyticsService } from './admin.analytics.service.js';
-import { AdminAnalyticsController } from './admin.analytics.controller.js';
-import { createAdminAnalyticsRouter } from './admin.analytics.routes.js';
 import { NotificationTrigger } from '../notifications/services/notification.trigger.js';
+
+// Import and re-export routes
+export * from './routes';
+export { createAdminRouter } from './routes/admin.routes';
+export { createAdminAnalyticsRouter } from './routes/admin.analytics.routes';
+
+// Import and re-export controllers
+export { AdminController, adminController } from './controllers/admin.controller';
+export { AdminAnalyticsController, adminAnalyticsController } from './controllers/admin.analytics.controller';
+
+// Import and re-export services
+export { AdminService, adminService } from './services/admin.service';
+export { AdminAnalyticsService, adminAnalyticsService } from './services/admin.analytics.service';
+
+// Import and re-export validators
+export * from './validators';
+
+// Import and re-export types
+export * from './types';
+
+// Import and re-export utils
+export * from './utils';
 
 /**
  * Initialize the admin module
+ * @param prisma PrismaClient instance
+ * @param notificationTrigger NotificationTrigger instance
+ * @returns Router with all admin routes mounted
  */
 export const initAdminModule = (prisma: PrismaClient, notificationTrigger: NotificationTrigger): Router => {
   // Create service instances

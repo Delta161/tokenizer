@@ -40,3 +40,4 @@ lerna-debug.log*
 logs/
 tests_output/
 .editorconfig
+start-servers.ps1

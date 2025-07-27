@@ -1,10 +1,13 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "node"],
   "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
+    "eslint:all",                      // every core rule
+    "plugin:@typescript-eslint/all",   // every TS-plugin rule
+    "plugin:node/recommended-module",  // Node.js best practices
+    "plugin:@typescript-eslint/all",
+    "plugin:prettier/recommended"
   ],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "warn",

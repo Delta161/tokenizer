@@ -2,7 +2,8 @@
   "type": "module",
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "lint:backend": "eslint 'src/**/*.{ts,js}' --max-warnings=0"
   },
   "dependencies": {
     "dotenv": "^17.2.0"
@@ -13,4 +14,7 @@
     "@typescript-eslint/parser": "^8.37.0",
     "eslint": "^9.31.0"
   }
+  
 }
+
+
