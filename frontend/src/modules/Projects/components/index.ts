@@ -1,7 +1,5 @@
-import AddProjectForm from './AddProjectForm.vue'
-import ProjectCard from './ProjectCard.vue'
+// ProjectCard has been replaced by PropertyCardSection from @/sections/property/ProjectCard.section.vue
 
 export {
-  AddProjectForm,
-  ProjectCard
+  // No components exported here
 }

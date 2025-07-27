@@ -7,7 +7,7 @@
 export { default as ProjectList } from './components/ProjectList.vue'
 export { default as ProjectDetail } from './components/ProjectDetail.vue'
 export { default as ProjectForm } from './components/ProjectForm.vue'
-export { default as ProjectCard } from './components/ProjectCard.vue'
+// ProjectCard has been replaced by PropertyCardSection
 
 // Composables
 export { useProjectSearch } from './composables/useProjectSearch'

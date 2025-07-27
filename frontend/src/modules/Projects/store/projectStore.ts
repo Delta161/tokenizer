@@ -264,6 +264,40 @@ export const useProjectStore = defineStore('projects', () => {
     currentProject.value = null
   }
   
+  async function uploadProjectImage(projectId: string, formData: FormData) {
+    loading.value = true
+    error.value = null
+    
+    try {
+      const updatedProject = await projectService.uploadProjectImage(projectId, formData.get('image') as File)
+      
+      // Update in projects array if exists
+      const index = projects.value.findIndex(p => p.id === projectId)
+      if (index !== -1) {
+        projects.value[index] = updatedProject
+      }
+      
+      // Update in myProjects array if exists
+      const myIndex = myProjects.value.findIndex(p => p.id === projectId)
+      if (myIndex !== -1) {
+        myProjects.value[myIndex] = updatedProject
+      }
+      
+      // Update currentProject if it's the same project
+      if (currentProject.value?.id === projectId) {
+        currentProject.value = updatedProject
+      }
+      
+      return updatedProject
+    } catch (err: any) {
+      console.error(`Error in uploadProjectImage for ${projectId}:`, err)
+      error.value = err.message || 'Failed to upload project image. Please try again.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+  
   return {
     // State
     projects,
@@ -288,6 +322,7 @@ export const useProjectStore = defineStore('projects', () => {
     updateProjectStatus,
     deleteProject,
     toggleFavorite,
-    clearCurrentProject
+    clearCurrentProject,
+    uploadProjectImage
   }
 })

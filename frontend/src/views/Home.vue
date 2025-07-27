@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import ProjectCard from '@/components/ProjectCard.vue'
+import PropertyCardSection from '@/sections/property/ProjectCard.section.vue'
 import type { Project } from '@/types/Project'
 
 // Mock data for featured projects
@@ -125,10 +125,10 @@ const handleToggleFavorite = (projectId: string) => {
       <div class="container">
         <h2>Featured Projects</h2>
         <div class="projects-grid">
-          <ProjectCard 
+          <PropertyCardSection 
             v-for="project in featuredProjects" 
             :key="project.id" 
-            :project="project"
+            :property="project"
             @toggle-favorite="handleToggleFavorite"
           />
         </div>

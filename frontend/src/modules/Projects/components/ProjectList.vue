@@ -1,5 +1,10 @@
 <template>
   <div class="project-list-container">
+    <!-- Section header when used with SectionRenderer -->
+    <div v-if="props.title || props.subtitle" class="section-header text-center mb-12">
+      <h2 v-if="props.title" class="text-3xl font-bold mb-4">{{ props.title }}</h2>
+      <p v-if="props.subtitle" class="text-lg text-gray-600 max-w-2xl mx-auto">{{ props.subtitle }}</p>
+    </div>
     <!-- Search and filters -->
     <div class="filters-container bg-white p-4 rounded-lg shadow mb-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -235,30 +240,39 @@
       </div>
     </div>
 
-    <!-- Project grid view -->
-    <div v-if="viewMode === 'grid' && filteredProjects.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <project-card
+    <!-- Project grid view when not used with SectionRenderer -->
+    <div v-if="viewMode === 'grid' && filteredProjects.length > 0 && !props.properties" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <property-card-section
         v-for="project in filteredProjects"
         :key="project.id"
-        :project="project"
-        @favorite="toggleFavorite(project.id)"
-        @view="viewProject(project.id)"
+        :property="project"
+        @toggle-favorite="toggleFavorite(project.id)"
       />
     </div>
 
-    <!-- Property list view -->
-    <property-list-component
-      v-if="viewMode === 'property' && filteredProjects.length > 0"
-      :properties="filteredProjects"
-      :current-page="Math.floor(currentPagination.offset / currentPagination.limit) + 1"
-      :total-pages="Math.ceil(currentPagination.total / currentPagination.limit)"
-      :show-pagination="false"
-      @toggle-favorite="toggleFavorite"
-      @page-change="handlePageChange"
-    />
+    <!-- Property list view when not used with SectionRenderer -->
+    <div v-if="viewMode === 'property' && filteredProjects.length > 0 && !props.properties" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <property-card-section
+        v-for="project in filteredProjects"
+        :key="project.id"
+        :property="project"
+        @toggle-favorite="toggleFavorite(project.id)"
+      />
+    </div>
+    
+    <!-- Properties grid when used with SectionRenderer -->
+    <div v-if="props.properties && props.properties.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <property-card-section
+        v-for="property in props.properties"
+        :key="property.id"
+        :property="property"
+        @toggle-favorite="emit('toggle-favorite', property.id)"
+      />
+    </div>
 
     <!-- Pagination -->
-    <div v-if="filteredProjects.length > 0" class="flex justify-center mt-8">
+    <!-- Default pagination when not used with SectionRenderer -->
+    <div v-if="filteredProjects.length > 0 && !props.properties" class="flex justify-center mt-8">
       <div class="flex space-x-2">
         <button
           @click="previousPage"
@@ -286,16 +300,71 @@
         </button>
       </div>
     </div>
+    
+    <!-- SectionRenderer pagination with page numbers -->
+    <div v-if="props.properties && props.properties.length > 0 && props.showPagination" class="flex justify-center mt-8">
+      <div class="flex items-center gap-4">
+        <button 
+          class="px-4 py-2 border border-gray-300 rounded-md" 
+          :disabled="props.currentPage === 1"
+          :class="props.currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'"
+          @click="emit('page-change', props.currentPage - 1)"
+        >
+          Previous
+        </button>
+        <div class="flex gap-2">
+          <button 
+            v-for="page in props.totalPages" 
+            :key="page"
+            class="w-10 h-10 flex items-center justify-center rounded-md"
+            :class="page === props.currentPage ? 'bg-primary-500 text-white' : 'border border-gray-300 hover:bg-gray-50'"
+            @click="emit('page-change', page)"
+          >
+            {{ page }}
+          </button>
+        </div>
+        <button 
+          class="px-4 py-2 border border-gray-300 rounded-md"
+          :disabled="props.currentPage === props.totalPages"
+          :class="props.currentPage === props.totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'"
+          @click="emit('page-change', props.currentPage + 1)"
+        >
+          Next
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, defineProps, defineEmits } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProjectSearch } from '../composables/useProjectSearch'
 import { ProjectStatus } from '../types/Project'
-import ProjectCard from './ProjectCard.vue'
-import PropertyListComponent from './PropertyListComponent.vue'
+import PropertyCardSection from '@/sections/property/ProjectCard.section.vue'
+
+// Props for compatibility with PropertyListSection.vue when used with SectionRenderer
+interface Props {
+  title?: string;
+  subtitle?: string;
+  properties?: any[];
+  currentPage?: number;
+  totalPages?: number;
+  showPagination?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  title: 'Featured Properties',
+  subtitle: 'Discover our selection of premium tokenized real estate properties',
+  currentPage: 1,
+  totalPages: 1,
+  showPagination: true
+});
+
+const emit = defineEmits<{
+  'toggle-favorite': [propertyId: string];
+  'page-change': [page: number];
+}>();
 
 const router = useRouter()
 
@@ -380,11 +449,5 @@ function previousPage() {
 // View project details
 function viewProject(id: string) {
   router.push(`/projects/${id}`)
-}
-
-// Handle page change from PropertyListComponent
-function handlePageChange(page: number) {
-  const newOffset = (page - 1) * currentPagination.value.limit
-  currentPagination.value.offset = newOffset
 }
 </script>

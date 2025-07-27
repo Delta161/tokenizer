@@ -24,7 +24,7 @@ export const projectService = {
    */
   async getProjects(params?: ProjectSearchParams): Promise<ProjectSearchResult> {
     try {
-      const response = await get('/projects', { params })
+      const response = await get('/combined', { params })
       return response
     } catch (error) {
       console.error('Error fetching projects:', error)
@@ -39,7 +39,7 @@ export const projectService = {
    */
   async getProjectById(id: string): Promise<Project> {
     try {
-      return await get(`/projects/${id}`)
+      return await get(`/combined/${id}`)
     } catch (error) {
       console.error(`Error fetching project ${id}:`, error)
       throw error
@@ -53,7 +53,18 @@ export const projectService = {
    */
   async getMyProjects(params?: ProjectSearchParams): Promise<ProjectSearchResult> {
     try {
-      const response = await get('/projects/my', { params })
+      // Import the client service to get the current client profile
+      const { clientService } = await import('../../Client')
+      
+      // Get the current client profile to obtain the client ID
+      const clientProfile = await clientService.getCurrentClientProfile()
+      
+      if (!clientProfile || !clientProfile.id) {
+        throw new Error('No client profile found or client ID is missing')
+      }
+      
+      // Use the client ID to fetch properties associated with this client
+      const response = await get(`/properties/client/${clientProfile.id}`, { params })
       return response
     } catch (error) {
       console.error('Error fetching my projects:', error)
@@ -68,7 +79,8 @@ export const projectService = {
    */
   async createProject(projectData: CreateProjectRequest): Promise<CreateProjectResponse> {
     try {
-      return await post('/projects', projectData)
+      // Using properties endpoint as per backend routes
+      return await post('/properties', projectData)
     } catch (error) {
       console.error('Error creating project:', error)
       throw error
@@ -82,7 +94,8 @@ export const projectService = {
    */
   async updateProject(projectData: UpdateProjectRequest): Promise<Project> {
     try {
-      return await put(`/projects/${projectData.id}`, projectData)
+      // Using properties endpoint as per backend routes
+      return await put(`/properties/${projectData.id}`, projectData)
     } catch (error) {
       console.error(`Error updating project ${projectData.id}:`, error)
       throw error
@@ -96,7 +109,8 @@ export const projectService = {
    */
   async updateProjectStatus(statusUpdate: UpdateProjectStatusRequest): Promise<Project> {
     try {
-      return await patch(`/projects/${statusUpdate.id}/status`, {
+      // Using properties endpoint as per backend routes
+      return await patch(`/properties/${statusUpdate.id}/status`, {
         status: statusUpdate.status
       })
     } catch (error) {
@@ -112,7 +126,8 @@ export const projectService = {
    */
   async deleteProject(id: string): Promise<void> {
     try {
-      await deleteRequest(`/projects/${id}`)
+      // Using properties endpoint as per backend routes
+      await deleteRequest(`/properties/${id}`)
     } catch (error) {
       console.error(`Error deleting project ${id}:`, error)
       throw error
@@ -127,7 +142,9 @@ export const projectService = {
    */
   async toggleFavorite(id: string, isFavorite: boolean): Promise<Project> {
     try {
-      return await patch(`/projects/${id}/favorite`, { isFavorite })
+      // Note: This endpoint might not exist in the backend yet
+      // May need to be implemented or handled differently
+      return await patch(`/properties/${id}/favorite`, { isFavorite })
     } catch (error) {
       console.error(`Error toggling favorite for project ${id}:`, error)
       throw error
@@ -144,7 +161,8 @@ export const projectService = {
     try {
       const formData = new FormData()
       formData.append('image', imageFile)
-      return await upload(`/projects/${id}/image`, formData)
+      // Using properties endpoint as per backend routes
+      return await upload(`/properties/${id}/image`, formData)
     } catch (error) {
       console.error(`Error uploading image for project ${id}:`, error)
       throw error

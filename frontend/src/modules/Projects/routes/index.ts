@@ -13,7 +13,7 @@ const projectRoutes: RouteRecordRaw[] = [
     name: 'projects',
     component: ProjectList,
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
       title: 'Projects'
     }
   },
@@ -22,7 +22,7 @@ const projectRoutes: RouteRecordRaw[] = [
     name: 'project-create',
     component: ProjectForm,
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
       title: 'Create Project'
     }
   },
@@ -32,7 +32,7 @@ const projectRoutes: RouteRecordRaw[] = [
     component: ProjectDetail,
     props: true,
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
       title: 'Project Details'
     }
   },
@@ -42,7 +42,7 @@ const projectRoutes: RouteRecordRaw[] = [
     component: ProjectForm,
     props: true,
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
       title: 'Edit Project'
     }
   }

@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import ProjectCard from '../ProjectCard.vue';
+import PropertyCardSection from '../../sections/property/ProjectCard.section.vue';
 import type { Project } from '../../types/Project';
 
-describe('ProjectCard', () => {
+describe('PropertyCardSection', () => {
   it('renders project title', () => {
     const mockProject: Project = {
       id: '1',
@@ -30,9 +30,9 @@ describe('ProjectCard', () => {
       country: 'USA'
     };
 
-    const wrapper = mount(ProjectCard, {
+    const wrapper = mount(PropertyCardSection, {
       props: {
-        project: mockProject
+        property: mockProject
       }
     });
     expect(wrapper.text()).toContain('Test Project');
