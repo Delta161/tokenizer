@@ -5,7 +5,7 @@
 // Load environment variables first
 import dotenv from 'dotenv';
 import path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(__dirname, './.env') });
 
 // Note: express-async-errors is not compatible with Express 5.x
 // Async errors will be handled by the global error handler
@@ -19,25 +19,25 @@ import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
 
 // Import configuration
-import { API_PREFIX, RATE_LIMIT } from './config/constants';
+import { API_PREFIX, RATE_LIMIT } from './src/config/constants';
 
 // Import middleware
-import { errorHandler, notFoundHandler } from './middleware/errorHandler';
+import { errorHandler, notFoundHandler } from './src/middleware/errorHandler';
 
 // Import prisma client
-import { prisma } from './prisma/client';
+import { prisma } from './src/prisma/client';
 
 // Import routes
-import { authRouter } from './modules/accounts/routes/auth.routes';
-import { createClientRoutes } from './modules/client';
-import { createInvestorRoutes } from './modules/investor';
-import { createTokenRoutes } from './modules/token';
-import { createProjectsRoutes } from './modules/projects';
-import { initExamplesModule } from './modules/examples';
-import { initBlockchainModule } from './modules/blockchain';
-import { registerAnalyticsModule } from './modules/analytics/analytics.module.js';
-import { initInvestmentModule } from './modules/investment';
-import { initKycModule } from './modules/accounts';
+import { authRouter } from './src/modules/accounts/routes/auth.routes';
+import { createClientRoutes } from './src/modules/client';
+import { createInvestorRoutes } from './src/modules/investor';
+import { createTokenRoutes } from './src/modules/token';
+import { createProjectsRoutes } from './src/modules/projects';
+import { initExamplesModule } from './src/modules/examples';
+import { initBlockchainModule } from './src/modules/blockchain';
+import { registerAnalyticsModule } from './src/modules/analytics/analytics.module.js';
+import { initInvestmentModule } from './src/modules/investment';
+import { initKycModule } from './src/modules/accounts';
 
 // Create Express application
 const app: Express = express();

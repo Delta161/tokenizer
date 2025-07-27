@@ -1,15 +1,25 @@
 {
 
   "scripts": {
+
     "dev": "tsx src/server.ts",
+
     "start": "node --import ./tsconfig-paths-bootstrap.js dist/src/server.js",
+
     "dev:old": "node server.js",
+
     "start:old": "node server.js",
+
     "build": "tsc",
+
     "seed": "ts-node --transpile-only --require tsconfig-paths/register prisma/seed.ts",
+
     "test": "vitest run",
+
     "test:watch": "vitest",
+
     "test:coverage": "vitest run --coverage"
+
   },
 
   "dependencies": {
@@ -70,7 +80,13 @@
 
   "devDependencies": {
 
+    "@types/compression": "^1.8.1",
+
+    "@types/cors": "^2.8.19",
+
     "@types/express": "^5.0.3",
+
+    "@types/morgan": "^1.9.10",
 
     "@types/multer": "^2.0.0",
 

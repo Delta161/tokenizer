@@ -8,7 +8,15 @@ import {
   validateClientIdParam,
   validateClientListQuery
 } from '../validators/client.validators';
-import { AuthenticatedRequest } from '../../auth/auth.types';
+// Request is already imported in the first line, no need to import it again
+
+// Extend the base Request type to include authenticated user
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    role: string;
+  };
+}
 import { logger } from '../../../utils/logger';
 import { PAGINATION } from '../../../config/constants';
 import { createPaginationResult, getSkipValue } from '../../../utils/pagination';

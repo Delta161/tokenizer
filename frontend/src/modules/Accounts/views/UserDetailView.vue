@@ -40,7 +40,7 @@
           </div>
           
           <div class="border-t pt-6">
-            <UserProfileCard :user="user" :editable="isAdmin" @update="handleUserUpdate" />
+            <component :is="userProfileSection" :user="user" :editable="isAdmin" @update="handleUserUpdate" />
           </div>
         </div>
       </div>
@@ -49,13 +49,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUser } from '../composables/useUser';
-import UserProfileCard from '../components/UserProfileCard.vue';
+import { getAsyncSection } from '@/sections';
 import UserRoleBadge from '../components/UserRoleBadge.vue';
 import UserAvatar from '../components/UserAvatar.vue';
 import type { User, UserUpdate } from '../types/userTypes';
+
+const userProfileSection = computed(() => getAsyncSection('common/user-profile'));
 
 const route = useRoute();
 const router = useRouter();

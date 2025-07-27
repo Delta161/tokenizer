@@ -23,13 +23,15 @@ const sections: SectionRegistry = {
   
   // Common sections
   // 'common/header': () => import('./common/HeaderSection.vue'),
-  'common/footer': () => import('./common/FooterSection.vue'),
+  // Footer is now a component, not a section
+  'common/footer': () => import('@/components/Footer.vue'),
   'common/hero': () => import('./common/HeroSection.vue'),
   'common/features': () => import('./common/FeatureSection.vue'),
   'common/stats': () => import('./common/StatsSection.vue'),
   'common/not-found': () => import('./common/NotFoundSection.vue'),
   'common/error': () => import('./common/ErrorSection.vue'),
   'common/loading': () => import('./common/LoadingSection.vue'),
+  'common/user-profile': () => import('./common/UserProfileSection.vue'),
 };
 
 /**

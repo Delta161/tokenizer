@@ -1,5 +1,5 @@
 import express from 'express';
-import app from '../app';
+import app from '../../app';
 
 // Print all registered routes
 console.log('\n--- Testing App Routes ---');

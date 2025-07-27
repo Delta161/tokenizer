@@ -2,7 +2,7 @@
  * Server Entry Point
  */
 
-import app from './app';
+import app from '../app';
 import { logger } from './utils/logger';
 import { prisma } from './prisma/client';
 import dotenv from 'dotenv';

@@ -287,3 +287,63 @@
 2025-07-27 17:48:52:4852 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
 2025-07-27 17:48:52:4852 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - /combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - GET - ::1[39m
 2025-07-27 17:48:52:4852 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 17:56:31:5631 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 17:56:31:5631 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 17:56:32:5632 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 17:56:32:5632 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 17:58:04:584 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 17:58:04:584 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 17:58:54:5854 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 17:58:54:5854 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 18:01:09:19 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 18:01:09:19 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - /combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - GET - ::1[39m
+2025-07-27 18:01:09:19 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 18:01:10:110 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 18:01:10:110 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 18:01:51:151 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 18:01:51:151 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - /combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - GET - ::1[39m
+2025-07-27 18:01:51:151 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 18:01:52:152 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 18:01:52:152 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 18:20:46:2046 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 18:20:46:2046 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 18:20:56:2056 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 18:20:56:2056 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 18:37:32:3732 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 18:37:32:3732 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 21:09:06:96 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-27 21:09:06:96 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-27 21:09:06:96 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-27 21:09:06:96 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-27 21:09:06:96 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-27 21:09:06:96 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-27 21:12:17:1217 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-27 21:12:17:1217 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-27 21:12:17:1217 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-27 21:12:17:1217 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-27 21:12:18:1218 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-27 21:12:18:1218 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-27 21:45:52:4552 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-27 21:45:52:4552 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-27 21:45:52:4552 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-27 21:45:52:4552 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-27 21:45:52:4552 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-27 21:45:52:4552 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-27 21:47:36:4736 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-27 21:47:36:4736 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-27 21:47:36:4736 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-27 21:47:36:4736 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-27 21:47:36:4736 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-27 21:47:36:4736 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-27 21:48:40:4840 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-27 21:48:40:4840 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-27 21:48:40:4840 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-27 21:48:40:4840 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-27 21:48:40:4840 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-27 21:48:40:4840 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-27 21:49:51:4951 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-27 21:49:51:4951 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-27 21:49:51:4951 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-27 21:49:51:4951 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-27 21:49:51:4951 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-27 21:49:51:4951 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m

@@ -11,7 +11,8 @@
     </div>
     
     <template v-else>
-      <UserProfileCard 
+      <component 
+        :is="userProfileSection" 
         v-if="currentUser" 
         :user="currentUser" 
         @update="handleProfileUpdate" 
@@ -21,10 +22,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 import { useUser } from '../composables/useUser';
-import UserProfileCard from '../components/UserProfileCard.vue';
+import { getAsyncSection } from '@/sections';
 import type { UserProfile } from '../types/userTypes';
+
+const userProfileSection = computed(() => getAsyncSection('common/user-profile'));
 
 const { 
   loading, 

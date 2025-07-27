@@ -19,15 +19,16 @@ All http errors must be handled by http-errors package.
 The .env file is located at backend\.env
 All enviremonet varibale and secrets must be stored in the .env file.
 All enviremonet varibale and secrets must be loaded from the .env file.
-The app.ts file must be located at backend\app.ts
+
 
 ### APP.ts FILE Rules
+The app.ts file must be located at backend\app.ts
 The app.ts file defines the Express application without starting or listening on a port.
 The first import in app.ts must enable async error propagation via express-async-errors.
 All environment variables must be loaded at the top of app.ts before any other code executes.
 The Express app must be instantiated exactly once in app.ts and assigned to a single variable.
 Security middleware must be included in app.ts, specifically helmet, CORS configured with the frontend origin, and response compression.
-A request-logging middleware must be configured in app.ts (e.g. morgan or Pino HTTP logger).
+The request-logging middleware morgan should be configured in app.ts.
 Body-parsing middleware for JSON and URL-encoded payloads must be applied in app.ts.
 Global authentication or session middleware must be mounted in app.ts after body parsing but before feature routers.
 All feature routers (accounts, projects, investments, blockchain, analytics) must be imported and mounted under their respective base paths in app.ts.

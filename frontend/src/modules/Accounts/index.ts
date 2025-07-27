@@ -59,7 +59,6 @@ export namespace User {
 
 // Components from Accounts module
 import { 
-  UserProfileCard, 
   UserSettingsForm, 
   UserAvatar, 
   UserListItem, 
@@ -69,6 +68,8 @@ import {
   AuthView, // New merged auth component
   KycVerificationStatus
 } from './components';
+
+// Note: UserProfileCard has been moved to sections/common/UserProfileSection.vue
 
 /**
  * Initialize the Accounts module
@@ -101,7 +102,7 @@ export {
   OAuthButtons,
   
   // User Components
-  UserProfileCard,
+  // UserProfileCard moved to sections/common/UserProfileSection.vue
   UserSettingsForm,
   UserAvatar,
   UserListItem,
