@@ -10,7 +10,7 @@ import { defineAsyncComponent } from 'vue';
 // Lazy-loaded components
 const LoginView = defineAsyncComponent(() => import('./LoginView.vue'));
 const RegisterView = defineAsyncComponent(() => import('./RegisterView.vue'));
-const ForgotPasswordView = defineAsyncComponent(() => import('./ForgotPasswordView.vue'));
+// ForgotPasswordView removed - only OAuth authentication is supported
 
 export const authRoutes: RouteRecordRaw[] = [
   {
@@ -30,14 +30,6 @@ export const authRoutes: RouteRecordRaw[] = [
       requiresAuth: false,
       layout: 'AuthLayout'
     }
-  },
-  {
-    path: '/forgot-password',
-    name: 'forgot-password',
-    component: ForgotPasswordView,
-    meta: {
-      requiresAuth: false,
-      layout: 'AuthLayout'
-    }
   }
+  // forgot-password route removed - only OAuth authentication is supported
 ];

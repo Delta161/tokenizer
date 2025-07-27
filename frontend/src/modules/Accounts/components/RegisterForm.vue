@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// This component has been modified to remove password fields
+// as only OAuth authentication is supported now
+
 import { ref } from 'vue';
 import type { RegisterData } from '../types/authTypes';
 
@@ -16,16 +19,14 @@ const emit = defineEmits<{
 const firstName = ref('');
 const lastName = ref('');
 const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
+// password fields removed - only OAuth authentication is supported
 const agreeToTerms = ref(false);
 
 // Form validation
 const firstNameError = ref('');
 const lastNameError = ref('');
 const emailError = ref('');
-const passwordError = ref('');
-const confirmPasswordError = ref('');
+// password validation removed - only OAuth authentication is supported
 const termsError = ref('');
 
 // Validate first name
@@ -70,47 +71,7 @@ function validateEmail() {
   return true;
 }
 
-// Validate password
-function validatePassword() {
-  passwordError.value = '';
-  
-  if (!password.value) {
-    passwordError.value = 'Password is required';
-    return false;
-  }
-  
-  if (password.value.length < 8) {
-    passwordError.value = 'Password must be at least 8 characters';
-    return false;
-  }
-  
-  // Check for at least one uppercase letter, one lowercase letter, and one number
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
-  if (!passwordRegex.test(password.value)) {
-    passwordError.value = 'Password must include at least one uppercase letter, one lowercase letter, and one number';
-    return false;
-  }
-  
-  return true;
-}
-
-// Validate confirm password
-function validateConfirmPassword() {
-  confirmPasswordError.value = '';
-  
-  if (!confirmPassword.value) {
-    confirmPasswordError.value = 'Please confirm your password';
-    return false;
-  }
-  
-  if (confirmPassword.value !== password.value) {
-    confirmPasswordError.value = 'Passwords do not match';
-    return false;
-  }
-  
-  return true;
-}
-
+// Password validation removed - only OAuth authentication is supported
 // Validate terms agreement
 function validateTerms() {
   termsError.value = '';
@@ -128,23 +89,27 @@ function handleSubmit() {
   const isFirstNameValid = validateFirstName();
   const isLastNameValid = validateLastName();
   const isEmailValid = validateEmail();
-  const isPasswordValid = validatePassword();
-  const isConfirmPasswordValid = validateConfirmPassword();
   const isTermsValid = validateTerms();
   
-  if (isFirstNameValid && isLastNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid && isTermsValid) {
+  if (isFirstNameValid && isLastNameValid && isEmailValid && isTermsValid) {
     emit('submit', {
       firstName: firstName.value,
       lastName: lastName.value,
-      email: email.value,
-      password: password.value
+      email: email.value
+      // password field removed - only OAuth authentication is supported
     });
   }
 }
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit" class="register-form">
+  <div class="register-form">
+    <div class="oauth-notice">
+      <p>Password-based registration has been removed.</p>
+      <p>Please use one of the OAuth providers below to register.</p>
+    </div>
+    
+    <!-- Form fields kept for potential future use but disabled -->
     <div class="form-row">
       <div class="form-group">
         <label for="firstName">First Name</label>
@@ -156,6 +121,7 @@ function handleSubmit() {
           @blur="validateFirstName"
           :class="{ 'error': firstNameError }"
           autocomplete="given-name"
+          disabled
         />
         <p v-if="firstNameError" class="error-text">{{ firstNameError }}</p>
       </div>
@@ -170,6 +136,7 @@ function handleSubmit() {
           @blur="validateLastName"
           :class="{ 'error': lastNameError }"
           autocomplete="family-name"
+          disabled
         />
         <p v-if="lastNameError" class="error-text">{{ lastNameError }}</p>
       </div>
@@ -185,37 +152,12 @@ function handleSubmit() {
         @blur="validateEmail"
         :class="{ 'error': emailError }"
         autocomplete="email"
+        disabled
       />
       <p v-if="emailError" class="error-text">{{ emailError }}</p>
     </div>
     
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input
-        id="password"
-        v-model="password"
-        type="password"
-        placeholder="Create a password"
-        @blur="validatePassword"
-        :class="{ 'error': passwordError }"
-        autocomplete="new-password"
-      />
-      <p v-if="passwordError" class="error-text">{{ passwordError }}</p>
-    </div>
-    
-    <div class="form-group">
-      <label for="confirmPassword">Confirm Password</label>
-      <input
-        id="confirmPassword"
-        v-model="confirmPassword"
-        type="password"
-        placeholder="Confirm your password"
-        @blur="validateConfirmPassword"
-        :class="{ 'error': confirmPasswordError }"
-        autocomplete="new-password"
-      />
-      <p v-if="confirmPasswordError" class="error-text">{{ confirmPasswordError }}</p>
-    </div>
+    <!-- Password fields removed - only OAuth authentication is supported -->
     
     <div class="form-group checkbox">
       <label class="checkbox-label">
@@ -223,6 +165,7 @@ function handleSubmit() {
           type="checkbox"
           v-model="agreeToTerms"
           @change="validateTerms"
+          disabled
         />
         <span>I agree to the <a href="#" @click.prevent>Terms of Service</a> and <a href="#" @click.prevent>Privacy Policy</a></span>
       </label>
@@ -230,14 +173,13 @@ function handleSubmit() {
     </div>
     
     <button
-      type="submit"
+      type="button"
       class="submit-button"
-      :disabled="isLoading"
+      disabled
     >
-      <span v-if="isLoading">Creating account...</span>
-      <span v-else>Create Account</span>
+      <span>Register with Email Disabled</span>
     </button>
-  </form>
+  </div>
 </template>
 
 <style scoped>

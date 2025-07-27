@@ -25,6 +25,7 @@ export function mapBackendAuthResponseToFrontend(backendResponse: any): AuthResp
 
 /**
  * Map frontend login credentials to backend format
+ * Note: Password field removed as only OAuth authentication is supported
  * @param credentials Frontend login credentials
  * @returns Backend login credentials object
  */
@@ -32,8 +33,8 @@ export function mapLoginCredentialsToBackend(credentials: LoginCredentials): any
   if (!credentials) return null;
   
   return {
-    email: credentials.email,
-    password: credentials.password
+    email: credentials.email
+    // password field removed - only OAuth authentication is supported
   };
 }
 

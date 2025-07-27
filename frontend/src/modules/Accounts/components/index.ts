@@ -17,7 +17,7 @@ export const UserRoleBadge = defineAsyncComponent(() => import('./UserRoleBadge.
 export const LoginForm = defineAsyncComponent(() => import('./LoginForm.vue'));
 export const OAuthButtons = defineAsyncComponent(() => import('./OAuthButtons.vue'));
 export const RegisterForm = defineAsyncComponent(() => import('./RegisterForm.vue'));
-export const ForgotPasswordForm = defineAsyncComponent(() => import('./ForgotPasswordForm.vue'));
+// ForgotPasswordForm removed - only OAuth authentication is supported
 
 // KYC Components
 export const KycVerificationStatus = defineAsyncComponent(() => import('./KycVerificationStatus.vue'));

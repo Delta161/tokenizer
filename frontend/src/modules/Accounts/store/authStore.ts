@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { LoginCredentials, RegisterData, PasswordResetRequest, PasswordResetConfirm } from '../types/authTypes'
 import type { User } from '../types/userTypes'
 import { AuthService } from '../services/authService'
 
@@ -23,15 +22,15 @@ export const useAuthStore = defineStore('auth', () => {
   })
   
   const isAdmin = computed(() => {
-    return user.value?.role === 'ADMIN'
+    return user.value?.role === userRole.ADMIN
   })
   
   const isClient = computed(() => {
-    return user.value?.role === 'CLIENT'
+    return user.value?.role === userRole.CLIENT
   })
   
   const isInvestor = computed(() => {
-    return user.value?.role === 'INVESTOR'
+    return user.value?.role === userRole.INVESTOR
   })
 
   const userRole = computed(() => {
@@ -64,38 +63,16 @@ export const useAuthStore = defineStore('auth', () => {
     setupSessionTimeoutMonitoring()
   }
   
-  async function login(credentials: LoginCredentials) {
-    loading.value = true
-    error.value = null
-    
-    try {
-      const response = await AuthService.login(credentials)
-      setAuthData(response)
-      return response
-    } catch (err: any) {
-      console.error('Error in login:', err)
-      error.value = err.message || 'Failed to login. Please try again.'
-      throw err
-    } finally {
-      loading.value = false
-    }
+  // Password-based login removed - only OAuth authentication is supported
+  async function login() {
+    error.value = 'Direct login is not supported. Please use OAuth authentication.'
+    throw new Error('Direct login is not supported. Please use OAuth authentication.')
   }
   
-  async function register(data: RegisterData) {
-    loading.value = true
-    error.value = null
-    
-    try {
-      const response = await AuthService.register(data)
-      setAuthData(response)
-      return response
-    } catch (err: any) {
-      console.error('Error in register:', err)
-      error.value = err.message || 'Failed to register. Please try again.'
-      throw err
-    } finally {
-      loading.value = false
-    }
+  // Password-based registration removed - only OAuth authentication is supported
+  async function register() {
+    error.value = 'Direct registration is not supported. Please use OAuth authentication.'
+    throw new Error('Direct registration is not supported. Please use OAuth authentication.')
   }
   
   async function logout() {

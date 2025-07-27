@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../store/authStore';
-import { RegisterForm, OAuthButtons } from '../components';
-import type { RegisterData } from '../types/authTypes';
+import { OAuthButtons } from '../components';
+// RegisterForm removed as only OAuth authentication is supported
 
 // Component state
 const isLoading = ref(false);
@@ -14,38 +14,29 @@ const successMessage = ref<string | null>(null);
 const router = useRouter();
 const authStore = useAuthStore();
 
-// Handle registration form submission
-async function handleRegister(data: RegisterData) {
-  isLoading.value = true;
-  errorMessage.value = null;
-  successMessage.value = null;
-  
-  try {
-    await authStore.register(data);
-    successMessage.value = 'Registration successful! You can now log in.';
-    
-    // Redirect to login after a short delay
-    setTimeout(() => {
-      router.push({ name: 'login' });
-    }, 2000);
-  } catch (error: any) {
-    errorMessage.value = error.message || 'Registration failed. Please try again.';
-  } finally {
-    isLoading.value = false;
-  }
-}
-
-// Handle OAuth registration
+// Handle OAuth login/registration
 async function handleOAuthLogin(provider: string) {
   // Redirect to OAuth provider
   window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/accounts/auth/${provider}`;
 }
+
+// Check if user is already authenticated
+onMounted(async () => {
+  try {
+    await authStore.checkTokenValidity();
+    if (authStore.isAuthenticated) {
+      router.push({ name: 'dashboard' });
+    }
+  } catch (error) {
+    // Ignore errors, user is not authenticated
+  }
+});
 </script>
 
 <template>
   <div class="register-view">
     <div class="register-container">
-      <h1>Create Account</h1>
+      <h1>Create Account with OAuth</h1>
       
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
@@ -55,20 +46,15 @@ async function handleOAuthLogin(provider: string) {
         {{ successMessage }}
       </div>
       
-      <RegisterForm 
-        @submit="handleRegister" 
-        :is-loading="isLoading" 
-      />
-      
-      <div class="divider">
-        <span>OR</span>
+      <div class="oauth-notice">
+        <p>Please use one of the following providers to create an account:</p>
       </div>
       
       <OAuthButtons @login="handleOAuthLogin" />
       
       <div class="links">
         <router-link :to="{ name: 'login' }">
-          Already have an account? Sign in
+          Already have an account? Sign in with OAuth
         </router-link>
       </div>
     </div>

@@ -6,18 +6,20 @@
 
 /**
  * Login credentials for authentication
+ * Note: Password field removed as only OAuth authentication is supported
  */
 export interface LoginCredentials {
   email: string;
-  password: string;
+  // password field removed - only OAuth authentication is supported
 }
 
 /**
  * Registration data for new user accounts
+ * Note: Password field removed as only OAuth authentication is supported
  */
 export interface RegisterData {
   email: string;
-  password: string;
+  // password field removed - only OAuth authentication is supported
   firstName: string;
   lastName: string;
 }

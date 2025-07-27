@@ -1,11 +1,11 @@
 import { computed } from 'vue';
 import { useAuthStore } from '../store/authStore';
-import type { LoginCredentials, RegisterData } from '../types/authTypes';
 import type { User } from '../types/userTypes';
 
 /**
  * Composable for authentication functionality
  * Provides reactive access to auth state and methods
+ * Note: Only OAuth authentication is supported
  */
 export function useAuth() {
   const authStore = useAuthStore();
@@ -17,13 +17,14 @@ export function useAuth() {
   const error = computed(() => authStore.error);
   const userRole = computed(() => authStore.userRole);
 
-  // Methods
-  const login = async (credentials: LoginCredentials) => {
-    return authStore.login(credentials);
+  // Methods - Password-based authentication removed
+  // These methods are kept for API compatibility but will throw errors
+  const login = async () => {
+    return authStore.login();
   };
 
-  const register = async (data: RegisterData) => {
-    return authStore.register(data);
+  const register = async () => {
+    return authStore.register();
   };
 
   const logout = async () => {
@@ -67,8 +68,8 @@ export function useAuth() {
     userRole,
     
     // Methods
-    login,
-    register,
+    login, // Note: Only works with OAuth authentication
+    register, // Note: Only works with OAuth authentication
     logout,
     checkAuth,
     refreshToken,

@@ -1,0 +1,18 @@
+# .github/workflows/test.yml
+name: Test CI/CD
+
+on:
+  push:
+    branches: [test]
+  pull_request:
+    branches: [test]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Same steps, but tag images as :test
+      - run: docker build -t myrepo/tokenizer-backend:test ./backend
+      - run: docker build -t myrepo/tokenizer-frontend:test ./frontend
+      # Push, then deploy to test/staging server

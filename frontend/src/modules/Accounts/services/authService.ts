@@ -14,33 +14,27 @@ import {
  */
 export const AuthService = {
   /**
-   * Login user with email and password
-   * @param credentials - User login credentials
-   * @returns Promise with user data and tokens
+   * Login user with email and password - REMOVED
+   * This method is no longer supported as only OAuth authentication is available
+   * @deprecated Use OAuth authentication instead
    */
-  async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    try {
-      const backendCredentials = mapLoginCredentialsToBackend(credentials);
-      const response = await apiClient.post('/accounts/auth/login', backendCredentials);
-      return mapBackendAuthResponseToFrontend(response.data);
-    } catch (error) {
-      return handleServiceError(error, 'Failed to login. Please check your credentials.');
-    }
+  async login(_credentials: LoginCredentials): Promise<AuthResponse> {
+    return handleServiceError(
+      new Error('Direct login with email and password is not supported. Please use OAuth authentication.'),
+      'Password-based authentication is not supported. Please use the OAuth login options.'
+    );
   },
 
   /**
-   * Register a new user
-   * @param userData - User registration data
-   * @returns Promise with user data and tokens
+   * Register a new user - REMOVED
+   * This method is no longer supported as only OAuth authentication is available
+   * @deprecated Use OAuth authentication instead
    */
-  async register(userData: RegisterData): Promise<AuthResponse> {
-    try {
-      const backendUserData = mapRegisterDataToBackend(userData);
-      const response = await apiClient.post('/accounts/auth/register', backendUserData);
-      return mapBackendAuthResponseToFrontend(response.data);
-    } catch (error) {
-      return handleServiceError(error, 'Failed to register. Please check your information.');
-    }
+  async register(_userData: RegisterData): Promise<AuthResponse> {
+    return handleServiceError(
+      new Error('Direct registration with email and password is not supported. Please use OAuth authentication.'),
+      'Password-based registration is not supported. Please use the OAuth login options.'
+    );
   },
 
   /**

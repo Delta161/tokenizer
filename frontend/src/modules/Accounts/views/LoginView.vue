@@ -2,8 +2,8 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../store/authStore';
-import { LoginForm, OAuthButtons } from '../components';
-import type { LoginCredentials } from '../types/authTypes';
+import { OAuthButtons } from '../components';
+// LoginForm removed as only OAuth authentication is supported
 
 // Component state
 const isLoading = ref(false);
@@ -12,21 +12,6 @@ const errorMessage = ref<string | null>(null);
 // Get router and auth store
 const router = useRouter();
 const authStore = useAuthStore();
-
-// Handle login form submission
-async function handleLogin(credentials: LoginCredentials) {
-  isLoading.value = true;
-  errorMessage.value = null;
-  
-  try {
-    await authStore.login(credentials);
-    router.push({ name: 'dashboard' });
-  } catch (error: any) {
-    errorMessage.value = error.message || 'Login failed. Please try again.';
-  } finally {
-    isLoading.value = false;
-  }
-}
 
 // Handle OAuth login
 async function handleOAuthLogin(provider: string) {
@@ -50,29 +35,21 @@ onMounted(async () => {
 <template>
   <div class="login-view">
     <div class="login-container">
-      <h1>Sign In</h1>
+      <h1>Sign In with OAuth</h1>
       
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
       
-      <LoginForm 
-        @submit="handleLogin" 
-        :is-loading="isLoading" 
-      />
-      
-      <div class="divider">
-        <span>OR</span>
+      <div class="oauth-notice">
+        <p>Please use one of the following providers to sign in:</p>
       </div>
       
       <OAuthButtons @login="handleOAuthLogin" />
       
       <div class="links">
         <router-link :to="{ name: 'register' }">
-          Don't have an account? Sign up
-        </router-link>
-        <router-link :to="{ name: 'forgot-password' }">
-          Forgot password?
+          Don't have an account? Sign up with OAuth
         </router-link>
       </div>
     </div>

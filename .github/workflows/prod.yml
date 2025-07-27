@@ -1,0 +1,18 @@
+# .github/workflows/prod.yml
+name: Production CI/CD
+
+on:
+  push:
+    branches: [prod]
+  pull_request:
+    branches: [prod]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Tag as :latest or :prod
+      - run: docker build -t myrepo/tokenizer-backend:latest ./backend
+      - run: docker build -t myrepo/tokenizer-frontend:latest ./frontend
+      # Push, then deploy to production server

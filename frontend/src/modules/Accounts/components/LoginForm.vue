@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// This component has been modified to remove password fields
+// as only OAuth authentication is supported now
+
 import { ref } from 'vue';
 import type { LoginCredentials } from '../types/authTypes';
 
@@ -14,12 +17,12 @@ const emit = defineEmits<{
 
 // Form state
 const email = ref('');
-const password = ref('');
+// password field removed - only OAuth authentication is supported
 const rememberMe = ref(false);
 
 // Form validation
 const emailError = ref('');
-const passwordError = ref('');
+// passwordError removed - only OAuth authentication is supported
 
 // Validate email
 function validateEmail() {
@@ -39,39 +42,27 @@ function validateEmail() {
   return true;
 }
 
-// Validate password
-function validatePassword() {
-  passwordError.value = '';
-  
-  if (!password.value) {
-    passwordError.value = 'Password is required';
-    return false;
-  }
-  
-  if (password.value.length < 8) {
-    passwordError.value = 'Password must be at least 8 characters';
-    return false;
-  }
-  
-  return true;
-}
-
 // Handle form submission
 function handleSubmit() {
   const isEmailValid = validateEmail();
-  const isPasswordValid = validatePassword();
   
-  if (isEmailValid && isPasswordValid) {
+  if (isEmailValid) {
     emit('submit', {
-      email: email.value,
-      password: password.value
+      email: email.value
+      // password field removed - only OAuth authentication is supported
     });
   }
 }
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit" class="login-form">
+  <div class="login-form">
+    <div class="oauth-notice">
+      <p>Password-based authentication has been removed.</p>
+      <p>Please use one of the OAuth providers below to sign in.</p>
+    </div>
+    
+    <!-- Email field kept for potential future use but disabled -->
     <div class="form-group">
       <label for="email">Email</label>
       <input
@@ -82,43 +73,32 @@ function handleSubmit() {
         @blur="validateEmail"
         :class="{ 'error': emailError }"
         autocomplete="email"
+        disabled
       />
       <p v-if="emailError" class="error-text">{{ emailError }}</p>
     </div>
     
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input
-        id="password"
-        v-model="password"
-        type="password"
-        placeholder="Enter your password"
-        @blur="validatePassword"
-        :class="{ 'error': passwordError }"
-        autocomplete="current-password"
-      />
-      <p v-if="passwordError" class="error-text">{{ passwordError }}</p>
-    </div>
+    <!-- Password field removed - only OAuth authentication is supported -->
     
     <div class="form-group checkbox">
       <label class="checkbox-label">
         <input
           type="checkbox"
           v-model="rememberMe"
+          disabled
         />
         <span>Remember me</span>
       </label>
     </div>
     
     <button
-      type="submit"
+      type="button"
       class="submit-button"
-      :disabled="isLoading"
+      disabled
     >
-      <span v-if="isLoading">Signing in...</span>
-      <span v-else>Sign In</span>
+      <span>Sign In with Email Disabled</span>
     </button>
-  </form>
+  </div>
 </template>
 
 <style scoped>
