@@ -14,9 +14,11 @@ export const UserListItem = defineAsyncComponent(() => import('./UserListItem.vu
 export const UserRoleBadge = defineAsyncComponent(() => import('./UserRoleBadge.vue'));
 
 // Auth Components
-export const LoginForm = defineAsyncComponent(() => import('./LoginForm.vue'));
+export const AuthView = defineAsyncComponent(() => import('./AuthView.vue')); // New merged auth component
 export const OAuthButtons = defineAsyncComponent(() => import('./OAuthButtons.vue'));
-export const RegisterForm = defineAsyncComponent(() => import('./RegisterForm.vue'));
+// Legacy components - kept for backward compatibility
+export const LoginForm = defineAsyncComponent(() => import('./LoginForm.vue'));
+// RegisterForm removed - only OAuth authentication is supported
 // ForgotPasswordForm removed - only OAuth authentication is supported
 
 // KYC Components

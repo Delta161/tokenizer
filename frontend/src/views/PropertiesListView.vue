@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import SectionRenderer from '@/components/SectionRenderer.vue';
-import type { Project } from '@/modules/ProjectsConsolidated';
+import type { Project } from '@/modules/Projects';
 
 // State
 const currentPage = ref(1);

@@ -153,13 +153,14 @@ export function mapBackendSettingsToFrontend(backendSettings: any): UserSettings
  * Map frontend registration data to backend format
  * @param registerData Frontend registration data
  * @returns Backend registration data object
+ * @deprecated Use OAuth authentication instead
  */
 export function mapRegisterDataToBackend(registerData: RegisterData): any {
   if (!registerData) return null;
   
   return {
     email: registerData.email,
-    password: registerData.password,
+    // password field removed - only OAuth authentication is supported
     fullName: `${registerData.firstName} ${registerData.lastName}`.trim()
   };
 }

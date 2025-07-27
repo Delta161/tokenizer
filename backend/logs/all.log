@@ -94,3 +94,47 @@
 2025-07-26 14:06:52:652 [32minfo[39m: [32mInvestment module initialized successfully[39m
 2025-07-26 14:06:52:652 [32minfo[39m: [32mServer running in development mode on port 3000[39m
 2025-07-26 14:06:52:652 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-27 13:23:26:2326 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-27 13:23:26:2326 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-27 13:23:26:2326 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-27 13:23:26:2326 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-27 13:23:26:2326 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-27 13:23:26:2326 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-27 13:26:54:2654 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:26:54:2654 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:42:30:4230 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:42:30:4230 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:42:34:4234 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:42:34:4234 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:42:37:4237 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:42:37:4237 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:42:39:4239 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:42:39:4239 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:42:41:4241 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:42:41:4241 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:42:44:4244 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:42:44:4244 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:42:47:4247 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:42:47:4247 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:43:01:431 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:43:01:431 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:43:03:433 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:43:03:433 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:43:07:437 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:43:07:437 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:43:09:439 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:43:09:439 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:43:15:4315 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:43:15:4315 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:43:18:4318 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:43:18:4318 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:43:20:4320 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:43:20:4320 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:43:22:4322 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:43:22:4322 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:43:24:4324 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:43:24:4324 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:43:32:4332 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:43:32:4332 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-27 13:43:34:4334 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-27 13:43:34:4334 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m

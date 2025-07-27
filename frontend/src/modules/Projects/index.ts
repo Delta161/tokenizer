@@ -1,17 +1,34 @@
-// Export components
-export * from './components'
+/**
+ * Unified Projects Module
+ * This module combines functionality from both Property and Project modules
+ */
 
-// Export types
-export * from './types'
+// Components
+export { default as ProjectList } from './components/ProjectList.vue'
+export { default as ProjectDetail } from './components/ProjectDetail.vue'
+export { default as ProjectForm } from './components/ProjectForm.vue'
+export { default as ProjectCard } from './components/ProjectCard.vue'
 
-// Export views
-export * from './views'
+// Composables
+export { useProjectSearch } from './composables/useProjectSearch'
 
-// Export services
-export * from './services'
+// Store
+export { useProjectStore } from './store/projectStore'
 
-// Export store
-export * from './store'
+// Services
+export { projectService } from './services/projectService'
 
-// Export composables
-export * from './composables'
+// Types
+export * from './types/Project'
+
+// Routes
+export { default as projectRoutes } from './routes/index'
+
+/**
+ * Initialize the Projects module
+ * This function should be called once during application startup
+ */
+export function initProjectsModule() {
+  // Any initialization logic can go here
+  console.log('Projects module initialized')
+}

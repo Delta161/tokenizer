@@ -1,55 +1,55 @@
 <template>
-  <section class="property-list-section">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="title">{{ title }}</h2>
-        <p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
-      </div>
-      
-      <div class="properties-grid">
-        <PropertyCardSection 
-          v-for="property in properties" 
-          :key="property.id" 
-          :property="property"
-          @toggle-favorite="handleToggleFavorite"
-        />
-      </div>
-      
-      <div v-if="showPagination" class="pagination">
-        <button 
-          class="pagination-button" 
-          :disabled="currentPage === 1"
-          @click="$emit('page-change', currentPage - 1)"
-        >
-          Previous
-        </button>
-        <div class="pagination-numbers">
-          <button 
-            v-for="page in totalPages" 
-            :key="page"
-            class="pagination-number"
-            :class="{ active: page === currentPage }"
-            @click="$emit('page-change', page)"
-          >
-            {{ page }}
-          </button>
-        </div>
-        <button 
-          class="pagination-button"
-          :disabled="currentPage === totalPages"
-          @click="$emit('page-change', currentPage + 1)"
-        >
-          Next
-        </button>
-      </div>
+  <div class="property-list-component">
+    <div class="section-header">
+      <h2 class="title">{{ title }}</h2>
+      <p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
     </div>
-  </section>
+    
+    <div class="properties-grid">
+      <project-card 
+        v-for="project in properties" 
+        :key="project.id" 
+        :project="project"
+        @favorite="handleToggleFavorite(project.id)"
+        @view="viewProject(project.id)"
+      />
+    </div>
+    
+    <div v-if="showPagination" class="pagination">
+      <button 
+        class="pagination-button" 
+        :disabled="currentPage === 1"
+        @click="$emit('page-change', currentPage - 1)"
+      >
+        Previous
+      </button>
+      <div class="pagination-numbers">
+        <button 
+          v-for="page in totalPages" 
+          :key="page"
+          class="pagination-number"
+          :class="{ active: page === currentPage }"
+          @click="$emit('page-change', page)"
+        >
+          {{ page }}
+        </button>
+      </div>
+      <button 
+        class="pagination-button"
+        :disabled="currentPage === totalPages"
+        @click="$emit('page-change', currentPage + 1)"
+      >
+        Next
+      </button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue';
-import PropertyCardSection from './PropertyCardSection.vue';
-import type { Project } from '@/modules/Projects';
+import { useRouter } from 'vue-router';
+import ProjectCard from './ProjectCard.vue';
+import type { Project } from '../types/Project';
 
 interface Props {
   title?: string;
@@ -73,20 +73,21 @@ const emit = defineEmits<{
   'page-change': [page: number];
 }>();
 
+const router = useRouter();
+
 const handleToggleFavorite = (propertyId: string) => {
   emit('toggle-favorite', propertyId);
+};
+
+const viewProject = (id: string) => {
+  router.push(`/projects/${id}`);
 };
 </script>
 
 <style scoped>
-.property-list-section {
-  padding: 4rem 1rem;
+.property-list-component {
+  padding: 2rem 0;
   background-color: var(--color-surface, #f9fafb);
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .section-header {
@@ -112,7 +113,7 @@ const handleToggleFavorite = (propertyId: string) => {
 
 .properties-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(1, 1fr);
   gap: 2rem;
   margin-bottom: 3rem;
 }
@@ -176,13 +177,13 @@ const handleToggleFavorite = (propertyId: string) => {
 
 @media (min-width: 768px) {
   .properties-grid {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
   .properties-grid {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

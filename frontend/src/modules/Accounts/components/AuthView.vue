@@ -1,18 +1,27 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../store/authStore';
-import { OAuthButtons } from '../components';
-// RegisterForm removed as only OAuth authentication is supported
+import { OAuthButtons } from '.';
 
 // Component state
+const isLogin = ref(true);
 const isLoading = ref(false);
 const errorMessage = ref<string | null>(null);
 const successMessage = ref<string | null>(null);
 
-// Get router and auth store
+// Get router, route, and auth store
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
+
+// Toggle between login and register views
+function toggleView() {
+  isLogin.value = !isLogin.value;
+  // Clear messages when switching views
+  errorMessage.value = null;
+  successMessage.value = null;
+}
 
 // Handle OAuth login/registration
 async function handleOAuthLogin(provider: string) {
@@ -23,6 +32,9 @@ async function handleOAuthLogin(provider: string) {
 // Check if user is already authenticated
 onMounted(async () => {
   try {
+    // Set initial view based on route
+    isLogin.value = route.name === 'login';
+    
     await authStore.checkTokenValidity();
     if (authStore.isAuthenticated) {
       router.push({ name: 'dashboard' });
@@ -34,9 +46,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="register-view">
-    <div class="register-container">
-      <h1>Create Account with OAuth</h1>
+  <div class="auth-view">
+    <div class="auth-container">
+      <h1>{{ isLogin ? 'Sign In' : 'Create Account' }} with OAuth</h1>
       
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
@@ -47,22 +59,22 @@ onMounted(async () => {
       </div>
       
       <div class="oauth-notice">
-        <p>Please use one of the following providers to create an account:</p>
+        <p>Please use one of the following providers to {{ isLogin ? 'sign in' : 'create an account' }}:</p>
       </div>
       
       <OAuthButtons @login="handleOAuthLogin" />
       
       <div class="links">
-        <router-link :to="{ name: 'login' }">
-          Already have an account? Sign in with OAuth
-        </router-link>
+        <a href="#" @click.prevent="toggleView">
+          {{ isLogin ? 'Don\'t have an account? Sign up with OAuth' : 'Already have an account? Sign in with OAuth' }}
+        </a>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.register-view {
+.auth-view {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -71,7 +83,7 @@ onMounted(async () => {
   background-color: var(--color-background);
 }
 
-.register-container {
+.auth-container {
   width: 100%;
   max-width: 400px;
   padding: 2rem;

@@ -4,7 +4,6 @@ import { handleServiceError } from '../utils/errorHandling';
 import {
   mapBackendAuthResponseToFrontend,
   mapLoginCredentialsToBackend,
-  mapRegisterDataToBackend,
   mapBackendTokenRefreshToFrontend
 } from '../utils/mappers';
 

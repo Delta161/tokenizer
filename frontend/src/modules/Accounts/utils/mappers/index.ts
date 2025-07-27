@@ -35,7 +35,6 @@ export {
 export {
   mapBackendAuthResponseToFrontend,
   mapLoginCredentialsToBackend,
-  mapBackendTokenRefreshToFrontend,
-  mapPasswordResetRequestToBackend,
-  mapPasswordResetConfirmToBackend
+  mapBackendTokenRefreshToFrontend
+  // Password reset mapper functions removed - only OAuth authentication is supported
 } from './authMapper';

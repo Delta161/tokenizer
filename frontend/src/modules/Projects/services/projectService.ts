@@ -1,20 +1,31 @@
 import { useApi } from '@/composables/useApi'
-import type { Project, CreateProjectRequest, CreateProjectResponse } from '../types/Project'
+import type {
+  Project,
+  CreateProjectRequest,
+  UpdateProjectRequest,
+  UpdateProjectStatusRequest,
+  ProjectSearchParams,
+  ProjectSearchResult,
+  CreateProjectResponse
+} from '../types/Project'
 
 // Create a single instance of the API client for all methods
 const { get, post, put, patch, delete: deleteRequest, upload } = useApi()
 
 /**
- * Service for handling project-related API calls
+ * Unified Project Service
+ * Handles all API calls related to projects and properties
  */
 export const projectService = {
   /**
-   * Fetch all projects
-   * @returns Promise with array of projects
+   * Get all approved projects with optional search parameters
+   * @param params - Search parameters for filtering and pagination
+   * @returns Promise with projects and pagination info
    */
-  async getProjects(): Promise<Project[]> {
+  async getProjects(params?: ProjectSearchParams): Promise<ProjectSearchResult> {
     try {
-      return await get('/projects')
+      const response = await get('/projects', { params })
+      return response
     } catch (error) {
       console.error('Error fetching projects:', error)
       throw error
@@ -22,7 +33,7 @@ export const projectService = {
   },
 
   /**
-   * Fetch a single project by ID
+   * Get a specific project by ID
    * @param id - Project ID
    * @returns Promise with project data
    */
@@ -31,6 +42,21 @@ export const projectService = {
       return await get(`/projects/${id}`)
     } catch (error) {
       console.error(`Error fetching project ${id}:`, error)
+      throw error
+    }
+  },
+
+  /**
+   * Get projects owned by the current user
+   * @param params - Search parameters for filtering and pagination
+   * @returns Promise with projects and pagination info
+   */
+  async getMyProjects(params?: ProjectSearchParams): Promise<ProjectSearchResult> {
+    try {
+      const response = await get('/projects/my', { params })
+      return response
+    } catch (error) {
+      console.error('Error fetching my projects:', error)
       throw error
     }
   },
@@ -51,15 +77,30 @@ export const projectService = {
 
   /**
    * Update an existing project
-   * @param id - Project ID
-   * @param projectData - Updated project data
+   * @param projectData - Updated project data with ID
    * @returns Promise with updated project data
    */
-  async updateProject(id: string, projectData: Partial<Project>): Promise<Project> {
+  async updateProject(projectData: UpdateProjectRequest): Promise<Project> {
     try {
-      return await put(`/projects/${id}`, projectData)
+      return await put(`/projects/${projectData.id}`, projectData)
     } catch (error) {
-      console.error(`Error updating project ${id}:`, error)
+      console.error(`Error updating project ${projectData.id}:`, error)
+      throw error
+    }
+  },
+
+  /**
+   * Update project status
+   * @param statusUpdate - Project status update data
+   * @returns Promise with updated project
+   */
+  async updateProjectStatus(statusUpdate: UpdateProjectStatusRequest): Promise<Project> {
+    try {
+      return await patch(`/projects/${statusUpdate.id}/status`, {
+        status: statusUpdate.status
+      })
+    } catch (error) {
+      console.error(`Error updating project status ${statusUpdate.id}:`, error)
       throw error
     }
   },

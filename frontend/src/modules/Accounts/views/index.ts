@@ -10,9 +10,8 @@ export { kycRoutes } from './kycRoutes';
 
 // Export view components for Auth
 export { default as LoginView } from './LoginView.vue';
-export { default as RegisterView } from './RegisterView.vue';
-export { default as ForgotPasswordView } from './ForgotPasswordView.vue';
-export { default as ResetPasswordView } from './ResetPasswordView.vue';
+// RegisterView removed - only OAuth authentication is supported
+// ForgotPasswordView and ResetPasswordView removed - only OAuth authentication is supported
 
 // Export view components for User
 export { default as UserProfileView } from './UserProfileView.vue';

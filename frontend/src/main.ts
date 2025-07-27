@@ -9,7 +9,7 @@ import router from './router/index'
 
 // Import module initializations
 import { initAccountsModule } from './modules/Accounts'
-import { initProjectsConsolidatedModule } from './modules/ProjectsConsolidated'
+import { initProjectsModule } from './modules/Projects'
 
 // Initialize the application
 const app = createApp(App)
@@ -25,7 +25,7 @@ app.use(router)
 
 // Initialize modules
 initAccountsModule()
-initProjectsConsolidatedModule()
+initProjectsModule()
 
 // Mount the app
 app.mount('#app')

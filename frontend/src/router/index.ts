@@ -3,9 +3,10 @@ import { useAuthStore } from '../modules/Accounts'
 import { authRoutes } from '../modules/Accounts/views/authRoutes'
 import { userRoutes } from '../modules/Accounts/views/userRoutes'
 import { kycRoutes } from '../modules/Accounts/views/kycRoutes'
+import { exampleRoutes } from '../modules/Accounts/examples/exampleRoutes'
 
 // Import module routes - lazy import to avoid circular dependencies
-import { ProjectsView, ProjectDetailView } from '../modules/ProjectsConsolidated'
+import { projectRoutes } from '../modules/Projects'
 
 // Import layouts
 const DefaultLayout = () => import('../layouts/DefaultLayout.vue')
@@ -54,33 +55,13 @@ const router = createRouter({
     },
     
     // Projects routes
-    {
-      path: '/projects',
-      name: 'projects',
-      component: ProjectsView,
+    ...projectRoutes.map(route => ({
+      ...route,
       meta: {
-        requiresAuth: false,
+        ...route.meta,
         layout: 'DefaultLayout'
       }
-    },
-    {
-      path: '/project/:id',
-      name: 'project-detail',
-      component: ProjectDetailView,
-      meta: {
-        requiresAuth: false,
-        layout: 'DefaultLayout'
-      }
-    },
-    {
-      path: '/add-project',
-      name: 'add-project',
-      component: () => import('@/components/AddProjectForm.vue'),
-      meta: {
-        requiresAuth: false,
-        layout: 'DefaultLayout'
-      }
-    },
+    })),
     
     // Properties routes
     {
@@ -173,6 +154,9 @@ const router = createRouter({
     ...authRoutes,
     ...userRoutes,
     ...kycRoutes,
+    
+    // Example routes for component demonstrations
+    ...exampleRoutes,
     
     // 404 route
     {

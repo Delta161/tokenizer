@@ -139,7 +139,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { Project } from '@/modules/ProjectsConsolidated'
+import type { Project } from '@/modules/Projects'
 import { 
   HeartIcon, 
   MapPinIcon, 

@@ -65,10 +65,8 @@ import {
   UserListItem, 
   UserRoleBadge,
   LoginForm,
-  RegisterForm,
-  ForgotPasswordForm,
-  ResetPasswordForm,
   OAuthButtons,
+  AuthView, // New merged auth component
   KycVerificationStatus
 } from './components';
 
@@ -97,10 +95,9 @@ export function initAccountsModule() {
 // Export consolidated components, services, and types
 export {
   // Auth Components
+  AuthView, // New merged auth component
   LoginForm,
-  RegisterForm,
-  ForgotPasswordForm,
-  ResetPasswordForm,
+  // RegisterForm removed - only OAuth authentication is supported
   OAuthButtons,
   
   // User Components
