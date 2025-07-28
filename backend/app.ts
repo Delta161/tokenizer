@@ -17,6 +17,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
+import passport from 'passport';
 
 // Import configuration
 import { API_PREFIX, RATE_LIMIT } from './src/config/constants';
@@ -38,6 +39,9 @@ import { initBlockchainModule } from './src/modules/blockchain';
 import { registerAnalyticsModule } from './src/modules/analytics/analytics.module.js';
 import { initInvestmentModule } from './src/modules/investment';
 import { initKycModule } from './src/modules/accounts';
+
+// Import authentication strategies
+import { configureAuthStrategies } from './src/modules/accounts/strategies';
 
 // Create Express application
 const app: Express = express();
@@ -70,6 +74,10 @@ app.use(
     legacyHeaders: false,
   })
 );
+
+// Initialize Passport and configure strategies
+app.use(passport.initialize());
+configureAuthStrategies();
 
 // Global authentication/session middleware would go here
 // TODO: Add session middleware when implemented

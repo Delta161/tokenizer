@@ -45,6 +45,22 @@ export class AdminLogger {
   }
 
   /**
+   * Log KYC record view by admin
+   */
+
+logKycRecordView(kycRecordId: string, adminId: string): void {
+    logger.info(
+      `Admin ${adminId} viewed KYC record ${kycRecordId}`,
+      {
+        action: 'KYC_RECORD_VIEW',
+        module: this.module,
+        kycRecordId,
+        adminId,
+      }
+    );
+  }
+
+  /**
    * Log property moderation
    */
   logPropertyModeration(

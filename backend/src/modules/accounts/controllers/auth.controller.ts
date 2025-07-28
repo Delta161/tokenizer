@@ -92,7 +92,7 @@ export class AuthController {
       // Special case for OAuth - we want to redirect with error instead of using next(error)
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('OAuth authentication error', { error: errorMessage });
-      accountsLogger.logAuthError(profile?.email || 'unknown', errorMessage, profile?.provider || 'oauth');
+      accountsLogger.logAuthError('unknown', errorMessage, 'oauth');
       
       const redirectUrl = process.env.FRONTEND_URL;
       res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent(errorMessage)}`);

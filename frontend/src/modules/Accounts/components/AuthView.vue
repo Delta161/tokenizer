@@ -26,7 +26,7 @@ function toggleView() {
 // Handle OAuth login/registration
 async function handleOAuthLogin(provider: string) {
   // Redirect to OAuth provider
-  window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/accounts/auth/${provider}`;
+  window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/v1/auth/${provider}`;
 }
 
 // Check if user is already authenticated

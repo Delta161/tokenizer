@@ -23,7 +23,7 @@ export const createUserSchema = z.object({
   phone: z.string().optional(),
   preferredLanguage: z.string().optional(),
   timezone: z.string().optional(),
-  authProvider: z.nativeEnum(AuthProvider).optional()
+  authProvider: z.nativeEnum(AuthProvider)
 }).refine(
   // If providerId is present, authProvider must also be present
   data => !(data.providerId && !data.authProvider),

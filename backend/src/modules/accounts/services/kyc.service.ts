@@ -55,7 +55,7 @@ export class KycService {
       return updatedRecord;
     } catch (error) {
       // Use the logAccountError method instead of error directly
-      accountsLogger.logAccountError('updateByProviderReference', error, {
+      console.error('Error in updateByProviderReference:', error, {
         provider,
         referenceId
       });

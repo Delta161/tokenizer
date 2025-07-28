@@ -11,7 +11,7 @@ import { createUnauthorized, createBadRequest, createNotFound, createForbidden }
 import { createPaginationResult, getSkipValue } from '@utils/pagination';
 import { accountsLogger } from '@modules/accounts/utils/accounts.logger';
 import { logger } from '@utils/logger';
-import { adminLogger } from '@modules/admin/admin.logger';
+import { adminLogger } from '@modules/admin/utils/admin.logger';
 import { verifySumsubWebhookSignature, mapSumsubStatusToKycStatus } from '@modules/accounts/utils/kycProvider.utils';
 
 export class KycController {
@@ -42,7 +42,7 @@ export class KycController {
       // Verify signature
       const isValid = verifySumsubWebhookSignature(rawBody, signature);
       if (!isValid) {
-        accountsLogger.warn('Invalid Sumsub webhook signature');
+        adminLogger.warn('Invalid Sumsub webhook signature');
         next(createForbidden('Invalid signature'));
         return;
       }
@@ -88,7 +88,7 @@ export class KycController {
       });
     } catch (error) {
       // Use logAccountError instead of error
-      accountsLogger.logAccountError('handleSumsubWebhook', error);
+      accountsLogger.logAccountError('handleSumsubWebhook', error as Error);
       next(error);
     }
   };
@@ -134,7 +134,7 @@ export class KycController {
         data: kycRecord || { status: 'NOT_SUBMITTED' }
       });
     } catch (error) {
-      accountsLogger.logAccountError('getCurrentUserKyc', error, { userId: req.user?.id });
+      accountsLogger.logAccountError('getCurrentUserKyc', error as Error, { userId: req.user?.id });
       next(error);
     }
   };
@@ -230,7 +230,7 @@ export class KycController {
         }
       });
     } catch (error) {
-      accountsLogger.logAccountError('initiateProviderVerification', error, { 
+      accountsLogger.logAccountError('initiateProviderVerification', error as Error, { 
         userId: req.user?.id,
         provider: req.params?.provider 
       });
@@ -309,7 +309,7 @@ export class KycController {
       });
     } catch (error) {
       const userId = req.params?.userId;
-      accountsLogger.logAccountError('syncKycStatus', error, { 
+      accountsLogger.logAccountError('syncKycStatus', error as Error, { 
         userId,
         adminId: req.user?.id 
       });
@@ -386,7 +386,7 @@ export class KycController {
         data: kycRecord
       });
     } catch (error) {
-      accountsLogger.logAccountError('submitKyc', error, { userId: req.user?.id });
+      accountsLogger.logAccountError('submitKyc', error as Error, { userId: req.user?.id });
       next(error);
     }
   };
@@ -454,7 +454,7 @@ export class KycController {
       res.json(result);
     } catch (error) {
       const adminId = (req as AuthenticatedRequest).user?.id;
-      accountsLogger.logAccountError('getAllKycRecords', error, { adminId });
+      accountsLogger.logAccountError('getAllKycRecords', error as Error, { adminId });
       next(error);
     }
   };
@@ -536,7 +536,7 @@ export class KycController {
     } catch (error) {
       const adminId = (req as AuthenticatedRequest).user?.id;
       const userId = req.params?.userId;
-      accountsLogger.logAccountError('getUserKyc', error, { adminId, targetUserId: userId });
+      accountsLogger.logAccountError('getUserKyc', error as Error, { adminId, targetUserId: userId });
       next(error);
     }
   };
@@ -614,8 +614,8 @@ export class KycController {
       // Log KYC status update
       accountsLogger.logKycStatusUpdate(
         userId, 
-        oldStatus || 'NOT_SUBMITTED', 
-        kycRecord.status, 
+        (oldStatus || KycStatus.NOT_SUBMITTED) as KycStatus, 
+        kycRecord.status as KycStatus,
         adminId
       );
 
@@ -636,7 +636,7 @@ export class KycController {
     } catch (error) {
       const adminId = (req as AuthenticatedRequest).user?.id;
       const userId = req.params?.userId;
-      accountsLogger.logAccountError('updateKycStatus', error, { adminId, targetUserId: userId });
+      accountsLogger.logAccountError('updateKycStatus', error as Error, { adminId, targetUserId: userId });
       next(error);
     }
   };

@@ -33,3 +33,89 @@
 [31mUnknown argument `providerReference`. Available options are marked with ?.[39m
 2025-07-25 16:47:53:4753 [31merror[39m: [31mTypeError: import_accounts.accountsLogger.error is not a function[39m
 2025-07-25 16:55:59:5559 [31merror[39m: [31mAccount error during handleSumsubWebhook: KYC record not found for referenceId: sumsub_test_1753455358716_8ps1rxf0[39m
+2025-07-28 10:23:00:230 [31merror[39m: [31mAccount error during user_creation: Test error[39m
+2025-07-28 10:23:00:230 [31merror[39m: [31mAccount error during user_update: Test error[39m
+2025-07-28 10:23:00:230 [31merror[39m: [31mAccount error during user_deletion: Test error[39m
+2025-07-28 10:23:17:2317 [31merror[39m: [31mAccount error during user_creation: Test error[39m
+2025-07-28 10:23:17:2317 [31merror[39m: [31mAccount error during user_update: Test error[39m
+2025-07-28 10:23:17:2317 [31merror[39m: [31mAccount error during user_deletion: Test error[39m
+2025-07-28 14:07:49:749 [31merror[39m: [31mError: Unknown authentication strategy "google"[39m
+2025-07-28 14:23:00:230 [31merror[39m: [31mError: Unknown authentication strategy "google"[39m
+2025-07-28 20:28:26:2826 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-28 20:28:26:2826 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-28 20:28:26:2826 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-28 20:30:56:3056 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-28 20:30:56:3056 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-28 20:30:56:3056 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m

@@ -5,6 +5,7 @@ import type { KycRecord, User } from '@prisma/client';
  * KYC status enum
  */
 export enum KycStatus {
+  NOT_SUBMITTED = 'NOT_SUBMITTED',
   PENDING = 'PENDING',
   VERIFIED = 'VERIFIED',
   REJECTED = 'REJECTED'
