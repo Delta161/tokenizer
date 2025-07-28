@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { ClientController } from './client.controller';
-import { authGuard, roleGuard } from '../accounts';
+import { ClientController } from '../controllers/client.controller';
+import { authGuard, roleGuard } from '../../accounts';
 
 /**
  * Create client routes with proper middleware
@@ -49,32 +49,32 @@ export function createClientRoutes(): Router {
 
   /**
    * GET /clients/:id
-   * Get client profile by ID
-   * Admin only access
+   * Get client by ID
+   * Admin only
    */
   router.get(
     '/:id',
     authGuard,
     roleGuard(['ADMIN']),
-    clientController.getClientProfileById
+    clientController.getClientById
   );
 
   /**
    * GET /clients
-   * Get all clients with optional filtering
-   * Admin only access
+   * List all clients
+   * Admin only
    */
   router.get(
     '/',
     authGuard,
     roleGuard(['ADMIN']),
-    clientController.getAllClients
+    clientController.listClients
   );
 
   /**
    * PATCH /clients/:id/status
-   * Update client status (approve/reject)
-   * Admin only access
+   * Update client status
+   * Admin only
    */
   router.patch(
     '/:id/status',
@@ -86,7 +86,5 @@ export function createClientRoutes(): Router {
   return router;
 }
 
-/**
- * Default export for convenience
- */
-export default createClientRoutes;
+// Export a default router instance for convenience
+export default createClientRoutes();

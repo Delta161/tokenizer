@@ -29,7 +29,7 @@ import { prisma } from './src/prisma/client';
 
 // Import routes
 import { authRouter } from './src/modules/accounts/routes/auth.routes';
-import { createClientRoutes } from './src/modules/client';
+import { initClientModule } from './src/modules/client';
 import { createInvestorRoutes } from './src/modules/investor';
 import { createTokenRoutes } from './src/modules/token';
 import { createProjectsRoutes } from './src/modules/projects';
@@ -81,7 +81,7 @@ app.get('/health', (req, res) => {
 
 // Mount feature routers
 app.use(`${API_PREFIX}/auth`, authRouter);
-app.use(`${API_PREFIX}/clients`, createClientRoutes());
+app.use(`${API_PREFIX}/clients`, initClientModule().router);
 app.use(`${API_PREFIX}/investors`, createInvestorRoutes());
 app.use(`${API_PREFIX}/tokens`, createTokenRoutes());
 app.use(`${API_PREFIX}/projects`, createProjectsRoutes());

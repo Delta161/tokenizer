@@ -1,5 +1,5 @@
 import { Client } from '@prisma/client';
-import { ClientPublicDTO } from './client.types';
+import { ClientPublicDTO } from '../types/client.types';
 
 /**
  * Maps a Prisma Client model to a safe public DTO
@@ -48,16 +48,16 @@ export const isClientRejected = (client: Client): boolean => {
  * Utility function to check if client data has required fields for application
  */
 export const hasRequiredApplicationFields = (data: any): boolean => {
-  return !!(data.companyName && data.contactEmail && data.contactPhone && data.country);
+  return !!data.companyName && !!data.contactEmail && !!data.contactPhone && !!data.country;
 };
 
 /**
- * Utility function to check if update data contains any valid fields
+ * Utility function to check if client data has valid update fields
  */
 export const hasValidUpdateFields = (data: any): boolean => {
   const validFields = [
     'companyName',
-    'contactEmail', 
+    'contactEmail',
     'contactPhone',
     'country',
     'legalEntityNumber',
@@ -65,5 +65,5 @@ export const hasValidUpdateFields = (data: any): boolean => {
     'logoUrl'
   ];
   
-  return validFields.some(field => data[field] !== undefined);
+  return Object.keys(data).every(key => validFields.includes(key));
 };

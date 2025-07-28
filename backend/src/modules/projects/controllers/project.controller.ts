@@ -7,7 +7,7 @@
 
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { ClientController } from './client.controller';
+import { ClientController } from '../../client/controllers/client.controller';
 import { PropertyController } from './property.controller';
 import { TokenController } from './token.controller';
 import {

@@ -55,79 +55,84 @@ export interface ClientPublicDTO {
 }
 
 /**
- * Client profile response wrapper
+ * Client profile response
+ * Used for API responses when returning a single client
  */
 export interface ClientProfileResponse {
-  success: true;
+  success: boolean;
   data: ClientPublicDTO;
 }
 
 /**
- * Client list response wrapper
+ * Client list response
+ * Used for API responses when returning a list of clients
  */
 export interface ClientListResponse {
-  success: true;
+  success: boolean;
   data: ClientPublicDTO[];
-  meta: {
-    currentPage: number;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
     totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
-    hasNextPage: boolean;
-    hasPrevPage: boolean;
+    hasNext: boolean;
+    hasPrev: boolean;
   };
 }
 
 /**
- * Client application response wrapper
+ * Client application response
+ * Used for API responses when creating a client
  */
 export interface ClientApplicationResponse {
-  success: true;
+  success: boolean;
   data: ClientPublicDTO;
-  message: string;
 }
 
 /**
- * Client update response wrapper
+ * Client update response
+ * Used for API responses when updating a client
  */
 export interface ClientUpdateResponse {
-  success: true;
+  success: boolean;
   data: ClientPublicDTO;
-  message: string;
 }
 
 /**
- * Client status update response wrapper
+ * Client status update response
+ * Used for API responses when updating a client status
  */
 export interface ClientStatusUpdateResponse {
-  success: true;
+  success: boolean;
   data: ClientPublicDTO;
-  message: string;
 }
 
 /**
- * Generic error response
+ * Error response
+ * Used for API error responses
  */
 export interface ErrorResponse {
   success: false;
   error: string;
   message: string;
+  details?: any;
 }
 
 /**
- * Request parameter validation types
+ * Client ID parameters
+ * Used for route parameters that include a client ID
  */
 export interface ClientIdParams {
   id: string;
 }
 
 /**
- * Query parameters for client listing
+ * Client list query parameters
+ * Used for filtering and pagination in list endpoints
  */
 export interface ClientListQuery {
   page?: number;
   limit?: number;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
   status?: ClientStatus;
+  search?: string;
 }

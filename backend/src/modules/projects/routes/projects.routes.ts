@@ -5,7 +5,8 @@
  */
 
 import { Router } from 'express';
-import { ClientController, PropertyController, TokenController, ProjectController } from '../controllers';
+import { PropertyController, TokenController, ProjectController } from '../controllers';
+import { ClientController } from '../../client/controllers/client.controller';
 import { requireAuth, requireRole } from '../../../middleware/auth.middleware';
 import { BlockchainService, getBlockchainConfig } from '../../blockchain/services/blockchain.service.js';
 import { prisma } from '../utils/prisma';
@@ -27,7 +28,7 @@ export function createProjectsRoutes(): Router {
   // Client routes
   router.post('/clients/apply', requireAuth, clientController.applyAsClient);
   router.get('/clients/me', requireAuth, clientController.getCurrentClientProfile);
-  router.put('/clients/me', requireAuth, clientController.updateClientProfile);
+  router.put('/clients/me', requireAuth, clientController.updateCurrentClientProfile);
   router.get('/clients/:id', requireAuth, requireRole('ADMIN'), clientController.getClientById);
   router.get('/clients', requireAuth, requireRole('ADMIN'), clientController.listClients);
   router.patch('/clients/:id/status', requireAuth, requireRole('ADMIN'), clientController.updateClientStatus);

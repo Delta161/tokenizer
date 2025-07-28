@@ -67,10 +67,8 @@ export const clientUpdateSchema = z.object({
     .optional(),
   logoUrl: z.string()
     .url('Invalid URL format')
-    .max(500, 'Logo URL must not exceed 500 characters')
+    .max(255, 'Logo URL must not exceed 255 characters')
     .optional()
-}).refine(data => Object.keys(data).length > 0, {
-  message: 'At least one field must be provided for update'
 });
 
 /**
@@ -78,7 +76,7 @@ export const clientUpdateSchema = z.object({
  */
 export const clientStatusUpdateSchema = z.object({
   status: z.nativeEnum(ClientStatus, {
-    errorMap: () => ({ message: 'Status must be PENDING, APPROVED, or REJECTED' })
+    errorMap: () => ({ message: 'Invalid client status' })
   })
 });
 
@@ -96,44 +94,76 @@ export const clientIdParamSchema = z.object({
 export const clientListQuerySchema = z.object({
   page: z.coerce.number()
     .int('Page must be an integer')
-    .positive('Page must be a positive number')
-    .optional()
-    .default(1),
+    .positive('Page must be positive')
+    .optional(),
   limit: z.coerce.number()
     .int('Limit must be an integer')
-    .positive('Limit must be a positive number')
+    .positive('Limit must be positive')
     .max(100, 'Limit cannot exceed 100')
-    .optional()
-    .default(10),
-  sortBy: z.enum(['createdAt', 'companyName', 'status'])
-    .optional()
-    .default('createdAt'),
-  sortOrder: z.enum(['asc', 'desc'])
-    .optional()
-    .default('desc'),
-  status: z.nativeEnum(ClientStatus)
+    .optional(),
+  status: z.nativeEnum(ClientStatus, {
+    errorMap: () => ({ message: 'Invalid client status' })
+  }).optional(),
+  search: z.string()
+    .max(100, 'Search query must not exceed 100 characters')
     .optional()
 });
 
 /**
- * Validation helper functions
+ * Validate client application data
  */
 export const validateClientApplication = (data: unknown) => {
   return clientApplicationSchema.safeParse(data);
 };
 
+/**
+ * Validate client update data
+ */
 export const validateClientUpdate = (data: unknown) => {
   return clientUpdateSchema.safeParse(data);
 };
 
+/**
+ * Validate client status update data
+ */
 export const validateClientStatusUpdate = (data: unknown) => {
   return clientStatusUpdateSchema.safeParse(data);
 };
 
-export const validateClientIdParam = (data: unknown) => {
-  return clientIdParamSchema.safeParse(data);
+/**
+ * Validate client ID parameter
+ */
+export const validateClientIdParam = (params: unknown) => {
+  return clientIdParamSchema.safeParse(params);
 };
 
-export const validateClientListQuery = (data: unknown) => {
-  return clientListQuerySchema.safeParse(data);
+/**
+ * Validate client list query parameters
+ */
+export const validateClientListQuery = (query: unknown) => {
+  return clientListQuerySchema.safeParse(query);
+};
+
+/**
+ * Check if client data has required application fields
+ */
+export const hasRequiredApplicationFields = (data: any): boolean => {
+  return !!data.companyName && !!data.contactEmail && !!data.contactPhone && !!data.country;
+};
+
+/**
+ * Check if client data has valid update fields
+ */
+export const hasValidUpdateFields = (data: any): boolean => {
+  const validFields = [
+    'companyName',
+    'contactEmail',
+    'contactPhone',
+    'country',
+    'legalEntityNumber',
+    'walletAddress',
+    'logoUrl'
+  ];
+  
+  return Object.keys(data).every(key => validFields.includes(key));
 };
