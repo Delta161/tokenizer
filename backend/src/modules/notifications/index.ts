@@ -1,59 +1,83 @@
 import { PrismaClient } from '@prisma/client';
 import { Router } from 'express';
-import { NotificationService } from './notifications.service';
-import { NotificationController } from './notifications.controller';
-import { createNotificationRouter } from './notifications.routes';
-import { createNotificationTrigger } from './triggerNotification';
-import { NotificationConfig, createNotificationConfig } from './notifications.config';
+import { UserService } from '../accounts/services/user.service';
+import { NotificationService } from './services/notification.service';
+import { NotificationController } from './controllers/notification.controller';
+import { createNotificationRouter } from './routes/notification.routes';
+import { NotificationTrigger, createNotificationTrigger } from './services/notification.trigger';
+import { NotificationDispatcherService } from './services/dispatcher.service';
+import { createNotificationChannels } from './services/channels';
+import { NotificationConfig, getNotificationConfig } from './utils/notification.config';
 
 // Export types and validators
-export * from './notifications.types';
-export * from './notifications.validators';
-export * from './notifications.mapper';
+export * from './types/notification.types';
+export * from './validators/notification.validators';
+export * from './utils/notification.mapper';
 
-// Export delivery components
-export * from './delivery';
-
-// Export notification trigger
-export { createNotificationTrigger } from './triggerNotification';
+// Export services
+export * from './services/notification.service';
+export * from './services/notification.trigger';
+export * from './services/dispatcher.service';
+export * from './services/channels';
 
 // Export configuration
 export { 
   NotificationConfig,
   NotificationChannelConfig,
   defaultNotificationConfig,
-  createNotificationConfig 
-} from './notifications.config';
+  getNotificationConfig 
+} from './utils/notification.config';
 
 // Export router creator
-export { createNotificationRouter } from './notifications.routes';
+export { createNotificationRouter } from './routes/notification.routes';
 
 /**
  * Initializes the notification module
  * @param prisma - The Prisma client instance
+ * @param userService - User service instance
  * @param config - Optional notification configuration
- * @returns Object containing the initialized service and controller
+ * @returns Object containing the initialized service, controller, and router
  */
 export const initNotificationModule = (
   prisma: PrismaClient,
+  userService: UserService,
   config?: Partial<NotificationConfig>
 ) => {
-  // Create notification configuration
-  const notificationConfig = createNotificationConfig(config);
+  // Get notification configuration
+  const notificationConfig = getNotificationConfig();
   
   // Initialize service
   const notificationService = new NotificationService(prisma);
 
-  // Initialize controller with service
-  const notificationController = new NotificationController(notificationService);
+  // Create notification channels
+  const channels = createNotificationChannels(notificationConfig);
 
-  // Initialize notification trigger with configuration
-  const notificationTrigger = createNotificationTrigger(prisma, notificationConfig);
+  // Create notification dispatcher
+  const notificationDispatcher = new NotificationDispatcherService(userService, channels);
+
+  // Initialize notification trigger
+  const notificationTrigger = createNotificationTrigger(
+    notificationService,
+    notificationDispatcher
+  );
+
+  // Initialize controller with service and trigger
+  const notificationController = new NotificationController(
+    notificationService,
+    notificationTrigger
+  );
+
+  // Create router
+  const router = createNotificationRouter(
+    notificationController
+  );
 
   return {
     service: notificationService,
     controller: notificationController,
     trigger: notificationTrigger,
+    dispatcher: notificationDispatcher,
+    router,
     config: notificationConfig,
   };
 };
@@ -74,4 +98,18 @@ export const mountNotificationRoutes = (
 
   // Mount notification router
   router.use(basePath, notificationRouter);
+};
+
+/**
+ * Initialize the notifications module and return the router
+ * @param prisma - Prisma client instance
+ * @param userService - User service instance
+ * @returns Router for notifications endpoints
+ */
+export const initNotificationsRouter = (
+  prisma: PrismaClient,
+  userService: UserService
+): Router => {
+  const { router } = initNotificationModule(prisma, userService);
+  return router;
 };

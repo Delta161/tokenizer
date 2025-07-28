@@ -10,6 +10,8 @@ import {
 } from './client.validators';
 import { AuthenticatedRequest } from '../accounts/types/auth.types';
 import { logger } from '../../utils/logger';
+import { PAGINATION } from '../../config/constants';
+import { createPaginationResult, getSkipValue } from '../../utils/pagination';
 
 /**
  * Controller for client-related operations
@@ -128,10 +130,10 @@ export class ClientController {
   };
 
   /**
-   * PATCH /clients/me
+   * PUT /clients/me
    * Update current user's client profile
    */
-  updateCurrentClientProfile = async (
+  updateClientProfile = async (
     req: AuthenticatedRequest,
     res: Response,
     next: NextFunction
@@ -142,16 +144,6 @@ export class ClientController {
           success: false,
           error: 'Unauthorized',
           message: 'User not authenticated'
-        });
-        return;
-      }
-
-      // Verify user has CLIENT role
-      if (req.user.role !== UserRole.CLIENT) {
-        res.status(403).json({
-          success: false,
-          error: 'Forbidden',
-          message: 'Access denied. CLIENT role required.'
         });
         return;
       }
@@ -168,7 +160,19 @@ export class ClientController {
         return;
       }
 
-      const updatedProfile = await this.clientService.updateClient(req.user.id, validation.data);
+      // Check if client profile exists
+      const existingProfile = await this.clientService.getClientByUserId(req.user.id);
+
+      if (!existingProfile) {
+        res.status(404).json({
+          success: false,
+          error: 'Not found',
+          message: 'Client profile not found for current user'
+        });
+        return;
+      }
+
+      const updatedProfile = await this.clientService.updateClient(existingProfile.id, validation.data);
 
       if (!updatedProfile) {
         res.status(404).json({
@@ -186,7 +190,21 @@ export class ClientController {
       });
     } catch (error) {
       logger.error('Error updating client profile:', error instanceof Error ? error.message : 'Unknown error');
-      next(error);
+      
+      if (error instanceof Error) {
+        res.status(400).json({
+          success: false,
+          error: 'Update error',
+          message: error.message
+        });
+        return;
+      }
+
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error',
+        message: 'Failed to update client profile'
+      });
     }
   };
 
@@ -194,7 +212,7 @@ export class ClientController {
    * GET /clients/:id
    * Get client profile by ID (Admin only)
    */
-  getClientProfileById = async (
+  getClientById = async (
     req: AuthenticatedRequest,
     res: Response,
     next: NextFunction
@@ -209,20 +227,29 @@ export class ClientController {
         return;
       }
 
-      // Validate client ID parameter
-      const paramValidation = validateClientIdParam(req.params);
-      
-      if (!paramValidation.success) {
-        res.status(400).json({
+      // Check if user is admin
+      if (req.user.role !== UserRole.ADMIN) {
+        res.status(403).json({
           success: false,
-          error: 'Invalid client ID',
-          message: 'Client ID must be a valid UUID'
+          error: 'Forbidden',
+          message: 'Only administrators can access this resource'
         });
         return;
       }
 
-      const { id } = paramValidation.data;
-      const clientProfile = await this.clientService.getClientById(id);
+      // Validate client ID parameter
+      const validation = validateClientIdParam(req.params);
+      
+      if (!validation.success) {
+        res.status(400).json({
+          success: false,
+          error: 'Validation error',
+          message: validation.error.issues.map(err => `${err.path.join('.')}: ${err.message}`).join(', ')
+        });
+        return;
+      }
+
+      const clientProfile = await this.clientService.getClientById(validation.data.id);
 
       if (!clientProfile) {
         res.status(404).json({
@@ -239,15 +266,20 @@ export class ClientController {
       });
     } catch (error) {
       logger.error('Error fetching client profile by ID:', error instanceof Error ? error.message : 'Unknown error');
-      next(error);
+      
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error',
+        message: 'Failed to fetch client profile'
+      });
     }
   };
 
   /**
    * GET /clients
-   * Get all clients (Admin only)
+   * List all clients (Admin only)
    */
-  getAllClients = async (
+  listClients = async (
     req: AuthenticatedRequest,
     res: Response,
     next: NextFunction
@@ -262,27 +294,29 @@ export class ClientController {
         return;
       }
 
-      // Validate query parameters
-      const queryValidation = validateClientListQuery(req.query);
-      
-      if (!queryValidation.success) {
-        res.status(400).json({
+      // Check if user is admin
+      if (req.user.role !== UserRole.ADMIN) {
+        res.status(403).json({
           success: false,
-          error: 'Invalid query parameters',
-          message: queryValidation.error.issues.map(err => `${err.path.join('.')}: ${err.message}`).join(', ')
+          error: 'Forbidden',
+          message: 'Only administrators can access this resource'
         });
         return;
       }
 
-      const { page, limit, sortBy, sortOrder, status } = queryValidation.data;
+      // Validate query parameters
+      const validation = validateClientListQuery(req.query);
+      
+      if (!validation.success) {
+        res.status(400).json({
+          success: false,
+          error: 'Validation error',
+          message: validation.error.issues.map(err => `${err.path.join('.')}: ${err.message}`).join(', ')
+        });
+        return;
+      }
 
-      const result = await this.clientService.getAllClients({
-        page,
-        limit,
-        sortBy,
-        sortOrder,
-        status
-      });
+      const result = await this.clientService.getAllClients(validation.data);
 
       res.status(200).json({
         success: true,
@@ -290,8 +324,13 @@ export class ClientController {
         meta: result.meta
       });
     } catch (error) {
-      logger.error('Error fetching all clients:', error instanceof Error ? error.message : 'Unknown error');
-      next(error);
+      logger.error('Error listing clients:', error instanceof Error ? error.message : 'Unknown error');
+      
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error',
+        message: 'Failed to list clients'
+      });
     }
   };
 
@@ -314,34 +353,56 @@ export class ClientController {
         return;
       }
 
+      // Check if user is admin
+      if (req.user.role !== UserRole.ADMIN) {
+        res.status(403).json({
+          success: false,
+          error: 'Forbidden',
+          message: 'Only administrators can update client status'
+        });
+        return;
+      }
+
       // Validate client ID parameter
-      const paramValidation = validateClientIdParam(req.params);
+      const idValidation = validateClientIdParam(req.params);
       
-      if (!paramValidation.success) {
+      if (!idValidation.success) {
         res.status(400).json({
           success: false,
-          error: 'Invalid client ID',
-          message: 'Client ID must be a valid UUID'
+          error: 'Validation error',
+          message: idValidation.error.issues.map(err => `${err.path.join('.')}: ${err.message}`).join(', ')
         });
         return;
       }
 
       // Validate request body
-      const bodyValidation = validateClientStatusUpdate(req.body);
+      const statusValidation = validateClientStatusUpdate(req.body);
       
-      if (!bodyValidation.success) {
+      if (!statusValidation.success) {
         res.status(400).json({
           success: false,
           error: 'Validation error',
-          message: bodyValidation.error.issues.map(err => `${err.path.join('.')}: ${err.message}`).join(', ')
+          message: statusValidation.error.issues.map(err => `${err.path.join('.')}: ${err.message}`).join(', ')
         });
         return;
       }
 
-      const { id } = paramValidation.data;
-      const { status } = bodyValidation.data;
+      // Check if client exists
+      const existingClient = await this.clientService.getClientById(idValidation.data.id);
 
-      const updatedClient = await this.clientService.updateClientStatus(id, status, req.user.id);
+      if (!existingClient) {
+        res.status(404).json({
+          success: false,
+          error: 'Not found',
+          message: 'Client not found'
+        });
+        return;
+      }
+
+      const updatedClient = await this.clientService.updateClientStatus(
+        idValidation.data.id,
+        statusValidation.data.status
+      );
 
       if (!updatedClient) {
         res.status(404).json({
@@ -355,11 +416,25 @@ export class ClientController {
       res.status(200).json({
         success: true,
         data: updatedClient,
-        message: `Client status updated to ${status} successfully`
+        message: `Client status updated to ${statusValidation.data.status}`
       });
     } catch (error) {
       logger.error('Error updating client status:', error instanceof Error ? error.message : 'Unknown error');
-      next(error);
+      
+      if (error instanceof Error) {
+        res.status(400).json({
+          success: false,
+          error: 'Update error',
+          message: error.message
+        });
+        return;
+      }
+
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error',
+        message: 'Failed to update client status'
+      });
     }
   };
 }

@@ -7,14 +7,14 @@
  * - Verification status management
  */
 
-// Export controller
-export { InvestorController } from './investor.controller.js';
+// Export controllers
+export { InvestorController } from './controllers/investor.controller.js';
 
-// Export service
-export { InvestorService } from './investor.service.js';
+// Export services
+export { InvestorService } from './services/investor.service.js';
 
 // Export routes
-export { createInvestorRoutes, investorRoutes } from './investor.routes.js';
+export { createInvestorRoutes, investorRoutes } from './routes/investor.routes.js';
 
 // Export types
 export {
@@ -35,7 +35,7 @@ export {
   InvestorIdParams,
   WalletIdParams,
   InvestorListQuery,
-} from './investor.types.js';
+} from './types/investor.types.js';
 
 // Export validators
 export {
@@ -55,9 +55,9 @@ export {
   parseInvestorIdParam,
   parseWalletIdParam,
   parseInvestorListQuery
-} from './investor.validators.js';
+} from './validators/investor.validator.js';
 
-// Export mappers
+// Export mappers and utilities
 export {
   mapInvestorToPublicDTO,
   mapInvestorsToPublicDTOs,
@@ -65,8 +65,9 @@ export {
   mapWalletsToPublicDTOs,
   isInvestorVerified,
   hasRequiredVerificationFields,
-  isWalletVerified
-} from './investor.mapper.js';
+  isWalletVerified,
+  investorLogger
+} from './utils/index.js';
 
 // Export error response
-export { ErrorResponse, createErrorResponse } from './error.response.js';
+export { ErrorResponse, createErrorResponse } from './types/error.types.js';

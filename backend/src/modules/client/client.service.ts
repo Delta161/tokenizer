@@ -173,16 +173,30 @@ export class ClientService {
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
     status?: ClientStatus;
+    search?: string;
   }): Promise<{ data: ClientPublicDTO[]; meta: PaginationMeta }> {
     const {
       page = PAGINATION.DEFAULT_PAGE,
       limit = PAGINATION.DEFAULT_LIMIT,
       sortBy = 'createdAt',
       sortOrder = 'desc',
-      status
+      status,
+      search
     } = params;
     
-    const where = status ? { status } : {};
+    const where: Prisma.ClientWhereInput = {};
+    
+    if (status) {
+      where.status = status;
+    }
+    
+    if (search) {
+      where.OR = [
+        { companyName: { contains: search, mode: 'insensitive' } },
+        { contactEmail: { contains: search, mode: 'insensitive' } }
+      ];
+    }
+    
     const skip = getSkipValue(page, limit);
     
     // Validate sortBy field to prevent injection
@@ -223,13 +237,11 @@ export class ClientService {
    * Update client status (for admin use)
    * @param id Client ID
    * @param status New status
-   * @param adminId Admin user ID for audit logging
    * @returns Updated client profile
    */
   async updateClientStatus(
     id: string,
-    status: ClientStatus,
-    adminId?: string
+    status: ClientStatus
   ): Promise<ClientPublicDTO | null> {
     // Check if client exists
     const existingClient = await this.prisma.client.findUnique({
@@ -250,7 +262,7 @@ export class ClientService {
       // Create audit log entry
       await tx.auditLog.create({
         data: {
-          userId: adminId || 'system',
+          userId: 'system', // This should be replaced with actual admin ID in controller
           action: 'CLIENT_STATUS_UPDATE',
           resource: 'client',
           resourceId: client.id,
@@ -329,6 +341,55 @@ export class ClientService {
     return {
       data: mapClientsToPublicDTOs(clients),
       meta
+    };
+  }
+  
+  /**
+   * Get clients with optional filtering and pagination
+   * @param options Filter and pagination options
+   * @returns List of clients and total count
+   */
+  async getClients(options?: {
+    status?: ClientStatus;
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<{ clients: ClientPublicDTO[]; total: number }> {
+    const { 
+      status, 
+      page = PAGINATION.DEFAULT_PAGE, 
+      limit = PAGINATION.DEFAULT_LIMIT, 
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = options || {};
+    
+    const skip = getSkipValue(page, limit);
+
+    // Build where clause
+    const where: Prisma.ClientWhereInput = {};
+    if (status) {
+      where.status = status;
+    }
+
+    // Build orderBy
+    const orderBy: any = {};
+    orderBy[sortBy] = sortOrder;
+
+    // Get total count and clients in parallel
+    const [total, clients] = await Promise.all([
+      this.prisma.client.count({ where }),
+      this.prisma.client.findMany({
+        where,
+        take: limit,
+        skip,
+        orderBy
+      })
+    ]);
+
+    return {
+      clients: clients.map(mapClientToPublicDTO),
+      total
     };
   }
 }
