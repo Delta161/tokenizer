@@ -783,3 +783,17 @@
 2025-07-29 16:36:59:3659 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
 2025-07-29 16:37:03:373 [31merror[39m: [31mOAuth login processing failed[39m
 2025-07-29 16:37:03:373 [31merror[39m: [31mError: Unsupported OAuth provider: GOOGLE[39m
+2025-07-29 17:59:33:5933 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 17:59:34:5934 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-29 17:59:34:5934 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-29 17:59:34:5934 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 17:59:34:5934 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-29 17:59:34:5934 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-29 17:59:34:5934 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-29 17:59:34:5934 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-29 17:59:34:5934 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-29 17:59:34:5934 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-29 17:59:52:5952 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/kyc/me - /api/v1/api/kyc/me - GET - ::1[39m
+2025-07-29 17:59:52:5952 [31merror[39m: [31mAccount error during token_refresh: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 17:59:52:5952 [31merror[39m: [31mTypeError: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 17:59:56:5956 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/google - /api/v1/api/v1/auth/google - GET - ::1[39m
