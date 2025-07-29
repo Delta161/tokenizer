@@ -67,6 +67,9 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// After body parsing middleware
+app.use(cookieParser());
+
 // Rate limiting
 app.use(
   rateLimit({
@@ -110,10 +113,6 @@ registerAnalyticsModule(app);
 
 //Mount User router 
 app.use(`${API_PREFIX}/users`, userRouter);
-
-// After body parsing middleware
-app.use(cookieParser());
-
 
 // 404 handler for unmatched routes
 app.use(notFoundHandler);
