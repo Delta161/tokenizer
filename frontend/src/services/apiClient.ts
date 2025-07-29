@@ -165,7 +165,7 @@ apiClient.interceptors.response.use(
       }
       
       // Handle session timeout (403 with specific message)
-      if (status === 403 && error.response.data?.message?.includes('session')) {
+      if (status === 403 && error.response?.data?.message && typeof error.response.data.message === 'string' && error.response.data.message.includes('session')) {
         console.warn('Session timeout detected');
         try {
           const authStore = useAuthStore();
