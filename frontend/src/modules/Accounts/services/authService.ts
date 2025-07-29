@@ -42,7 +42,7 @@ export const AuthService = {
    */
   async logout(): Promise<{ message: string }> {
     try {
-      const response = await apiClient.post('/accounts/auth/logout');
+      const response = await apiClient.post('/auth/logout');
       return response.data;
     } catch (error) {
       return handleServiceError(error, 'Failed to logout properly.');
@@ -55,7 +55,7 @@ export const AuthService = {
    */
   async getCurrentUser(): Promise<AuthResponse['user']> {
     try {
-      const response = await apiClient.get('/accounts/auth/profile');
+      const response = await apiClient.get('/auth/profile');
       const authResponse = mapBackendAuthResponseToFrontend({ user: response.data });
       return authResponse.user;
     } catch (error) {
@@ -72,7 +72,7 @@ export const AuthService = {
    */
   async refreshToken(refreshToken: string): Promise<TokenRefreshResponse> {
     try {
-      const response = await apiClient.post('/accounts/auth/refresh', { refreshToken });
+      const response = await apiClient.post('/auth/refresh', { refreshToken });
       return mapBackendTokenRefreshToFrontend(response.data);
     } catch (error) {
       return handleServiceError(error, 'Failed to refresh authentication token.');

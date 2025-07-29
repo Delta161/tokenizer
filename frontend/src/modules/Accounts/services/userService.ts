@@ -21,7 +21,7 @@ import {
 
 
 export class UserService {
-  private baseUrl = '/api/users';
+  private baseUrl = '/users';
 
   /**
    * Get the current logged-in user
@@ -52,7 +52,7 @@ export class UserService {
    */
   async getUserProfile(id: string): Promise<UserProfile> {
     try {
-      const response = await apiClient.get(`${this.baseUrl}/${id}/profile`);
+      const response = await apiClient.get(`${this.baseUrl}/profile/${id}`);
       return mapBackendProfileToFrontend(response.data);
     } catch (error) {
       return handleServiceError(error, `Failed to retrieve user profile for ID: ${id}.`);
@@ -64,7 +64,7 @@ export class UserService {
    */
   async getUserSettings(id: string): Promise<UserSettings> {
     try {
-      const response = await apiClient.get(`${this.baseUrl}/${id}/settings`);
+      const response = await apiClient.get(`${this.baseUrl}/settings/${id}`);
       return mapBackendSettingsToFrontend(response.data);
     } catch (error) {
       return handleServiceError(error, `Failed to retrieve user settings for ID: ${id}.`);
@@ -90,7 +90,7 @@ export class UserService {
   async updateUserProfile(id: string, profileData: Partial<UserProfile>): Promise<UserProfile> {
     try {
       const backendProfileData = mapFrontendProfileToBackend(profileData);
-      const response = await apiClient.patch(`${this.baseUrl}/${id}/profile`, backendProfileData);
+      const response = await apiClient.patch(`${this.baseUrl}/profile/${id}`, backendProfileData);
       return mapBackendProfileToFrontend(response.data);
     } catch (error) {
       return handleServiceError(error, `Failed to update profile for user ID: ${id}.`);
@@ -103,7 +103,7 @@ export class UserService {
   async updateUserSettings(id: string, settingsData: Partial<UserSettings>): Promise<UserSettings> {
     try {
       const backendSettingsData = mapFrontendSettingsToBackend(settingsData);
-      const response = await apiClient.patch(`${this.baseUrl}/${id}/settings`, backendSettingsData);
+      const response = await apiClient.patch(`${this.baseUrl}/settings/${id}`, backendSettingsData);
       return mapBackendSettingsToFrontend(response.data);
     } catch (error) {
       return handleServiceError(error, `Failed to update settings for user ID: ${id}.`);

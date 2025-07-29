@@ -64,40 +64,28 @@ export class AuthController {
   /**
    * Handle OAuth authentication success
    */
-  async handleOAuthSuccess(req: Request, res: Response, _next: NextFunction): Promise<void> {
-    try {
-      // User should be attached to request by Passport
-      const profile = req.user as OAuthProfileDTO;
-      
-      if (!profile) {
-        logger.error('OAuth authentication failed: No profile data');
-        accountsLogger.logAuthError('unknown', 'No profile data', profile?.provider || 'oauth');
-        res.redirect(`${process.env.AUTH_ERROR_PATH || '/auth/error'}?error=authentication_failed`);
-        return;
-      }
-      
-      // Process OAuth login
-      const result = await authService.processOAuthLogin(profile);
-      
-      // Set token cookies
-      setTokenCookies(res, result.accessToken, result.refreshToken);
-      
-      // Log successful login
-      accountsLogger.logUserLogin(result.user.id, result.user.email, profile.provider);
-      
-      // Redirect to frontend with success
-      const redirectUrl = process.env.FRONTEND_URL;
-      res.redirect(`${redirectUrl}/auth/callback?success=true`);
-    } catch (error) {
-      // Special case for OAuth - we want to redirect with error instead of using next(error)
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      logger.error('OAuth authentication error', { error: errorMessage });
-      accountsLogger.logAuthError('unknown', errorMessage, 'oauth');
-      
-      const redirectUrl = process.env.FRONTEND_URL;
-      res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent(errorMessage)}`);
-    }
+  // backend/src/modules/accounts/controllers/auth.controller.ts
+async handleOAuthSuccess(req: Request, res: Response): Promise<void> {
+  const prismaUser = req.user as any; // Prisma user returned by Passport
+
+  // If Passport returns a user instead of a profile, build one manually
+  if (prismaUser && !prismaUser.provider) {
+    const normalizedProfile = {
+      provider: prismaUser.authProvider ?? 'google',         // or 'azure-ad' for Azure
+      providerId: prismaUser.providerId ?? prismaUser.id,
+      email: prismaUser.email,
+      firstName: prismaUser.firstName ?? '',
+      lastName: prismaUser.lastName ?? '',
+    };
+    await authService.processOAuthLogin(normalizedProfile);
+  } else {
+    // Existing flow for already-normalized profiles
+    await authService.processOAuthLogin(prismaUser as OAuthProfileDTO);
   }
+
+  res.redirect(process.env.FRONTEND_LOGIN_SUCCESS_URL ?? '/');
+}
+
   
   /**
    * Handle OAuth authentication error

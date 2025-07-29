@@ -32,12 +32,12 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Handle Google OAuth login
 function handleGoogleLogin() {
-  window.location.href = `${apiBaseUrl}/api/accounts/auth/google`;
+  window.location.href = `${apiBaseUrl}/auth/google`;
 }
 
 // Handle Azure OAuth login
 function handleAzureLogin() {
-  window.location.href = `${apiBaseUrl}/api/accounts/auth/azure`;
+  window.location.href = `${apiBaseUrl}/auth/azure`;
 }
 </script>
 

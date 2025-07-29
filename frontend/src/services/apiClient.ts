@@ -8,7 +8,7 @@ import router from '@/router';
  * Configured with base URL, credentials, timeout, and interceptors
  */
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
   withCredentials: true, // Important for cookies/sessions
   timeout: 15000, // 15 seconds timeout
   headers: {
