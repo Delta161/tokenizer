@@ -133,17 +133,18 @@ apiClient.interceptors.response.use(
             return apiClient(error.config);
           } else {
             // If refresh failed, logout and redirect to login
-              localStorage.removeItem('accessToken');
-              localStorage.removeItem('tokenExpiresAt');
-              localStorage.removeItem('refreshToken');
-              localStorage.removeItem('user');
-              router.push('/login');
-            }
-          } catch (refreshError) {
-            // Process the refresh error
-            errorHandler.processError(refreshError);
-            
-            // Clear auth data and redirect to login
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('tokenExpiresAt');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            router.push('/login');
+          }
+        }
+      } catch (refreshError) {
+        // Process the refresh error
+        errorHandler.processError(refreshError);
+        
+        // Clear auth data and redirect to login
             localStorage.removeItem('accessToken');
             localStorage.removeItem('tokenExpiresAt');
             localStorage.removeItem('refreshToken');
