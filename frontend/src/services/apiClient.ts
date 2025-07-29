@@ -1,197 +1,90 @@
+// frontend/src/services/apiClient.ts
 import axios from 'axios';
-// Avoid circular dependency by not importing useAuthStore here
-// We'll get the auth token directly from localStorage
 import router from '@/router';
+import errorHandler from './errorHandler';
 
 /**
- * Centralized API client using Axios
- * Configured with base URL, credentials, timeout, and interceptors
+ * Create an Axios instance with a base URL that points to your API.
+ * Ensure VITE_API_BASE_URL includes the /api/v1 prefix.
  */
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
-  withCredentials: true, // Important for cookies/sessions
-  timeout: 15000, // 15 seconds timeout
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  withCredentials: true,
+  timeout: 15000,
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor for adding auth token
+/** Helper to clear local storage and redirect to login */
+function clearAuthAndRedirect() {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('tokenExpiresAt');
+  localStorage.removeItem('user');
+  router.push('/login');
+}
+
+/** Request interceptor: attach access token if present and valid */
 apiClient.interceptors.request.use(
-  async (config) => {
-    // Skip token for auth endpoints that don't require authentication
-    const isAuthEndpoint = config.url?.includes('/auth/login') || 
-                          config.url?.includes('/auth/register') || 
-                          config.url?.includes('/auth/refresh');
-    
-    if (isAuthEndpoint) {
-      return config;
+  (config) => {
+    // Don’t attach tokens when hitting the refresh endpoint itself
+    if (config.url?.includes('/auth/refresh')) return config;
+
+    const token = localStorage.getItem('accessToken');
+    const expiresAt = localStorage.getItem('tokenExpiresAt');
+
+    if (token && (!expiresAt || Date.now() < parseInt(expiresAt))) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    
-    try {
-      // Get token directly from localStorage to avoid circular dependency
-      const accessToken = localStorage.getItem('accessToken');
-      const tokenExpiresAt = localStorage.getItem('tokenExpiresAt');
-      
-      // Check if token exists
-      if (accessToken) {
-        // Check if token is expired
-        if (tokenExpiresAt && Date.now() >= parseInt(tokenExpiresAt)) {
-          // Token is expired, we'll let the response interceptor handle refresh
-          // or redirect to login if refresh fails
-        } else {
-          // Add token to request header
-          config.headers.Authorization = `Bearer ${accessToken}`;
-        }
-      }
-    } catch (error) {
-      console.error('Error in request interceptor:', error);
-      // Continue with request even if there's an error getting the token
-      // The server will reject unauthorized requests
-    }
+
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Response interceptor for global error handling
-import errorHandler from './errorHandler';
-
-// frontend/src/services/apiClient.ts
+/** Response interceptor: handle 401/403 errors */
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-
-    // If unauthorized and this isn't a retry or refresh call…
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      !originalRequest._retry &&
-      !originalRequest.url?.includes('/auth/refresh')
-    ) {
-      originalRequest._retry = true;
-
-      try {
-        // 👇 This is the code you mentioned:
-        const refreshResponse = await axios.post(
-          `${apiClient.defaults.baseURL}/auth/refresh`,
-          {},
-          { withCredentials: true }
-        );
-
-        if (refreshResponse.data.accessToken) {
-          localStorage.setItem('accessToken', refreshResponse.data.accessToken);
-          // … update headers and retry original request
-          originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`;
-          return apiClient(originalRequest);
-        }
-      } catch (refreshError) {
-        // handle refresh error (log out, redirect, etc.)
-      }
-    }
-
-    // fall through to default error handling
-    return Promise.reject(error);
-  }
-);
-
-// Error handler for API requests
-apiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const { response } = error;
+    const { response, config } = error;
     const status = response?.status;
 
-    // If the error is 401 (Unauthorized) and it's not a refresh token request
-    if (status === 401 && !error.config.url?.includes('/auth/refresh')) {
+    // If unauthorized and this was not a refresh attempt
+    if (status === 401 && !config._retry && !config.url?.includes('/auth/refresh')) {
+      config._retry = true;
       try {
-        // Try to refresh the token
-        const isRefreshEndpoint = config.url?.includes('/auth/refresh');
-if (isRefreshEndpoint) return config;
+        // Attempt to refresh the access token using the same apiClient
+        const { data } = await apiClient.post('/auth/refresh');
+        const newToken = data.accessToken;
 
-        
-        if (refreshResponse.data.accessToken) {
-          // Store the new token
-          localStorage.setItem('accessToken', refreshResponse.data.accessToken);
-          if (refreshResponse.data.expiresAt) {
-            localStorage.setItem('tokenExpiresAt', refreshResponse.data.expiresAt.toString());
+        if (newToken) {
+          localStorage.setItem('accessToken', newToken);
+          if (data.expiresAt) {
+            localStorage.setItem('tokenExpiresAt', data.expiresAt.toString());
           }
-          
-          // Update the authorization header
-          error.config.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`; 
-          if (refreshResponse.data.accessToken) {
-            // Store the new token
-            localStorage.setItem('accessToken', refreshResponse.data.accessToken);
-            if (refreshResponse.data.expiresAt) {
-              localStorage.setItem('tokenExpiresAt', refreshResponse.data.expiresAt.toString());
-            }
-            
-            // Update the authorization header
-            error.config.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`;
-            // Retry the original request
-            return apiClient(error.config);
-          } else {
-            // If refresh failed, logout and redirect to login
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('tokenExpiresAt');
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('user');
-            router.push('/login');
-          }
+          // Retry the original request with the new token
+          config.headers.Authorization = `Bearer ${newToken}`;
+          return apiClient(config);
         }
       } catch (refreshError) {
-        // Process the refresh error
-        errorHandler.processError(refreshError);
-        
-        // Clear auth data and redirect to login
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('tokenExpiresAt');
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('user');
-            router.push('/login');
-          }
-        } else {
-          // This is either a retry that failed or a refresh token request that failed
-          // Clear auth data and redirect to login
-          try {
-            function clearAuthAndRedirect() {
-              localStorage.removeItem('accessToken');
-              localStorage.removeItem('refreshToken');
-              localStorage.removeItem('tokenExpiresAt');
-              localStorage.removeItem('user');
-              router.push('/login');
-            }
-            clearAuthAndRedirect();
-          } catch (e) {
-            // Store not available
-          }
-          router.push('/login');
-        }
+        // Refresh failed — fall through to clear auth
       }
-      
-      // Handle session timeout (403 with specific message)
-      if (status === 403 && error.response?.data?.message && typeof error.response.data.message === 'string' && error.response.data.message.includes('session')) {
-        console.warn('Session timeout detected');
-        try {
-          const authStore = useAuthStore();
-          await authStore.logout();
-        } catch (e) {
-          // Store not available
-        }
-        router.push('/login');
-      }
-      
-      // Process the error through our error handler
-      errorHandler.processError(error);
-    } else if (error.request) {
-      // Request was made but no response received
-      errorHandler.processError(error);
-    } else {
-      // Error in setting up the request
-      errorHandler.processError(error);
+      clearAuthAndRedirect();
+      return Promise.reject(error);
     }
-    
+
+    // If forbidden due to a session timeout
+    if (
+      status === 403 &&
+      response?.data?.message &&
+      typeof response.data.message === 'string' &&
+      response.data.message.includes('session')
+    ) {
+      console.warn('Session timeout detected');
+      clearAuthAndRedirect();
+      return Promise.reject(error);
+    }
+
+    // For other errors, delegate to a central handler and rethrow
+    errorHandler.processError(error);
     return Promise.reject(error);
   }
 );

@@ -942,3 +942,13 @@
 2025-07-30 00:22:05:225 [32minfo[39m: [32mInvestment module initialized successfully[39m
 2025-07-30 00:22:05:225 [32minfo[39m: [32mServer running in development mode on port 3000[39m
 2025-07-30 00:22:05:225 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-30 01:10:29:1029 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-30 01:10:30:1030 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-30 01:10:30:1030 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-30 01:10:30:1030 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-30 01:10:30:1030 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-30 01:10:30:1030 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-30 01:10:30:1030 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-30 01:10:30:1030 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-30 01:10:30:1030 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-30 01:10:30:1030 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
