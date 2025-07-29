@@ -952,3 +952,23 @@
 2025-07-30 01:10:30:1030 [32minfo[39m: [32mInvestment module initialized successfully[39m
 2025-07-30 01:10:30:1030 [32minfo[39m: [32mServer running in development mode on port 3000[39m
 2025-07-30 01:10:30:1030 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-30 01:16:37:1637 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-30 01:16:38:1638 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-30 01:16:38:1638 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-30 01:16:38:1638 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-30 01:16:38:1638 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-30 01:16:38:1638 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-30 01:16:38:1638 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-30 01:16:38:1638 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-30 01:16:39:1639 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-30 01:16:39:1639 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-30 01:16:47:1647 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-30 01:16:47:1647 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m
+2025-07-30 01:16:47:1647 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-30 01:16:47:1647 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m
+2025-07-30 01:16:51:1651 [34mdebug[39m: [34mUser logged in[39m
+2025-07-30 01:16:51:1651 [32minfo[39m: [32mUser logged in via google[39m
+2025-07-30 01:16:51:1651 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-30 01:16:51:1651 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m
+2025-07-30 01:16:51:1651 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-30 01:16:51:1651 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m

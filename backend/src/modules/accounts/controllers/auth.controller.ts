@@ -8,7 +8,7 @@ import { Request, Response, NextFunction } from 'express';
 
 // Internal modules
 import { authService } from '@modules/accounts/services/auth.service';
-import type { OAuthProfileDTO } from '@modules/accounts/types/auth.types';
+import type { OAuthProfileDTO, AuthResponseDTO } from '@modules/accounts/types/auth.types';
 import { clearTokenCookies, setTokenCookies } from '@modules/accounts/utils/jwt';
 import { logger } from '@utils/logger';
 import { accountsLogger } from '@modules/accounts/utils/accounts.logger';
@@ -66,27 +66,30 @@ export class AuthController {
    */
   // backend/src/modules/accounts/controllers/auth.controller.ts
 async handleOAuthSuccess(req: Request, res: Response): Promise<void> {
-  const prismaUser = req.user as any; // Prisma user returned by Passport
+  const prismaUser = req.user as any;
+  let authResponse: AuthResponseDTO;
 
-  // If Passport returns a user instead of a profile, build one manually
   if (!prismaUser.provider) {
-  const normalizedProfile = {
-    provider: prismaUser.authProvider ?? 'google',
-    id: prismaUser.providerId ?? prismaUser.id,          // note: 'id' not 'providerId'
-    emails: prismaUser.email ? [{ value: prismaUser.email }] : undefined,
-    name: { givenName: prismaUser.firstName ?? '', familyName: prismaUser.lastName ?? '' },
-    displayName: prismaUser.fullName ?? prismaUser.email ?? 'User',
-  };
-  await authService.processOAuthLogin(normalizedProfile as OAuthProfileDTO);
-}
- else {
-    // Existing flow for already-normalized profiles
-    await authService.processOAuthLogin(prismaUser as OAuthProfileDTO);
+    // Build a normalized profile when Passport returns a Prisma user
+    const normalizedProfile = {
+      provider: prismaUser.authProvider ?? 'google',
+      id: prismaUser.providerId ?? prismaUser.id,
+      emails: prismaUser.email ? [{ value: prismaUser.email }] : undefined,
+      name: { givenName: prismaUser.firstName ?? '', familyName: prismaUser.lastName ?? '' },
+      displayName: prismaUser.fullName ?? prismaUser.email ?? 'User',
+    };
+    authResponse = await authService.processOAuthLogin(normalizedProfile as OAuthProfileDTO);
+  } else {
+    authResponse = await authService.processOAuthLogin(prismaUser as OAuthProfileDTO);
   }
 
+  // Set access and refresh token cookies
+  const { accessToken, refreshToken } = authResponse;
+  setTokenCookies(res, accessToken, refreshToken);
+
+  // Redirect to your frontend callback URL
   res.redirect(process.env.FRONTEND_LOGIN_SUCCESS_URL ?? '/auth/callback');
 }
-
   
   /**
    * Handle OAuth authentication error
