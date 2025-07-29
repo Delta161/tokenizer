@@ -70,23 +70,24 @@ const actionTypeColors: Record<string, 'success' | 'info' | 'warning' | 'error' 
   DOCUMENT_DELETED: 'error',
 };
 
-// Mock API call - replace with actual API call in production
+// API call using apiClient
+import apiClient from '@/services/apiClient';
+
 const fetchAuditLogs = async (filters: AuditLogFilters): Promise<AuditLog[]> => {
   try {
-    const queryParams = new URLSearchParams();
+    const params: Record<string, string | number> = {};
     
-    if (filters.userId) queryParams.append('userId', filters.userId);
-    if (filters.actionType) queryParams.append('actionType', filters.actionType);
-    if (filters.entityType) queryParams.append('entityType', filters.entityType);
-    if (filters.entityId) queryParams.append('entityId', filters.entityId);
-    if (filters.fromDate) queryParams.append('fromDate', filters.fromDate);
-    if (filters.toDate) queryParams.append('toDate', filters.toDate);
-    if (filters.limit) queryParams.append('limit', filters.limit.toString());
-    if (filters.offset) queryParams.append('offset', filters.offset.toString());
+    if (filters.userId) params.userId = filters.userId;
+    if (filters.actionType) params.actionType = filters.actionType;
+    if (filters.entityType) params.entityType = filters.entityType;
+    if (filters.entityId) params.entityId = filters.entityId;
+    if (filters.fromDate) params.fromDate = filters.fromDate;
+    if (filters.toDate) params.toDate = filters.toDate;
+    if (filters.limit) params.limit = filters.limit;
+    if (filters.offset) params.offset = filters.offset;
     
-    const response = await fetch(`/api/audit/logs?${queryParams}`);
-    if (!response.ok) throw new Error('Failed to fetch audit logs');
-    return await response.json();
+    const response = await apiClient.get('/audit/logs', { params });
+    return response.data;
   } catch (error) {
     console.error('Error fetching audit logs:', error);
     return [];

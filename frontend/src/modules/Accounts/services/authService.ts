@@ -55,7 +55,7 @@ export const AuthService = {
    */
   async getCurrentUser(): Promise<AuthResponse['user']> {
     try {
-      const response = await apiClient.get('/api/v1/auth/profile');
+      const response = await apiClient.get('/auth/profile');
       const authResponse = mapBackendAuthResponseToFrontend({ user: response.data });
       return authResponse.user;
     } catch (error) {
@@ -72,7 +72,7 @@ export const AuthService = {
    */
   async refreshToken(refreshToken: string): Promise<TokenRefreshResponse> {
     try {
-      const response = await apiClient.post('/api/v1/auth/refresh', { refreshToken });
+      const response = await apiClient.post('/auth/refresh', { refreshToken });
       return mapBackendTokenRefreshToFrontend(response.data);
     } catch (error) {
       return handleServiceError(error, 'Failed to refresh authentication token.');

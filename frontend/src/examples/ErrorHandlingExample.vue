@@ -51,7 +51,7 @@ async function handleSubmit() {
   
   try {
     // Example API call with potential validation errors
-    await post('/api/users', {
+    await post('/users', {
       username: username.value,
       email: email.value,
       password: password.value

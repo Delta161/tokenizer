@@ -22,7 +22,7 @@ export class KycService {
    */
   static async getCurrentUserKyc(): Promise<KycRecord | null> {
     try {
-      const response = await apiClient.get('/api/kyc/me');
+      const response = await apiClient.get('/kyc/me');
       return mapBackendKycToFrontend(response.data.data);
     } catch (error) {
       // If 404, user hasn't submitted KYC yet
@@ -39,7 +39,7 @@ export class KycService {
   static async submitKyc(data: KycSubmissionData): Promise<KycRecord> {
     try {
       const backendData = mapKycSubmissionToBackend(data);
-      const response = await apiClient.post('/api/kyc/submit', backendData);
+      const response = await apiClient.post('/kyc/submit', backendData);
       return mapBackendKycToFrontend(response.data.data);
     } catch (error) {
       return handleServiceError(error, 'Failed to submit KYC information.');
@@ -54,7 +54,7 @@ export class KycService {
     redirectUrl: string
   ): Promise<KycProviderSession> {
     try {
-      const response = await apiClient.post(`/api/kyc/provider/${provider}/initiate`, {
+      const response = await apiClient.post(`/kyc/provider/${provider}/initiate`, {
         redirectUrl
       });
       return mapBackendSessionToFrontend(response.data.data);

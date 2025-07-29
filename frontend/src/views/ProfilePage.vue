@@ -109,7 +109,7 @@ async function refreshProfile(): Promise<void> {
 // Function to fetch profile data
 async function fetchProfileData(): Promise<void> {
   try {
-    const response = await apiClient.get('/accounts/auth/profile');
+    const response = await apiClient.get('/auth/profile');
     
     if (response.data && response.data.user) {
       user.value = response.data.user;

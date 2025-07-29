@@ -15,7 +15,7 @@ export async function loadExampleData(
   loadingError.value = '';
   
   try {
-    exampleData.value = await get('/api/example-data');
+    exampleData.value = await get('/example-data');
   } catch (error) {
     // Process the error through our error handler
     const appError = errorHandler.processError(error);
@@ -37,7 +37,7 @@ export async function simulateNetworkError(
   errorHandler: ErrorHandler
 ) {
   try {
-    await get('/api/simulate-network-error');
+    await get('/simulate-network-error');
   } catch (error) {
     errorHandler.showErrorNotification(error);
   }
@@ -48,7 +48,7 @@ export async function simulateServerError(
   errorHandler: ErrorHandler
 ) {
   try {
-    await get('/api/simulate-server-error');
+    await get('/simulate-server-error');
   } catch (error) {
     errorHandler.showErrorNotification(error);
   }
@@ -59,7 +59,7 @@ export async function simulateValidationError(
   handleApiValidationErrors: (error: any) => void
 ) {
   try {
-    await post('/api/simulate-validation-error', {});
+    await post('/simulate-validation-error', {});
   } catch (error) {
     handleApiValidationErrors(error);
   }
@@ -70,7 +70,7 @@ export async function simulateAuthError(
   errorHandler: ErrorHandler
 ) {
   try {
-    await get('/api/simulate-auth-error');
+    await get('/simulate-auth-error');
   } catch (error) {
     errorHandler.showErrorNotification(error);
   }

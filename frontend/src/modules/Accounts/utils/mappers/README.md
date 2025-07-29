@@ -30,13 +30,13 @@ import { mapBackendUserToFrontend, mapFrontendUserToBackend } from '../utils/map
 
 // In a service method
 async function getUser(id: string): Promise<User> {
-  const response = await apiClient.get(`/api/users/${id}`);
+  const response = await apiClient.get(`/users/${id}`);
   return mapBackendUserToFrontend(response.data);
 }
 
 async function updateUser(id: string, userData: UserUpdate): Promise<User> {
   const backendData = mapFrontendUserToBackend(userData);
-  const response = await apiClient.patch(`/api/users/${id}`, backendData);
+  const response = await apiClient.patch(`/users/${id}`, backendData);
   return mapBackendUserToFrontend(response.data);
 }
 ```
@@ -48,13 +48,13 @@ import { mapBackendKycToFrontend, mapKycSubmissionToBackend } from '../utils/map
 
 // In a service method
 async function getKycRecord(): Promise<KycRecord | null> {
-  const response = await apiClient.get('/api/kyc/me');
+  const response = await apiClient.get('/kyc/me');
   return mapBackendKycToFrontend(response.data.data);
 }
 
 async function submitKyc(data: KycSubmissionData): Promise<KycRecord> {
   const backendData = mapKycSubmissionToBackend(data);
-  const response = await apiClient.post('/api/kyc/submit', backendData);
+  const response = await apiClient.post('/kyc/submit', backendData);
   return mapBackendKycToFrontend(response.data.data);
 }
 ```
@@ -67,7 +67,7 @@ import { mapBackendAuthResponseToFrontend, mapLoginCredentialsToBackend } from '
 // In a service method
 async function login(credentials: LoginCredentials): Promise<AuthResponse> {
   const backendCredentials = mapLoginCredentialsToBackend(credentials);
-  const response = await apiClient.post('/api/auth/login', backendCredentials);
+  const response = await apiClient.post('/auth/login', backendCredentials);
   return mapBackendAuthResponseToFrontend(response.data);
 }
 ```

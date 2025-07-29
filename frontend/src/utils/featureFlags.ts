@@ -6,7 +6,7 @@
  */
 
 import { ref, computed } from 'vue';
-import axios from 'axios';
+import apiClient from '@/services/apiClient';
 
 // Define types for feature flags
 interface FeatureFlag {
@@ -31,7 +31,7 @@ async function fetchFeatureFlags(): Promise<void> {
   error.value = null;
   
   try {
-    const response = await axios.get<FeatureFlag[]>('/api/flags');
+    const response = await apiClient.get<FeatureFlag[]>('/flags');
     featureFlags.value = response.data.reduce((acc: FeatureFlagsState, flag: FeatureFlag) => {
       acc[flag.key] = flag.enabled;
       return acc;

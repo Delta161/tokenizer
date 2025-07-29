@@ -8,7 +8,7 @@ import router from '@/router';
  * Configured with base URL, credentials, timeout, and interceptors
  */
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
   withCredentials: true, // Important for cookies/sessions
   timeout: 15000, // 15 seconds timeout
   headers: {
@@ -20,9 +20,9 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   async (config) => {
     // Skip token for auth endpoints that don't require authentication
-    const isAuthEndpoint = config.url?.includes('/api/v1/auth/login') || 
-                          config.url?.includes('/api/v1/auth/register') || 
-                          config.url?.includes('/api/v1/auth/refresh');
+    const isAuthEndpoint = config.url?.includes('/auth/login') || 
+                          config.url?.includes('/auth/register') || 
+                          config.url?.includes('/auth/refresh');
     
     if (isAuthEndpoint) {
       return config;
