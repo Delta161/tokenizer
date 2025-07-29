@@ -769,3 +769,17 @@
 2025-07-29 12:10:38:1038 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
 2025-07-29 12:10:38:1038 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
 2025-07-29 12:10:38:1038 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 16:36:47:3647 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 16:36:48:3648 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-29 16:36:48:3648 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-29 16:36:48:3648 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 16:36:48:3648 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-29 16:36:48:3648 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-29 16:36:48:3648 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-29 16:36:48:3648 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-29 16:36:48:3648 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-29 16:36:48:3648 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-29 16:36:59:3659 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /users/me - /users/me - GET - ::1[39m
+2025-07-29 16:36:59:3659 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 16:37:03:373 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 16:37:03:373 [31merror[39m: [31mError: Unsupported OAuth provider: GOOGLE[39m

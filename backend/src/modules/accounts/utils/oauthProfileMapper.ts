@@ -139,8 +139,10 @@ export const mapAzureProfile = (profile: AzureProfile): NormalizedProfile => {
 /**
  * Map generic OAuth profile to normalized profile
  */
+// backend/src/modules/accounts/utils/oauthProfileMapper.ts
 export const mapOAuthProfile = (profile: any, provider: string): NormalizedProfile => {
-  switch (provider) {
+  const normalizedProvider = provider.toLowerCase();  // <== normalize here
+  switch (normalizedProvider) {
     case 'google':
       return mapGoogleProfile(profile as GoogleProfile);
     case 'azure-ad':

@@ -28,7 +28,7 @@ export class UserService {
    */
   async getCurrentUser(): Promise<User> {
     try {
-      const response = await apiClient.get(`${this.baseUrl}/me`);
+      const response = await apiClient.get(`${this.baseUrl}/profile`);
       return mapBackendUserToFrontend(response.data);
     } catch (error) {
       return handleServiceError(error, 'Failed to retrieve current user.');

@@ -316,3 +316,5 @@
 2025-07-29 12:10:38:1038 [31merror[39m: [31mOAuth login processing failed[39m
 2025-07-29 12:10:38:1038 [31merror[39m: [31mOAuth authentication error[39m
 2025-07-29 12:10:38:1038 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 16:37:03:373 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 16:37:03:373 [31merror[39m: [31mError: Unsupported OAuth provider: GOOGLE[39m
