@@ -8,7 +8,7 @@ import router from '@/router';
  * Configured with base URL, credentials, timeout, and interceptors
  */
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
   withCredentials: true, // Important for cookies/sessions
   timeout: 15000, // 15 seconds timeout
   headers: {
@@ -107,9 +107,9 @@ apiClient.interceptors.response.use(
     if (status === 401 && !error.config.url?.includes('/auth/refresh')) {
       try {
         // Try to refresh the token
-        const refreshResponse = await apiClient.post('/auth/refresh', {}, {
-          withCredentials: true
-        });
+        const isRefreshEndpoint = config.url?.includes('/auth/refresh');
+if (isRefreshEndpoint) return config;
+
         
         if (refreshResponse.data.accessToken) {
           // Store the new token
@@ -155,8 +155,14 @@ apiClient.interceptors.response.use(
           // This is either a retry that failed or a refresh token request that failed
           // Clear auth data and redirect to login
           try {
-            const authStore = useAuthStore();
-            await authStore.logout();
+            function clearAuthAndRedirect() {
+              localStorage.removeItem('accessToken');
+              localStorage.removeItem('refreshToken');
+              localStorage.removeItem('tokenExpiresAt');
+              localStorage.removeItem('user');
+              router.push('/login');
+            }
+            clearAuthAndRedirect();
           } catch (e) {
             // Store not available
           }
