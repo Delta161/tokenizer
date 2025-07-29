@@ -57,30 +57,69 @@ apiClient.interceptors.request.use(
 // Response interceptor for global error handling
 import errorHandler from './errorHandler';
 
+// frontend/src/services/apiClient.ts
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // Get the original request config
     const originalRequest = error.config;
-    
-    // Handle different error scenarios
-    if (error.response) {
-      const { status } = error.response;
-      
-      // Handle authentication errors
-      if (status === 401) {
-        // If this is not a retry and not a refresh token request
-        if (!originalRequest._retry && !originalRequest.url?.includes('/auth/refresh')) {
-          originalRequest._retry = true;
+
+    // If unauthorized and this isn't a retry or refresh call…
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes('/auth/refresh')
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        // 👇 This is the code you mentioned:
+        const refreshResponse = await axios.post(
+          `${apiClient.defaults.baseURL}/auth/refresh`,
+          {},
+          { withCredentials: true }
+        );
+
+        if (refreshResponse.data.accessToken) {
+          localStorage.setItem('accessToken', refreshResponse.data.accessToken);
+          // … update headers and retry original request
+          originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`;
+          return apiClient(originalRequest);
+        }
+      } catch (refreshError) {
+        // handle refresh error (log out, redirect, etc.)
+      }
+    }
+
+    // fall through to default error handling
+    return Promise.reject(error);
+  }
+);
+
+// Error handler for API requests
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const { response } = error;
+    const status = response?.status;
+
+    // If the error is 401 (Unauthorized) and it's not a refresh token request
+    if (status === 401 && !error.config.url?.includes('/auth/refresh')) {
+      try {
+        // Try to refresh the token
+        const refreshResponse = await apiClient.post('/auth/refresh', {}, {
+          withCredentials: true
+        });
+        
+        if (refreshResponse.data.accessToken) {
+          // Store the new token
+          localStorage.setItem('accessToken', refreshResponse.data.accessToken);
+          if (refreshResponse.data.expiresAt) {
+            localStorage.setItem('tokenExpiresAt', refreshResponse.data.expiresAt.toString());
+          }
           
-          try {
-            // Try to refresh the token by calling the refresh endpoint directly
-            const refreshResponse = await axios.post(
-              `${apiClient.defaults.baseURL}/auth/refresh`,
-              {},
-              { withCredentials: true }
-            );
-            
+          // Update the authorization header
+          originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`; 
             if (refreshResponse.data.accessToken) {
               // Store the new token
               localStorage.setItem('accessToken', refreshResponse.data.accessToken);

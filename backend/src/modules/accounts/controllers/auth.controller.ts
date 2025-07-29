@@ -129,36 +129,26 @@ async handleOAuthSuccess(req: Request, res: Response): Promise<void> {
   /**
    * Refresh access token using refresh token
    */
-  async refreshToken(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      // Get refresh token from cookies
-      const refreshToken = req.cookies.refreshToken;
-      
-      if (!refreshToken) {
-        accountsLogger.logAccountError('token_refresh', 'No refresh token provided', { ip: req.ip });
-        return next(createUnauthorized('No refresh token provided'));
-      }
-      
-      // Verify token and get user
-      const user = await authService.verifyToken(refreshToken);
-      
-      // Generate new tokens
-      const { accessToken, refreshToken: newRefreshToken } = authService.generateTokens(user);
-      
-      // Set new token cookies
-      setTokenCookies(res, accessToken, newRefreshToken);
-      
-      // Log token refresh
-      logger.debug('Token refreshed successfully', { userId: user.id });
-      
-      // Return success response
-      res.status(200).json({ success: true, accessToken });
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      accountsLogger.logAccountError('token_refresh', errorMessage, { ip: req.ip });
-      next(error);
+ async refreshToken(req: Request, res: Response, next: NextFunction) {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) {
+      accountsLogger.logAccountError('token_refresh', 'No refresh token provided', { ip: req.ip });
+      return next(createUnauthorized('No refresh token provided'));
     }
+
+    const user = await authService.verifyRefreshToken(refreshToken);
+    const { accessToken, refreshToken: newRefreshToken } = authService.generateTokens(user);
+    setTokenCookies(res, accessToken, newRefreshToken);
+    logger.debug('Token refreshed successfully', { userId: user.id });
+
+    res.status(200).json({ success: true, accessToken });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    accountsLogger.logAccountError('token_refresh', errorMessage, { ip: req.ip });
+    next(error);
   }
+}
   
   /**
    * Health check for auth service

@@ -18,6 +18,8 @@ import { NormalizedProfileSchema } from '@modules/accounts/validators/auth.valid
 import { createUserFromOAuthSchema } from '@modules/accounts/validators/user.validator';
 import { prisma } from '@modules/accounts/utils/prisma';
 import { createNotFound, createUnauthorized, createBadRequest } from '@middleware/errorHandler';
+import { verifyRefreshToken } from '@modules/accounts/utils/jwt';
+
 
 export class AuthService {
   private prisma: PrismaClient;
@@ -79,6 +81,25 @@ export class AuthService {
 
     return user ? this.sanitizeUser(user) : null;
   }
+/**
+ * Verify refresh token and return user
+ * @param token Refresh token to verify
+ * @returns UserDTO
+ */
+
+  async verifyRefreshToken(token: string): Promise<UserDTO> {
+    try {
+      const { userId } = verifyRefreshToken(token);
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        throw createUnauthorized('Invalid token');
+      }
+      return this.sanitizeUser(user);
+    } catch {
+      throw createUnauthorized('Invalid token');
+    }
+  }
+  
 
   /**
    * Process OAuth login
