@@ -827,3 +827,37 @@
 2025-07-29 18:06:04:64 [31merror[39m: [31mInvalid profile data[39m
 2025-07-29 18:06:04:64 [31merror[39m: [31mOAuth login processing failed[39m
 2025-07-29 18:06:04:64 [33mwarn[39m: [33m400 - BAD_REQUEST - Invalid profile data - /api/v1/auth/google/callback?code=4%2F0AVMBsJgksHmMScuVbBHTtbFo4pRhfU6GU3GQKjUQywg107KTYoBTdbIKO9SdRYi3SDWr8A&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&authuser=0&prompt=none - GET - ::1[39m
+2025-07-29 19:45:51:4551 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 19:45:52:4552 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-29 19:45:52:4552 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-29 19:45:52:4552 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 19:45:52:4552 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-29 19:45:52:4552 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-29 19:45:52:4552 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-29 19:45:52:4552 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-29 19:45:52:4552 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-29 19:45:52:4552 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-29 19:46:03:463 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /kyc/me - /kyc/me - GET - ::1[39m
+2025-07-29 19:46:03:463 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /users/profile - /users/profile - GET - ::1[39m
+2025-07-29 19:46:19:4619 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - /combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - GET - ::1[39m
+2025-07-29 19:46:25:4625 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - /combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - GET - ::1[39m
+2025-07-29 19:46:39:4639 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /users/profile - /users/profile - GET - ::1[39m
+2025-07-29 19:46:39:4639 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /kyc/me - /kyc/me - GET - ::1[39m
+2025-07-29 19:46:41:4641 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/google - /auth/google - GET - ::1[39m
+2025-07-29 19:56:09:569 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 19:56:10:5610 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-29 19:56:10:5610 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-29 19:56:10:5610 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 19:56:10:5610 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-29 19:56:10:5610 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-29 19:56:10:5610 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-29 19:56:10:5610 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-29 19:56:10:5610 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-29 19:56:10:5610 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-29 19:56:26:5626 [31merror[39m: [31mAccount error during token_refresh: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 19:56:26:5626 [31merror[39m: [31mTypeError: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 19:56:26:5626 [31merror[39m: [31mAccount error during token_refresh: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 19:56:26:5626 [31merror[39m: [31mTypeError: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 19:56:35:5635 [31merror[39m: [31mInvalid profile data[39m
+2025-07-29 19:56:35:5635 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 19:56:35:5635 [33mwarn[39m: [33m400 - BAD_REQUEST - Invalid profile data - /api/v1/auth/google/callback?code=4%2F0AVMBsJiW5efH6kKEf8A739YO5-aBC5qYByIDk3n_4o7Pzg0E9Iq0fVUIR5Ak9kKgUvCV8Q&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=0&prompt=none - GET - ::1[39m
