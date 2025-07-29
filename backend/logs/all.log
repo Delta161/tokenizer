@@ -861,3 +861,52 @@
 2025-07-29 19:56:35:5635 [31merror[39m: [31mInvalid profile data[39m
 2025-07-29 19:56:35:5635 [31merror[39m: [31mOAuth login processing failed[39m
 2025-07-29 19:56:35:5635 [33mwarn[39m: [33m400 - BAD_REQUEST - Invalid profile data - /api/v1/auth/google/callback?code=4%2F0AVMBsJiW5efH6kKEf8A739YO5-aBC5qYByIDk3n_4o7Pzg0E9Iq0fVUIR5Ak9kKgUvCV8Q&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=0&prompt=none - GET - ::1[39m
+2025-07-29 20:47:56:4756 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 20:47:57:4757 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-29 20:47:57:4757 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-29 20:47:57:4757 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 20:47:57:4757 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-29 20:47:57:4757 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-29 20:47:57:4757 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-29 20:47:57:4757 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-29 20:47:57:4757 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-29 20:47:57:4757 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-29 20:48:02:482 [31merror[39m: [31mAccount error during token_refresh: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 20:48:02:482 [31merror[39m: [31mTypeError: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 20:48:02:482 [31merror[39m: [31mAccount error during token_refresh: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 20:48:02:482 [31merror[39m: [31mTypeError: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 20:48:07:487 [34mdebug[39m: [34mUser logged in[39m
+2025-07-29 20:48:07:487 [32minfo[39m: [32mUser logged in via google[39m
+2025-07-29 20:48:07:487 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - / - / - GET - ::1[39m
+2025-07-29 21:19:14:1914 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 21:19:14:1914 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-29 21:19:14:1914 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-29 21:19:14:1914 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 21:19:14:1914 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-29 21:19:14:1914 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-29 21:19:14:1914 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-29 21:19:14:1914 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-29 21:19:14:1914 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-29 21:19:14:1914 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-29 21:19:24:1924 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:24:1924 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m
+2025-07-29 21:19:25:1925 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:25:1925 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m
+2025-07-29 21:19:28:1928 [34mdebug[39m: [34mUser logged in[39m
+2025-07-29 21:19:28:1928 [32minfo[39m: [32mUser logged in via google[39m
+2025-07-29 21:19:28:1928 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:28:1928 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m
+2025-07-29 21:19:28:1928 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:28:1928 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m
+2025-07-29 21:19:32:1932 [34mdebug[39m: [34mUser logged in[39m
+2025-07-29 21:19:32:1932 [32minfo[39m: [32mUser logged in via google[39m
+2025-07-29 21:19:32:1932 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:32:1932 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m
+2025-07-29 21:19:32:1932 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:32:1932 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m
+2025-07-29 21:19:36:1936 [34mdebug[39m: [34mUser logged in[39m
+2025-07-29 21:19:36:1936 [32minfo[39m: [32mUser logged in via google[39m
+2025-07-29 21:19:36:1936 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:36:1936 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m
+2025-07-29 21:19:36:1936 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:36:1936 [33mwarn[39m: [33m401 - UNAUTHORIZED - No refresh token provided - /api/v1/auth/refresh - POST - ::1[39m

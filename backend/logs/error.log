@@ -330,3 +330,15 @@
 2025-07-29 19:56:26:5626 [31merror[39m: [31mTypeError: Cannot read properties of undefined (reading 'refreshToken')[39m
 2025-07-29 19:56:35:5635 [31merror[39m: [31mInvalid profile data[39m
 2025-07-29 19:56:35:5635 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 20:48:02:482 [31merror[39m: [31mAccount error during token_refresh: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 20:48:02:482 [31merror[39m: [31mTypeError: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 20:48:02:482 [31merror[39m: [31mAccount error during token_refresh: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 20:48:02:482 [31merror[39m: [31mTypeError: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 21:19:24:1924 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:25:1925 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:28:1928 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:28:1928 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:32:1932 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:32:1932 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:36:1936 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-29 21:19:36:1936 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m

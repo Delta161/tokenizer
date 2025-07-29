@@ -84,7 +84,7 @@ async handleOAuthSuccess(req: Request, res: Response): Promise<void> {
     await authService.processOAuthLogin(prismaUser as OAuthProfileDTO);
   }
 
-  res.redirect(process.env.FRONTEND_LOGIN_SUCCESS_URL ?? '/');
+  res.redirect(process.env.FRONTEND_LOGIN_SUCCESS_URL ?? '/auth/callback');
 }
 
   

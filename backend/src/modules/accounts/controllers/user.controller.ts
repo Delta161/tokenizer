@@ -67,29 +67,17 @@ export class UserController {
   /**
  * Get user by ID
  */
-async getUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
+async getProfile(req: Request, res: Response, next: NextFunction) {
   try {
-    // Check if this is a profile request or a specific user request
-    let userId: string;
-    
-    if (req.path === '/profile') {
-      // For profile requests, use the authenticated user's ID
-      userId = (req as any as { user: { id: string } }).user.id;
-    } else {
-      // For specific user requests, validate and parse the user ID parameter
-      const params = userIdParamSchema.parse(req.params);
-      userId = params.userId;
-    }
-    
-    // Get user
+    const userId = (req.user as any).id;
     const user = await userService.getUserById(userId);
-    
-    // Return response
     res.status(200).json({ user });
   } catch (error) {
     next(error);
   }
 }
+
+
 
   /**
    * Create a new user
