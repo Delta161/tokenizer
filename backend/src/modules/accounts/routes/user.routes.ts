@@ -20,7 +20,7 @@ const router = Router();
  * @desc    Get current user's profile
  * @access  Authenticated user
  */
-router.get('/profile', authGuard, userController.getUserById);
+router.get('/profile', authGuard, userController.getProfile);
 
 /**
  * @route   PATCH /api/users/profile

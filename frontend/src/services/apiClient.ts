@@ -119,20 +119,20 @@ apiClient.interceptors.response.use(
           }
           
           // Update the authorization header
-          originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`; 
-            if (refreshResponse.data.accessToken) {
-              // Store the new token
-              localStorage.setItem('accessToken', refreshResponse.data.accessToken);
-              if (refreshResponse.data.expiresAt) {
-                localStorage.setItem('tokenExpiresAt', refreshResponse.data.expiresAt.toString());
-              }
-              
-              // Update the authorization header
-              originalRequest.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`;
-              // Retry the original request
-              return apiClient(originalRequest);
-            } else {
-              // If refresh failed, logout and redirect to login
+          error.config.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`; 
+          if (refreshResponse.data.accessToken) {
+            // Store the new token
+            localStorage.setItem('accessToken', refreshResponse.data.accessToken);
+            if (refreshResponse.data.expiresAt) {
+              localStorage.setItem('tokenExpiresAt', refreshResponse.data.expiresAt.toString());
+            }
+            
+            // Update the authorization header
+            error.config.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`;
+            // Retry the original request
+            return apiClient(error.config);
+          } else {
+            // If refresh failed, logout and redirect to login
               localStorage.removeItem('accessToken');
               localStorage.removeItem('tokenExpiresAt');
               localStorage.removeItem('refreshToken');

@@ -77,8 +77,6 @@ async getProfile(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-
-
   /**
    * Create a new user
    */
@@ -172,6 +170,18 @@ async getProfile(req: Request, res: Response, next: NextFunction) {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       accountsLogger.logAccountError('user_deletion', errorMessage, { userId: req.params.userId });
+      next(error);
+    }
+  }
+
+  /** Get a specific user by ID (admin only) */
+  async getUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const params = userIdParamSchema.parse(req.params);
+      const userId = params.userId;
+      const user = await userService.getUserById(userId);
+      res.status(200).json({ user });
+    } catch (error) {
       next(error);
     }
   }
