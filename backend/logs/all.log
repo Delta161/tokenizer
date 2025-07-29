@@ -486,3 +486,286 @@
 [31mArgument `fullName` is missing.[39m
 2025-07-28 20:32:30:3230 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
 2025-07-28 20:32:30:3230 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-28 21:46:36:4636 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-28 21:46:36:4636 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-28 21:47:07:477 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-28 21:47:07:477 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-28 21:47:07:477 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-28 21:47:12:4712 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-28 22:15:54:1554 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-28 22:15:54:1554 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-28 23:59:14:5914 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-28 23:59:14:5914 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-28 23:59:15:5915 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-28 23:59:15:5915 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-28 23:59:23:5923 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-28 23:59:23:5923 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 00:00:39:039 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 00:00:39:039 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 00:00:44:044 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:00:44:044 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-29 00:00:44:044 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:00:50:050 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 00:06:34:634 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 00:06:34:634 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 00:06:46:646 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 00:06:46:646 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 00:07:32:732 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 00:07:33:733 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 00:07:59:759 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:07:59:759 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-29 00:07:59:759 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:13:38:1338 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 00:13:38:1338 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 00:13:48:1348 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation:[39m
+
+[31m{[39m
+[31m  data: {[39m
+[31m    email: "hackschool@gmail.com",[39m
+[31m    authProvider: "GOOGLE",[39m
+[31m    providerId: "108189559904948131130",[39m
+[31m    avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m    role: "INVESTOR",[39m
+[31m+   fullName: String[39m
+[31m  }[39m
+[31m}[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:13:48:1348 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-29 00:13:48:1348 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation:[39m
+
+[31m{[39m
+[31m  data: {[39m
+[31m    email: "hackschool@gmail.com",[39m
+[31m    authProvider: "GOOGLE",[39m
+[31m    providerId: "108189559904948131130",[39m
+[31m    avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m    role: "INVESTOR",[39m
+[31m+   fullName: String[39m
+[31m  }[39m
+[31m}[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:19:04:194 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 00:19:06:196 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-29 00:19:06:196 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-29 00:19:06:196 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 00:19:06:196 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-29 00:19:06:196 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-29 00:19:06:196 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-29 00:19:06:196 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-29 00:19:06:196 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-29 00:19:06:196 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-29 00:19:40:1940 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 00:19:42:1942 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-29 00:19:42:1942 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-29 00:19:42:1942 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 00:19:42:1942 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-29 00:19:42:1942 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-29 00:19:42:1942 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-29 00:19:42:1942 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-29 00:19:42:1942 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-29 00:19:42:1942 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-29 10:04:53:453 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 10:04:54:454 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-29 10:04:54:454 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-29 10:04:54:454 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 10:04:54:454 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-29 10:04:54:454 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-29 10:04:54:454 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-29 10:04:54:454 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-29 10:04:55:455 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-29 10:04:55:455 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-29 10:38:43:3843 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 10:38:43:3843 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 10:38:49:3849 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation:[39m
+
+[31m{[39m
+[31m  data: {[39m
+[31m    email: "hackschool@gmail.com",[39m
+[31m    authProvider: "GOOGLE",[39m
+[31m    providerId: "108189559904948131130",[39m
+[31m    avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m    role: "INVESTOR",[39m
+[31m+   fullName: String[39m
+[31m  }[39m
+[31m}[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 10:38:49:3849 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-29 10:38:49:3849 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation:[39m
+
+[31m{[39m
+[31m  data: {[39m
+[31m    email: "hackschool@gmail.com",[39m
+[31m    authProvider: "GOOGLE",[39m
+[31m    providerId: "108189559904948131130",[39m
+[31m    avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m    role: "INVESTOR",[39m
+[31m+   fullName: String[39m
+[31m  }[39m
+[31m}[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 10:41:14:4114 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 10:41:15:4115 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-07-29 10:41:15:4115 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-07-29 10:41:15:4115 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-07-29 10:41:15:4115 [32minfo[39m: [32mInitializing investment module[39m
+2025-07-29 10:41:15:4115 [32minfo[39m: [32mInitializing investment routes[39m
+2025-07-29 10:41:15:4115 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-07-29 10:41:15:4115 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-07-29 10:41:15:4115 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-07-29 10:41:15:4115 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-07-29 10:41:41:4141 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 10:41:41:4141 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 10:41:45:4145 [32minfo[39m: [32mCreating new user with fullName[39m
+2025-07-29 10:41:45:4145 [34mdebug[39m: [34mUser data for creation[39m
+2025-07-29 10:41:45:4145 [32minfo[39m: [32mSuccessfully created user with fullName[39m
+2025-07-29 10:41:45:4145 [32minfo[39m: [32mCreated new user from Google OAuth[39m
+2025-07-29 10:41:45:4145 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 10:41:45:4145 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 10:41:45:4145 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 10:41:45:4145 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 10:41:45:4145 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 10:41:52:4152 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 10:41:52:4152 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 10:41:52:4152 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 10:41:52:4152 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 10:41:52:4152 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 10:41:55:4155 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 10:41:55:4155 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 10:41:55:4155 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 10:41:55:4155 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 10:41:55:4155 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 10:41:59:4159 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 10:41:59:4159 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 10:41:59:4159 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 10:41:59:4159 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 10:41:59:4159 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 12:10:14:1014 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 12:10:14:1014 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 12:10:17:1017 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 12:10:17:1017 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 12:10:34:1034 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 12:10:34:1034 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 12:10:34:1034 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 12:10:34:1034 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 12:10:34:1034 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m
+2025-07-29 12:10:38:1038 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 12:10:38:1038 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 12:10:38:1038 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 12:10:38:1038 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/users/me - /api/users/me - GET - ::1[39m
+2025-07-29 12:10:38:1038 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /auth/refresh - /auth/refresh - POST - ::1[39m

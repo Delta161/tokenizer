@@ -8,6 +8,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { mapGoogleProfile, validateNormalizedProfile } from '../utils/oauthProfileMapper';
 import { logger } from '@utils/logger';
 import { prisma } from '../utils/prisma';
+import { validateAndProcessFullName } from '../validators/google.validator';
 
 // Default callback URL is configured in .env as GOOGLE_CALLBACK_URL
 
@@ -91,16 +92,40 @@ export const configureGoogleStrategy = (): void => {
           
           // If user still not found, create new user
           if (!user) {
-            user = await prisma.user.create({
-              data: {
+            try {
+              // Use the validator to process and validate fullName
+              const fullName = validateAndProcessFullName({
+                firstName: normalizedProfile.firstName,
+                lastName: normalizedProfile.lastName,
+                displayName: normalizedProfile.displayName,
+                email: normalizedProfile.email
+              });
+              
+              // Log the fullName to ensure it's being set correctly
+              logger.info('Creating new user with fullName', { fullName, email: normalizedProfile.email });
+              
+              // Prepare user data
+              const userData = {
                 email: normalizedProfile.email,
-                fullName: normalizedProfile.fullName,
+                fullName: fullName,
                 authProvider: 'GOOGLE',
                 providerId: normalizedProfile.providerId,
                 avatarUrl: normalizedProfile.avatarUrl,
                 role: normalizedProfile.role || 'INVESTOR'
-              }
-            });
+              };
+              
+              // Log the complete user data before creation
+              logger.debug('User data for creation', userData);
+              
+              user = await prisma.user.create({
+                data: userData
+              });
+              
+              logger.info('Successfully created user with fullName', { fullName, email: normalizedProfile.email });
+            } catch (createError) {
+              logger.error('Error creating user from Google profile', { error: createError });
+              return done(createError as Error);
+            }
             
             logger.info('Created new user from Google OAuth', {
               userId: user.id,

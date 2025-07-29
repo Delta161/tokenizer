@@ -119,3 +119,200 @@
 [31m       })[39m
 
 [31mArgument `fullName` is missing.[39m
+2025-07-28 21:47:07:477 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-28 21:47:07:477 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-28 21:47:07:477 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:00:44:044 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:00:44:044 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-29 00:00:44:044 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:07:59:759 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:07:59:759 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-29 00:07:59:759 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:94:38[39m
+
+[31m  91 [39m
+[31m  92 // If user still not found, create new user[39m
+[31m  93 if (!user) {[39m
+[31m→ 94   user = await prisma.user.create({[39m
+[31m         data: {[39m
+[31m           email: "hackschool@gmail.com",[39m
+[31m           authProvider: "GOOGLE",[39m
+[31m           providerId: "108189559904948131130",[39m
+[31m           avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m           role: "INVESTOR",[39m
+[31m       +   fullName: String[39m
+[31m         }[39m
+[31m       })[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:13:48:1348 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation:[39m
+
+[31m{[39m
+[31m  data: {[39m
+[31m    email: "hackschool@gmail.com",[39m
+[31m    authProvider: "GOOGLE",[39m
+[31m    providerId: "108189559904948131130",[39m
+[31m    avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m    role: "INVESTOR",[39m
+[31m+   fullName: String[39m
+[31m  }[39m
+[31m}[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 00:13:48:1348 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-29 00:13:48:1348 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation:[39m
+
+[31m{[39m
+[31m  data: {[39m
+[31m    email: "hackschool@gmail.com",[39m
+[31m    authProvider: "GOOGLE",[39m
+[31m    providerId: "108189559904948131130",[39m
+[31m    avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m    role: "INVESTOR",[39m
+[31m+   fullName: String[39m
+[31m  }[39m
+[31m}[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 10:38:49:3849 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.create()` invocation:[39m
+
+[31m{[39m
+[31m  data: {[39m
+[31m    email: "hackschool@gmail.com",[39m
+[31m    authProvider: "GOOGLE",[39m
+[31m    providerId: "108189559904948131130",[39m
+[31m    avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m    role: "INVESTOR",[39m
+[31m+   fullName: String[39m
+[31m  }[39m
+[31m}[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 10:38:49:3849 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-29 10:38:49:3849 [31merror[39m: [31mPrismaClientValidationError: [39m
+[31mInvalid `prisma.user.create()` invocation:[39m
+
+[31m{[39m
+[31m  data: {[39m
+[31m    email: "hackschool@gmail.com",[39m
+[31m    authProvider: "GOOGLE",[39m
+[31m    providerId: "108189559904948131130",[39m
+[31m    avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocIziwJIGqHqQjlfWT-3kFIAjswJe4aBPa4Xxvo8DkESa1axe2Du5w=s96-c",[39m
+[31m    role: "INVESTOR",[39m
+[31m+   fullName: String[39m
+[31m  }[39m
+[31m}[39m
+
+[31mArgument `fullName` is missing.[39m
+2025-07-29 10:41:45:4145 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 10:41:45:4145 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 10:41:45:4145 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 10:41:52:4152 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 10:41:52:4152 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 10:41:52:4152 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 10:41:55:4155 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 10:41:55:4155 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 10:41:55:4155 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 10:41:59:4159 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 10:41:59:4159 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 10:41:59:4159 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 12:10:34:1034 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 12:10:34:1034 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 12:10:34:1034 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m
+2025-07-29 12:10:38:1038 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 12:10:38:1038 [31merror[39m: [31mOAuth authentication error[39m
+2025-07-29 12:10:38:1038 [31merror[39m: [31mAuthentication error for unknown via oauth: Unsupported OAuth provider: undefined[39m

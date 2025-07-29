@@ -1,17 +1,43 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../store/authStore';
-import { OAuthButtons } from '../components';
-// LoginForm removed as only OAuth authentication is supported
+import { OAuthButtons } from '.';
+
+// Component props
+defineProps<{
+  // No props needed as this component now handles business logic
+}>();
+
+// Component emits
+const emit = defineEmits<{
+  // No emits needed as this component now handles business logic internally
+}>();
 
 // Component state
+const isLogin = ref(true);
 const isLoading = ref(false);
 const errorMessage = ref<string | null>(null);
+const successMessage = ref<string | null>(null);
 
-// Get router and auth store
+// Get router, route, and auth store
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
+
+// Toggle between login and register views
+function toggleView() {
+  isLogin.value = !isLogin.value;
+  // Clear messages when switching views
+  errorMessage.value = null;
+  successMessage.value = null;
+  
+  // Update route to match the current view
+  const routeName = isLogin.value ? 'login' : 'register';
+  if (route.name !== routeName) {
+    router.push({ name: routeName });
+  }
+}
 
 // Handle OAuth login/registration
 async function handleOAuthLogin(provider: string) {
@@ -22,6 +48,9 @@ async function handleOAuthLogin(provider: string) {
 // Check if user is already authenticated
 onMounted(async () => {
   try {
+    // Set initial view based on route
+    isLogin.value = route.name === 'login';
+    
     await authStore.checkTokenValidity();
     if (authStore.isAuthenticated) {
       router.push({ name: 'dashboard' });
@@ -33,40 +62,33 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="login-view">
-    <div class="login-container">
-      <h1>Sign In with OAuth</h1>
-      
-      <div v-if="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
-      
-      <div class="oauth-notice">
-        <p>Please use one of the following providers to sign in:</p>
-      </div>
-      
-      <OAuthButtons @login="handleOAuthLogin" />
-      
-      <div class="links">
-        <router-link :to="{ name: 'register' }">
-          Don't have an account? Sign up with OAuth
-        </router-link>
-      </div>
+  <div class="auth-container">
+    <h1>{{ isLogin ? 'Sign In' : 'Create Account' }} with OAuth</h1>
+    
+    <div v-if="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    
+    <div v-if="successMessage" class="success-message">
+      {{ successMessage }}
+    </div>
+    
+    <div class="oauth-notice">
+      <p>Please use one of the following providers to {{ isLogin ? 'sign in' : 'create an account' }}:</p>
+    </div>
+    
+    <OAuthButtons @login="handleOAuthLogin" />
+    
+    <div class="links">
+      <a href="#" @click.prevent="toggleView">
+        {{ isLogin ? 'Don\'t have an account? Sign up with OAuth' : 'Already have an account? Sign in with OAuth' }}
+      </a>
     </div>
   </div>
 </template>
 
 <style scoped>
-.login-view {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 2rem;
-  background-color: var(--color-background);
-}
-
-.login-container {
+.auth-container {
   width: 100%;
   max-width: 400px;
   padding: 2rem;
@@ -89,6 +111,15 @@ h1 {
   border-radius: 4px;
   background-color: rgba(220, 38, 38, 0.1);
   color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.success-message {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
   font-size: 0.875rem;
 }
 

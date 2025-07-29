@@ -9,7 +9,8 @@ export { authRoutes } from './authRoutes';
 export { kycRoutes } from './kycRoutes';
 
 // Export view components for Auth
-export { default as LoginView } from './LoginView.vue';
+export { default as AuthView } from './auth.view.vue';
+// LoginView removed - replaced by AuthView
 // RegisterView removed - only OAuth authentication is supported
 // ForgotPasswordView and ResetPasswordView removed - only OAuth authentication is supported
 

@@ -63,11 +63,15 @@ import {
   UserAvatar, 
   UserListItem, 
   UserRoleBadge,
-  LoginForm,
   OAuthButtons,
-  AuthView, // New merged auth component
+  AuthComponent, // Component part of auth view
   KycVerificationStatus
 } from './components';
+
+// Views from Accounts module
+import {
+  AuthView // View part that uses AuthComponent
+} from './views';
 
 // Note: UserProfileCard has been moved to sections/common/UserProfileSection.vue
 
@@ -96,8 +100,9 @@ export function initAccountsModule() {
 // Export consolidated components, services, and types
 export {
   // Auth Components
-  AuthView, // New merged auth component
-  LoginForm,
+  AuthComponent, // Component part of auth view
+  AuthView, // View part that uses AuthComponent
+  // LoginForm removed - only OAuth authentication is supported
   // RegisterForm removed - only OAuth authentication is supported
   OAuthButtons,
   

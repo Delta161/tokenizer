@@ -7,11 +7,11 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { defineAsyncComponent } from 'vue';
 
-// Import the merged AuthView component
-import { AuthView } from '../components';
+// Import the AuthView from views
+import { AuthView } from '.';
 
-// Legacy components - kept for backward compatibility but not used in routes
-const LoginView = defineAsyncComponent(() => import('./LoginView.vue'));
+// Legacy components removed
+// LoginView removed - replaced by AuthView
 // RegisterView removed - only OAuth authentication is supported
 // ForgotPasswordView removed - only OAuth authentication is supported
 
