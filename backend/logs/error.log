@@ -324,3 +324,9 @@
 2025-07-29 18:02:11:211 [31merror[39m: [31mOAuth login processing failed[39m
 2025-07-29 18:06:04:64 [31merror[39m: [31mInvalid profile data[39m
 2025-07-29 18:06:04:64 [31merror[39m: [31mOAuth login processing failed[39m
+2025-07-29 19:56:26:5626 [31merror[39m: [31mAccount error during token_refresh: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 19:56:26:5626 [31merror[39m: [31mTypeError: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 19:56:26:5626 [31merror[39m: [31mAccount error during token_refresh: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 19:56:26:5626 [31merror[39m: [31mTypeError: Cannot read properties of undefined (reading 'refreshToken')[39m
+2025-07-29 19:56:35:5635 [31merror[39m: [31mInvalid profile data[39m
+2025-07-29 19:56:35:5635 [31merror[39m: [31mOAuth login processing failed[39m

@@ -69,16 +69,17 @@ async handleOAuthSuccess(req: Request, res: Response): Promise<void> {
   const prismaUser = req.user as any; // Prisma user returned by Passport
 
   // If Passport returns a user instead of a profile, build one manually
-  if (prismaUser && !prismaUser.provider) {
-    const normalizedProfile = {
-      provider: prismaUser.authProvider ?? 'google',         // or 'azure-ad' for Azure
-      providerId: prismaUser.providerId ?? prismaUser.id,
-      email: prismaUser.email,
-      firstName: prismaUser.firstName ?? '',
-      lastName: prismaUser.lastName ?? '',
-    };
-    await authService.processOAuthLogin(normalizedProfile);
-  } else {
+  if (!prismaUser.provider) {
+  const normalizedProfile = {
+    provider: prismaUser.authProvider ?? 'google',
+    id: prismaUser.providerId ?? prismaUser.id,          // note: 'id' not 'providerId'
+    emails: prismaUser.email ? [{ value: prismaUser.email }] : undefined,
+    name: { givenName: prismaUser.firstName ?? '', familyName: prismaUser.lastName ?? '' },
+    displayName: prismaUser.fullName ?? prismaUser.email ?? 'User',
+  };
+  await authService.processOAuthLogin(normalizedProfile as OAuthProfileDTO);
+}
+ else {
     // Existing flow for already-normalized profiles
     await authService.processOAuthLogin(prismaUser as OAuthProfileDTO);
   }

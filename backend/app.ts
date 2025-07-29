@@ -15,6 +15,7 @@ import express, { Express } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
 import passport from 'passport';
@@ -109,6 +110,10 @@ registerAnalyticsModule(app);
 
 //Mount User router 
 app.use(`${API_PREFIX}/users`, userRouter);
+
+// After body parsing middleware
+app.use(cookieParser());
+
 
 // 404 handler for unmatched routes
 app.use(notFoundHandler);
