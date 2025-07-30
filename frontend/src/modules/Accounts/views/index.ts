@@ -15,7 +15,7 @@ export { default as AuthView } from './auth.view.vue';
 // ForgotPasswordView and ResetPasswordView removed - only OAuth authentication is supported
 
 // Export view components for User
-export { default as UserProfileView } from './UserProfileView.vue';
+export { default as UserProfileView } from './UserProfile.view.vue';
 export { default as UserSettingsView } from './UserSettingsView.vue';
 export { default as UserListView } from './UserListView.vue';
 export { default as UserDetailView } from './UserDetailView.vue';

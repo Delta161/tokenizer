@@ -8,7 +8,7 @@ import type { RouteRecordRaw } from 'vue-router';
 import { defineAsyncComponent } from 'vue';
 
 // Lazy-loaded components
-const UserProfileView = defineAsyncComponent(() => import('./UserProfileView.vue'));
+const UserProfileView = defineAsyncComponent(() => import('./UserProfile.view.vue'));
 const UserSettingsView = defineAsyncComponent(() => import('./UserSettingsView.vue'));
 const UserListView = defineAsyncComponent(() => import('./UserListView.vue'));
 const UserDetailView = defineAsyncComponent(() => import('./UserDetailView.vue'));

@@ -1,131 +1,196 @@
-<!-- src/modules/Accounts/components/UserProfile.component.vue -->
 <template>
   <section class="user-profile">
+    <!-- Loading and error states -->
     <div v-if="loading" class="loading">
       Loading profile…
     </div>
     <div v-else-if="error" class="error">
-      <p>Error: {{ error }}</p>
+      Error: {{ error }}
     </div>
-    <div v-else>
-      <!-- Toggle between edit form and display card -->
-      <div v-if="isEditing">
-        <form @submit.prevent="saveProfile" class="edit-form">
-          <div class="form-row">
-            <label for="firstName">First Name</label>
-            <input id="firstName" v-model="editForm.firstName" required />
-          </div>
-          <div class="form-row">
-            <label for="lastName">Last Name</label>
-            <input id="lastName" v-model="editForm.lastName" required />
-          </div>
-          <div class="form-row">
-            <label for="bio">Bio</label>
-            <textarea id="bio" v-model="editForm.bio" />
-          </div>
-          <div class="form-row">
-            <label for="location">Location</label>
-            <input id="location" v-model="editForm.location" />
-          </div>
-          <!-- Add more fields as needed -->
-          <div class="form-actions">
-            <button type="submit">Save</button>
-            <button type="button" @click="cancelEdit">Cancel</button>
-          </div>
-        </form>
-      </div>
+    <div v-else-if="user">
+      <!-- Edit form -->
+      <form v-if="isEditing" @submit.prevent="saveProfile" class="edit-form">
+        <div class="form-row">
+          <label for="firstName">First Name</label>
+          <input id="firstName" v-model="editForm.firstName" required />
+        </div>
+        <div class="form-row">
+          <label for="lastName">Last Name</label>
+          <input id="lastName" v-model="editForm.lastName" required />
+        </div>
+        <div class="form-row">
+          <label for="email">Email</label>
+          <input id="email" v-model="editForm.email" type="email" required />
+        </div>
+        <div class="form-row">
+          <label for="bio">Bio</label>
+          <textarea id="bio" v-model="editForm.bio" />
+        </div>
+        <div class="form-row">
+          <label for="location">Location</label>
+          <input id="location" v-model="editForm.location" />
+        </div>
+        <div class="form-row">
+          <label for="website">Website</label>
+          <input id="website" v-model="editForm.website" type="url" />
+        </div>
+        <div class="form-row">
+          <label for="twitter">Twitter</label>
+          <input id="twitter" v-model="editForm.socialLinks.twitter" />
+        </div>
+        <div class="form-row">
+          <label for="linkedin">LinkedIn</label>
+          <input id="linkedin" v-model="editForm.socialLinks.linkedin" />
+        </div>
+        <div class="form-row">
+          <label for="github">GitHub</label>
+          <input id="github" v-model="editForm.socialLinks.github" />
+        </div>
+        <div class="form-actions">
+          <button type="submit">Save</button>
+          <button type="button" @click="cancelEdit">Cancel</button>
+        </div>
+      </form>
+
+      <!-- Display card -->
       <div v-else>
-        <UserProfileCard
-          :user="user"
-          :editable="editable"
-          @update="startEdit"
-        />
+        <!-- You can replace this with a UserProfileCard component -->
+        <div class="profile-card">
+          <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+          <p>Email: {{ user.email }}</p>
+          <p v-if="user.bio">Bio: {{ user.bio }}</p>
+          <p v-if="user.location">Location: {{ user.location }}</p>
+          <p v-if="user.website">
+            Website:
+            <a :href="user.website" target="_blank">{{ user.website }}</a>
+          </p>
+          <p v-if="user.socialLinks?.twitter">
+            Twitter:
+            <a :href="'https://twitter.com/' + user.socialLinks.twitter" target="_blank">@{{ user.socialLinks.twitter }}</a>
+          </p>
+          <p v-if="user.socialLinks?.linkedin">
+            LinkedIn:
+            <a :href="'https://linkedin.com/in/' + user.socialLinks.linkedin" target="_blank">{{ user.socialLinks.linkedin }}</a>
+          </p>
+          <p v-if="user.socialLinks?.github">
+            GitHub:
+            <a :href="'https://github.com/' + user.socialLinks.github" target="_blank">{{ user.socialLinks.github }}</a>
+          </p>
+          <button v-if="editable" @click="startEdit">Edit</button>
+        </div>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
-import apiClient from '@/services/apiClient'
-import UserProfileCard from './UserProfileCard.vue'
+// Imports
+import { ref, reactive, onMounted } from 'vue';
+import { UserService } from '../services/userService';
+import type { User, UserProfile } from '../types/userTypes';
 
-// Props: userId (optional) for admin editing, editable flag
-defineProps<{ userId?: string; editable?: boolean }>()
+// Props: optional userId (for admin) and editable flag
+interface Props {
+  userId?: string;
+  editable?: boolean;
+}
+const props = defineProps<Props>();
 
-// State variables
-const user = ref<any | null>(null)
-const loading = ref<boolean>(true)
-const error = ref<string | null>(null)
-const isEditing = ref<boolean>(false)
-const editForm = reactive({
+// Instantiate the service
+const userService = new UserService();
+
+// State
+const user = ref<User | null>(null);
+const loading = ref<boolean>(true);
+const error = ref<string | null>(null);
+const isEditing = ref<boolean>(false);
+
+// Editable form state
+const editForm = reactive<Partial<UserProfile>>({
   firstName: '',
   lastName: '',
+  email: '',
   bio: '',
   location: '',
-})
+  website: '',
+  socialLinks: {
+    twitter: '',
+    linkedin: '',
+    github: ''
+  }
+});
 
-// Fetch the user data on mount
+// Load user on mount
 onMounted(async () => {
   try {
-    const url = props.userId ? `/users/${props.userId}` : '/users/profile'
-    const response = await apiClient.get(url)
-    user.value = response.data.user
-
-    // Pre-fill the edit form with the existing data
-    editForm.firstName = user.value?.firstName || ''
-    editForm.lastName = user.value?.lastName || ''
-    editForm.bio = user.value?.bio || ''
-    editForm.location = user.value?.location || ''
+    if (props.userId) {
+      user.value = await userService.getUserById(props.userId);
+    } else {
+      user.value = await userService.getCurrentUser();
+    }
+    // Prepopulate edit form with user data
+    if (user.value) {
+      editForm.firstName = user.value.firstName;
+      editForm.lastName = user.value.lastName;
+      editForm.email = user.value.email;
+      editForm.bio = user.value.bio ?? '';
+      editForm.location = user.value.location ?? '';
+      editForm.website = user.value.website ?? '';
+      editForm.socialLinks = {
+        twitter: user.value.socialLinks?.twitter ?? '',
+        linkedin: user.value.socialLinks?.linkedin ?? '',
+        github: user.value.socialLinks?.github ?? ''
+      };
+    }
   } catch (err: any) {
-    error.value = err.response?.data?.message || 'Failed to load profile'
+    error.value = err?.message || 'Failed to load user';
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-})
+});
 
-// Start editing
+// Toggle edit mode
 function startEdit() {
-  isEditing.value = true
+  isEditing.value = true;
 }
 
-// Cancel editing and reset form
 function cancelEdit() {
+  // Reset form to existing user data
   if (user.value) {
-    editForm.firstName = user.value.firstName || ''
-    editForm.lastName = user.value.lastName || ''
-    editForm.bio = user.value.bio || ''
-    editForm.location = user.value.location || ''
+    editForm.firstName = user.value.firstName;
+    editForm.lastName = user.value.lastName;
+    editForm.email = user.value.email;
+    editForm.bio = user.value.bio ?? '';
+    editForm.location = user.value.location ?? '';
+    editForm.website = user.value.website ?? '';
+    editForm.socialLinks = {
+      twitter: user.value.socialLinks?.twitter ?? '',
+      linkedin: user.value.socialLinks?.linkedin ?? '',
+      github: user.value.socialLinks?.github ?? ''
+    };
   }
-  isEditing.value = false
+  isEditing.value = false;
 }
 
-// Save the profile changes
+// Save profile changes
 async function saveProfile() {
-  if (!user.value) return
+  if (!user.value) return;
   try {
-    loading.value = true
-    const dataToSend = { ...editForm }
-
-    // PATCH /users/profile for the current user, or /users/:id for admin
-    const url = props.userId ? `/users/${props.userId}` : '/users/profile'
-    const response = await apiClient.patch(url, dataToSend)
-    user.value = response.data.user
-
-    // Update form state with returned data
-    editForm.firstName = user.value.firstName || ''
-    editForm.lastName = user.value.lastName || ''
-    editForm.bio = user.value.bio || ''
-    editForm.location = user.value.location || ''
-    isEditing.value = false
+    loading.value = true;
+    const id = props.userId || user.value.id;
+    const updated = await userService.updateUser(id, editForm as any);
+    // Update local state
+    user.value = updated;
+    // Exit edit mode
+    isEditing.value = false;
   } catch (err: any) {
-    error.value = err.response?.data?.message || 'Failed to update user'
+    error.value = err?.message || 'Failed to update user';
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
-const editable = props.editable ?? true
+const editable = props.editable ?? true;
 </script>
 
 <style scoped>
@@ -140,18 +205,24 @@ const editable = props.editable ?? true
 .error {
   color: red;
   text-align: center;
+  padding: 1rem;
 }
-.edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.profile-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+}
+.profile-card h2 {
+  margin-bottom: 0.5rem;
 }
 .form-row {
   display: flex;
   flex-direction: column;
+  margin-bottom: 1rem;
 }
 .form-actions {
   display: flex;
   gap: 1rem;
+  margin-top: 1rem;
 }
 </style>
