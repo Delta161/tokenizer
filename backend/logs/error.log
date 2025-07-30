@@ -352,3 +352,79 @@
 2025-07-30 01:16:47:1647 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
 2025-07-30 01:16:51:1651 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
 2025-07-30 01:16:51:1651 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-30 01:32:38:3238 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-30 01:32:38:3238 [31merror[39m: [31mAccount error during token_refresh: No refresh token provided[39m
+2025-07-30 09:52:14:5214 [31merror[39m: [31mToken verification failed[39m
+2025-07-30 09:52:14:5214 [31merror[39m: [31mToken verification failed[39m
+2025-07-30 09:52:18:5218 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `this.prisma.user.findUnique()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\services\auth.service.ts:93:43[39m
+
+[31m  90 async verifyRefreshToken(token: string): Promise<UserDTO> {[39m
+[31m  91   try {[39m
+[31m  92     const { userId } = verifyRefreshToken(token);[39m
+[31m→ 93     const user = await this.prisma.user.findUnique([39m
+[31mCan't reach database server at `localhost:5432`[39m
+
+[31mPlease make sure your database server is running at `localhost:5432`.[39m
+2025-07-30 09:52:18:5218 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `this.prisma.user.findUnique()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\services\auth.service.ts:93:43[39m
+
+[31m  90 async verifyRefreshToken(token: string): Promise<UserDTO> {[39m
+[31m  91   try {[39m
+[31m  92     const { userId } = verifyRefreshToken(token);[39m
+[31m→ 93     const user = await this.prisma.user.findUnique([39m
+[31mCan't reach database server at `localhost:5432`[39m
+
+[31mPlease make sure your database server is running at `localhost:5432`.[39m
+2025-07-30 09:52:18:5218 [31merror[39m: [31mAccount error during token_refresh: Invalid token[39m
+2025-07-30 09:52:18:5218 [31merror[39m: [31mAccount error during token_refresh: Invalid token[39m
+2025-07-30 09:52:31:5231 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.findFirst()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:63:40[39m
+
+[31m  60 }[39m
+[31m  61 [39m
+[31m  62 // Find existing user by provider ID[39m
+[31m→ 63 let user = await prisma.user.findFirst([39m
+[31mCan't reach database server at `localhost:5432`[39m
+
+[31mPlease make sure your database server is running at `localhost:5432`.[39m
+2025-07-30 09:52:31:5231 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-30 09:52:31:5231 [31merror[39m: [31mPrismaClientInitializationError: [39m
+[31mInvalid `prisma.user.findFirst()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:63:40[39m
+
+[31m  60 }[39m
+[31m  61 [39m
+[31m  62 // Find existing user by provider ID[39m
+[31m→ 63 let user = await prisma.user.findFirst([39m
+[31mCan't reach database server at `localhost:5432`[39m
+
+[31mPlease make sure your database server is running at `localhost:5432`.[39m
+2025-07-30 09:52:58:5258 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.findFirst()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:63:40[39m
+
+[31m  60 }[39m
+[31m  61 [39m
+[31m  62 // Find existing user by provider ID[39m
+[31m→ 63 let user = await prisma.user.findFirst([39m
+[31mCan't reach database server at `localhost:5432`[39m
+
+[31mPlease make sure your database server is running at `localhost:5432`.[39m
+2025-07-30 09:52:58:5258 [31merror[39m: [31mGoogle authentication error[39m
+2025-07-30 09:52:58:5258 [31merror[39m: [31mPrismaClientInitializationError: [39m
+[31mInvalid `prisma.user.findFirst()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:63:40[39m
+
+[31m  60 }[39m
+[31m  61 [39m
+[31m  62 // Find existing user by provider ID[39m
+[31m→ 63 let user = await prisma.user.findFirst([39m
+[31mCan't reach database server at `localhost:5432`[39m
+
+[31mPlease make sure your database server is running at `localhost:5432`.[39m
+2025-07-30 11:22:18:2218 [31merror[39m: [31mToken verification failed[39m
+2025-07-30 11:22:18:2218 [31merror[39m: [31mToken verification failed[39m

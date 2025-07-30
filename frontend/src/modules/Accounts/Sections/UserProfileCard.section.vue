@@ -1,5 +1,5 @@
 <template>
-  <div class="user-profile-card bg-white rounded-lg shadow-md overflow-hidden">
+  <div class="user-profile-section bg-white rounded-lg shadow-md overflow-hidden">
     <div class="p-6">
       <div class="flex items-center mb-6">
         <UserAvatar :user="user" size="large" class="mr-4" />
@@ -235,10 +235,10 @@
 
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue';
-import { useUser } from '../composables/useUser';
-import UserAvatar from './UserAvatar.vue';
-import UserRoleBadge from './UserRoleBadge.vue';
-import type { User, UserProfile, UserRole } from '../types/userTypes';
+import { useUser } from '@/modules/Accounts/composables/useUser';
+import UserAvatar from '@/modules/Accounts/components/UserAvatar.vue';
+import UserRoleBadge from '@/modules/Accounts/components/UserRoleBadge.vue';
+import type { User, UserProfile, UserRole } from '@/modules/Accounts/types/userTypes';
 
 const props = defineProps<{
   user: User;
