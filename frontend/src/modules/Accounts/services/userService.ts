@@ -1,11 +1,18 @@
 /**
  * User Service
- * 
+ *
  * This service handles all API calls related to users.
+ * It uses apiClient, which should have its baseURL set to `/api/v1`.
  */
 
 import apiClient from '../../../services/apiClient';
-import type { User, UserProfile, UserSettings, UserUpdate, UserSearchParams, UserSearchResult } from '../types/userTypes';
+import type {
+  User,
+  UserProfile,
+  UserUpdate,
+  UserSearchParams,
+  UserSearchResult,
+} from '../types/userTypes';
 import { handleServiceError } from '../utils/errorHandling';
 import {
   mapBackendUserToFrontend,
@@ -13,18 +20,16 @@ import {
   mapBackendUsersToFrontend,
   mapBackendProfileToFrontend,
   mapFrontendProfileToBackend,
-  mapBackendSettingsToFrontend,
-  mapFrontendSettingsToBackend,
   mapSearchParamsToBackend,
-  mapBackendSearchResultToFrontend
+  mapBackendSearchResultToFrontend,
 } from '../utils/mappers';
-
 
 export class UserService {
   private baseUrl = '/users';
 
   /**
-   * Get the current logged-in user
+   * Get the current logged-in user's data (profile).
+   * Calls GET /users/profile.
    */
   async getCurrentUser(): Promise<User> {
     try {
@@ -36,7 +41,8 @@ export class UserService {
   }
 
   /**
-   * Get a user by ID
+   * Get a user by ID (admin use case).
+   * Calls GET /users/{id}.
    */
   async getUserById(id: string): Promise<User> {
     try {
@@ -48,31 +54,22 @@ export class UserService {
   }
 
   /**
-   * Get user profile
+   * Update the current user's profile.
+   * Calls PATCH /users/profile.
    */
-  async getUserProfile(id: string): Promise<UserProfile> {
+  async updateCurrentUser(profileData: Partial<UserProfile>): Promise<User> {
     try {
-      const response = await apiClient.get(`${this.baseUrl}/profile/${id}`);
-      return mapBackendProfileToFrontend(response.data);
+      const backendData = mapFrontendProfileToBackend(profileData);
+      const response = await apiClient.patch(`${this.baseUrl}/profile`, backendData);
+      return mapBackendUserToFrontend(response.data);
     } catch (error) {
-      return handleServiceError(error, `Failed to retrieve user profile for ID: ${id}.`);
+      return handleServiceError(error, 'Failed to update current user.');
     }
   }
 
   /**
-   * Get user settings
-   */
-  async getUserSettings(id: string): Promise<UserSettings> {
-    try {
-      const response = await apiClient.get(`${this.baseUrl}/settings/${id}`);
-      return mapBackendSettingsToFrontend(response.data);
-    } catch (error) {
-      return handleServiceError(error, `Failed to retrieve user settings for ID: ${id}.`);
-    }
-  }
-
-  /**
-   * Update a user
+   * Update a user by ID (admin use case).
+   * Calls PATCH /users/{id}.
    */
   async updateUser(id: string, userData: UserUpdate): Promise<User> {
     try {
@@ -85,33 +82,8 @@ export class UserService {
   }
 
   /**
-   * Update user profile
-   */
-  async updateUserProfile(id: string, profileData: Partial<UserProfile>): Promise<UserProfile> {
-    try {
-      const backendProfileData = mapFrontendProfileToBackend(profileData);
-      const response = await apiClient.patch(`${this.baseUrl}/profile/${id}`, backendProfileData);
-      return mapBackendProfileToFrontend(response.data);
-    } catch (error) {
-      return handleServiceError(error, `Failed to update profile for user ID: ${id}.`);
-    }
-  }
-
-  /**
-   * Update user settings
-   */
-  async updateUserSettings(id: string, settingsData: Partial<UserSettings>): Promise<UserSettings> {
-    try {
-      const backendSettingsData = mapFrontendSettingsToBackend(settingsData);
-      const response = await apiClient.patch(`${this.baseUrl}/settings/${id}`, backendSettingsData);
-      return mapBackendSettingsToFrontend(response.data);
-    } catch (error) {
-      return handleServiceError(error, `Failed to update settings for user ID: ${id}.`);
-    }
-  }
-
-  /**
-   * Get all users
+   * Get all users (admin use case).
+   * Calls GET /users.
    */
   async getAllUsers(): Promise<User[]> {
     try {
@@ -123,12 +95,15 @@ export class UserService {
   }
 
   /**
-   * Search users
+   * Search users with query parameters (admin use case).
+   * Calls GET /users/search with URL params.
    */
   async searchUsers(params: UserSearchParams): Promise<UserSearchResult> {
     try {
       const backendParams = mapSearchParamsToBackend(params);
-      const response = await apiClient.get(`${this.baseUrl}/search`, { params: backendParams });
+      const response = await apiClient.get(`${this.baseUrl}/search`, {
+        params: backendParams,
+      });
       return mapBackendSearchResultToFrontend(response.data);
     } catch (error) {
       return handleServiceError(error, 'Failed to search users.');
@@ -136,7 +111,8 @@ export class UserService {
   }
 
   /**
-   * Delete a user
+   * Delete a user by ID (admin use case).
+   * Calls DELETE /users/{id}.
    */
   async deleteUser(id: string): Promise<void> {
     try {
@@ -146,5 +122,3 @@ export class UserService {
     }
   }
 }
-
-// Mapping functions have been moved to ../utils/mappers

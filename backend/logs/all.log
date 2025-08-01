@@ -1112,3 +1112,124 @@
 2025-07-30 11:37:48:3748 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
 2025-07-30 11:53:03:533 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
 2025-07-30 11:53:16:5316 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-07-30 12:25:05:255 [31merror[39m: [31mToken verification failed[39m
+2025-07-30 12:25:05:255 [31merror[39m: [31mToken verification failed[39m
+2025-07-30 12:25:05:255 [34mdebug[39m: [34mToken refreshed successfully[39m
+2025-07-30 12:25:05:255 [34mdebug[39m: [34mToken refreshed successfully[39m
+2025-07-30 12:25:05:255 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-07-30 12:26:35:2635 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-07-30 12:30:56:3056 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-07-30 12:57:44:5744 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 11:05:31:531 [31merror[39m: [31mToken verification failed[39m
+2025-08-01 11:05:31:531 [31merror[39m: [31mToken verification failed[39m
+2025-08-01 11:05:32:532 [34mdebug[39m: [34mToken refreshed successfully[39m
+2025-08-01 11:05:32:532 [34mdebug[39m: [34mToken refreshed successfully[39m
+2025-08-01 11:05:32:532 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 11:27:23:2723 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 19:22:41:2241 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 19:22:42:2242 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-08-01 19:22:42:2242 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-08-01 19:22:42:2242 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 19:22:42:2242 [32minfo[39m: [32mInitializing investment module[39m
+2025-08-01 19:22:42:2242 [32minfo[39m: [32mInitializing investment routes[39m
+2025-08-01 19:22:42:2242 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-08-01 19:22:42:2242 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-08-01 19:22:42:2242 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-01 19:22:42:2242 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-01 19:23:27:2327 [31merror[39m: [31mToken verification failed[39m
+2025-08-01 19:23:27:2327 [31merror[39m: [31mToken verification failed[39m
+2025-08-01 19:23:32:2332 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `this.prisma.user.findUnique()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\services\auth.service.ts:93:43[39m
+
+[31m  90 async verifyRefreshToken(token: string): Promise<UserDTO> {[39m
+[31m  91   try {[39m
+[31m  92     const { userId } = verifyRefreshToken(token);[39m
+[31m→ 93     const user = await this.prisma.user.findUnique([39m
+[31mCan't reach database server at `localhost:5432`[39m
+
+[31mPlease make sure your database server is running at `localhost:5432`.[39m
+2025-08-01 19:23:32:2332 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `this.prisma.user.findUnique()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\services\auth.service.ts:93:43[39m
+
+[31m  90 async verifyRefreshToken(token: string): Promise<UserDTO> {[39m
+[31m  91   try {[39m
+[31m  92     const { userId } = verifyRefreshToken(token);[39m
+[31m→ 93     const user = await this.prisma.user.findUnique([39m
+[31mCan't reach database server at `localhost:5432`[39m
+
+[31mPlease make sure your database server is running at `localhost:5432`.[39m
+2025-08-01 19:23:32:2332 [31merror[39m: [31mAccount error during token_refresh: Invalid token[39m
+2025-08-01 19:23:32:2332 [33mwarn[39m: [33m401 - UNAUTHORIZED - Invalid token - /api/v1/auth/refresh - POST - ::1[39m
+2025-08-01 19:23:32:2332 [31merror[39m: [31mAccount error during token_refresh: Invalid token[39m
+2025-08-01 19:23:32:2332 [33mwarn[39m: [33m401 - UNAUTHORIZED - Invalid token - /api/v1/auth/refresh - POST - ::1[39m
+2025-08-01 19:23:46:2346 [31merror[39m: [31mPrisma Error: [39m
+[31mInvalid `prisma.user.findFirst()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:63:40[39m
+
+[31m  60 }[39m
+[31m  61 [39m
+[31m  62 // Find existing user by provider ID[39m
+[31m→ 63 let user = await prisma.user.findFirst([39m
+[31mCan't reach database server at `localhost:5432`[39m
+
+[31mPlease make sure your database server is running at `localhost:5432`.[39m
+2025-08-01 19:23:46:2346 [31merror[39m: [31mGoogle authentication error[39m
+2025-08-01 19:23:46:2346 [31merror[39m: [31mPrismaClientInitializationError: [39m
+[31mInvalid `prisma.user.findFirst()` invocation in[39m
+[31mC:\Users\DamirSagi\Documents\tokenizer\backend\src\modules\accounts\strategies\google.strategy.ts:63:40[39m
+
+[31m  60 }[39m
+[31m  61 [39m
+[31m  62 // Find existing user by provider ID[39m
+[31m→ 63 let user = await prisma.user.findFirst([39m
+[31mCan't reach database server at `localhost:5432`[39m
+
+[31mPlease make sure your database server is running at `localhost:5432`.[39m
+2025-08-01 19:23:46:2346 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /favicon.ico - /favicon.ico - GET - ::1[39m
+2025-08-01 19:25:29:2529 [34mdebug[39m: [34mToken refreshed successfully[39m
+2025-08-01 19:25:29:2529 [34mdebug[39m: [34mToken refreshed successfully[39m
+2025-08-01 19:25:29:2529 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 19:45:01:451 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 19:45:02:452 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 19:47:06:476 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 19:47:07:477 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-08-01 19:47:07:477 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-08-01 19:47:07:477 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 19:47:07:477 [32minfo[39m: [32mInitializing investment module[39m
+2025-08-01 19:47:07:477 [32minfo[39m: [32mInitializing investment routes[39m
+2025-08-01 19:47:07:477 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-08-01 19:47:07:477 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-08-01 19:47:07:477 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-01 19:47:07:477 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-01 19:47:33:4733 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 22:05:05:55 [31merror[39m: [31mToken verification failed[39m
+2025-08-01 22:05:05:55 [31merror[39m: [31mToken verification failed[39m
+2025-08-01 22:05:05:55 [34mdebug[39m: [34mToken refreshed successfully[39m
+2025-08-01 22:05:05:55 [34mdebug[39m: [34mToken refreshed successfully[39m
+2025-08-01 22:05:05:55 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 22:07:47:747 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 22:07:47:747 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - /api/v1/combined?limit=10&offset=0&sortBy=createdAt&sortDirection=desc - GET - ::1[39m
+2025-08-01 22:07:48:748 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 22:07:53:753 [34mdebug[39m: [34mUser logged in[39m
+2025-08-01 22:07:53:753 [32minfo[39m: [32mUser logged in via google[39m
+2025-08-01 22:07:53:753 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 22:08:04:84 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 22:15:43:1543 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 22:17:17:1717 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 22:17:17:1717 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-08-01 22:17:17:1717 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-08-01 22:17:17:1717 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 22:17:17:1717 [32minfo[39m: [32mInitializing investment module[39m
+2025-08-01 22:17:17:1717 [32minfo[39m: [32mInitializing investment routes[39m
+2025-08-01 22:17:17:1717 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-08-01 22:17:17:1717 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-08-01 22:17:17:1717 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-01 22:17:17:1717 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-01 22:17:34:1734 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 22:17:52:1752 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 22:18:03:183 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 22:18:06:186 [34mdebug[39m: [34mUser logged in[39m
+2025-08-01 22:18:06:186 [32minfo[39m: [32mUser logged in via google[39m
+2025-08-01 22:18:07:187 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m

@@ -75,16 +75,6 @@ const pageSections = ref([
       backgroundColor: '#ffffff',
       textColor: '#1f2937'
     }
-  },
-  {
-    id: 'footer-1',
-    type: 'common/footer',
-    data: {
-      companyName: 'Tokenizer',
-      description: 'Revolutionizing real estate investment through blockchain technology and tokenization.',
-      backgroundColor: '#1f2937',
-      textColor: '#f9fafb'
-    }
   }
 ]);
 </script>

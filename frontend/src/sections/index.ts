@@ -24,7 +24,6 @@ const sections: SectionRegistry = {
   // Common sections
   // 'common/header': () => import('./common/HeaderSection.vue'),
   // Footer is now a component, not a section
-  'common/footer': () => import('@/components/Footer.vue'),
   'common/hero': () => import('./common/HeroSection.vue'),
   'common/features': () => import('./common/FeatureSection.vue'),
   'common/stats': () => import('./common/StatsSection.vue'),
