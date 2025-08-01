@@ -62,7 +62,6 @@ import {
   UserAvatar, 
   UserListItem, 
   UserRoleBadge,
-  OAuthButtons,
   AuthComponent, // Component part of auth view
   KycVerificationStatus
 } from './components';
@@ -103,7 +102,6 @@ export {
   AuthView, // View part that uses AuthComponent
   // LoginForm removed - only OAuth authentication is supported
   // RegisterForm removed - only OAuth authentication is supported
-  OAuthButtons,
   
   // User Components
   // UserProfileCard moved to sections/common/UserProfileSection.vue

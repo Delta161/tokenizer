@@ -9,7 +9,6 @@ import { PrismaClient } from '@prisma/client';
 
 // Import and re-export routes
 export * from './routes';
-export { userRouter } from './routes/user.routes';
 export { authRouter } from './routes/auth.routes';
 export { createKycRoutes } from './routes/kyc.routes';
 
@@ -76,7 +75,6 @@ export function initKycModule(): {
  */
 export function initAccountsModule(): {
   router: Router;
-  userRouter: typeof userRouter;
   authRouter: typeof authRouter;
   kycRouter: ReturnType<typeof createKycRoutes>;
 } {
@@ -86,12 +84,10 @@ export function initAccountsModule(): {
   // Create combined router
   const router = Router();
   router.use('/auth', authRouter);
-  router.use('/users', userRouter);
   router.use('/kyc', kycModule.routes);
   
   return {
     router,
-    userRouter,
     authRouter,
     kycRouter: kycModule.routes
   };

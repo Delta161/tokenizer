@@ -5,7 +5,6 @@
 
 import { Router } from 'express';
 import { authRouter } from './auth.routes';
-import { userRouter } from './user.routes';
 import { createKycRoutes } from './kyc.routes';
 import { KycController } from '../controllers/kyc.controller';
 import { kycService } from '../services/kyc.service';
@@ -23,7 +22,6 @@ export function registerAccountsRoutes(): Router {
   
   // Mount routes
   router.use('/auth', authRouter);
-  router.use('/users', userRouter);
   router.use('/kyc', kycRouter);
   
   return router;
@@ -31,6 +29,5 @@ export function registerAccountsRoutes(): Router {
 
 // Export individual routers
 export { authRouter } from './auth.routes';
-export { userRouter } from './user.routes';
 export { createKycRoutes } from './kyc.routes';
 

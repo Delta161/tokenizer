@@ -40,7 +40,6 @@ import { initBlockchainModule } from './src/modules/blockchain';
 import { registerAnalyticsModule } from './src/modules/analytics/analytics.module.js';
 import { initInvestmentModule } from './src/modules/investment';
 import { initKycModule } from './src/modules/accounts';
-import { userRouter } from './src/modules/accounts/routes/user.routes';
 
 // Import authentication strategies
 import { configureAuthStrategies } from './src/modules/accounts/strategies';
@@ -110,9 +109,6 @@ app.use('/api/kyc', kycModule.routes);
 
 // Mount analytics module
 registerAnalyticsModule(app);
-
-//Mount User router 
-app.use(`${API_PREFIX}/users`, userRouter);
 
 // 404 handler for unmatched routes
 app.use(notFoundHandler);

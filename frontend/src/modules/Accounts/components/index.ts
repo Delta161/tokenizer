@@ -15,7 +15,6 @@ export const UserRoleBadge = defineAsyncComponent(() => import('./UserRoleBadge.
 
 // Auth Components
 export const AuthComponent = defineAsyncComponent(() => import('./auth.component.vue')); // Component part of the auth view
-export const OAuthButtons = defineAsyncComponent(() => import('./OAuthButtons.vue'));
 // Legacy components removed - only OAuth authentication is supported
 // LoginForm removed - only OAuth authentication is supported
 // RegisterForm removed - only OAuth authentication is supported

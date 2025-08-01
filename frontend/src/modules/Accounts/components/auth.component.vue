@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../store/authStore';
-import { OAuthButtons } from '.';
 
 // Component props
 defineProps<{
@@ -76,8 +75,6 @@ onMounted(async () => {
     <div class="oauth-notice">
       <p>Please use one of the following providers to {{ isLogin ? 'sign in' : 'create an account' }}:</p>
     </div>
-    
-    <OAuthButtons @login="handleOAuthLogin" />
     
     <div class="links">
       <a href="#" @click.prevent="toggleView">
