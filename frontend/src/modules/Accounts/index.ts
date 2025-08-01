@@ -116,7 +116,6 @@ export {
   KycVerificationStatus,
   
   // Routes
-  authRoutes,
   kycRoutes,
   
   // Stores

@@ -1234,3 +1234,53 @@
 2025-08-01 22:18:06:186 [32minfo[39m: [32mUser logged in via google[39m
 2025-08-01 22:18:07:187 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
 2025-08-01 22:24:14:2414 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 23:04:32:432 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 23:04:32:432 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-08-01 23:04:32:432 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-08-01 23:04:32:432 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 23:04:32:432 [32minfo[39m: [32mInitializing investment module[39m
+2025-08-01 23:04:32:432 [32minfo[39m: [32mInitializing investment routes[39m
+2025-08-01 23:04:32:432 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-08-01 23:04:32:432 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-08-01 23:04:32:432 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-01 23:04:32:432 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-01 23:07:28:728 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 23:07:28:728 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-08-01 23:07:28:728 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-08-01 23:07:28:728 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 23:07:28:728 [32minfo[39m: [32mInitializing investment module[39m
+2025-08-01 23:07:28:728 [32minfo[39m: [32mInitializing investment routes[39m
+2025-08-01 23:07:28:728 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-08-01 23:07:28:728 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-08-01 23:07:28:728 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-01 23:07:28:728 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-01 23:09:49:949 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 23:09:50:950 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-08-01 23:09:50:950 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-08-01 23:09:50:950 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 23:09:50:950 [32minfo[39m: [32mInitializing investment module[39m
+2025-08-01 23:09:50:950 [32minfo[39m: [32mInitializing investment routes[39m
+2025-08-01 23:09:50:950 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-08-01 23:09:50:950 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-08-01 23:09:50:950 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-01 23:09:50:950 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-01 23:11:19:1119 [31merror[39m: [31mToken verification failed[39m
+2025-08-01 23:11:19:1119 [31merror[39m: [31mToken verification failed[39m
+2025-08-01 23:11:19:1119 [34mdebug[39m: [34mToken refreshed successfully[39m
+2025-08-01 23:11:19:1119 [34mdebug[39m: [34mToken refreshed successfully[39m
+2025-08-01 23:11:19:1119 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 23:11:37:1137 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 23:11:38:1138 [32minfo[39m: [32mGoogle OAuth strategy configured[39m
+2025-08-01 23:11:38:1138 [32minfo[39m: [32mAzure AD strategy configured[39m
+2025-08-01 23:11:38:1138 [32minfo[39m: [32m[Investor] Initializing investor routes[39m
+2025-08-01 23:11:38:1138 [32minfo[39m: [32mInitializing investment module[39m
+2025-08-01 23:11:38:1138 [32minfo[39m: [32mInitializing investment routes[39m
+2025-08-01 23:11:38:1138 [32minfo[39m: [32mInvestment routes initialized successfully[39m
+2025-08-01 23:11:38:1138 [32minfo[39m: [32mInvestment module initialized successfully[39m
+2025-08-01 23:11:38:1138 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-01 23:11:38:1138 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-01 23:12:28:1228 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 23:12:33:1233 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
+2025-08-01 23:12:39:1239 [34mdebug[39m: [34mUser logged in[39m
+2025-08-01 23:12:39:1239 [32minfo[39m: [32mUser logged in via google[39m
+2025-08-01 23:12:40:1240 [32minfo[39m: [32mUser e5aa1543-3265-4d72-9f06-b0161d5a2e5c accessed their KYC record[39m
