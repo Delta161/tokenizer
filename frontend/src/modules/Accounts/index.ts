@@ -16,7 +16,6 @@ import { useAuth } from './composables/useAuth';
 
 // Import from User functionality (now part of Accounts)
 import { useUserStore } from './store/userStore';
-import { userRoutes } from './views/userRoutes';
 import { UserService } from './services/userService';
 import { useUser, useUserSearch } from './composables';
 import type { User, UserProfile, UserSettings, UserRole, UserUpdate, UserSearchParams, UserSearchResult } from './types/userTypes';
@@ -118,7 +117,6 @@ export {
   
   // Routes
   authRoutes,
-  userRoutes,
   kycRoutes,
   
   // Stores
