@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../modules/Accounts'
 import { authRoutes } from '../modules/Accounts/views/authRoutes'
-import { userRoutes } from '../modules/Accounts/views/userRoutes'
 import { kycRoutes } from '../modules/Accounts/views/kycRoutes'
 import { exampleRoutes } from '../modules/Accounts/examples/exampleRoutes'
 import UserProfileView from '@/modules/Accounts/views/UserProfile.view.vue';
@@ -18,26 +17,6 @@ const HomeView = () => import('../views/Home.vue')
 const FrontPageView = () => import('../views/FrontPage.vue')
 const DashboardView = () => import('../views/Home.vue') // Using Home.vue as fallback
 const NotFoundView = () => import('../views/Home.vue') // Using Home.vue as fallback
-
-const routes = [
-  { path: '/', name: 'home', component: HomeView },
-  // …other routes…
-  {
-    path: '/profile',
-    name: 'my-profile',
-    component: UserProfileView,
-    meta: { requiresAuth: true }  // if you guard routes
-  },
-  {
-    path: '/users/:id',
-    name: 'user-detail',
-    component: UserProfileView,
-    props: true,
-    meta: { requiresAuth: true, requiresAdmin: true }
-  },
-  { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView }
-];
-
 
 // Create router instance
 const router = createRouter({
@@ -62,6 +41,13 @@ const router = createRouter({
         requiresAuth: false,
         layout: 'DefaultLayout'
       }
+    },
+//Profile Router
+    {
+      path: '/profile',
+      name: 'profile',
+      component: UserProfileView,
+      meta: { requiresAuth: true }
     },
     
     // Dashboard route
@@ -173,7 +159,6 @@ const router = createRouter({
     
     // Accounts module routes (consolidated Auth, User, and KYC routes)
     ...authRoutes,
-    ...userRoutes,
     ...kycRoutes,
     
     // Example routes for component demonstrations
