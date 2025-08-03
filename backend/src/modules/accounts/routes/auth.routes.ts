@@ -94,6 +94,45 @@ router.post('/logout', (req, res) => {
   });
 });
 
+// Profile endpoint - GET /api/v1/auth/profile
+router.get('/profile', (req, res) => {
+  console.log('✅ Auth profile endpoint accessed');
+  
+  // Get token from Authorization header for authentication
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  
+  if (token) {
+    // Return mock user profile data
+    res.json({
+      success: true,
+      data: {
+        id: 'auth-user-123',
+        email: 'user@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        fullName: 'John Doe',
+        role: 'user',
+        authProvider: 'google',
+        isEmailVerified: true,
+        lastLogin: new Date().toISOString(),
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: new Date().toISOString()
+      },
+      message: 'Auth profile retrieved successfully',
+      timestamp: new Date().toISOString()
+    });
+  } else {
+    // No token provided - return 401
+    res.status(401).json({
+      success: false,
+      message: 'Authentication required - no token provided',
+      errorCode: 'AUTH_TOKEN_MISSING',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // OAuth routes - simplified stubs for now
 // These can be enhanced later when the path alias issues are resolved
 

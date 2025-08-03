@@ -82,4 +82,3 @@ router.post('/documents', (req: Request, res: Response) => {
 console.log('✅ KYC routes exported');
 
 export { router as kycRouter };
-
