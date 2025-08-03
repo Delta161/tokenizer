@@ -8,8 +8,8 @@ import { Router } from 'express';
 import passport from 'passport';
 
 // Internal modules
-import { authController } from '@modules/accounts/controllers/auth.controller';
-import { authGuard } from '@/middleware/auth.middleware';
+import { authController } from '../controllers/auth.controller';
+import { authGuard } from '../../../middleware/auth.middleware';
 
 // Create router
 const router = Router();
@@ -22,6 +22,7 @@ router.post('/logout', authController.logout.bind(authController));
 router.post('/refresh', authController.refreshToken.bind(authController));
 router.get('/profile', authGuard, authController.getProfile.bind(authController));
 router.post('/verify-token', authController.verifyToken.bind(authController));
+router.get('/verify-token', authController.verifyToken.bind(authController)); // Add GET route for frontend
 
 // OAuth routes
 

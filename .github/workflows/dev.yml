@@ -1,32 +1,95 @@
 # .github/workflows/dev.yml
+
 name: Dev CI/CD
 
 on:
   push:
-    branches: [dev]
+    branches: [ "dev" ]
   pull_request:
-    branches: [dev]
+    branches: [ "dev" ]
+  workflow_dispatch:    # allows manual trigger from GitHub UI
 
 jobs:
-  build-test-deploy:
+  build-and-test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: tokenizer
+          POSTGRES_PASSWORD: supersecret
+          POSTGRES_DB: tokenizerdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # Build, lint, test (optional)
+      # ---------- Backend ----------
+      - name: Setup Node.js for backend
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: ./backend
+      - name: Lint backend
+        run: npm run lint
+        working-directory: ./backend
+      - name: Run backend tests
+        run: npm test
+        working-directory: ./backend
 
-      # Build Docker images
-      - run: docker build -t myrepo/tokenizer-backend:dev ./backend
-      - run: docker build -t myrepo/tokenizer-frontend:dev ./frontend
+      # ---------- Frontend ----------
+      - name: Setup Node.js for frontend
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: ./frontend
+      - name: Lint frontend
+        run: npm run lint
+        working-directory: ./frontend
+      - name: Run frontend tests
+        run: npm test
+        working-directory: ./frontend
 
-      # Login and push to registry (use :dev tag)
-      - uses: docker/login-action@v3
+      # ---------- Docker Build (optional) ----------
+      - name: Build backend Docker image (dev)
+        run: docker build -t myrepo/tokenizer-backend:dev ./backend
+      - name: Build frontend Docker image (dev)
+        run: docker build -t myrepo/tokenizer-frontend:dev ./frontend
+
+      # ---------- Docker Push (optional) ----------
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - run: docker push myrepo/tokenizer-backend:dev
-      - run: docker push myrepo/tokenizer-frontend:dev
+      - name: Push backend Docker image
+        run: docker push myrepo/tokenizer-backend:dev
+      - name: Push frontend Docker image
+        run: docker push myrepo/tokenizer-frontend:dev
 
-      # Optional: Deploy to dev server
-      # - uses: appleboy/ssh-action@v0.1.10
-      #   with: ... (dev server details)
+      # ---------- Deploy to Dev Server (optional) ----------
+      # - name: Deploy to dev server via SSH
+      #   uses: appleboy/ssh-action@v0.1.10
+      #   with:
+      #     host: ${{ secrets.DEV_SERVER_HOST }}
+      #     username: ${{ secrets.DEV_SERVER_USER }}
+      #     key: ${{ secrets.DEV_SERVER_SSH_KEY }}
+      #     script: |
+      #       cd /home/deploy/tokenizer
+      #       docker-compose pull
+      #       docker-compose up -d
+
+      # Note: Uncomment the deploy step if you have a dev server set up
+      # and the necessary secrets configured in GitHub. 

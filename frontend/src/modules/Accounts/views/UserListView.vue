@@ -46,12 +46,38 @@
     
     <template v-else>
       <div class="space-y-4">
-        <UserListItem 
+        <div 
           v-for="user in users" 
           :key="user.id" 
-          :user="user" 
-          @click="navigateToUserDetail(user.id)" 
-        />
+          class="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer"
+          @click="navigateToUserDetail(user.id)"
+        >
+          <div class="flex items-center">
+            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center text-sm mr-4">
+              {{ user.firstName?.charAt(0) }}{{ user.lastName?.charAt(0) }}
+            </div>
+            
+            <div class="flex-grow">
+              <h3 class="font-medium text-gray-900">{{ user.firstName }} {{ user.lastName }}</h3>
+              <p class="text-sm text-gray-500">{{ user.email }}</p>
+            </div>
+            
+            <div class="flex items-center">
+              <span class="px-2 py-1 text-xs font-medium rounded-full"
+                    :class="{
+                      'bg-blue-100 text-blue-800': user.role === 'admin',
+                      'bg-green-100 text-green-800': user.role === 'user',
+                      'bg-yellow-100 text-yellow-800': user.role === 'manager'
+                    }">
+                {{ user.role }}
+              </span>
+              
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
       
       <div v-if="hasMore && !loading" class="mt-6 text-center">
@@ -75,7 +101,6 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserSearch } from '../composables/useUserSearch';
 import { useUser } from '../composables/useUser';
-import UserListItem from '../components/UserListItem.vue';
 import type { UserRole } from '../types/userTypes';
 
 const router = useRouter();
@@ -109,8 +134,8 @@ async function handleSearch() {
   const params = {
     query: searchQuery.value || undefined,
     role: roleFilter.value || undefined,
-    sortBy: 'name',
-    sortOrder: 'asc'
+    sortBy: 'name' as const,
+    sortOrder: 'asc' as const
   };
   
   await searchUsers(params);
@@ -120,8 +145,8 @@ async function loadMoreUsers() {
   const params = {
     query: searchQuery.value || undefined,
     role: roleFilter.value || undefined,
-    sortBy: 'name',
-    sortOrder: 'asc'
+    sortBy: 'name' as const,
+    sortOrder: 'asc' as const
   };
   
   await loadMore(params);

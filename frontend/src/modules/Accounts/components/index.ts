@@ -9,8 +9,6 @@ import { defineAsyncComponent } from 'vue';
 // User Components
 // UserProfileCard moved to sections/common/UserProfileSection.vue
 export const UserSettingsForm = defineAsyncComponent(() => import('./UserSettingsForm.vue'));
-export const UserAvatar = defineAsyncComponent(() => import('./UserAvatar.vue'));
-export const UserListItem = defineAsyncComponent(() => import('./UserListItem.vue'));
 export const UserRoleBadge = defineAsyncComponent(() => import('./UserRoleBadge.vue'));
 
 // Auth Components

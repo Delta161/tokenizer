@@ -59,8 +59,6 @@ export namespace User {
 // Components from Accounts module
 import { 
   UserSettingsForm, 
-  UserAvatar, 
-  UserListItem, 
   UserRoleBadge,
   AuthComponent, // Component part of auth view
   KycVerificationStatus
@@ -106,8 +104,6 @@ export {
   // User Components
   // UserProfileCard moved to sections/common/UserProfileSection.vue
   UserSettingsForm,
-  UserAvatar,
-  UserListItem,
   UserRoleBadge,
   
   // KYC Components

@@ -28,7 +28,9 @@
       <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="p-6">
           <div class="flex items-center mb-6">
-            <UserAvatar :user="user" size="large" class="mr-4" />
+            <div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-xl mr-4">
+              {{ user.firstName?.charAt(0) }}{{ user.lastName?.charAt(0) }}
+            </div>
             
             <div>
               <h2 class="text-xl font-semibold">{{ user.firstName }} {{ user.lastName }}</h2>
@@ -54,7 +56,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { useUser } from '../composables/useUser';
 import { getAsyncSection } from '@/sections';
 import UserRoleBadge from '../components/UserRoleBadge.vue';
-import UserAvatar from '../components/UserAvatar.vue';
 import type { User, UserUpdate } from '../types/userTypes';
 
 const userProfileSection = computed(() => getAsyncSection('common/user-profile'));

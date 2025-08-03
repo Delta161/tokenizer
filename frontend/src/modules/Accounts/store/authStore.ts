@@ -46,6 +46,34 @@ export const useAuthStore = defineStore('auth', () => {
     const storedTokenExpiresAt = localStorage.getItem('tokenExpiresAt')
     const storedRefreshTokenExpiresAt = localStorage.getItem('refreshTokenExpiresAt')
     
+    // TEMPORARY: For testing, create a mock logged-in user if no user exists
+    if (!storedUser && !storedAccessToken) {
+      console.log('🔧 Creating temporary mock user for testing')
+      const mockUser = {
+        id: 'test-user-123',
+        email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+        role: 'user' as const,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+      const mockToken = 'mock-access-token-123'
+      const mockExpiry = Date.now() + 24 * 60 * 60 * 1000 // 24 hours from now
+      
+      localStorage.setItem('user', JSON.stringify(mockUser))
+      localStorage.setItem('accessToken', mockToken)
+      localStorage.setItem('tokenExpiresAt', mockExpiry.toString())
+      
+      user.value = mockUser
+      accessToken.value = mockToken
+      tokenExpiresAt.value = mockExpiry
+      isAuthenticated.value = true
+      
+      console.log('🔧 Mock user created and logged in')
+      return
+    }
+    
     if (storedUser) user.value = JSON.parse(storedUser)
     if (storedAccessToken) accessToken.value = storedAccessToken
     if (storedRefreshToken) refreshToken.value = storedRefreshToken

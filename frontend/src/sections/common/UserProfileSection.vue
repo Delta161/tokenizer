@@ -2,7 +2,9 @@
   <div class="user-profile-section bg-white rounded-lg shadow-md overflow-hidden">
     <div class="p-6">
       <div class="flex items-center mb-6">
-        <UserAvatar :user="user" size="large" class="mr-4" />
+        <div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-xl mr-4">
+          {{ user.firstName?.charAt(0) }}{{ user.lastName?.charAt(0) }}
+        </div>
         
         <div>
           <h2 class="text-xl font-semibold">{{ user.firstName }} {{ user.lastName }}</h2>
@@ -236,7 +238,6 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue';
 import { useUser } from '@/modules/Accounts/composables/useUser';
-import UserAvatar from '@/modules/Accounts/components/UserAvatar.vue';
 import UserRoleBadge from '@/modules/Accounts/components/UserRoleBadge.vue';
 import type { User, UserProfile, UserRole } from '@/modules/Accounts/types/userTypes';
 

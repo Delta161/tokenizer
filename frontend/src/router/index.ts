@@ -179,23 +179,32 @@ const router = createRouter({
 
 // Navigation guard
 router.beforeEach(async (to, from, next) => {
+  console.log('🔍 Router guard - navigating to:', to.path)
+  
   // Check if route requires authentication
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  console.log('🔍 Route requires auth:', requiresAuth)
   
   // Get auth store
   const authStore = useAuthStore()
   
   // Check if user is authenticated
   let isAuthenticated = authStore.isAuthenticated
+  console.log('🔍 Initial isAuthenticated:', isAuthenticated)
+  console.log('🔍 Access token exists:', !!localStorage.getItem('accessToken'))
+  console.log('🔍 User in store:', !!authStore.user)
   
   // If not authenticated but has tokens in localStorage, try to validate them
   if (!isAuthenticated && (localStorage.getItem('accessToken') || localStorage.getItem('refreshToken'))) {
+    console.log('🔍 Tokens found in localStorage, trying to validate...')
     try {
       // Initialize auth from localStorage and check token validity
       authStore.initializeAuth()
       const isValid = await authStore.checkTokenValidity()
       isAuthenticated = authStore.isAuthenticated && isValid
+      console.log('🔍 After validation - isAuthenticated:', isAuthenticated, 'isValid:', isValid)
     } catch (error) {
+      console.log('🔍 Token validation failed:', error)
       // Tokens are invalid, clear them
       authStore.logout()
     }
@@ -207,7 +216,9 @@ router.beforeEach(async (to, from, next) => {
     : null
   
   // Handle authentication and role requirements
+  console.log('🔍 Final check - requiresAuth:', requiresAuth, 'isAuthenticated:', isAuthenticated)
   if (requiresAuth && !isAuthenticated) {
+    console.log('🔍 Redirecting to login page')
     // Redirect to login if authentication is required but user is not authenticated
     next({ name: 'login', query: { redirect: to.fullPath } })
   } else if (requiresRole && isAuthenticated) {
@@ -223,6 +234,7 @@ router.beforeEach(async (to, from, next) => {
       next()
     }
   } else {
+    console.log('🔍 Navigation allowed - continuing to:', to.path)
     // Continue navigation
     next()
   }

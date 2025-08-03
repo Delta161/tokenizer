@@ -12,6 +12,14 @@ export interface User {
   fullName?: string;
   role: UserRole;
   avatar?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+  socialLinks?: {
+    twitter?: string;
+    linkedin?: string;
+    github?: string;
+  };
   createdAt: string;
   updatedAt: string;
 }

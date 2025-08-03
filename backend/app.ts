@@ -31,6 +31,9 @@ import { prisma } from './src/prisma/client';
 
 // Import routes
 import { authRouter } from './src/modules/accounts/routes/auth.routes';
+import { authRouterSimple } from './src/modules/accounts/routes/auth.routes.simple';
+import { userRouter } from './src/modules/accounts/routes/user.routes';
+import { userRouterSimple } from './src/modules/accounts/routes/user.routes.simple';
 import { initClientModule } from './src/modules/client';
 import { createInvestorRoutes } from './src/modules/investor';
 import { createTokenRoutes } from './src/modules/token';
@@ -92,7 +95,16 @@ app.get('/health', (req, res) => {
 });
 
 // Mount feature routers
-app.use(`${API_PREFIX}/auth`, authRouter);
+app.use(`${API_PREFIX}/auth`, authRouterSimple);
+console.log('Mounting userRouter at:', `${API_PREFIX}/users`);
+
+// Add a simple test route to verify mounting
+app.get(`${API_PREFIX}/users/test-simple`, (req, res) => {
+  res.json({ success: true, message: 'User routes are working!', path: req.path });
+});
+
+// Use the simplified user router that doesn't depend on path aliases
+app.use(`${API_PREFIX}/users`, userRouterSimple);
 app.use(`${API_PREFIX}/clients`, initClientModule().router);
 app.use(`${API_PREFIX}/investors`, createInvestorRoutes());
 app.use(`${API_PREFIX}/tokens`, createTokenRoutes());
