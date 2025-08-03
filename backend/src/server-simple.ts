@@ -1,8 +1,8 @@
 /**
- * Simplified Server Entry Point - Only Working Routes
+ * Simplified Server Entry Point - Using Main App
  */
 
-import app from '../app-simple';
+import app from '../app';
 import dotenv from 'dotenv';
 
 dotenv.config();

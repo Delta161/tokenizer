@@ -1,14 +1,12 @@
 /**
  * Express Application Setup
+ * Simplified version without path alias dependencies
  */
 
 // Load environment variables first
 import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, './.env') });
-
-// Note: express-async-errors is not compatible with Express 5.x
-// Async errors will be handled by the global error handler
 
 // Core Express imports
 import express, { Express } from 'express';
@@ -18,7 +16,6 @@ import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
-import passport from 'passport';
 
 // Import configuration
 import { API_PREFIX, RATE_LIMIT } from './src/config/constants';
@@ -26,26 +23,9 @@ import { API_PREFIX, RATE_LIMIT } from './src/config/constants';
 // Import middleware
 import { errorHandler, notFoundHandler } from './src/middleware/errorHandler';
 
-// Import prisma client
-import { prisma } from './src/prisma/client';
-
-// Import routes
+// Import ONLY the working simplified routes
 import { authRouter } from './src/modules/accounts/routes/auth.routes';
-import { authRouterSimple } from './src/modules/accounts/routes/auth.routes.simple';
 import { userRouter } from './src/modules/accounts/routes/user.routes';
-import { userRouterSimple } from './src/modules/accounts/routes/user.routes.simple';
-import { initClientModule } from './src/modules/client';
-import { createInvestorRoutes } from './src/modules/investor';
-import { createTokenRoutes } from './src/modules/token';
-import { createProjectsRoutes } from './src/modules/projects';
-import { initExamplesModule } from './src/modules/examples';
-import { initBlockchainModule } from './src/modules/blockchain';
-import { registerAnalyticsModule } from './src/modules/analytics/analytics.module.js';
-import { initInvestmentModule } from './src/modules/investment';
-import { initKycModule } from './src/modules/accounts';
-
-// Import authentication strategies
-import { configureAuthStrategies } from './src/modules/accounts/strategies';
 
 // Create Express application
 const app: Express = express();
@@ -82,45 +62,30 @@ app.use(
   })
 );
 
-// Initialize Passport and configure strategies
-app.use(passport.initialize());
-configureAuthStrategies();
-
-// Global authentication/session middleware would go here
-// TODO: Add session middleware when implemented
-
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Mount feature routers
-app.use(`${API_PREFIX}/auth`, authRouterSimple);
-console.log('Mounting userRouter at:', `${API_PREFIX}/users`);
+// Mount the working simplified routes
+console.log('Mounting auth routes at:', `${API_PREFIX}/auth`);
+app.use(`${API_PREFIX}/auth`, authRouter);
 
-// Add a simple test route to verify mounting
-app.get(`${API_PREFIX}/users/test-simple`, (req, res) => {
-  res.json({ success: true, message: 'User routes are working!', path: req.path });
+console.log('Mounting user routes at:', `${API_PREFIX}/users`);
+app.use(`${API_PREFIX}/users`, userRouter);
+
+// Add a test route to verify mounting
+app.get(`${API_PREFIX}/test`, (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'Simplified server is working!', 
+    routes: ['auth', 'users'],
+    timestamp: new Date().toISOString()
+  });
 });
 
-// Use the simplified user router that doesn't depend on path aliases
-app.use(`${API_PREFIX}/users`, userRouterSimple);
-app.use(`${API_PREFIX}/clients`, initClientModule().router);
-app.use(`${API_PREFIX}/investors`, createInvestorRoutes());
-app.use(`${API_PREFIX}/tokens`, createTokenRoutes());
-app.use(`${API_PREFIX}/projects`, createProjectsRoutes());
-app.use(`${API_PREFIX}/examples`, initExamplesModule());
-app.use(`${API_PREFIX}/blockchain`, initBlockchainModule());
-app.use(`${API_PREFIX}/investments`, initInvestmentModule(prisma).routes);
-
-// Initialize KYC module and mount routes
-const kycModule = initKycModule();
-app.use(`${API_PREFIX}/kyc`, kycModule.routes);
-app.use('/api/kyc', kycModule.routes);
-
-
-// Mount analytics module
-registerAnalyticsModule(app);
+// TODO: Additional module routes can be added here when path alias issues are resolved
+// Examples: clients, investors, tokens, projects, examples, blockchain, investments, kyc, analytics
 
 // 404 handler for unmatched routes
 app.use(notFoundHandler);

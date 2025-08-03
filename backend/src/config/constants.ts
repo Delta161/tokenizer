@@ -31,13 +31,6 @@ export const RATE_LIMIT = {
 };
 
 /**
- * Security constants
- */
-export const SECURITY = {
-  PASSWORD_RESET_EXPIRES: 60 * 60 * 1000, // 1 hour
-};
-
-/**
  * File upload constants
  */
 export const UPLOAD = {
