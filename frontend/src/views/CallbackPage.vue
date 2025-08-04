@@ -48,11 +48,11 @@ onMounted(async () => {
     if (success === 'true') {
       // The backend should have set cookies with the JWT tokens
       // We can verify by calling the profile endpoint
-      const response = await apiClient.get('/auth/profile');
+      const response = await apiClient.get('/users/profile');
       
       // Store user data if needed
-      if (response.data && response.data.user) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+      if (response.data && response.data.data) {
+        localStorage.setItem('user', JSON.stringify(response.data.data));
       }
       
       // Redirect to profile page

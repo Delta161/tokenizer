@@ -3,7 +3,6 @@ import { useAuthStore } from '../modules/Accounts'
 import { authRoutes } from '../modules/Accounts/views/authRoutes'
 import { kycRoutes } from '../modules/Accounts/views/kycRoutes'
 import { exampleRoutes } from '../modules/Accounts/examples/exampleRoutes'
-import UserProfileView from '@/modules/Accounts/views/UserProfile.view.vue';
 
 // Import module routes - lazy import to avoid circular dependencies
 import { projectRoutes } from '../modules/Projects'
@@ -41,13 +40,6 @@ const router = createRouter({
         requiresAuth: false,
         layout: 'DefaultLayout'
       }
-    },
-//Profile Router
-    {
-      path: '/profile',
-      name: 'profile',
-      component: UserProfileView,
-      meta: { requiresAuth: true }
     },
     
     // Dashboard route
@@ -150,7 +142,7 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('@/views/ProfilePage.vue'),
+      component: () => import('@/modules/Accounts/views/UserProfile.view.vue'),
       meta: {
         requiresAuth: true,
         layout: 'DefaultLayout'

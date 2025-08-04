@@ -51,7 +51,8 @@ Authentication functionality is implemented in the `Accounts` module, which hand
 - `src/router/index.js`: Vue Router configuration
 - `src/views/LoginPage.vue`: Login page with OAuth buttons
 - `src/views/CallbackPage.vue`: OAuth callback handler
-- `src/views/ProfilePage.vue`: User profile display
+- `src/modules/Accounts/components/UserProfile.component.vue`: Reusable user profile component
+- `src/modules/Accounts/views/UserProfile.view.vue`: User profile page with layout and logout functionality
 
 ## Testing the OAuth Flow
 

@@ -55,8 +55,8 @@ export const AuthService = {
    */
   async getCurrentUser(): Promise<AuthResponse['user']> {
     try {
-      const response = await apiClient.get('/auth/profile');
-      const authResponse = mapBackendAuthResponseToFrontend({ user: response.data });
+      const response = await apiClient.get('/users/profile');
+      const authResponse = mapBackendAuthResponseToFrontend({ user: response.data.data });
       return authResponse.user;
     } catch (error) {
       return handleServiceError(error, 'Failed to retrieve user profile.');

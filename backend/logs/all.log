@@ -1574,3 +1574,13 @@
 2025-08-04 11:11:43:1143 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
 2025-08-04 11:43:15:4315 [32minfo[39m: [32mServer running in development mode on port 3000[39m
 2025-08-04 11:43:15:4315 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-04 12:18:51:1851 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-04 12:18:51:1851 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-04 12:18:56:1856 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/auth/profile - /api/v1/auth/profile - GET - ::1[39m
+2025-08-04 12:22:52:2252 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/auth/profile - /api/v1/auth/profile - GET - ::1[39m
+2025-08-04 12:32:10:3210 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-04 12:32:10:3210 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-04 12:32:26:3226 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/auth/profile - /api/v1/auth/profile - GET - ::1[39m
+2025-08-04 12:33:30:3330 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-04 12:33:30:3330 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-04 12:51:37:5137 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/users/me - /api/v1/users/me - GET - ::1[39m

@@ -28,20 +28,21 @@ export class UserService {
   private baseUrl = '/users';
 
   /**
-   * Get the current logged-in user's data (profile).
-   * Calls GET /users/profile.
+   * Get the current authenticated user's data.
+   * Calls GET /users/me.
    */
   async getCurrentUser(): Promise<User> {
     try {
-      const response = await apiClient.get(`${this.baseUrl}/profile`);
+      const response = await apiClient.get(`${this.baseUrl}/me`);
       return mapBackendUserToFrontend(response.data);
     } catch (error) {
-      return handleServiceError(error, 'Failed to retrieve current user.');
+      handleServiceError(error, 'Failed to fetch current user data.');
+      throw error; // This will never be reached as handleServiceError throws by default
     }
   }
 
   /**
-   * Get a user by ID (admin use case).
+   * Get a user by ID.
    * Calls GET /users/{id}.
    */
   async getUserById(id: string): Promise<User> {
@@ -49,35 +50,42 @@ export class UserService {
       const response = await apiClient.get(`${this.baseUrl}/${id}`);
       return mapBackendUserToFrontend(response.data);
     } catch (error) {
-      return handleServiceError(error, `Failed to retrieve user with ID: ${id}.`);
+      handleServiceError(error, `Failed to retrieve user with ID: ${id}.`);
+      throw error; // This will never be reached as handleServiceError throws by default
     }
   }
 
   /**
-   * Update the current user's profile.
-   * Calls PATCH /users/profile.
+   * Update the current authenticated user's profile data.
+   * Calls PUT /users/me.
    */
   async updateCurrentUser(profileData: Partial<UserProfile>): Promise<User> {
     try {
-      const backendData = mapFrontendProfileToBackend(profileData);
-      const response = await apiClient.patch(`${this.baseUrl}/profile`, backendData);
+      // Ensure the profile data includes an id
+      if (!profileData.id) {
+        throw new Error('Profile data must include an id');
+      }
+      const backendData = mapFrontendProfileToBackend(profileData as UserProfile);
+      const response = await apiClient.put(`${this.baseUrl}/me`, backendData);
       return mapBackendUserToFrontend(response.data);
     } catch (error) {
-      return handleServiceError(error, 'Failed to update current user.');
+      handleServiceError(error, 'Failed to update current user.');
+      throw error; // This will never be reached as handleServiceError throws by default
     }
   }
 
   /**
    * Update a user by ID (admin use case).
-   * Calls PATCH /users/{id}.
+   * Calls PUT /users/{id}.
    */
-  async updateUser(id: string, userData: UserUpdate): Promise<User> {
+  async updateUser(id: string, userData: Partial<UserUpdate>): Promise<User> {
     try {
       const backendData = mapFrontendUserToBackend(userData);
-      const response = await apiClient.patch(`${this.baseUrl}/${id}`, backendData);
+      const response = await apiClient.put(`${this.baseUrl}/${id}`, backendData);
       return mapBackendUserToFrontend(response.data);
     } catch (error) {
-      return handleServiceError(error, `Failed to update user with ID: ${id}.`);
+      handleServiceError(error, `Failed to update user with ID: ${id}.`);
+      throw error; // This will never be reached as handleServiceError throws by default
     }
   }
 
@@ -90,23 +98,23 @@ export class UserService {
       const response = await apiClient.get(this.baseUrl);
       return mapBackendUsersToFrontend(response.data);
     } catch (error) {
-      return handleServiceError(error, 'Failed to retrieve all users.');
+      handleServiceError(error, 'Failed to retrieve all users.');
+      throw error; // This will never be reached as handleServiceError throws by default
     }
   }
 
   /**
-   * Search users with query parameters (admin use case).
-   * Calls GET /users/search with URL params.
+   * Search users with filters and pagination.
+   * Calls GET /users/search.
    */
-  async searchUsers(params: UserSearchParams): Promise<UserSearchResult> {
+  async searchUsers(searchParams: UserSearchParams): Promise<UserSearchResult> {
     try {
-      const backendParams = mapSearchParamsToBackend(params);
-      const response = await apiClient.get(`${this.baseUrl}/search`, {
-        params: backendParams,
-      });
+      const backendParams = mapSearchParamsToBackend(searchParams);
+      const response = await apiClient.get(`${this.baseUrl}/search`, { params: backendParams });
       return mapBackendSearchResultToFrontend(response.data);
     } catch (error) {
-      return handleServiceError(error, 'Failed to search users.');
+      handleServiceError(error, 'Failed to search users.');
+      throw error; // This will never be reached as handleServiceError throws by default
     }
   }
 
@@ -118,7 +126,8 @@ export class UserService {
     try {
       await apiClient.delete(`${this.baseUrl}/${id}`);
     } catch (error) {
-      return handleServiceError(error, `Failed to delete user with ID: ${id}.`);
+      handleServiceError(error, `Failed to delete user with ID: ${id}.`);
+      throw error; // This will never be reached as handleServiceError throws by default
     }
   }
 }
