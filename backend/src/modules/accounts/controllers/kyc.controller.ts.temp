@@ -235,7 +235,15 @@ export class KycController {
           adminId
         });
         
-        return next(createError(400, 'User ID is required'));
+        return next(createBadRequest(
+          'User ID is required',
+          'MISSING_USER_ID',
+          { 
+            parameter: 'userId',
+            location: 'path',
+            required: true 
+          }
+        ));
       }
       
       logger.info(`Syncing KYC status for user ${userId}${adminId ? ` by admin ${adminId}` : ''}`, {
@@ -255,7 +263,14 @@ export class KycController {
           adminId
         });
         
-        return next(createError(404, 'KYC record not found'));
+        return next(createNotFound(
+          'KYC record not found',
+          'KYC_RECORD_NOT_FOUND',
+          { 
+            userId,
+            suggestion: 'Ensure the user has initiated KYC verification' 
+          }
+        ));
       }
       
       logger.info(`KYC status synced successfully for user ${userId}`, {
@@ -295,7 +310,11 @@ export class KycController {
           'Authentication required for KYC submission', 
           'submitKyc'
         );
-        return next(createError(401, 'Authentication required'));
+        return next(createUnauthorized(
+          'Authentication required',
+          'AUTH_REQUIRED',
+          { requiredAction: 'login' }
+        ));
       }
       
       // Validate submission data
@@ -309,7 +328,14 @@ export class KycController {
           validationErrors: result.error.format()
         });
         
-        return next(createError(400, 'Invalid KYC submission data'));
+        return next(createBadRequest(
+          'Invalid KYC submission data',
+          'INVALID_KYC_DATA',
+          { 
+            validationErrors: result.error.format(),
+            receivedData: req.body
+          }
+        ));
       }
       
       logger.info(`User ${req.user.id} submitting KYC information`, {
@@ -376,7 +402,17 @@ export class KycController {
           receivedValues: { page, limit }
         });
         
-        return next(createError(400, 'Invalid pagination parameters'));
+        return next(createBadRequest(
+          'Invalid pagination parameters',
+          'INVALID_PAGINATION',
+          { 
+            receivedValues: { page, limit },
+            validRanges: {
+              page: 'Minimum value: 1',
+              limit: `Range: 1-${PAGINATION.MAX_LIMIT}`
+            }
+          }
+        ));
       }
       
       // Get KYC records with pagination
@@ -420,7 +456,15 @@ export class KycController {
           adminId
         });
         
-        return next(createError(400, 'User ID is required'));
+        return next(createBadRequest(
+          'User ID is required',
+          'MISSING_USER_ID',
+          { 
+            parameter: 'userId',
+            location: 'path',
+            required: true 
+          }
+        ));
       }
       
       logger.info(`Admin ${adminId} requesting KYC record for user ${userId}`, {
@@ -440,12 +484,19 @@ export class KycController {
           targetUserId: userId
         });
         
-        return next(createError(404, 'KYC record not found'));
+        return next(createNotFound(
+          'KYC record not found',
+          'KYC_RECORD_NOT_FOUND',
+          { 
+            userId,
+            suggestion: 'The user may not have submitted KYC information yet' 
+          }
+        ));
       }
       
-      // Log KYC record view by admin (removed adminLogger dependency)
+      // Log KYC record view by admin
       if (adminId) {
-        logger.info(`Admin ${adminId} viewed KYC record ${kycRecord.id}`);
+        adminLogger.logKycRecordView(kycRecord.id, adminId);
       }
       
       logger.info(`Admin ${adminId} successfully viewed KYC record for user ${userId}`, {
@@ -487,7 +538,15 @@ export class KycController {
           adminId
         });
         
-        return next(createError(400, 'User ID is required'));
+        return next(createBadRequest(
+          'User ID is required',
+          'MISSING_USER_ID',
+          { 
+            parameter: 'userId',
+            location: 'path',
+            required: true 
+          }
+        ));
       }
       
       // Validate request body
@@ -501,7 +560,15 @@ export class KycController {
           validationErrors: validationResult.error.format()
         });
         
-        return next(createError(400, 'Invalid KYC update data'));
+        return next(createBadRequest(
+          'Invalid KYC update data',
+          'INVALID_KYC_UPDATE',
+          { 
+            validationErrors: validationResult.error.format(),
+            receivedData: req.body,
+            note: 'If status is REJECTED, rejectionReason is required'
+          }
+        ));
       }
 
       logger.info(`Admin ${adminId} updating KYC status for user ${userId} to ${validationResult.data.status}`, {
@@ -517,15 +584,9 @@ export class KycController {
       const currentRecord = await this.kycService.getByUserId(userId);
       const oldStatus = currentRecord?.status;
 
-      // Fix rejectionReason type (convert null to undefined)
-      const updateData = {
-        ...validationResult.data,
-        rejectionReason: validationResult.data.rejectionReason || undefined
-      };
-
       const kycRecord = await this.kycService.updateKycStatus(
         userId,
-        updateData
+        validationResult.data
       );
 
       // Log KYC status update
