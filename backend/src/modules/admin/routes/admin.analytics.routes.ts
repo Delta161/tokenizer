@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { AdminAnalyticsController } from '../controllers/admin.analytics.controller.js';
-import { requireAuth, requireRole } from '../../../middleware/auth.middleware.js';
+import { requireAuth, requireRole } from '../../accounts/middleware/auth.middleware.js';
 
 export function createAdminAnalyticsRouter(adminAnalyticsController: AdminAnalyticsController): Router {
   const router = Router();

@@ -4,7 +4,7 @@
  */
 
 // Authentication middleware
-export * from './auth.middleware';
+export * from '../modules/accounts/middleware/auth.middleware';
 
 // KYC middleware
 export * from './kyc.middleware';

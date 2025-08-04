@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { InvestorController } from '../controllers/investor.controller.js';
-import { authGuard, roleGuard } from '../../../middleware/auth.middleware.js';
+import { authGuard, roleGuard } from '../../accounts/middleware/auth.middleware.js';
 import { investorLogger } from '../utils/investor.logger.js';
 
 /**

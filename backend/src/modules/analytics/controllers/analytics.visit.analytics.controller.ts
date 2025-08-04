@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { AnalyticsVisitAnalyticsService } from '../services/analytics.visit.analytics.service.js';
 import { validatePropertyId, validateClientId, validateTimeRange } from '../validators/analytics.visit.analytics.validators.js';
 import { UserRole } from '@prisma/client';
-import { hasRole, AuthenticatedRequest } from '../../../middleware/auth.middleware.js';
+import { hasRole, AuthenticatedRequest } from '../../accounts/middleware/auth.middleware.js';
 
 /**
  * Controller class for handling visit analytics-related HTTP requests

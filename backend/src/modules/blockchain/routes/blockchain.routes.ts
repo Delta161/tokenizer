@@ -2,8 +2,8 @@ import { Router } from 'express';
 import { BlockchainController } from '../controllers/blockchain.controller.js';
 import { PrismaClient } from '@prisma/client';
 import { BlockchainService } from '../services/blockchain.service.js';
-import { isAuthenticated } from '../../../middleware/auth.middleware.js';
-import { hasRole } from '../../../middleware/auth.middleware.js';
+import { isAuthenticated } from '../../accounts/middleware/auth.middleware.js';
+import { hasRole } from '../../accounts/middleware/auth.middleware.js';
 import { UserRole } from '@prisma/client';
 import { getBlockchainConfig } from '../services/blockchain.service.js';
 

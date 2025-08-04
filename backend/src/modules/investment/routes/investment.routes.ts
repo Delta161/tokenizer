@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { authGuard, roleGuard } from '@/middleware/auth.middleware';
+import { authGuard, roleGuard } from '@/modules/accounts/middleware/auth.middleware';
 import { requireKycVerified } from '@/middleware/kyc.middleware';
 import { InvestmentController } from '../controllers/investment.controller';
 import { logger } from '@/utils/logger';

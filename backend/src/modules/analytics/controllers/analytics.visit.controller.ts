@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { AuthenticatedRequest } from '../../../middleware/auth.middleware.js';
+import { AuthenticatedRequest } from '../../accounts/middleware/auth.middleware.js';
 import { AnalyticsVisitService } from '../services/analytics.visit.service.js';
 import { validateCreateVisit } from '../validators/analytics.visit.validators.js';
 import { VisitResponse } from '../types/analytics.visit.types.js';

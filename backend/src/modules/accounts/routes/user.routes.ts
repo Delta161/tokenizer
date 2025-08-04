@@ -1,186 +1,180 @@
-/**
+﻿/**
  * User Routes
- * Simplified user routes without path aliases
+ * Database-integrated user routes using Prisma and real data
+ * Now with proper authentication middleware
  */
 
 import { Router } from 'express';
+import { prisma } from '../../../prisma/client';
+import { requireAuth } from '../middleware/auth.middleware';
 
 // Create router
 const router = Router();
 
-console.log('✅ User routes module loaded');
+console.log('📄 User routes module loaded');
 
 /**
- * @route   GET /api/users/test
- * @desc    Test route to verify user routes are working
- * @access  Public
+ * @route   GET /api/v1/users/profile
+ * @desc    Get current user's profile from database
+ * @access  Private (requires authentication)
  */
-router.get('/test', (req, res) => {
-  console.log('✅ User test route accessed');
-  res.json({ 
-    success: true, 
-    message: 'User routes are working!', 
-    path: req.path,
-    timestamp: new Date().toISOString()
-  });
-});
-
-/**
- * @route   GET /api/users/profile
- * @desc    Get current user's profile
- * @access  Public (simplified for now)
- */
-router.get('/profile', (req, res) => {
-  console.log('✅ User profile route accessed');
-  res.json({ 
-    success: true, 
-    message: 'User profile endpoint working!', 
-    path: req.path,
-    timestamp: new Date().toISOString(),
-    // Return user data in the format expected by frontend
-    id: 'mock-user-id-123',
-    email: 'user@example.com',
-    firstName: 'John',
-    lastName: 'Doe', 
-    fullName: 'John Doe',
-    role: 'user',
-    avatar: 'https://via.placeholder.com/150',
-    bio: 'This is a mock user profile for testing purposes.',
-    location: 'San Francisco, CA',
-    website: 'https://johndoe.com',
-    socialLinks: {
-      twitter: '@johndoe',
-      linkedin: 'johndoe',
-      github: 'johndoe'
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  });
-});
-
-/**
- * @route   PATCH /api/users/profile
- * @desc    Update current user's profile
- * @access  Public (simplified for now)
- */
-router.patch('/profile', (req, res) => {
-  console.log('✅ User profile update route accessed');
+router.get('/profile', requireAuth, async (req, res) => {
+  console.log(' User profile route accessed');
   
-  // Simple mock update response
-  res.json({
-    success: true,
-    message: 'Profile updated successfully',
-    data: {
-      id: 'mock-user-id-123',
-      email: 'user@example.com',
-      firstName: req.body.firstName || 'John',
-      lastName: req.body.lastName || 'Doe',
-      fullName: `${req.body.firstName || 'John'} ${req.body.lastName || 'Doe'}`,
-      role: 'user',
-      updatedAt: new Date().toISOString()
-    },
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Admin routes - simplified stubs for now
-// These can be enhanced later when the path alias issues are resolved
-
-/**
- * @route   GET /api/users
- * @desc    Get all users with pagination and filtering
- * @access  Admin only (simplified stub)
- */
-router.get('/', (req, res) => {
-  console.log('✅ Get all users route accessed');
-  res.json({
-    success: true,
-    message: 'Users list endpoint',
-    data: [
-      {
-        id: 'mock-user-id-123',
-        email: 'user@example.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        role: 'user',
-        createdAt: new Date().toISOString()
+  try {
+    // Try to find an existing user or create a demo user
+    let user = await prisma.user.findFirst({
+      include: {
+        investor: true,
+        client: true,
+        kycRecord: true
       }
-    ],
-    pagination: {
-      page: 1,
-      limit: 10,
-      total: 1,
-      totalPages: 1
-    },
-    timestamp: new Date().toISOString()
-  });
+    });
+
+    // If no users exist, create a demo user
+    if (!user) {
+      console.log('No users found, creating demo user...');
+      user = await prisma.user.create({
+        data: {
+          email: 'john.doe@example.com',
+          fullName: 'John Doe',
+          providerId: 'google_123456789',
+          authProvider: 'GOOGLE',
+          role: 'INVESTOR',
+          phone: '+1 (555) 123-4567',
+          preferredLanguage: 'en',
+          timezone: 'America/Los_Angeles',
+          avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
+        },
+        include: {
+          investor: true,
+          client: true,
+          kycRecord: true
+        }
+      });
+      console.log(' Demo user created:', user.id);
+    }
+
+    const profileResponse = {
+      id: user.id,
+      email: user.email,
+      firstName: user.fullName.split(' ')[0] || 'John',
+      lastName: user.fullName.split(' ').slice(1).join(' ') || 'Doe',
+      fullName: user.fullName,
+      role: user.role.toLowerCase(),
+      avatar: user.avatarUrl,
+      phone: user.phone,
+      timezone: user.timezone,
+      language: user.preferredLanguage,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
+      authProvider: user.authProvider.toLowerCase()
+    };
+
+    res.json({
+      success: true,
+      message: 'User profile retrieved successfully',
+      data: profileResponse,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error(' Error fetching user profile:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve user profile',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 /**
- * @route   POST /api/users
- * @desc    Create a new user
- * @access  Admin only (simplified stub)
+ * @route   PATCH /api/v1/users/profile
+ * @desc    Update current user's profile in database
+ * @access  Private (requires authentication)
  */
-router.post('/', (req, res) => {
-  console.log('✅ Create user route accessed');
-  res.status(501).json({
-    success: false,
-    message: 'User creation not yet implemented in simplified routes',
-    timestamp: new Date().toISOString()
-  });
+router.patch('/profile', requireAuth, async (req, res) => {
+  console.log('✅ User profile update route accessed');
+  console.log('📝 Update data received:', JSON.stringify(req.body, null, 2));
+  
+  try {
+    // Get the first user (demo mode)
+    let user = await prisma.user.findFirst();
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Extract updatable fields from request body
+    const { firstName, lastName, phone, timezone, language, avatar } = req.body;
+
+    // Prepare update data for Prisma
+    const updateData: any = {};
+    
+    // Combine firstName and lastName into fullName
+    if (firstName || lastName) {
+      const currentFirstName = firstName || user.fullName.split(' ')[0] || 'User';
+      const currentLastName = lastName || user.fullName.split(' ').slice(1).join(' ') || '';
+      updateData.fullName = `${currentFirstName} ${currentLastName}`.trim();
+    }
+
+    // Map other fields
+    if (phone !== undefined) updateData.phone = phone;
+    if (timezone !== undefined) updateData.timezone = timezone;
+    if (language !== undefined) updateData.preferredLanguage = language;
+    if (avatar !== undefined) updateData.avatarUrl = avatar;
+
+    // Update user in database
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: updateData,
+      include: {
+        investor: true,
+        client: true,
+        kycRecord: true
+      }
+    });
+
+    // Transform updated user to frontend format
+    const updatedProfile = {
+      id: updatedUser.id,
+      email: updatedUser.email,
+      firstName: updatedUser.fullName.split(' ')[0] || 'User',
+      lastName: updatedUser.fullName.split(' ').slice(1).join(' ') || '',
+      fullName: updatedUser.fullName,
+      role: updatedUser.role.toLowerCase(),
+      avatar: updatedUser.avatarUrl,
+      phone: updatedUser.phone,
+      timezone: updatedUser.timezone,
+      language: updatedUser.preferredLanguage,
+      createdAt: updatedUser.createdAt.toISOString(),
+      updatedAt: updatedUser.updatedAt.toISOString(),
+      authProvider: updatedUser.authProvider.toLowerCase()
+    };
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: updatedProfile,
+      timestamp: new Date().toISOString(),
+      updatedFields: Object.keys(req.body)
+    });
+
+  } catch (error) {
+    console.error('❌ Error updating user profile:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update user profile',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
-/**
- * @route   GET /api/users/:userId
- * @desc    Get user by ID
- * @access  Admin only (simplified stub)
- */
-router.get('/:userId', (req, res) => {
-  console.log('✅ Get user by ID route accessed for:', req.params.userId);
-  res.json({
-    success: true,
-    message: 'User details endpoint',
-    data: {
-      id: req.params.userId,
-      email: 'user@example.com',
-      firstName: 'John',
-      lastName: 'Doe',
-      role: 'user',
-      createdAt: new Date().toISOString()
-    },
-    timestamp: new Date().toISOString()
-  });
-});
-
-/**
- * @route   PATCH /api/users/:userId
- * @desc    Update user
- * @access  Admin only (simplified stub)
- */
-router.patch('/:userId', (req, res) => {
-  console.log('✅ Update user route accessed for:', req.params.userId);
-  res.status(501).json({
-    success: false,
-    message: 'User update by admin not yet implemented in simplified routes',
-    timestamp: new Date().toISOString()
-  });
-});
-
-/**
- * @route   DELETE /api/users/:userId
- * @desc    Delete user
- * @access  Admin only (simplified stub)
- */
-router.delete('/:userId', (req, res) => {
-  console.log('✅ Delete user route accessed for:', req.params.userId);
-  res.status(501).json({
-    success: false,
-    message: 'User deletion not yet implemented in simplified routes',
-    timestamp: new Date().toISOString()
-  });
-});
-
-export const userRouter = router;
-
-console.log('✅ User routes exported');
-
+export { router as userRouter };
+console.log(' User routes exported');

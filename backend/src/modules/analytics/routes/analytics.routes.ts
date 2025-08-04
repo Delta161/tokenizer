@@ -3,7 +3,7 @@ import { AnalyticsAuditController } from '../controllers/analytics.audit.control
 import { AnalyticsFlagsController } from '../controllers/analytics.flags.controller.js';
 import { AnalyticsVisitController } from '../controllers/analytics.visit.controller.js';
 import { AnalyticsVisitAnalyticsController } from '../controllers/analytics.visit.analytics.controller.js';
-import { requireAuth, optionalAuth, requireRole } from '../../../middleware/auth.middleware.js';
+import { requireAuth, optionalAuth, requireRole } from '../../accounts/middleware/auth.middleware.js';
 import { validateBody, validateParams } from '../../../middleware/validation.middleware.js';
 import { UpdateFlagSchema, FlagKeyParamSchema } from '../validators/analytics.flags.validators.js';
 

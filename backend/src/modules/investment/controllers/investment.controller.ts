@@ -5,7 +5,7 @@ import { investmentCreateSchema, investmentUpdateStatusSchema } from '../validat
 import { InvestmentCreateDTO, InvestmentListQuery } from '../types/investment.types';
 import { ZodError } from 'zod';
 import { createBadRequest, createNotFound, createConflict, createForbidden } from '@/middleware/errorHandler';
-import { AuthenticatedRequest } from '@/middleware/auth.middleware';
+import { AuthenticatedRequest } from '@/modules/accounts/middleware/auth.middleware';
 import { prisma } from '@/prisma/client';
 import { logger } from '@/utils/logger';
 import { PAGINATION } from '@/config/constants';
