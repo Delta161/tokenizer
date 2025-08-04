@@ -9,7 +9,7 @@ import { PrismaClient } from '@prisma/client';
 // Internal modules
 import { PAGINATION } from '@config/constants';
 import { createNotFound, createBadRequest } from '@middleware/errorHandler';
-import { getSkipValue } from '@utils/pagination';
+import { getSkipValue } from '../../../utils/pagination';
 import type { 
   CreateUserDTO, 
   UpdateUserDTO, 

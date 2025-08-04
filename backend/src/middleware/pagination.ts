@@ -4,8 +4,8 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { PAGINATION } from '@config/constants';
-import { PaginationOptions } from '@utils/pagination';
+import { PAGINATION } from '../config/constants';
+import { PaginationOptions } from '../utils/pagination';
 
 /**
  * Middleware to parse and validate pagination parameters

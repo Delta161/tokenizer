@@ -23,3 +23,6 @@ export * from './prisma';
 
 // Accounts logger
 export * from './accounts.logger';
+
+// Error handling utilities
+export * from './errors';

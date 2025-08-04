@@ -7,7 +7,7 @@
 import { z } from 'zod';
 
 // Internal modules
-import { UserRole } from '@modules/accounts/types/auth.types';
+import { UserRole } from '../types/auth.types';
 import { AuthProvider } from '@prisma/client';
 
 /**

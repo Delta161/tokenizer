@@ -2,7 +2,7 @@
 import { z } from 'zod';
 
 // Internal modules
-import { KycStatus } from '@modules/accounts/types/kyc.types';
+import { KycStatus } from '../types/kyc.types';
 
 /**
  * Validator for KYC submission data

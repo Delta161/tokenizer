@@ -2,11 +2,11 @@
 import { Response, NextFunction } from 'express';
 
 // Internal modules
-import { AuthenticatedRequest } from '../modules/accounts/middleware/auth.middleware';
-import { KycService } from '@modules/accounts/services/kyc.service';
-import { logger } from '@utils/logger';
-import { prisma } from '../prisma/client';
-import { accountsLogger } from '@modules/accounts/utils/accounts.logger';
+import { AuthenticatedRequest } from './auth.middleware';
+import { KycService } from '../services/kyc.service';
+import { logger } from '../../../utils/logger';
+import { prisma } from '../../../prisma/client';
+import { accountsLogger } from '../utils/accounts.logger';
 
 // Create a singleton instance of the KYC service
 let kycService: KycService | null = null;
@@ -40,10 +40,7 @@ export const requireKycVerified = async (
         method: req.method
       });
       
-      accountsLogger.logAuthError('requireKycVerified', new Error('Authentication required'), {
-        path: req.path,
-        method: req.method
-      });
+      accountsLogger.logAuthError('no-user', 'Authentication required', req.method);
       
       res.status(401).json({
         success: false,
@@ -77,8 +74,13 @@ export const requireKycVerified = async (
         method: req.method
       });
       
-      // Log KYC verification requirement
-      accountsLogger.logKycVerificationRequired(req.user.id, req.path);
+      // Log KYC verification requirement using standard logger
+      logger.warn(`KYC verification required for user ${req.user.id}`, {
+        action: 'KYC_VERIFICATION_REQUIRED',
+        userId: req.user.id,
+        path: req.path,
+        method: req.method
+      });
       
       res.status(403).json({
         success: false,
@@ -113,7 +115,9 @@ export const requireKycVerified = async (
     }, error instanceof Error ? error : new Error(String(error)));
     
     // Log error with accountsLogger
-    accountsLogger.logAccountError('requireKycVerified', error, { userId, path: req.path });
+    accountsLogger.logAccountError('requireKycVerified', 
+      error instanceof Error ? error : String(error), 
+      { userId, path: req.path });
     
     res.status(500).json({
       success: false,

@@ -8,8 +8,8 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 // Internal modules
-import type { UserRole } from '@modules/accounts/types/auth.types';
-import { logger } from '@utils/logger';
+import type { UserRole } from '../types/auth.types';
+import { logger } from '../../../utils/logger';
 
 // JWT secret getters with validation
 const getJWTSecret = (): string => {

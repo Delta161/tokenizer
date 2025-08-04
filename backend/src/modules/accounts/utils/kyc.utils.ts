@@ -7,7 +7,7 @@
 import type { KycRecord } from '@prisma/client';
 
 // Internal modules
-import type { KycStatus, KycRecordDTO } from '@modules/accounts/types/kyc.types';
+import type { KycStatus, KycRecordDTO } from '../types/kyc.types';
 
 /**
  * Map Prisma KycRecord model to KycRecordDTO

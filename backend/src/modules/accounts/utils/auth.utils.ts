@@ -7,7 +7,7 @@
 import { Request } from 'express';
 
 // Internal modules
-import { UserRole } from '@modules/accounts/types/auth.types';
+import { UserRole } from '../types/auth.types';
 
 /**
  * Check if a user has the required role

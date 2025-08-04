@@ -13,7 +13,7 @@ import { UserRole, type AuthResponseDTO, type OAuthProfileDTO, type UserDTO } fr
 import { generateAccessToken, generateRefreshToken, verifyToken } from '@modules/accounts/utils/jwt';
 import { mapOAuthProfile } from '@modules/accounts/utils/oauthProfileMapper';
 import { formatFullName } from '@modules/accounts/utils/user.utils';
-import { logger } from '@utils/logger';
+import { logger } from '../../../utils/logger';
 import { NormalizedProfileSchema } from '@modules/accounts/validators/auth.validator';
 import { createUserFromOAuthSchema } from '@modules/accounts/validators/user.validator';
 import { prisma } from '@modules/accounts/utils/prisma';

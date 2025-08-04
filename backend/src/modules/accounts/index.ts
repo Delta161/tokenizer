@@ -5,12 +5,12 @@
  */
 
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
 
 // Import and re-export routes
 export * from './routes';
 export { authRouter } from './routes/auth.routes';
-export { createKycRoutes } from './routes/kyc.routes';
+export { userRouter } from './routes/user.routes';
+export { kycRouter } from './routes/kyc.routes';
 
 // Import and re-export controllers
 export { userController, UserController } from './controllers/user.controller';
@@ -23,9 +23,17 @@ export { authService, AuthService } from './services/auth.service';
 export { kycService, KycService } from './services/kyc.service';
 export * from './services/token.service';
 
-// Import and re-export middleware
-export { authGuard, roleGuard, requireAuth, requireRole, optionalAuth, isAuthenticated, hasRole } from '@/modules/accounts/middleware/auth.middleware';
-export { requireKycVerified } from '@/middleware/kyc.middleware';
+// Import and re-export middleware (fix path aliases)
+export { 
+  authGuard, 
+  roleGuard, 
+  requireAuth, 
+  requireRole, 
+  optionalAuth, 
+  isAuthenticated, 
+  hasRole 
+} from './middleware/auth.middleware';
+export { requireKycVerified } from './middleware/kyc.middleware';
 
 // Import and re-export validators
 export * from './validators';
@@ -36,60 +44,71 @@ export * from './utils';
 // Import and re-export strategies
 export * from './strategies';
 
-// Import and re-export types
-export * from './types';
+// Import and re-export types explicitly to avoid conflicts
+export type { 
+  UserDTO, 
+  CreateUserDTO, 
+  UpdateUserDTO,
+  UserFilterOptions,
+  UserSortOptions,
+  UserSortField 
+} from './types/user.types';
+
+export type {
+  AuthResponseDTO,
+  TokenPayload,
+  OAuthProfileDTO
+} from './types/auth.types';
+
+export type {
+  KycRecordDTO,
+  KycRecordWithUser,
+  KycResponse,
+  KycListResponse
+} from './types/kyc.types';
+
+export { KycStatus, KycProvider } from './types/kyc.types';
+export { UserRole } from './types/auth.types';
 
 /**
- * Initialize the KYC module
- * @param prisma PrismaClient instance (optional, will create new instance if not provided)
- * @returns Object containing routes and services
+ * Create combined accounts router
+ * Improved factory function that combines all account routes
  */
-export function initKycModule(): {
-  routes: any;
-  service: any;
-  controller: any;
-} {
-  // Import controller, service, and routes directly to ensure they're loaded
-  const { KycController } = require('./controllers/kyc.controller');
-  const { kycService } = require('./services/kyc.service');
-  const { createKycRoutes } = require('./routes/kyc.routes');
+export function createAccountsRouter(): Router {
+  const router = Router();
   
-  // Create controller instance using the static factory method
-  const kycController = KycController.getInstance();
+  // Use ES6 imports for better type safety
+  import('./routes/auth.routes').then(({ authRouter }) => {
+    router.use('/auth', authRouter);
+  });
   
-  // Create routes
-  const routes = createKycRoutes(kycController);
+  import('./routes/user.routes').then(({ userRouter }) => {
+    router.use('/users', userRouter);
+  });
   
-  return {
-    routes,
-    service: kycService,
-    controller: kycController
-  };
+  import('./routes/kyc.routes').then(({ kycRouter }) => {
+    router.use('/kyc', kycRouter);
+  });
+  
+  return router;
 }
 
 /**
- * Initialize the Accounts module
- * This function consolidates the initialization of user, auth, and kyc modules
- * @param prisma PrismaClient instance (optional, will create new instance if not provided)
- * @returns Object containing all routes and services
+ * Alternative: Direct imports (synchronous)
+ * Use this if you prefer synchronous module loading
  */
-export function initAccountsModule(): {
-  router: Router;
-  authRouter: typeof authRouter;
-  kycRouter: ReturnType<typeof createKycRoutes>;
-} {
-  // Initialize KYC module
-  const kycModule = initKycModule();
-  
-  // Create combined router
+export function createAccountsRouterSync(): Router {
   const router = Router();
-  router.use('/auth', authRouter);
-  router.use('/kyc', kycModule.routes);
   
-  return {
-    router,
-    authRouter,
-    kycRouter: kycModule.routes
-  };
+  // Direct imports - cleaner but must be imported after routes are defined
+  const { authRouter } = require('./routes/auth.routes');
+  const { userRouter } = require('./routes/user.routes');
+  const { kycRouter } = require('./routes/kyc.routes');
+  
+  router.use('/auth', authRouter);
+  router.use('/users', userRouter);
+  router.use('/kyc', kycRouter);
+  
+  return router;
 }
 

@@ -3,7 +3,7 @@
  * Handles token blacklisting and cleanup
  */
 
-import { logger } from '@utils/logger';
+import { logger } from '../../../utils/logger';
 import { prisma } from '../utils/prisma';
 
 // In-memory token blacklist for faster lookups
