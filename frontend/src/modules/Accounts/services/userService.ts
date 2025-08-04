@@ -34,7 +34,8 @@ export class UserService {
   async getCurrentUser(): Promise<User> {
     try {
       const response = await apiClient.get(`${this.baseUrl}/me`);
-      return mapBackendUserToFrontend(response.data);
+      // Backend returns { success: true, data: userObject, ... }
+      return mapBackendUserToFrontend(response.data.data);
     } catch (error) {
       handleServiceError(error, 'Failed to fetch current user data.');
       throw error; // This will never be reached as handleServiceError throws by default
@@ -48,7 +49,8 @@ export class UserService {
   async getUserById(id: string): Promise<User> {
     try {
       const response = await apiClient.get(`${this.baseUrl}/${id}`);
-      return mapBackendUserToFrontend(response.data);
+      // Backend returns { success: true, data: userObject, ... }
+      return mapBackendUserToFrontend(response.data.data);
     } catch (error) {
       handleServiceError(error, `Failed to retrieve user with ID: ${id}.`);
       throw error; // This will never be reached as handleServiceError throws by default
@@ -61,13 +63,11 @@ export class UserService {
    */
   async updateCurrentUser(profileData: Partial<UserProfile>): Promise<User> {
     try {
-      // Ensure the profile data includes an id
-      if (!profileData.id) {
-        throw new Error('Profile data must include an id');
-      }
+      // The profileData doesn't need an id for the current user endpoint
       const backendData = mapFrontendProfileToBackend(profileData as UserProfile);
       const response = await apiClient.put(`${this.baseUrl}/me`, backendData);
-      return mapBackendUserToFrontend(response.data);
+      // Backend returns { success: true, data: userObject, ... }
+      return mapBackendUserToFrontend(response.data.data);
     } catch (error) {
       handleServiceError(error, 'Failed to update current user.');
       throw error; // This will never be reached as handleServiceError throws by default
@@ -82,7 +82,8 @@ export class UserService {
     try {
       const backendData = mapFrontendUserToBackend(userData);
       const response = await apiClient.put(`${this.baseUrl}/${id}`, backendData);
-      return mapBackendUserToFrontend(response.data);
+      // Backend returns { success: true, data: userObject, ... }
+      return mapBackendUserToFrontend(response.data.data);
     } catch (error) {
       handleServiceError(error, `Failed to update user with ID: ${id}.`);
       throw error; // This will never be reached as handleServiceError throws by default

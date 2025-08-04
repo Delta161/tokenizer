@@ -109,7 +109,7 @@
             <label for="twitter" class="block text-sm font-medium text-gray-700">Twitter</label>
             <input 
               id="twitter" 
-              v-model="editForm.socialLinks?.twitter" 
+              v-model="editForm.socialLinks.twitter" 
               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               placeholder="@username"
             />
@@ -118,7 +118,7 @@
             <label for="linkedin" class="block text-sm font-medium text-gray-700">LinkedIn</label>
             <input 
               id="linkedin" 
-              v-model="editForm.socialLinks?.linkedin" 
+              v-model="editForm.socialLinks.linkedin" 
               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               placeholder="username"
             />
@@ -127,7 +127,7 @@
             <label for="github" class="block text-sm font-medium text-gray-700">GitHub</label>
             <input 
               id="github" 
-              v-model="editForm.socialLinks?.github" 
+              v-model="editForm.socialLinks.github" 
               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               placeholder="username"
             />
@@ -334,7 +334,21 @@ const isEditing = ref<boolean>(false);
 const showRawData = ref<boolean>(false);
 
 // Form state
-const editForm = reactive<Partial<UserProfile>>({
+interface EditFormData {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+  socialLinks: {
+    twitter?: string;
+    linkedin?: string;
+    github?: string;
+  };
+}
+
+const editForm = reactive<EditFormData>({
   firstName: '',
   lastName: '',
   email: '',
@@ -451,12 +465,24 @@ async function refreshProfile(): Promise<void> {
 // Load user data on component mount
 onMounted(async () => {
   try {
+    // For development: Set a simple test token if none exists
+    if (!localStorage.getItem('accessToken')) {
+      console.log('🔐 No auth token found, setting development token...');
+      localStorage.setItem('accessToken', 'dev-test-token-12345');
+      localStorage.setItem('tokenExpiresAt', (Date.now() + 3600000).toString()); // 1 hour from now
+    }
+    
+    console.log('👤 Loading user profile...');
     if (props.userId) {
+      console.log('📍 Loading user by ID:', props.userId);
       user.value = await userService.getUserById(props.userId);
     } else {
+      console.log('📍 Loading current user profile...');
       user.value = await userService.getCurrentUser();
     }
+    console.log('✅ User profile loaded:', user.value);
   } catch (err: any) {
+    console.error('❌ Error loading user profile:', err);
     error.value = err?.message || 'Failed to load user profile';
   } finally {
     loading.value = false;

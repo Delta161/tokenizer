@@ -8,7 +8,7 @@ import router from '@/router';
  * Configured with base URL, credentials, timeout, and interceptors
  */
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000',
+  baseURL: (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000') + '/api/v1',
   withCredentials: true, // Important for cookies/sessions
   timeout: 15000, // 15 seconds timeout
   headers: {
@@ -114,12 +114,10 @@ apiClient.interceptors.response.use(
         } else {
           // This is either a retry that failed or a refresh token request that failed
           // Clear auth data and redirect to login
-          try {
-            const authStore = useAuthStore();
-            await authStore.logout();
-          } catch (e) {
-            // Store not available
-          }
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('tokenExpiresAt');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
           router.push('/login');
         }
       }
@@ -127,12 +125,10 @@ apiClient.interceptors.response.use(
       // Handle session timeout (403 with specific message)
       if (status === 403 && error.response.data?.message?.includes('session')) {
         console.warn('Session timeout detected');
-        try {
-          const authStore = useAuthStore();
-          await authStore.logout();
-        } catch (e) {
-          // Store not available
-        }
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('tokenExpiresAt');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
         router.push('/login');
       }
       

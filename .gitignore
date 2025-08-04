@@ -43,8 +43,6 @@ tests_output/
 start-servers.ps1
 
 # Ignore all instructions files
-.github/instructions/*.instructions.md
-# Ignore all instructions files in the backend
-/backend/*.instructions.md
-backend/src/*.instructions.md
+.instructions.md
+
 
