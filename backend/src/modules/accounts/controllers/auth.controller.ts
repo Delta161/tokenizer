@@ -1,6 +1,7 @@
 /**
  * Auth Controller
- * Handles HTTP requests for authentication with OAuth integration
+ * Handles HTTP requests for authentication with comprehensive OAuth integration
+ * Optimized for enterprise-grade security, performance, and maintainability
  */
 
 // External packages
@@ -9,44 +10,185 @@ import createError from 'http-errors';
 
 // Internal modules - Use relative imports
 import { authService } from '../services/auth.service';
-import type { OAuthProfileDTO, AuthResponseDTO, UserDTO } from '../types/auth.types';
-import { VerifyTokenSchema } from '../validators/auth.validator';
-import { clearTokenCookies, setTokenCookies } from '../utils/jwt';
+import { setTokenCookies, clearTokenCookies } from '../utils/jwt';
 import { accountsLogger } from '../utils/accounts.logger';
+import type { 
+  AuthenticatedRequest, 
+  AuthResponseDTO, 
+  OAuthProfileDTO, 
+  UserDTO,
+  TokenPayload 
+} from '../types/auth.types';
 
-// Global utilities - Use relative imports
+// Validation schemas
+import { 
+  VerifyTokenSchema,
+  RefreshTokenRequestSchema 
+} from '../validators/auth.validator';
+
+// Global utilities
 import { logger } from '../../../utils/logger';
 
+/**
+ * Enhanced Auth Controller with comprehensive OAuth support and security features
+ */
 export class AuthController {
+  
+  // =============================================================================
+  // PRIVATE UTILITY METHODS
+  // =============================================================================
+
   /**
-   * Extract token from request headers
+   * Advanced token extraction with multiple source support
    * @private
    */
-  private extractTokenFromHeaders(req: Request): string | null {
+  private extractTokenFromRequest(req: Request): { token: string | null; source: string } {
+    // Check Authorization header first (most secure)
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return null;
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.substring(7).trim();
+      if (token) return { token, source: 'header' };
     }
-    return authHeader.split(' ')[1];
+
+    // Check request body for POST requests
+    if (req.method === 'POST' && req.body?.token) {
+      return { token: req.body.token, source: 'body' };
+    }
+
+    // Check cookies as fallback
+    if (req.cookies?.accessToken) {
+      return { token: req.cookies.accessToken, source: 'cookie' };
+    }
+
+    return { token: null, source: 'none' };
   }
 
   /**
-   * Validate and sanitize response data
+   * Enhanced response sanitization with comprehensive field filtering
    * @private
    */
   private sanitizeResponse(data: any): any {
-    if (data && typeof data === 'object') {
-      // Remove sensitive fields that might be included accidentally
-      const { password, _password, hash, ...sanitized } = data;
-      return sanitized;
-    }
-    return data;
+    if (!data || typeof data !== 'object') return data;
+
+    // Remove all sensitive fields
+    const {
+      password,
+      _password,
+      hash,
+      salt,
+      refreshToken,
+      providerId,
+      _json,
+      ...sanitized
+    } = data;
+
+    return sanitized;
   }
 
   /**
-   * Get user profile (requires authentication via middleware)
+   * Create standardized success response
+   * @private
    */
-  async getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+  private createSuccessResponse(data: any, message: string = 'Success'): object {
+    return {
+      success: true,
+      data: this.sanitizeResponse(data),
+      message,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  /**
+   * Enhanced OAuth profile type detection
+   * @private
+   */
+  private isOAuthProfile(user: any): user is OAuthProfileDTO {
+    if (!user || typeof user !== 'object') return false;
+    
+    return Boolean(
+      user.provider ||
+      (user.emails && Array.isArray(user.emails)) ||
+      (user.name && typeof user.name === 'object' && (user.name.givenName || user.name.familyName)) ||
+      user.displayName
+    );
+  }
+
+  /**
+   * Convert Prisma user to OAuth profile with comprehensive mapping
+   * @private
+   */
+  private convertPrismaUserToOAuthProfile(prismaUser: any): OAuthProfileDTO {
+    const [firstName, ...lastNameParts] = (prismaUser.fullName || '').split(' ');
+    const lastName = lastNameParts.join(' ');
+
+    return {
+      provider: (prismaUser.authProvider?.toLowerCase() || 'google'),
+      id: prismaUser.providerId || prismaUser.id,
+      displayName: prismaUser.fullName || 'User',
+      name: {
+        givenName: firstName || '',
+        familyName: lastName || ''
+      },
+      emails: prismaUser.email ? [{ 
+        value: prismaUser.email, 
+        verified: true 
+      }] : [],
+      photos: prismaUser.avatarUrl ? [{ 
+        value: prismaUser.avatarUrl 
+      }] : [],
+      _json: {
+        id: prismaUser.id,
+        email: prismaUser.email,
+        name: prismaUser.fullName,
+        role: prismaUser.role
+      }
+    };
+  }
+
+  /**
+   * Enhanced error logging with comprehensive context
+   * @private
+   */
+  private logAuthError(
+    operation: string, 
+    error: any, 
+    req: Request, 
+    additionalContext?: Record<string, any>
+  ): void {
+    const baseContext = {
+      operation,
+      error: error?.message || 'Unknown error',
+      statusCode: error?.statusCode,
+      ip: req.ip,
+      userAgent: req.get('User-Agent'),
+      path: req.path,
+      method: req.method,
+      userId: (req as AuthenticatedRequest).user?.id,
+      ...additionalContext
+    };
+
+    logger.error(`Auth controller error: ${operation}`, baseContext);
+    
+    // Also log to accounts logger if we have user context
+    if (baseContext.userId) {
+      accountsLogger.error(`Authentication error in ${operation}`, {
+        userId: baseContext.userId,
+        error: baseContext.error
+      });
+    }
+  }
+
+  // =============================================================================
+  // PUBLIC CONTROLLER METHODS
+  // =============================================================================
+
+  /**
+   * Get authenticated user profile with enhanced validation
+   * Requires authentication via authGuard middleware
+   */
+  async getProfile(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+    const startTime = Date.now();
+    
     try {
       // User is already attached to request by authGuard middleware
       const user = req.user;
@@ -55,107 +197,233 @@ export class AuthController {
         return next(createError(401, 'Authentication required'));
       }
 
-      // Return sanitized user data with consistent format
-      res.status(200).json({ 
-        success: true,
-        data: { user: this.sanitizeResponse(user) }
+      // Log profile access for security monitoring
+      accountsLogger.info('User profile accessed', {
+        userId: user.id,
+        email: user.email,
+        ip: req.ip,
+        userAgent: req.get('User-Agent')
       });
+
+      // Return sanitized user data with enhanced response format
+      const responseData = this.createSuccessResponse(
+        { user }, 
+        'Profile retrieved successfully'
+      );
+
+      // Add performance metrics
+      const processingTime = Date.now() - startTime;
+      if (processingTime > 100) {
+        logger.warn('Slow profile retrieval', { 
+          userId: user.id, 
+          processingTime 
+        });
+      }
+
+      res.status(200).json(responseData);
     } catch (error) {
-      logger.error('Error retrieving user profile', { error, userId: req.user?.id });
+      this.logAuthError('getProfile', error, req, { 
+        processingTime: Date.now() - startTime 
+      });
       next(error);
     }
   }
 
   /**
-   * Verify JWT token with validation
+   * Verify JWT token with enhanced validation and comprehensive error handling
    */
   async verifyToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const startTime = Date.now();
+    
     try {
-      // Extract token from headers or body
-      let token = this.extractTokenFromHeaders(req);
+      // Extract token using enhanced extraction method
+      const { token, source } = this.extractTokenFromRequest(req);
       
-      // If not in headers, check request body for POST requests
+      // Additional validation for POST requests with body
       if (!token && req.method === 'POST' && req.body?.token) {
         const tokenValidation = VerifyTokenSchema.safeParse(req.body);
         if (tokenValidation.success) {
-          token = tokenValidation.data.token;
+          const { token: validatedToken, source: bodySource } = { 
+            token: tokenValidation.data.token, 
+            source: 'body' 
+          };
+          
+          if (!validatedToken) {
+            res.status(200).json({ 
+              valid: false, 
+              error: 'Invalid token format in request body',
+              source: bodySource
+            });
+            return;
+          }
+          
+          // Use validated token
+          await this.processTokenVerification(validatedToken, bodySource, req, res, startTime);
+          return;
         }
       }
 
       if (!token) {
         res.status(200).json({ 
           valid: false, 
-          error: 'No token provided' 
+          error: 'No token provided',
+          source: 'none'
         });
         return;
       }
 
-      // Verify token and get user
-      const user = await authService.verifyToken(token);
-
-      // Return successful verification with user data
-      res.status(200).json({ 
-        valid: true, 
-        data: { user: this.sanitizeResponse(user) }
-      });
+      await this.processTokenVerification(token, source, req, res, startTime);
     } catch (error) {
+      this.logAuthError('verifyToken', error, req, { 
+        processingTime: Date.now() - startTime 
+      });
+      
       // Return validation failure (not an error response)
       const errorMessage = error instanceof Error ? error.message : 'Token verification failed';
-      logger.debug('Token verification failed', { error: errorMessage });
       res.status(200).json({ 
         valid: false, 
-        error: errorMessage 
+        error: errorMessage,
+        timestamp: new Date().toISOString()
       });
     }
   }
 
   /**
-   * Handle OAuth authentication success with proper type safety
+   * Process token verification with performance monitoring
+   * @private
+   */
+  private async processTokenVerification(
+    token: string, 
+    source: string, 
+    req: Request, 
+    res: Response, 
+    startTime: number
+  ): Promise<void> {
+    try {
+      // Verify token and get user
+      const user = await authService.verifyToken(token);
+      
+      // Log successful verification for security monitoring
+      accountsLogger.info('Token verification successful', {
+        userId: user.id,
+        email: user.email,
+        tokenSource: source,
+        ip: req.ip
+      });
+
+      // Check for performance issues
+      const processingTime = Date.now() - startTime;
+      if (processingTime > 200) {
+        logger.warn('Slow token verification', { 
+          userId: user.id, 
+          processingTime,
+          tokenSource: source
+        });
+      }
+
+      // Return successful verification with comprehensive data
+      res.status(200).json({ 
+        valid: true, 
+        data: { user: this.sanitizeResponse(user) },
+        source,
+        timestamp: new Date().toISOString()
+      });
+    } catch (verificationError) {
+      // Log verification failure
+      logger.debug('Token verification failed', { 
+        error: verificationError instanceof Error ? verificationError.message : 'Unknown error',
+        source,
+        ip: req.ip
+      });
+      
+      throw verificationError; // Re-throw to be caught by parent try-catch
+    }
+  }
+
+  /**
+   * Enhanced OAuth authentication success handler with comprehensive validation
    */
   async handleOAuthSuccess(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const startTime = Date.now();
+    
     try {
       const authenticatedUser = req.user as any;
       
       if (!authenticatedUser) {
-        logger.error('OAuth success handler called without user data');
+        this.logAuthError('handleOAuthSuccess', new Error('No user data provided'), req);
         const redirectUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-        res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent('Authentication failed - no user data')}`);
-        return;
+        return res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent('Authentication failed - no user data')}`);
       }
 
       let authResponse: AuthResponseDTO;
 
-      // Check if we received a Passport OAuth profile or a Prisma user
+      // Enhanced OAuth profile detection and processing
       if (this.isOAuthProfile(authenticatedUser)) {
         // Direct OAuth profile from strategy
+        logger.info('Processing OAuth profile', { 
+          provider: authenticatedUser.provider,
+          userId: authenticatedUser.id 
+        });
         authResponse = await authService.processOAuthLogin(authenticatedUser as OAuthProfileDTO);
       } else {
-        // Prisma user object - need to convert to OAuth profile format
+        // Prisma user object - convert to OAuth profile format
+        logger.info('Converting Prisma user to OAuth profile', { 
+          userId: authenticatedUser.id,
+          provider: authenticatedUser.authProvider 
+        });
         const normalizedProfile = this.convertPrismaUserToOAuthProfile(authenticatedUser);
         authResponse = await authService.processOAuthLogin(normalizedProfile);
       }
 
-      // Set secure token cookies
+      // Set secure token cookies with enhanced options
       const { accessToken, refreshToken } = authResponse;
       setTokenCookies(res, accessToken, refreshToken);
 
-      // Log successful OAuth login
+      // Enhanced logging with comprehensive context
       const provider = authenticatedUser.provider || authenticatedUser.authProvider || 'oauth';
+      const processingTime = Date.now() - startTime;
+      
       accountsLogger.logUserLogin(authResponse.user.id, authResponse.user.email, provider);
-      logger.info('OAuth authentication successful', {
+      logger.info('OAuth authentication completed successfully', {
         userId: authResponse.user.id,
         provider: provider,
-        email: authResponse.user.email
+        email: authResponse.user.email,
+        processingTime,
+        ip: req.ip,
+        userAgent: req.get('User-Agent')
       });
 
-      // Redirect to frontend success URL
-      const successUrl = process.env.FRONTEND_LOGIN_SUCCESS_URL || 
-                        (process.env.FRONTEND_URL + '/auth/callback') ||
-                        'http://localhost:5173/auth/callback';
-      res.redirect(successUrl);
+      // Performance monitoring
+      if (processingTime > 2000) {
+        logger.warn('Slow OAuth processing', { 
+          userId: authResponse.user.id, 
+          provider,
+          processingTime 
+        });
+      }
+
+      // Construct secure redirect URL with enhanced validation
+      const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+      const successPath = process.env.FRONTEND_LOGIN_SUCCESS_PATH || '/auth/callback';
+      const successUrl = `${baseUrl}${successPath}`;
+      
+      // Validate URL before redirect
+      try {
+        new URL(successUrl);
+        res.redirect(successUrl);
+      } catch (urlError) {
+        logger.error('Invalid redirect URL', { successUrl, error: urlError });
+        res.redirect(`${baseUrl}/auth/callback`);
+      }
     } catch (error) {
-      logger.error('OAuth success handler error', { error });
-      next(error);
+      this.logAuthError('handleOAuthSuccess', error, req, { 
+        processingTime: Date.now() - startTime 
+      });
+      
+      // Redirect to error page with secure error handling
+      const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+      const errorMessage = error instanceof Error ? error.message : 'Authentication failed';
+      res.redirect(`${baseUrl}/auth/callback?error=${encodeURIComponent(errorMessage)}`);
     }
   }
 
@@ -195,38 +463,71 @@ export class AuthController {
   }
   
   /**
-   * Handle OAuth authentication errors with proper validation
+   * Enhanced OAuth error handler with comprehensive logging and secure redirects
    */
   async handleOAuthError(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const startTime = Date.now();
+    
     try {
-      // Extract and validate error parameters
+      // Extract and validate error parameters with enhanced security
       const error = (req.query.error as string) || 'Authentication failed';
       const provider = (req.query.provider as string) || 'unknown';
       const email = (req.query.email as string) || 'unknown';
+      const state = (req.query.state as string) || '';
       
-      // Log the OAuth error with context
-      logger.error('OAuth authentication error', { 
-        error, 
-        provider, 
+      // Enhanced error logging with comprehensive context
+      this.logAuthError('handleOAuthError', { message: error }, req, {
+        provider,
         email: email !== 'unknown' ? email : undefined,
-        userAgent: req.get('User-Agent'),
-        ip: req.ip
+        state,
+        processingTime: Date.now() - startTime
       });
       
-      // Log to accounts logger if we have meaningful data
+      // Log to accounts logger for security monitoring
       if (email !== 'unknown' && provider !== 'unknown') {
-        accountsLogger.logAuthError(email, error, provider);
+        try {
+          accountsLogger.logAuthError(email, error, provider);
+        } catch (logError) {
+          logger.warn('Failed to log OAuth error to accounts logger', { logError });
+        }
       }
       
-      // Construct secure redirect URL
+      // Construct secure redirect URL with validation
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-      const errorRedirectUrl = `${frontendUrl}/auth/callback?error=${encodeURIComponent(error)}&provider=${encodeURIComponent(provider)}`;
+      const errorPath = process.env.FRONTEND_ERROR_PATH || '/auth/callback';
       
-      logger.debug('Redirecting to error page', { redirectUrl: errorRedirectUrl });
-      res.redirect(errorRedirectUrl);
+      // Build secure query parameters
+      const errorParams = new URLSearchParams({
+        error: error.substring(0, 200), // Limit error message length
+        provider: provider.substring(0, 50), // Limit provider name length
+        timestamp: new Date().toISOString()
+      });
+      
+      const errorRedirectUrl = `${frontendUrl}${errorPath}?${errorParams.toString()}`;
+      
+      // Validate URL before redirect
+      try {
+        new URL(errorRedirectUrl);
+        logger.info('Redirecting to OAuth error page', { 
+          provider, 
+          redirectUrl: errorRedirectUrl.split('?')[0] // Log without sensitive params
+        });
+        res.redirect(errorRedirectUrl);
+      } catch (urlValidationError) {
+        logger.error('Invalid OAuth error redirect URL', { 
+          url: errorRedirectUrl, 
+          error: urlValidationError 
+        });
+        // Fallback to simple error page
+        res.redirect(`${frontendUrl}/auth/error`);
+      }
     } catch (redirectError) {
-      // Fallback if redirect fails
-      logger.error('Failed to handle OAuth error redirect', { redirectError });
+      this.logAuthError('handleOAuthError', redirectError, req, { 
+        processingTime: Date.now() - startTime,
+        stage: 'redirect_construction'
+      });
+      
+      // Ultimate fallback
       next(redirectError);
     }
   }
