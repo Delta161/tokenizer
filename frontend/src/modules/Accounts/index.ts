@@ -39,4 +39,10 @@ export {
  */
 export function initAccountsModule() {
   console.log('Accounts module initialized');
+  
+  // Initialize auth store to check for existing authentication
+  import('./stores/auth.store').then(({ useAuthStore }) => {
+    const authStore = useAuthStore();
+    authStore.initializeAuth();
+  });
 }

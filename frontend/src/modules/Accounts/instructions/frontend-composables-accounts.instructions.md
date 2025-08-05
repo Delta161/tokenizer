@@ -148,6 +148,268 @@ const {
   hasRole 
 } = useAuth();
 
+## 🔐 Session Management in Composables
+
+### CRITICAL: Session-Based Composable Implementation
+
+Composables are **BUSINESS LOGIC COORDINATION LAYER** that integrate with session-based services and stores. They provide reactive interfaces for session management while delegating actual session operations to the service layer.
+
+### Session Management Composable Rules
+
+**✅ COMPOSABLES MUST:**
+- Provide reactive interfaces for session-based authentication state
+- Coordinate with stores and services for session operations
+- Handle session-related business logic (role checking, permissions)
+- Provide session-aware reactive computed properties
+- Handle session state transitions and error coordination
+
+**❌ COMPOSABLES MUST NOT:**
+- Make direct API calls for session validation or authentication
+- Handle session cookies, tokens, or session storage manually
+- Implement session timeout logic or session expiration handling
+- Parse or validate session data client-side
+- Bypass stores to communicate directly with services for session operations
+
+### Session-Based Composable Implementation Patterns
+
+#### 1. Session-Aware useAuth Composable
+```typescript
+// composables/useAuth.ts
+import { computed } from 'vue';
+import { useAuthStore } from '../stores/auth.store';
+import { useRouter } from 'vue-router';
+
+export function useAuth() {
+  const authStore = useAuthStore();
+  const router = useRouter();
+
+  // ✅ CORRECT: Reactive state from store
+  const user = computed(() => authStore.user);
+  const isAuthenticated = computed(() => authStore.isAuthenticated);
+  const isLoading = computed(() => authStore.loading);
+  const error = computed(() => authStore.error);
+
+  // ✅ CORRECT: Role-based access helpers
+  const hasRole = (role: string): boolean => {
+    return user.value?.role === role;
+  };
+
+  const hasAnyRole = (roles: string[]): boolean => {
+    return roles.includes(user.value?.role || '');
+  };
+
+  const isAdmin = computed(() => hasRole('ADMIN'));
+  const isClient = computed(() => hasRole('CLIENT'));
+  const isInvestor = computed(() => hasRole('INVESTOR'));
+
+  // ✅ CORRECT: Session operations through store
+  const checkAuthentication = async (): Promise<boolean> => {
+    return await authStore.checkAuthentication();
+  };
+
+  const loginWithGoogle = (): void => {
+    authStore.loginWithGoogle();
+  };
+
+  const loginWithAzure = (): void => {
+    authStore.loginWithAzure();
+  };
+
+  const logout = async (): Promise<void> => {
+    await authStore.logout();
+    router.push('/login');
+  };
+
+  const handleOAuthCallback = async (): Promise<void> => {
+    try {
+      await authStore.handleOAuthCallback();
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('OAuth callback failed:', error);
+      router.push('/login');
+    }
+  };
+
+  // ✅ CORRECT: Session-aware navigation guard
+  const requireAuth = async (): Promise<boolean> => {
+    if (!isAuthenticated.value) {
+      const isAuth = await checkAuthentication();
+      if (!isAuth) {
+        router.push('/login');
+        return false;
+      }
+    }
+    return true;
+  };
+
+  return {
+    // Reactive state
+    user,
+    isAuthenticated,
+    isLoading,
+    error,
+    isAdmin,
+    isClient,
+    isInvestor,
+    
+    // Methods
+    hasRole,
+    hasAnyRole,
+    checkAuthentication,
+    loginWithGoogle,
+    loginWithAzure,
+    logout,
+    handleOAuthCallback,
+    requireAuth
+  };
+}
+```
+
+#### 2. Session-Aware useUser Composable
+```typescript
+// composables/useUser.ts
+import { ref, computed } from 'vue';
+import { useAuthStore } from '../stores/auth.store';
+import { UserService } from '../services/user.service';
+
+export function useUser() {
+  const authStore = useAuthStore();
+  const userService = new UserService();
+  
+  const loading = ref(false);
+  const error = ref<string | null>(null);
+
+  // ✅ CORRECT: Session-aware user data
+  const currentUser = computed(() => authStore.user);
+  const isAuthenticated = computed(() => authStore.isAuthenticated);
+
+  // ✅ CORRECT: Session-aware user operations
+  const updateProfile = async (userData: Partial<User>): Promise<User> => {
+    if (!isAuthenticated.value) {
+      throw new Error('Authentication required to update profile');
+    }
+
+    loading.value = true;
+    error.value = null;
+
+    try {
+      // Service handles session-based API call
+      const updatedUser = await userService.updateCurrentUser(userData);
+      
+      // Update store with new user data
+      authStore.user = updatedUser;
+      
+      return updatedUser;
+    } catch (err: any) {
+      // Handle session errors
+      if (err.message?.includes('session expired')) {
+        authStore.clearAuthState();
+        throw new Error('Your session has expired. Please login again.');
+      }
+      
+      error.value = err.message || 'Failed to update profile';
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const refreshUserData = async (): Promise<void> => {
+    if (!isAuthenticated.value) return;
+
+    try {
+      await authStore.getCurrentUser();
+    } catch (err: any) {
+      console.error('Failed to refresh user data:', err);
+      if (err.message?.includes('session expired')) {
+        authStore.clearAuthState();
+      }
+    }
+  };
+
+  return {
+    currentUser,
+    isAuthenticated,
+    loading,
+    error,
+    updateProfile,
+    refreshUserData
+  };
+}
+```
+
+#### 3. Session-Aware usePermissions Composable
+```typescript
+// composables/usePermissions.ts
+import { computed } from 'vue';
+import { useAuth } from './useAuth';
+
+export function usePermissions() {
+  const { user, isAuthenticated } = useAuth();
+
+  // ✅ CORRECT: Session-based permission checking
+  const canAccessAdmin = computed(() => {
+    return isAuthenticated.value && user.value?.role === 'ADMIN';
+  });
+
+  const canManageUsers = computed(() => {
+    return canAccessAdmin.value;
+  });
+
+  const canViewProfile = (userId?: string) => {
+    if (!isAuthenticated.value) return false;
+    
+    // User can view their own profile or admin can view any profile
+    return !userId || 
+           user.value?.id === userId || 
+           user.value?.role === 'ADMIN';
+  };
+
+  const requirePermission = (permission: string): boolean => {
+    const permissions = {
+      'admin': canAccessAdmin.value,
+      'manage_users': canManageUsers.value,
+    };
+
+    return permissions[permission] || false;
+  };
+
+  return {
+    canAccessAdmin,
+    canManageUsers,
+    canViewProfile,
+    requirePermission
+  };
+}
+```
+
+### Session Management Composable Architecture
+
+```
+Component Calls Composable Method
+    ↓
+Composable Processes Business Logic
+    ↓
+Composable Calls Store Method (Layer 3)
+    ↓
+Store Coordinates with Service (Layer 4)
+    ↓
+Service Makes Session API Call (Layer 5)
+    ↓
+Response Flows Back Through Layers
+    ↓
+Composable Returns Reactive State to Component
+```
+
+### Critical Session Composable Guidelines
+
+1. **Store Integration**: Always coordinate with stores for session state
+2. **Reactive Interfaces**: Provide computed properties for session-based state
+3. **Business Logic**: Handle session-aware business logic and permissions
+4. **Error Handling**: Process session errors and coordinate with stores
+5. **No Direct Services**: For session operations, always go through stores first
+6. **Type Safety**: Ensure proper TypeScript typing for session-aware operations
+
 // Check if user is admin
 const isAdmin = computed(() => hasRole('admin'));
 

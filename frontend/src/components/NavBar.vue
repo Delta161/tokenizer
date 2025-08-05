@@ -1,11 +1,29 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { ref } from 'vue'
+import { useAuthStore } from '../modules/Accounts/stores/auth.store'
 
 const mobileMenuOpen = ref(false)
+const authStore = useAuthStore()
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
+}
+
+const handleSignInOut = async () => {
+  if (authStore.isAuthenticated) {
+    try {
+      await authStore.logout()
+      // Optionally redirect to home or show success message
+    } catch (error) {
+      console.error('Sign out failed:', error)
+      // Handle error (show toast, etc.)
+    }
+  } else {
+    // Navigate to sign in page or trigger OAuth flow
+    // For now, just navigate to login page
+    window.location.href = '/login'
+  }
 }
 </script>
 
@@ -24,7 +42,9 @@ const toggleMobileMenu = () => {
       </div>
       <div class="mobile-nav-actions">
         <button class="btn btn-outline">Connect Wallet</button>
-        <button class="btn btn-primary">Sign In</button>
+        <button class="btn btn-primary" @click="handleSignInOut">
+          {{ authStore.isAuthenticated ? 'Sign Out' : 'Sign In' }}
+        </button>
       </div>
     </div>
     
@@ -47,7 +67,9 @@ const toggleMobileMenu = () => {
       
       <div class="nav-actions desktop-nav">
         <button class="btn btn-outline">Connect Wallet</button>
-        <button class="btn btn-primary">Sign In</button>
+        <button class="btn btn-primary" @click="handleSignInOut">
+          {{ authStore.isAuthenticated ? 'Sign Out' : 'Sign In' }}
+        </button>
       </div>
       
       <!-- Mobile Menu Toggle -->

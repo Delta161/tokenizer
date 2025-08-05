@@ -1712,3 +1712,663 @@
 2025-08-05 19:14:32:1432 [34mdebug[39m: [34mExcellent validation performance[39m
 2025-08-05 19:14:32:1432 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
 2025-08-05 19:14:32:1432 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 19:38:19:3819 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/example-data - /api/v1/example-data - GET - ::1[39m
+2025-08-05 19:38:21:3821 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/simulate-network-error - /api/v1/simulate-network-error - GET - ::1[39m
+2025-08-05 19:52:28:5228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 19:52:28:5228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 19:52:28:5228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 19:54:40:5440 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/logout - /api/v1/api/v1/auth/logout - POST - ::1[39m
+2025-08-05 20:20:12:2012 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-05 20:20:12:2012 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-05 20:20:12:2012 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-05 20:20:12:2012 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-05 20:35:03:353 [31merror[39m: [31mError: Unknown authentication strategy "google"[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/logout - /api/v1/api/v1/auth/logout - POST - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/logout - /api/v1/api/v1/auth/logout - POST - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/logout - /api/v1/api/v1/auth/logout - POST - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/logout - /api/v1/api/v1/auth/logout - POST - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/logout - /api/v1/api/v1/auth/logout - POST - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:18:13:1813 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:19:14:1914 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:19:14:1914 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/logout - /api/v1/api/v1/auth/logout - POST - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/logout - /api/v1/api/v1/auth/logout - POST - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/logout - /api/v1/api/v1/auth/logout - POST - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:01:211 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:17:2117 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:17:2117 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:17:2117 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:17:2117 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:17:2117 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:17:2117 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:17:2117 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:17:2117 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:17:2117 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:17:2117 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:18:2118 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:21:30:2130 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:29:07:297 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:32:10:3210 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:32:10:3210 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:32:10:3210 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:32:10:3210 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:32:10:3210 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:32:12:3212 [31merror[39m: [31mError: Unknown authentication strategy "google"[39m
+2025-08-05 21:47:28:4728 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:47:28:4728 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:47:28:4728 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:47:28:4728 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:47:28:4728 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:47:28:4728 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:47:28:4728 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:47:28:4728 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:48:28:4828 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:48:28:4828 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:48:28:4828 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:48:28:4828 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:48:28:4828 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:48:28:4828 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:48:28:4828 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:48:28:4828 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:48:28:4828 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:03:493 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:03:493 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:03:493 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:03:493 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:03:493 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:03:493 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:03:493 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:03:493 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:53:4953 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:53:4953 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:53:4953 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:53:4953 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:53:4953 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:53:4953 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:53:4953 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:53:4953 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:49:53:4953 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:51:15:5115 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:51:15:5115 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:51:15:5115 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:51:15:5115 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:51:15:5115 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:51:15:5115 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:51:15:5115 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:51:15:5115 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:51:15:5115 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:52:35:5235 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:52:35:5235 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:52:35:5235 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:52:35:5235 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:52:35:5235 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:52:35:5235 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:52:35:5235 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:52:35:5235 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:52:35:5235 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 21:54:32:5432 [32minfo[39m: [32mCleaning up auth middleware resources[39m
+2025-08-05 21:54:32:5432 [32minfo[39m: [32mToken cache cleared[39m
+2025-08-05 21:54:32:5432 [32minfo[39m: [32mAuth middleware cleanup completed[39m
+2025-08-05 22:08:46:846 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-05 22:08:46:846 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-05 22:08:46:846 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-05 22:08:46:846 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-05 22:08:46:846 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-05 22:08:46:846 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-05 22:08:46:846 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-05 22:08:46:846 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-05 22:09:51:951 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-05 22:09:51:951 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-05 22:09:51:951 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-05 22:09:51:951 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-05 22:09:51:951 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-05 22:09:51:951 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-05 22:09:51:951 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-05 22:09:51:951 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-05 22:14:14:1414 [32minfo[39m: [32mCleaning up auth middleware resources[39m
+2025-08-05 22:14:14:1414 [32minfo[39m: [32mToken cache cleared[39m
+2025-08-05 22:14:14:1414 [32minfo[39m: [32mAuth middleware cleanup completed[39m
+2025-08-05 22:14:22:1422 [32minfo[39m: [32mCleaning up auth middleware resources[39m
+2025-08-05 22:14:22:1422 [32minfo[39m: [32mToken cache cleared[39m
+2025-08-05 22:14:22:1422 [32minfo[39m: [32mAuth middleware cleanup completed[39m
+2025-08-05 22:18:16:1816 [32minfo[39m: [32mCleaning up auth middleware resources[39m
+2025-08-05 22:18:16:1816 [32minfo[39m: [32mToken cache cleared[39m
+2025-08-05 22:18:16:1816 [32minfo[39m: [32mAuth middleware cleanup completed[39m
+2025-08-05 22:19:04:194 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-05 22:19:04:194 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-05 22:19:04:194 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-05 22:19:04:194 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-05 22:19:04:194 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-05 22:19:04:194 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-05 22:19:04:194 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-05 22:19:04:194 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-05 22:19:21:1921 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:19:21:1921 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:19:21:1921 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:19:25:1925 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:19:25:1925 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:19:25:1925 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:19:25:1925 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:19:32:1932 [32minfo[39m: [32m🔄 Processing Google OAuth callback[39m
+2025-08-05 22:19:32:1932 [34mdebug[39m: [34m🔍 Looking for existing user[39m
+2025-08-05 22:19:33:1933 [34mdebug[39m: [34m👤 Existing user found, updating OAuth info[39m
+2025-08-05 22:19:33:1933 [32minfo[39m: [32m✅ Google OAuth user processed successfully[39m
+2025-08-05 22:19:33:1933 [34mdebug[39m: [34m🔄 Serializing user for session storage[39m
+2025-08-05 22:19:33:1933 [32minfo[39m: [32mConverting Prisma user to OAuth profile[39m
+2025-08-05 22:19:33:1933 [34mdebug[39m: [34mTokens generated successfully[39m
+2025-08-05 22:19:33:1933 [32minfo[39m: [32mOAuth login completed successfully[39m
+2025-08-05 22:19:33:1933 [32minfo[39m: [32m[Accounts] User login: e5aa1543-3265-4d72-9f06-b0161d5a2e5c (hackschool@gmail.com) via GOOGLE[39m
+2025-08-05 22:19:33:1933 [32minfo[39m: [32mOAuth authentication completed successfully[39m
+2025-08-05 22:19:33:1933 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:19:33:1933 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:19:33:1933 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:19:33:1933 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:19:33:1933 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:19:33:1933 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:19:33:1933 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:19:33:1933 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:19:33:1933 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:19:33:1933 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:19:33:1933 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:19:33:1933 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/auth/profile - /api/v1/api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:21:46:2146 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:21:46:2146 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:21:46:2146 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:21:46:2146 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:21:46:2146 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:21:57:2157 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:21:57:2157 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:21:57:2157 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:21:57:2157 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:22:06:226 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:06:226 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:06:226 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:06:226 [34mdebug[39m: [34mOptional auth successful[39m
+2025-08-05 22:22:06:226 [32minfo[39m: [32m[Accounts] User logout: e5aa1543-3265-4d72-9f06-b0161d5a2e5c[39m
+2025-08-05 22:22:06:226 [32minfo[39m: [32mUser logged out[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:08:228 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:08:228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:09:229 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:09:229 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:10:2210 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:10:2210 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:10:2210 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:10:2210 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:10:2210 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:10:2210 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:10:2210 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:10:2210 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:10:2210 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:22:10:2210 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:10:2210 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:15:2215 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:15:2215 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:41:2241 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:41:2241 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:22:50:2250 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:22:50:2250 [34mdebug[39m: [34m✅ User deserialized successfully[39m

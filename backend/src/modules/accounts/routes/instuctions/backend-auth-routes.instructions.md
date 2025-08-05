@@ -21,6 +21,30 @@ Routes define **API endpoints only** and connect URLs to handlers:
 - **Middleware attachment** - apply auth, validation, etc.
 - **Route organization** - group related endpoints together
 
+### ⚠️ CRITICAL: SESSION MANAGEMENT DEPENDENCY
+
+**MANDATORY**: All authentication routes depend on properly configured session management.
+
+**Required Configuration** (must be in app.ts):
+```typescript
+// Session configuration (BEFORE Passport)
+app.use(session(sessionConfig));
+
+// Passport initialization (AFTER session)
+app.use(passport.initialize());
+app.use(passport.session());
+```
+
+**Required Files**:
+- `src/config/session.ts` - Session store configuration
+- `src/config/passport.ts` - Passport serialization/deserialization
+
+**Without session management**:
+- ❌ OAuth callbacks will FAIL
+- ❌ `req.user` will be UNDEFINED
+- ❌ Authentication state will NOT persist
+- ❌ Login flow will be BROKEN
+
 ### ❌ What Routes Should NOT Do
 
 - **NO business logic** - controllers handle request processing

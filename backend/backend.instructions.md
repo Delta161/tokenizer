@@ -78,6 +78,68 @@ Here's the flow when a request hits your backend:
 6. **Utils** may be used by services or controllers for support.
 7. **Response** is returned to the client.
 
+## 🔐 MANDATORY SESSION MANAGEMENT & AUTHENTICATION
+
+**CRITICAL**: Session management is MANDATORY for proper user authentication and must be implemented across all authentication-related functionality.
+
+### ✅ Session Configuration (REQUIRED)
+- **File Location**: `src/config/session.ts`
+- **Purpose**: Configures Express sessions with Prisma store for persistent session storage
+- **Dependencies**: `express-session`, `@quixo3/prisma-session-store`
+- **Database**: Requires `Session` model in Prisma schema
+
+### ✅ Passport Configuration (REQUIRED)  
+- **File Location**: `src/config/passport.ts`
+- **Purpose**: Implements Passport serialization/deserialization for session management
+- **Key Functions**:
+  - `passport.serializeUser()` - Store user ID in session
+  - `passport.deserializeUser()` - Retrieve full user object from database
+  - OAuth strategy configuration (Google, Azure, Apple)
+
+### ✅ Session Middleware Integration (REQUIRED)
+Sessions MUST be configured in the main app.ts file in this exact order:
+1. Body parsing middleware
+2. Cookie parser
+3. **Session configuration** (before Passport)
+4. **Passport initialization**
+5. **Passport session enable**
+6. Route handlers
+
+### ✅ Environment Variables (REQUIRED)
+The following environment variables are MANDATORY for session management:
+```env
+SESSION_SECRET=your-super-secret-session-key
+SESSION_MAX_AGE=604800000
+SESSION_NAME=tokenizer.sid
+SESSION_DOMAIN=localhost
+```
+
+### ✅ Database Schema (REQUIRED)
+The Session model MUST be present in your Prisma schema:
+```prisma
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+  @@map("sessions")
+}
+```
+
+### ⚠️ IMPORTANT: Without session management:
+- User authentication will NOT persist across requests
+- OAuth login will fail after callback
+- `req.user` will be undefined in route handlers
+- Login state will be lost on page refresh
+- Authentication middleware will not function properly
+
+Session management enables:
+- ✅ Persistent user authentication across HTTP requests
+- ✅ OAuth login flows to complete successfully
+- ✅ `req.user` availability in route handlers
+- ✅ Secure session storage with database persistence
+- ✅ Proper logout functionality
+
 ## ✅ Where Prisma Should Be Used
 The only place where Prisma (your database client) should be directly used is inside the **services** folder.
 

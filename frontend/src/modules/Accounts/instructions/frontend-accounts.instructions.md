@@ -61,6 +61,89 @@ frontend/src/modules/Accounts/
 4. **Dependency Direction**: Higher layers depend on lower layers, never reverse
 5. **Backend Communication Boundary**: ONLY Layer 4 (Services) can access apiClient
 
+## 🔐 Session Management Architecture
+
+### CRITICAL: Session-Based Authentication System
+
+The Accounts module implements **session-based authentication** using HTTP-only cookies and backend session management. This replaces JWT token-based authentication and requires specific implementation patterns across all layers.
+
+### Session Management Layer Responsibilities
+
+**📍 Layer 4 (Services) - PRIMARY SESSION LAYER:**
+- **✅ Handle all session operations** (checkAuth, logout, profile retrieval)
+- **✅ Make authenticated API calls** with automatic cookie inclusion
+- **✅ Process session errors** (401/403 handling)
+- **✅ Coordinate OAuth flows** (provider redirects)
+
+**📍 Layer 3 (Stores) - SESSION STATE COORDINATION:**
+- **✅ Maintain authentication state** based on session validity
+- **✅ Coordinate with services** for session operations
+- **✅ Handle session state changes** (login/logout reactions)
+- **✅ Clear state on session expiration**
+
+**📍 Layer 2 (Components) - SESSION STATE DISPLAY:**
+- **✅ Display authentication status** from stores
+- **✅ Show user data** from authenticated sessions
+- **✅ Trigger logout actions** through stores
+- **❌ NO direct session handling**
+
+**📍 Layer 1 (Views) - SESSION ROUTING:**
+- **✅ Handle OAuth callback routes** (/auth/callback)
+- **✅ Implement route guards** for protected pages
+- **✅ Coordinate authentication redirects**
+- **❌ NO session logic implementation**
+
+### Complete Session Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant V as View (Layer 1)
+    participant C as Component (Layer 2)  
+    participant S as Store (Layer 3)
+    participant Svc as Service (Layer 4)
+    participant API as apiClient (Layer 5)
+    participant BE as Backend
+
+    V->>C: User clicks login
+    C->>S: triggerOAuthLogin()
+    S->>Svc: loginWithGoogle()
+    Svc->>BE: Redirect to OAuth provider
+    BE->>V: OAuth callback redirect
+    V->>S: handleOAuthCallback()
+    S->>Svc: checkAuth()
+    Svc->>API: GET /auth/profile
+    API->>BE: Request with session cookie
+    BE->>API: User data response
+    API->>Svc: Response data
+    Svc->>S: User object
+    S->>C: Reactive state update
+    C->>V: UI updated with user data
+```
+
+### Session Security Architecture
+
+1. **HTTP-Only Cookies**: Session data stored in secure, HTTP-only cookies
+2. **Backend Validation**: All session validation occurs on backend via Passport
+3. **Automatic Cookie Handling**: Browser automatically includes session cookies
+4. **No Client-Side Sessions**: Frontend never handles session logic directly
+5. **CSRF Protection**: SameSite cookie settings prevent cross-site attacks
+
+### Session Management Best Practices
+
+**✅ DO:**
+- Use services for all session-related operations
+- Coordinate session state through stores
+- Handle session errors consistently across layers
+- Clear authentication state on session expiration
+- Delegate OAuth flows to services
+
+**❌ DON'T:**
+- Implement session logic in components or views
+- Store session tokens in localStorage or cookies manually
+- Parse or validate session data client-side
+- Make direct API calls for session management outside services
+- Implement client-side session timers or expiration logic
+
 ### 🔄 Complete Application Flow Example
 
 Here's how a typical user profile update flows through all layers:

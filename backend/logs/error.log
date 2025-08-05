@@ -493,3 +493,5 @@
 2025-08-03 12:59:57:5957 [31merror[39m: [31mToken verification failed[39m
 2025-08-03 13:00:03:03 [31merror[39m: [31mToken verification failed[39m
 2025-08-03 13:00:12:012 [31merror[39m: [31mToken verification failed[39m
+2025-08-05 20:35:03:353 [31merror[39m: [31mError: Unknown authentication strategy "google"[39m
+2025-08-05 21:32:12:3212 [31merror[39m: [31mError: Unknown authentication strategy "google"[39m

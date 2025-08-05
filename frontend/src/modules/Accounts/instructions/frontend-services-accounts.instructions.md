@@ -73,6 +73,154 @@ Services must follow the application flow:
 - Session management (`logout`, `getCurrentUser`)
 - Legacy method deprecation with clear error messages
 
+## 🔐 Session Management in Services (Layer 4)
+
+### CRITICAL: Session-Based Authentication Implementation
+
+Services are **THE ONLY LAYER** responsible for session management operations. All session-related logic must be implemented in the service layer following these mandatory patterns:
+
+### Session Management Responsibilities
+
+**✅ SERVICES MUST:**
+- Handle all session validation through API calls
+- Make authenticated requests with automatic session cookies
+- Check authentication status via backend endpoints
+- Handle session expiration and cleanup
+- Manage logout operations by calling backend endpoints
+
+**❌ SERVICES MUST NOT:**
+- Manually manage session cookies (browser handles this automatically)
+- Parse or validate session data client-side
+- Store session tokens in localStorage (HTTP-only cookies only)
+- Implement session timers or client-side expiration logic
+
+### Session-Based Service Implementation Patterns
+
+#### 1. Authentication Status Check
+```typescript
+// AuthService method for checking session status
+async checkAuth(): Promise<{ isAuthenticated: boolean; user?: User }> {
+  try {
+    const response = await apiClient.get('/auth/profile');
+    return {
+      isAuthenticated: true,
+      user: userMapper.fromBackend(response.data.data.user)
+    };
+  } catch (error) {
+    // Session invalid/expired - no error throwing needed
+    return { isAuthenticated: false };
+  }
+}
+```
+
+#### 2. Session-Based API Calls
+```typescript
+// Standard authenticated API call pattern
+async getCurrentUser(): Promise<User> {
+  try {
+    // Session cookie automatically included by browser
+    const response = await apiClient.get('/auth/profile');
+    return userMapper.fromBackend(response.data.data.user);
+  } catch (error) {
+    // Handle session expiration
+    if (error.response?.status === 401) {
+      throw new Error('Session expired. Please login again.');
+    }
+    handleServiceError(error, 'Failed to retrieve user profile.');
+    throw error;
+  }
+}
+```
+
+#### 3. Logout Operation
+```typescript
+// Logout must call backend to destroy session
+async logout(): Promise<{ message: string }> {
+  try {
+    const response = await apiClient.post('/auth/logout');
+    return { message: response.data.message || 'Logged out successfully' };
+  } catch (error) {
+    handleServiceError(error, 'Failed to logout properly.');
+    throw error;
+  }
+}
+```
+
+#### 4. OAuth Provider Redirects
+```typescript
+// OAuth login redirects (no session handling needed)
+getGoogleLoginUrl(): string {
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  return `${baseUrl}/api/v1/auth/google`;
+}
+
+loginWithGoogle(): void {
+  // Redirect to OAuth provider - backend will create session
+  window.location.href = this.getGoogleLoginUrl();
+}
+```
+
+### Session Error Handling Patterns
+
+#### Standard Session Error Handler
+```typescript
+// Use in all services for consistent session error handling
+private handleSessionError(error: any, operation: string): void {
+  if (error.response?.status === 401) {
+    // Session expired - clear any cached data and redirect
+    console.warn('Session expired during:', operation);
+    // Store will handle cleanup and redirect
+    throw new Error('Your session has expired. Please login again.');
+  }
+  
+  if (error.response?.status === 403) {
+    console.warn('Session forbidden during:', operation);
+    throw new Error('Access denied. Please check your permissions.');
+  }
+  
+  // Standard error handling for other errors
+  handleServiceError(error, `Failed to ${operation}.`);
+}
+```
+
+### Session Management Integration Rules
+
+1. **API Client Configuration**: Services rely on apiClient.ts being configured with `withCredentials: true`
+2. **Automatic Cookies**: Browser automatically includes session cookies - no manual header management
+3. **Backend Validation**: All session validation happens on the backend via Passport
+4. **Error Propagation**: Session errors must be properly propagated to stores for state management
+5. **No Client-Side Session Logic**: Services should not implement any client-side session management
+
+### Service Layer Session Architecture Flow
+
+```
+Service Method Called
+    ↓
+Make API Call (apiClient)
+    ↓
+Browser Includes Session Cookie Automatically
+    ↓
+Backend Validates Session (Passport)
+    ↓
+Return Response OR 401/403 Error
+    ↓
+Service Handles Response/Error
+    ↓
+Return Data to Store (Layer 3)
+```
+
+### Mandatory Session Management Methods
+
+All authentication-related services must implement these methods:
+
+```typescript
+interface ISessionAwareService {
+  checkAuth(): Promise<{ isAuthenticated: boolean; user?: User }>;
+  handleSessionExpiration(error: any): void;
+  requiresAuthentication(): boolean;
+}
+```
+
 ### 3. KycService Class
 ```typescript
 // Location: frontend/src/modules/Accounts/services/kyc.service.ts

@@ -484,21 +484,33 @@ const error = ref<string | null>(null);
 const isEditing = ref<boolean>(false);
 const showRawData = ref<boolean>(false);
 
-// Profile edit form state - simplified to match backend User structure
+// Profile edit form state - extended to match template fields
 interface EditFormData {
-  fullName?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
-  phone?: string;
-  preferredLanguage?: string;
-  timezone?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+  socialLinks?: {
+    twitter?: string;
+    linkedin?: string;
+    github?: string;
+  };
 }
 
 const editForm = reactive<EditFormData>({
-  fullName: '',
+  firstName: '',
+  lastName: '',
   email: '',
-  phone: '',
-  preferredLanguage: '',
-  timezone: ''
+  bio: '',
+  location: '',
+  website: '',
+  socialLinks: {
+    twitter: '',
+    linkedin: '',
+    github: ''
+  }
 });
 
 // Settings form state (merged from UserSettingsForm)

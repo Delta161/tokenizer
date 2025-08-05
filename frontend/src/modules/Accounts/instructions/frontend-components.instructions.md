@@ -123,9 +123,168 @@ onMounted(async () => {
 #### Implementation Notes:
 - Uses `useAuthStore` for state management
 - Handles OAuth provider redirects automatically
-- Manages loading and error states internally
+- Manages loading and error states internally  
 - No password authentication - OAuth only
 - Integrates with backend `/api/auth/:provider` endpoints
+
+## 🔐 Session Management Restrictions
+
+### CRITICAL: Components and Session Management
+
+Components are **UI PRESENTATION LAYER ONLY** and must never handle session management directly. All session-related operations must be properly delegated to stores and services.
+
+### Session Management Component Rules
+
+**❌ COMPONENTS MUST NEVER:**
+- Make direct API calls for session validation or authentication
+- Handle session cookies, tokens, or session storage manually
+- Implement session timeout logic or session expiration handling
+- Call authentication endpoints directly (login, logout, profile)
+- Parse or validate session data client-side
+- Implement OAuth callback handling logic
+- Store authentication tokens in component state
+
+**✅ COMPONENTS MUST:**
+- Display authentication status from stores (`isAuthenticated` computed)
+- Show user data received from authenticated sessions via stores
+- Trigger authentication actions through store methods
+- Handle loading and error states for authentication operations
+- Redirect users through router based on authentication state
+
+### Session-Based Component Implementation Patterns
+
+#### 1. Authentication Status Display
+```typescript
+<script setup lang="ts">
+import { useAuthStore } from '../stores/auth.store';
+
+const authStore = useAuthStore();
+
+// ✅ CORRECT: Use store computed values
+const isLoggedIn = computed(() => authStore.isAuthenticated);
+const currentUser = computed(() => authStore.user);
+const isLoading = computed(() => authStore.loading);
+
+// ❌ WRONG: Never implement session logic in components
+// const checkSession = () => { /* session validation logic */ };
+</script>
+
+<template>
+  <div v-if="isLoggedIn" class="user-info">
+    <h2>Welcome, {{ currentUser?.fullName }}</h2>
+    <button @click="authStore.logout">Logout</button>
+  </div>
+  <div v-else>
+    <button @click="authStore.loginWithGoogle">Login with Google</button>
+  </div>
+</template>
+```
+
+#### 2. OAuth Login Trigger (Correct Pattern)
+```typescript
+<script setup lang="ts">
+import { useAuthStore } from '../stores/auth.store';
+
+const authStore = useAuthStore();
+
+// ✅ CORRECT: Delegate to store methods
+const handleGoogleLogin = () => {
+  authStore.loginWithGoogle(); // Store coordinates with service
+};
+
+const handleLogout = async () => {
+  try {
+    await authStore.logout(); // Store handles service coordination
+    // Optionally show success message
+  } catch (error) {
+    console.error('Logout failed:', error);
+  }
+};
+
+// ❌ WRONG: Never implement OAuth logic in components
+// const redirectToGoogle = () => {
+//   window.location.href = 'http://localhost:3000/api/v1/auth/google';
+// };
+</script>
+```
+
+#### 3. Session Error Handling
+```typescript
+<script setup lang="ts">
+import { useAuthStore } from '../stores/auth.store';
+import { watch } from 'vue';
+
+const authStore = useAuthStore();
+
+// ✅ CORRECT: React to store error state
+const errorMessage = computed(() => authStore.error);
+
+// ✅ CORRECT: Watch for authentication changes
+watch(() => authStore.isAuthenticated, (isAuth) => {
+  if (!isAuth && route.meta.requiresAuth) {
+    router.push('/login');
+  }
+});
+
+// ❌ WRONG: Never handle session errors directly
+// const handleSessionError = (error) => {
+//   if (error.status === 401) { /* session handling */ }
+// };
+</script>
+```
+
+#### 4. Protected Component Access
+```typescript
+<script setup lang="ts">
+import { useAuthStore } from '../stores/auth.store';
+
+const authStore = useAuthStore();
+
+// ✅ CORRECT: Check authentication state from store
+const canAccess = computed(() => {
+  return authStore.isAuthenticated && authStore.user?.role === 'admin';
+});
+
+onMounted(async () => {
+  // ✅ CORRECT: Trigger store method to check authentication
+  if (!authStore.isAuthenticated) {
+    await authStore.checkAuthentication();
+  }
+});
+
+// ❌ WRONG: Never check sessions directly
+// const validateSession = async () => {
+//   const response = await apiClient.get('/auth/profile');
+// };
+</script>
+```
+
+### Session Management Component Architecture
+
+```
+Component User Interaction
+    ↓
+Trigger Store Action (Layer 3)
+    ↓
+Store Coordinates with Service (Layer 4)
+    ↓
+Service Makes Session API Call (Layer 5)
+    ↓
+Backend Validates Session (Passport)
+    ↓
+Response Flows Back Through Layers
+    ↓
+Component Reacts to Store State Changes
+```
+
+### Critical Session Component Guidelines
+
+1. **No Direct Session Access**: Components never interact with session APIs directly
+2. **Store Delegation**: All authentication actions must go through stores
+3. **Reactive State**: Use computed properties for authentication status
+4. **Error Boundaries**: Handle authentication errors from store state
+5. **Router Integration**: Coordinate authentication redirects through stores
+6. **Loading States**: Display loading indicators from store loading state
 
 ---
 

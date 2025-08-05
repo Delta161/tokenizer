@@ -17,8 +17,14 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
 
+// Session and Passport imports - MANDATORY FOR AUTHENTICATION
+import session from 'express-session';
+import passport from './src/config/passport'; // Import configured passport
+import { createSessionConfig, sessionErrorHandler } from './src/config/session';
+
 // Import configuration
 import { API_PREFIX, RATE_LIMIT } from './src/config/constants';
+import { logger } from './src/utils/logger';
 
 // Import middleware
 import { errorHandler, notFoundHandler } from './src/middleware/errorHandler';
@@ -116,8 +122,27 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Global authentication/session middleware (after body parsing, before routers)
+// Cookie parsing middleware (required for sessions)
 app.use(cookieParser());
+
+// =============================================================================
+// SESSION MANAGEMENT AND AUTHENTICATION SETUP (MANDATORY)
+// =============================================================================
+
+// Session configuration - MUST be configured before Passport
+logger.info('🔧 Initializing session management...');
+const sessionConfig = createSessionConfig();
+app.use(session(sessionConfig));
+
+// Session error handling
+app.use(sessionErrorHandler);
+
+// Passport initialization - MUST be after session configuration
+logger.info('🔧 Initializing Passport authentication...');
+app.use(passport.initialize());
+app.use(passport.session()); // Enable persistent login sessions
+
+logger.info('✅ Session management and Passport configured successfully');
 
 // Rate limiting
 const limiter = rateLimit({

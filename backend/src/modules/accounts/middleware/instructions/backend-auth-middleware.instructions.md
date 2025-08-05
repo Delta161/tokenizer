@@ -10,6 +10,30 @@ applyTo: `backend/src/modules/accounts/middleware/auth.middleware.ts`
 
 The `auth.middleware.ts` file provides essential middleware functions that protect routes by enforcing authentication and authorization within the Accounts domain. This middleware ensures that only authenticated users can access secured resources and that users have the appropriate roles for specific actions.
 
+**CRITICAL**: This middleware depends on properly configured session management to function correctly.
+
+### 🔐 SESSION MANAGEMENT DEPENDENCY (MANDATORY)
+
+**Required Configuration** for middleware to work:
+1. **Session Store**: Configured in `src/config/session.ts`
+2. **Passport Setup**: Configured in `src/config/passport.ts`
+3. **Express Integration**: Properly initialized in app.ts
+
+**Without session management**:
+- ❌ `req.user` will be UNDEFINED
+- ❌ Authentication checks will FAIL
+- ❌ Protected routes will be INACCESSIBLE
+- ❌ Role-based access control will NOT work
+
+### ✅ Required App Configuration
+
+```typescript
+// In app.ts - THIS ORDER IS MANDATORY
+app.use(session(sessionConfig));      // BEFORE Passport
+app.use(passport.initialize());       // Initialize Passport
+app.use(passport.session());          // Enable persistent sessions
+```
+
 It primarily:
 
 * Validates JWT tokens (currently with a placeholder implementation).

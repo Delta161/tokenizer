@@ -48,6 +48,36 @@ All code in backend/src MUST follow the strict 7-layer architecture:
 ### ✅ types/
 - TypeScript type definitions and enums
 - Structural definitions for type safety
+
+## 🔐 MANDATORY SESSION MANAGEMENT & AUTHENTICATION
+
+**CRITICAL**: Session management is MANDATORY and must be implemented in the config/ folder.
+
+### ✅ config/ folder requirements:
+- `config/session.ts` - Express session configuration with Prisma store
+- `config/passport.ts` - Passport serialization/deserialization setup
+- Both files are REQUIRED for authentication to function
+
+### ✅ Session Management Implementation:
+1. **Session Store**: Must use `@quixo3/prisma-session-store` with Prisma
+2. **Serialization**: `passport.serializeUser()` to store user ID in session
+3. **Deserialization**: `passport.deserializeUser()` to retrieve user from database
+4. **Integration**: Must be configured in main app.ts before route handlers
+
+### ⚠️ WITHOUT session management:
+- OAuth authentication WILL FAIL
+- User login state will NOT persist
+- `req.user` will be UNDEFINED
+- Authentication middleware will NOT work
+
+### ✅ Required Dependencies:
+```json
+{
+  "express-session": "^1.18.2",
+  "@quixo3/prisma-session-store": "latest",
+  "@types/express-session": "latest"
+}
+```
 - NO logic or functionality
 
 ### ✅ strategies/ (for auth modules)

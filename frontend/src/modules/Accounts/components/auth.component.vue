@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../stores/auth.store';
 
@@ -38,30 +38,30 @@ function toggleView() {
   }
 }
 
-// Handle OAuth login/registration
+// Handle OAuth login/registration - simplified for session-based auth
 async function handleOAuthLogin(provider: string) {
   try {
     isLoading.value = true;
     errorMessage.value = null;
     
-    // Map provider names to backend endpoints
-    const providerMap: Record<string, string> = {
-      'google': 'google',
-      'apple': 'apple', 
-      'microsoft': 'microsoft'
-    };
-    
-    const backendProvider = providerMap[provider];
-    if (!backendProvider) {
-      throw new Error(`Unsupported OAuth provider: ${provider}`);
-    }
-    
     // Store the current action (login/register) in sessionStorage for the callback
     sessionStorage.setItem('oauth_action', isLogin.value ? 'login' : 'register');
     
-    // Redirect to OAuth provider
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
-    window.location.href = `${baseUrl}/auth/${backendProvider}`;
+    // Redirect to OAuth provider using auth store methods
+    switch (provider) {
+      case 'google':
+        authStore.loginWithGoogle();
+        break;
+      case 'azure':
+      case 'microsoft':
+        authStore.loginWithAzure();
+        break;
+      case 'apple':
+        authStore.loginWithApple();
+        break;
+      default:
+        throw new Error(`Unsupported OAuth provider: ${provider}`);
+    }
 
   } catch (error) {
     isLoading.value = false;
@@ -69,18 +69,40 @@ async function handleOAuthLogin(provider: string) {
   }
 }
 
+// Clear any existing auth data (for testing/debugging)
+function clearAuthData() {
+  authStore.clearAuthData();
+  successMessage.value = 'Authentication data cleared. You can now login with OAuth.';
+}
+
 // Check if user is already authenticated
 onMounted(async () => {
   try {
     // Set initial view based on route
-    isLogin.value = route.name === 'login';
+    isLogin.value = route.name === 'login' || route.name === 'auth';
     
-    await authStore.checkTokenValidity();
+    // Check if user is already authenticated via session
     if (authStore.isAuthenticated) {
       router.push({ name: 'dashboard' });
+    } else {
+      // Try to initialize auth from session
+      await authStore.initializeAuth();
+      if (authStore.isAuthenticated) {
+        router.push({ name: 'dashboard' });
+      }
     }
   } catch (error) {
     // Ignore errors, user is not authenticated
+    console.log('Auth check failed:', error);
+  }
+});
+
+// Watch for route changes to update the view mode
+watch(() => route.name, (newRouteName) => {
+  if (newRouteName === 'login' || newRouteName === 'auth') {
+    isLogin.value = true;
+  } else if (newRouteName === 'register') {
+    isLogin.value = false;
   }
 });
 </script>
@@ -164,6 +186,11 @@ onMounted(async () => {
     <div class="links">
       <a href="#" @click.prevent="toggleView">
         {{ isLogin ? 'Don\'t have an account? Sign up with OAuth' : 'Already have an account? Sign in with OAuth' }}
+      </a>
+      
+      <!-- Debug/Testing button to clear auth data -->
+      <a href="#" @click.prevent="clearAuthData" class="debug-link" style="color: #dc2626; font-size: 0.75rem; margin-top: 0.5rem;">
+        🔧 Clear Auth Data (Debug)
       </a>
     </div>
   </div>

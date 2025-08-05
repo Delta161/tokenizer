@@ -79,6 +79,235 @@ const isClient = computed(() => user.value?.role === 'client');
 const isInvestor = computed(() => user.value?.role === 'investor');
 ```
 
+## 🔐 Session Management in Stores (Layer 3)
+
+### CRITICAL: Session-Based State Management Implementation
+
+Stores are **THE COORDINATION LAYER** for session management state. They coordinate with services (Layer 4) but never handle sessions directly. All session state management must follow these mandatory patterns:
+
+### Session State Management Responsibilities
+
+**✅ STORES MUST:**
+- Coordinate authentication state with session-based services
+- Maintain reactive authentication status based on session validity
+- Handle service errors related to session expiration
+- Clear authentication state when sessions expire
+- Coordinate logout operations through services
+
+**❌ STORES MUST NOT:**
+- Make direct API calls for session validation (use services only)
+- Manage session cookies directly (browser + services handle this)
+- Implement session timers or client-side session logic
+- Store session tokens or sensitive session data
+- Parse or validate session data client-side
+
+### Session-Based Store Implementation Patterns
+
+#### 1. Authentication State Management
+```typescript
+// AuthStore with session-based authentication
+export const useAuthStore = defineStore('auth', () => {
+  // Simplified state for session-based auth
+  const user = ref<User | null>(null);
+  const loading = ref(false);
+  const error = ref<string | null>(null);
+  const isAuthenticated = computed(() => !!user.value);
+
+  // Session authentication check
+  const checkAuthentication = async (): Promise<boolean> => {
+    loading.value = true;
+    error.value = null;
+    
+    try {
+      // Delegate to service layer for session validation
+      const result = await AuthService.checkAuth();
+      if (result.isAuthenticated && result.user) {
+        user.value = result.user;
+        // Store user data for UI purposes only (not authentication)
+        localStorage.setItem('user', JSON.stringify(result.user));
+        return true;
+      } else {
+        clearAuthState();
+        return false;
+      }
+    } catch (err: any) {
+      console.error('Authentication check failed:', err);
+      error.value = err.message || 'Failed to verify authentication status.';
+      clearAuthState();
+      return false;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  return { user, loading, error, isAuthenticated, checkAuthentication };
+});
+```
+
+#### 2. OAuth Login Coordination
+```typescript
+// OAuth provider login methods - redirect through services
+const loginWithGoogle = (): void => {
+  // Clear any existing error state
+  error.value = null;
+  // Delegate to service for OAuth redirect
+  AuthService.loginWithGoogle(); // Service handles window.location.href
+};
+
+const loginWithAzure = (): void => {
+  error.value = null;
+  AuthService.loginWithAzure();
+};
+
+const loginWithApple = (): void => {
+  error.value = null;
+  AuthService.loginWithApple();
+};
+```
+
+#### 3. OAuth Callback Handling
+```typescript
+// Handle OAuth callback after provider redirect
+const handleOAuthCallback = async (): Promise<User | null> => {
+  loading.value = true;
+  error.value = null;
+  
+  try {
+    // After OAuth redirect, backend has set session cookies
+    // Service will fetch user profile using session
+    const userData = await AuthService.getCurrentUser();
+    user.value = userData;
+    
+    // Store user data for UI purposes only
+    localStorage.setItem('user', JSON.stringify(userData));
+    
+    return userData;
+  } catch (err: any) {
+    console.error('OAuth callback handling failed:', err);
+    error.value = err.message || 'Failed to complete authentication.';
+    clearAuthState();
+    throw err;
+  } finally {
+    loading.value = false;
+  }
+};
+```
+
+#### 4. Session-Based Logout
+```typescript
+// Logout operation - coordinate with service
+const logout = async (): Promise<void> => {
+  loading.value = true;
+  error.value = null;
+  
+  try {
+    // Service destroys session on backend
+    await AuthService.logout();
+    clearAuthState();
+  } catch (err: any) {
+    console.error('Logout failed:', err);
+    error.value = err.message || 'Failed to logout properly.';
+    // Even if logout fails, clear local state
+    clearAuthState();
+    throw err;
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Clear authentication state (no session data to clear)
+const clearAuthState = (): void => {
+  user.value = null;
+  error.value = null;
+  // Only clear UI-related user data (not session data)
+  localStorage.removeItem('user');
+};
+```
+
+#### 5. Session Error Handling
+```typescript
+// Handle session-related errors from services
+const handleSessionError = (error: any): void => {
+  if (error.message?.includes('session expired') || 
+      error.message?.includes('Session expired')) {
+    console.warn('Session expired, clearing authentication state');
+    clearAuthState();
+    // Optionally redirect to login
+    router.push('/login');
+  } else if (error.response?.status === 401) {
+    console.warn('Unauthorized access, session invalid');
+    clearAuthState();
+  } else {
+    // Handle other errors normally
+    console.error('Service error:', error);
+    error.value = error.message || 'An error occurred';
+  }
+};
+```
+
+### Session State Initialization Pattern
+```typescript
+// Initialize authentication state on app start
+const initializeAuth = async (): Promise<void> => {
+  // Check if user data exists in localStorage (UI purposes only)
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    try {
+      // Validate session with backend through service
+      const isValid = await checkAuthentication();
+      if (!isValid) {
+        // Session invalid, clear stored user data
+        localStorage.removeItem('user');
+      }
+    } catch (error) {
+      console.error('Auth initialization failed:', error);
+      localStorage.removeItem('user');
+    }
+  }
+};
+```
+
+### Session Management Store Architecture Flow
+
+```
+Store Action Called
+    ↓
+Coordinate with Service (Layer 4)
+    ↓
+Service Makes API Call with Session Cookie
+    ↓
+Backend Validates Session (Passport)
+    ↓
+Service Returns Result/Error to Store
+    ↓
+Store Updates Reactive State
+    ↓
+Components/Views React to State Changes
+```
+
+### Mandatory Session State Methods
+
+All authentication stores must implement these methods:
+
+```typescript
+interface ISessionAwareStore {
+  checkAuthentication(): Promise<boolean>;
+  handleOAuthCallback(): Promise<User | null>;
+  logout(): Promise<void>;
+  clearAuthState(): void;
+  initializeAuth(): Promise<void>;
+}
+```
+
+### Session State Best Practices
+
+1. **No Session Logic**: Stores coordinate state only, never implement session logic
+2. **Service Delegation**: All session operations must be delegated to services
+3. **Error Boundaries**: Proper error handling for session expiration scenarios
+4. **State Clarity**: Clear separation between UI state and authentication state
+5. **Reactive Updates**: Ensure state updates trigger component re-renders
+6. **Storage Usage**: localStorage only for UI data, never for authentication tokens
+
 ### 2. UserStore (Options API Pattern)
 ```typescript
 // Location: frontend/src/modules/Accounts/stores/user.store.ts

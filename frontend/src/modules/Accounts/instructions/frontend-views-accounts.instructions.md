@@ -82,6 +82,325 @@ import AuthComponent from '../components/auth.component.vue';
 </style>
 ```
 
+## 🔐 Session Management in Views
+
+### CRITICAL: Session-Based Route Management
+
+Views are **ROUTE COORDINATION LAYER** responsible for handling session-based authentication at the page level. They coordinate authentication flows, route guards, and session-related redirects while delegating actual session management to lower layers.
+
+### Session Management View Responsibilities
+
+**✅ VIEWS MUST:**
+- Handle OAuth callback routes (`/auth/callback`)
+- Implement route-level authentication guards
+- Coordinate authentication redirects based on session status
+- Handle session-related route parameters and queries
+- Manage page-level authentication loading states
+- Coordinate session-aware navigation flows
+
+**❌ VIEWS MUST NOT:**
+- Make direct API calls for session validation or authentication
+- Handle session cookies, tokens, or session storage manually
+- Implement session timeout logic or session expiration handling
+- Parse or validate session data client-side
+- Bypass stores/composables to handle session operations directly
+
+### Session-Based View Implementation Patterns
+
+#### 1. OAuth Callback View
+```vue
+<!-- views/AuthCallback.vue -->
+<template>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50">
+    <div class="max-w-md w-full space-y-8">
+      <div class="text-center">
+        <div v-if="loading" class="flex flex-col items-center space-y-4">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <h2 class="text-xl font-semibold text-gray-900">
+            Completing your login...
+          </h2>
+        </div>
+        
+        <div v-else-if="error" class="flex flex-col items-center space-y-4">
+          <h2 class="text-xl font-semibold text-red-900">
+            Authentication Failed
+          </h2>
+          <p class="text-red-600">{{ error }}</p>
+          <button @click="goToLogin" class="btn-primary">
+            Try Again
+          </button>
+        </div>
+        
+        <div v-else class="flex flex-col items-center space-y-4">
+          <h2 class="text-xl font-semibold text-green-900">
+            Login Successful!
+          </h2>
+          <p class="text-green-600">
+            Redirecting you to the dashboard...
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuth } from '../composables/useAuth';
+
+const router = useRouter();
+const { handleOAuthCallback } = useAuth();
+
+const loading = ref(true);
+const error = ref('');
+
+onMounted(async () => {
+  try {
+    // ✅ CORRECT: Delegate to composable for OAuth handling
+    await handleOAuthCallback();
+    
+    // Success redirect with delay for UX
+    setTimeout(() => {
+      router.push('/dashboard');
+    }, 2000);
+    
+  } catch (err: any) {
+    console.error('OAuth callback error:', err);
+    error.value = err.message || 'Failed to complete login.';
+  } finally {
+    loading.value = false;
+  }
+});
+
+const goToLogin = () => {
+  router.push('/login');
+};
+</script>
+```
+
+#### 2. Protected View with Session Guards
+```vue
+<!-- views/ProfileView.vue -->
+<template>
+  <div class="profile-view">
+    <div v-if="authLoading" class="loading-container">
+      <LoadingSpinner />
+      <p>Verifying authentication...</p>
+    </div>
+    
+    <div v-else-if="!isAuthenticated" class="unauthorized-container">
+      <h2>Access Denied</h2>
+      <p>Please login to access your profile.</p>
+      <button @click="goToLogin" class="btn-primary">Login</button>
+    </div>
+    
+    <div v-else class="profile-container">
+      <UserProfile :user="currentUser" />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuth } from '../composables/useAuth';
+import UserProfile from '../components/UserProfile.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
+
+const router = useRouter();
+const { 
+  isAuthenticated, 
+  user: currentUser, 
+  isLoading: authLoading,
+  requireAuth 
+} = useAuth();
+
+// ✅ CORRECT: Route-level authentication guard
+onMounted(async () => {
+  const canAccess = await requireAuth();
+  if (!canAccess) {
+    // requireAuth handles redirect internally
+    return;
+  }
+});
+
+const goToLogin = () => {
+  router.push('/login');
+};
+</script>
+```
+
+#### 3. Session-Aware Navigation View
+```vue
+<!-- views/DashboardView.vue -->
+<template>
+  <div class="dashboard-view">
+    <nav class="dashboard-nav">
+      <div class="user-section">
+        <UserAvatar v-if="currentUser" :user="currentUser" />
+        <div v-if="currentUser">
+          <p>Welcome, {{ currentUser.fullName }}</p>
+          <span class="role-badge">{{ currentUser.role }}</span>
+        </div>
+      </div>
+      <button @click="handleLogout" class="logout-btn">
+        Logout
+      </button>
+    </nav>
+    
+    <main class="dashboard-content">
+      <!-- Role-based content sections -->
+      <AdminSection v-if="isAdmin" />
+      <ClientSection v-else-if="isClient" />
+      <InvestorSection v-else />
+    </main>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuth } from '../composables/useAuth';
+import { usePermissions } from '../composables/usePermissions';
+
+const router = useRouter();
+const { 
+  isAuthenticated, 
+  user: currentUser, 
+  logout,
+  checkAuthentication 
+} = useAuth();
+
+const { isAdmin, isClient } = usePermissions();
+
+// ✅ CORRECT: Session validation on route entry
+onMounted(async () => {
+  if (!isAuthenticated.value) {
+    const isAuth = await checkAuthentication();
+    if (!isAuth) {
+      router.push('/login');
+      return;
+    }
+  }
+});
+
+// ✅ CORRECT: Session-aware logout
+const handleLogout = async () => {
+  try {
+    await logout(); // Composable handles store coordination
+    // logout composable handles redirect to /login
+  } catch (error) {
+    console.error('Logout failed:', error);
+    // Force redirect even if logout fails
+    router.push('/login');
+  }
+};
+</script>
+```
+
+#### 4. Route Guard Integration
+```typescript
+// router/guards.ts - Used by views for session-based routing
+import { useAuth } from '@/modules/Accounts/composables/useAuth';
+
+export const requiresAuth = async (to: any, from: any, next: any) => {
+  const { isAuthenticated, checkAuthentication } = useAuth();
+  
+  // ✅ CORRECT: Check session through composable
+  if (!isAuthenticated.value) {
+    const isAuth = await checkAuthentication();
+    if (!isAuth) {
+      next({ name: 'login', query: { redirect: to.fullPath } });
+      return;
+    }
+  }
+  
+  next();
+};
+
+export const requiresRole = (role: string) => {
+  return async (to: any, from: any, next: any) => {
+    const { user, hasRole, requireAuth } = useAuth();
+    
+    // First ensure authentication
+    const canAccess = await requireAuth();
+    if (!canAccess) {
+      next({ name: 'login' });
+      return;
+    }
+    
+    // Then check role
+    if (!hasRole(role)) {
+      next({ name: 'dashboard' }); // Redirect to allowed page
+      return;
+    }
+    
+    next();
+  };
+};
+```
+
+### Session Management View Architecture
+
+```
+Route Navigation Triggered
+    ↓
+View Route Guard Activated
+    ↓
+View Calls Composable for Auth Check
+    ↓
+Composable Coordinates with Store
+    ↓
+Store Validates Session via Service
+    ↓
+Result Flows Back to View
+    ↓
+View Handles Redirect or Renders Content
+```
+
+### Critical Session View Guidelines
+
+1. **Route Guards**: Implement proper authentication guards for protected routes
+2. **OAuth Callbacks**: Handle OAuth provider redirects with proper error handling
+3. **Navigation Coordination**: Use composables for session-aware navigation
+4. **Loading States**: Show appropriate loading indicators during session checks
+5. **Error Boundaries**: Handle session errors gracefully with user-friendly messages
+6. **Redirect Management**: Proper redirect flows for authentication state changes
+
+### Session-Based Route Configuration
+```typescript
+// routes.ts - Session-aware routing
+const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/auth.view.vue'),
+    meta: { requiresAuth: false, layout: 'AuthLayout' }
+  },
+  {
+    path: '/auth/callback',
+    name: 'auth-callback', 
+    component: () => import('../views/AuthCallback.vue'),
+    meta: { requiresAuth: false, layout: 'AuthLayout' }
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('../views/DashboardView.vue'),
+    meta: { requiresAuth: true, layout: 'DefaultLayout' },
+    beforeEnter: requiresAuth
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('../views/AdminView.vue'),
+    meta: { requiresAuth: true, requiresRole: 'ADMIN' },
+    beforeEnter: requiresRole('ADMIN')
+  }
+];
+```
+
 ### 2. User View (user.view.vue)
 ```vue
 // Location: frontend/src/modules/accounts/views/user.view.vue

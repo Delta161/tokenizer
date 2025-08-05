@@ -13,7 +13,11 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // Simple environment validation
 const validateEnv = (): void => {
-  const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET'];
+  const requiredEnvVars = [
+    'DATABASE_URL', 
+    'JWT_SECRET', 
+    'SESSION_SECRET' // MANDATORY for session management
+  ];
   
   for (const envVar of requiredEnvVars) {
     if (!process.env[envVar]) {
@@ -21,9 +25,14 @@ const validateEnv = (): void => {
     }
   }
   
-  // Warn about using default JWT_SECRET in production
-  if (process.env.NODE_ENV === 'production' && process.env.JWT_SECRET === 'super-secret-key') {
-    console.warn('Warning: Using default JWT_SECRET in production environment!');
+  // Warn about using default secrets in production
+  if (process.env.NODE_ENV === 'production') {
+    if (process.env.JWT_SECRET === 'super-secret-key') {
+      console.warn('Warning: Using default JWT_SECRET in production environment!');
+    }
+    if (process.env.SESSION_SECRET?.includes('change-in-production')) {
+      console.warn('Warning: Using default SESSION_SECRET in production environment!');
+    }
   }
 };
 

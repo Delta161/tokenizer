@@ -101,6 +101,24 @@ const router = createRouter({
       }
     },
     {
+      path: '/navbar-auth-summary',
+      name: 'navbar-auth-summary',
+      component: () => import('@/components/NavBarAuthSummary.vue'),
+      meta: {
+        requiresAuth: false,
+        layout: 'DefaultLayout'
+      }
+    },
+    {
+      path: '/auth-test',
+      name: 'auth-test',
+      component: () => import('@/components/AuthTest.vue'),
+      meta: {
+        requiresAuth: false,
+        layout: 'DefaultLayout'
+      }
+    },
+    {
       path: '/refactoring-summary',
       name: 'refactoring-summary',
       component: () => import('@/components/RefactoringSummary.vue'),
@@ -159,7 +177,16 @@ const router = createRouter({
     {
       path: '/callback',
       name: 'callback',
-      component: () => import('@/modules/Accounts/views/auth.view.vue'),
+      component: () => import('@/modules/Accounts/views/AuthCallback.vue'),
+      meta: {
+        requiresAuth: false,
+        layout: 'AuthLayout'
+      }
+    },
+    {
+      path: '/auth/callback',
+      name: 'auth-callback',
+      component: () => import('@/modules/Accounts/views/AuthCallback.vue'),
       meta: {
         requiresAuth: false,
         layout: 'AuthLayout'
@@ -202,29 +229,35 @@ router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   console.log('🔍 Route requires auth:', requiresAuth)
   
+  // If route doesn't require auth, allow navigation
+  if (!requiresAuth) {
+    console.log('🔍 Route does not require auth, proceeding')
+    next()
+    return
+  }
+  
   // Get auth store
   const authStore = useAuthStore()
   
   // Check if user is authenticated
   let isAuthenticated = authStore.isAuthenticated
   console.log('🔍 Initial isAuthenticated:', isAuthenticated)
-  console.log('🔍 Access token exists:', !!localStorage.getItem('accessToken'))
   console.log('🔍 User in store:', !!authStore.user)
   
-  // If not authenticated but has tokens in localStorage, try to validate them
-  if (!isAuthenticated && (localStorage.getItem('accessToken') || localStorage.getItem('refreshToken'))) {
-    console.log('🔍 Tokens found in localStorage, trying to validate...')
+  // Only check auth if not already authenticated
+  if (!isAuthenticated) {
+    console.log('🔍 Not authenticated, checking session...')
     try {
-      // Initialize auth from localStorage and check token validity
-      authStore.initializeAuth()
-      const isValid = await authStore.checkTokenValidity()
-      isAuthenticated = authStore.isAuthenticated && isValid
-      console.log('🔍 After validation - isAuthenticated:', isAuthenticated, 'isValid:', isValid)
+      // Check session-based authentication (now with caching)
+      isAuthenticated = await authStore.checkAuth()
+      console.log('🔍 After session check - isAuthenticated:', isAuthenticated)
     } catch (error) {
-      console.log('🔍 Token validation failed:', error)
-      // Tokens are invalid, clear them
-      authStore.logout()
+      console.log('🔍 Session check failed:', error)
+      // Session is invalid, clear any cached data
+      authStore.clearAuthData()
     }
+  } else {
+    console.log('🔍 Already authenticated, skipping auth check')
   }
   
   // Check if route requires specific role
