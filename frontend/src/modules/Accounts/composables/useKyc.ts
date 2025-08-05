@@ -5,9 +5,9 @@
  */
 
 import { ref, computed } from 'vue';
-import { KycService } from '../services/kycService';
-import type { KycRecord, KycSubmissionData, KycProviderSession } from '../types/kycTypes';
-import { KycStatus } from '../types/kycTypes';
+import { KycService } from '../services/kyc.service';
+import type { KycRecord, KycSubmissionData, KycProviderSession } from '../types/kyc.types';
+import { KycStatus } from '../types/kyc.types';
 
 export function useKyc() {
   const kycRecord = ref<KycRecord | null>(null);

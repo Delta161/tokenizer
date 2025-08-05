@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { UserRoleBadge } from '../components';
-import type { UserRole } from '../types/userTypes';
+import type { UserRole } from '../types/user.types';
 
 // State for dynamic role selection
 const selectedRole = ref<UserRole>('user');

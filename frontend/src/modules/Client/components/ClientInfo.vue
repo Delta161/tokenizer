@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import type { Client } from '../types/Client'
 import { formatClientStatus, getStatusColor } from '../utils/clientUtils'
 

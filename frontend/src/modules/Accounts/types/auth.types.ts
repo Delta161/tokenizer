@@ -28,7 +28,7 @@ export interface RegisterData {
  * Authentication response from the API
  */
 export interface AuthResponse {
-  user: import('./userTypes').User;
+  user: import('./user.types').User;
   accessToken: string;
   refreshToken: string;
 }

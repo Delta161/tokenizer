@@ -238,7 +238,7 @@ import { ref, computed, reactive } from 'vue';
 import { useUser } from '@/modules/Accounts/composables/useUser';
 import UserAvatar from '@/modules/Accounts/components/UserAvatar.vue';
 import UserRoleBadge from '@/modules/Accounts/components/UserRoleBadge.vue';
-import type { User, UserProfile, UserRole } from '@/modules/Accounts/types/userTypes';
+import type { User, UserProfile, UserRole } from '@/modules/Accounts/types/user.types';
 
 const props = defineProps<{
   user: User;

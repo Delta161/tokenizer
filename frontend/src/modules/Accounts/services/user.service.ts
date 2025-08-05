@@ -12,7 +12,7 @@ import type {
   UserUpdate,
   UserSearchParams,
   UserSearchResult,
-} from '../types/userTypes';
+} from '../types/user.types';
 import { handleServiceError } from '../utils/errorHandling';
 import {
   mapBackendUserToFrontend,

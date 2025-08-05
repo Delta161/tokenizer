@@ -5,8 +5,8 @@
  * It ensures consistent data transformation across the Accounts module.
  */
 
-import type { User, UserProfile, UserSettings, UserRole, UserUpdate, UserSearchParams, UserSearchResult } from '../../types/userTypes';
-import type { RegisterData } from '../../types/authTypes';
+import type { User, UserProfile, UserSettings, UserRole, UserUpdate, UserSearchParams, UserSearchResult } from '../../types/user.types';
+import type { RegisterData } from '../../types/auth.types';
 
 /**
  * Map backend user to frontend user

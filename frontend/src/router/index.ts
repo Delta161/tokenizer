@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../modules/Accounts'
-import { authRoutes } from '../modules/Accounts/views/authRoutes'
-import { kycRoutes } from '../modules/Accounts/views/kycRoutes'
+import { accountsRoutes } from '../modules/Accounts/routes'
 import { exampleRoutes } from '../modules/Accounts/examples/exampleRoutes'
 
 // Import module routes - lazy import to avoid circular dependencies
@@ -120,11 +119,11 @@ const router = createRouter({
       }
     },
     
-    // Login and callback routes
+    // Login and callback routes - using consolidated auth.view.vue
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/views/LoginPage.vue'),
+      component: () => import('@/modules/Accounts/views/auth.view.vue'),
       meta: {
         requiresAuth: false,
         layout: 'AuthLayout'
@@ -133,7 +132,7 @@ const router = createRouter({
     {
       path: '/callback',
       name: 'callback',
-      component: () => import('@/views/CallbackPage.vue'),
+      component: () => import('@/modules/Accounts/views/auth.view.vue'),
       meta: {
         requiresAuth: false,
         layout: 'AuthLayout'
@@ -142,7 +141,7 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('@/modules/Accounts/views/UserProfile.view.vue'),
+      component: () => import('@/modules/Accounts/views/user.view.vue'),
       meta: {
         requiresAuth: false, // Temporarily disabled for testing
         layout: 'DefaultLayout'
@@ -150,8 +149,7 @@ const router = createRouter({
     },
     
     // Accounts module routes (consolidated Auth, User, and KYC routes)
-    ...authRoutes,
-    ...kycRoutes,
+    ...accountsRoutes,
     
     // Example routes for component demonstrations
     ...exampleRoutes,

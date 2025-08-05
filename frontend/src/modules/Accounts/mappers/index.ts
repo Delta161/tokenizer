@@ -17,7 +17,7 @@ export {
   mapRegisterDataToBackend,
   mapSearchParamsToBackend,
   mapBackendSearchResultToFrontend
-} from './userMapper';
+} from './user.mapper';
 
 // KYC mappers
 export {
@@ -29,7 +29,7 @@ export {
   formatDocumentType,
   isKycVerified,
   formatKycStatus
-} from './kycMapper';
+} from './kyc.mapper';
 
 // Auth mappers
 export {
@@ -37,4 +37,4 @@ export {
   mapLoginCredentialsToBackend,
   mapBackendTokenRefreshToFrontend
   // Password reset mapper functions removed - only OAuth authentication is supported
-} from './authMapper';
+} from './auth.mapper';

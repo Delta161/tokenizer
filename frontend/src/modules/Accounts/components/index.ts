@@ -8,7 +8,7 @@ import { defineAsyncComponent } from 'vue';
 
 // User Components
 // UserProfileCard moved to sections/common/UserProfileSection.vue
-export const UserSettingsForm = defineAsyncComponent(() => import('./UserSettingsForm.vue'));
+export const UserComponent = defineAsyncComponent(() => import('./user.component.vue'));
 export const UserRoleBadge = defineAsyncComponent(() => import('./UserRoleBadge.vue'));
 
 // Auth Components
@@ -20,4 +20,4 @@ export const AuthComponent = defineAsyncComponent(() => import('./auth.component
 // AuthView moved to views directory and split into component/view
 
 // KYC Components
-export const KycVerificationStatus = defineAsyncComponent(() => import('./KycVerificationStatus.vue'));
+export const KycVerificationStatus = defineAsyncComponent(() => import('./kyc.component.vue'));

@@ -1,6 +1,6 @@
 import { computed } from 'vue';
-import { useAuthStore } from '../store/authStore';
-import type { User } from '../types/userTypes';
+import { useAuthStore } from '../store/auth.store';
+import type { User } from '../types/user.types';
 
 /**
  * Composable for authentication functionality

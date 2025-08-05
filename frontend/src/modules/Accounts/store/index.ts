@@ -4,6 +4,6 @@
  * This file exports all stores from the Accounts module.
  */
 
-export { useUserStore } from './userStore';
-export { useAuthStore } from './authStore';
-export { useKycStore } from './kycStore';
+export { useUserStore } from './user.store';
+export { useAuthStore } from './auth.store';
+export { useKycStore } from './kyc.store';

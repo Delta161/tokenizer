@@ -3,7 +3,7 @@
  * Provides reactive access to client profile data
  */
 
-import { ref, onMounted, Ref } from 'vue'
+import { ref, onMounted, type Ref } from "vue";
 import { clientController } from '../controllers/client.controller'
 import type { Client } from '../types/Client'
 

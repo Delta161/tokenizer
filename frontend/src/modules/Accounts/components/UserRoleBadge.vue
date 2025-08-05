@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { UserRole } from '../types/userTypes';
+import type { UserRole } from '../types/user.types';
 
 const props = defineProps<{
   role: UserRole;

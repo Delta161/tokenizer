@@ -5,8 +5,8 @@
  * It ensures consistent data transformation across the Accounts module.
  */
 
-import type { KycRecord, KycSubmissionData, KycProviderSession } from '../../types/kycTypes';
-import { KycStatus, KycProvider } from '../../types/kycTypes';
+import type { KycRecord, KycSubmissionData, KycProviderSession } from '../../types/kyc.types';
+import { KycStatus, KycProvider } from '../../types/kyc.types';
 
 /**
  * Map backend KYC record to frontend format

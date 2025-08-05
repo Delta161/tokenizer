@@ -5,8 +5,8 @@
  */
 
 import apiClient from '@/services/apiClient';
-import type { KycRecord, KycSubmissionData, KycProviderSession } from '../types/kycTypes';
-import { KycStatus } from '../types/kycTypes';
+import type { KycRecord, KycSubmissionData, KycProviderSession } from '../types/kyc.types';
+import { KycStatus } from '../types/kyc.types';
 import { handleServiceError } from '../utils/errorHandling';
 import {
   mapBackendKycToFrontend,

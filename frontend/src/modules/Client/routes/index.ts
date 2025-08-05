@@ -3,7 +3,7 @@
  * Defines the routes for client-related pages
  */
 
-import { RouteRecordRaw } from 'vue-router'
+import { type RouteRecordRaw } from "vue-router";
 
 /**
  * Client routes configuration

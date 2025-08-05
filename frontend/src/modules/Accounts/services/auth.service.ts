@@ -1,5 +1,5 @@
 import apiClient from '@/services/apiClient';
-import type { LoginCredentials, RegisterData, AuthResponse, TokenRefreshResponse } from '../types/authTypes';
+import type { LoginCredentials, RegisterData, AuthResponse, TokenRefreshResponse } from '../types/auth.types';
 import { handleServiceError } from '../utils/errorHandling';
 import {
   mapBackendAuthResponseToFrontend,

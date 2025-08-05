@@ -5,8 +5,8 @@
  */
 
 import { ref, computed } from 'vue';
-import { UserService } from '../services/userService';
-import type { User, UserSearchParams, UserSearchResult } from '../types/userTypes';
+import { UserService } from '../services/user.service';
+import type { User, UserSearchParams, UserSearchResult } from '../types/user.types';
 
 export function useUserSearch() {
   const userService = new UserService();

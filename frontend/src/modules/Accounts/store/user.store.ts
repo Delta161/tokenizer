@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { UserService } from '../services/userService';
-import type { User, UserUpdate } from '../types/userTypes';
+import { UserService } from '../services/user.service';
+import type { User, UserUpdate } from '../types/user.types';
 
 export const useUserStore = defineStore('user', {
   state: () => ({

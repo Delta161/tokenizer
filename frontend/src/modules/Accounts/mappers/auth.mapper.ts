@@ -5,8 +5,8 @@
  * It ensures consistent data transformation across the Accounts module.
  */
 
-import type { LoginCredentials, RegisterData, AuthResponse, TokenRefreshResponse } from '../../types/authTypes';
-import { mapBackendUserToFrontend } from './userMapper';
+import type { LoginCredentials, RegisterData, AuthResponse, TokenRefreshResponse } from '../../types/auth.types';
+import { mapBackendUserToFrontend } from './user.mapper';
 
 /**
  * Map backend auth response to frontend format

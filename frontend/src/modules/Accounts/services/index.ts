@@ -4,6 +4,6 @@
  * This file exports all services from the Accounts module.
  */
 
-export { UserService } from './userService';
-export { AuthService } from './authService';
-export { KycService } from './kycService';
+export { UserService } from './user.service';
+export { AuthService } from './auth.service';
+export { KycService } from './kyc.service';

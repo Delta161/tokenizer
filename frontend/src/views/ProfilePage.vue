@@ -8,7 +8,7 @@
       </div>
 
       <!-- Profile Component -->
-      <UserProfileComponent :editable="true" />
+      <UserComponent :editable="true" />
 
       <!-- Actions -->
       <div class="mt-8 flex justify-between">
@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import UserProfileComponent from '../modules/Accounts/components/UserProfile.component.vue';
+import UserComponent from '../modules/Accounts/components/user.component.vue';
 import { useAuthStore } from '../modules/Accounts';
 
 const router = useRouter();
