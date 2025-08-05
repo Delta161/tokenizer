@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { User } from '../types/user.types'
+import type { User, UserRole } from '../types/user.types'
 import { AuthService } from '../services/auth.service'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -18,23 +18,23 @@ export const useAuthStore = defineStore('auth', () => {
   // Getters
   const fullName = computed(() => {
     if (!user.value) return ''
-    return `${user.value.firstName} ${user.value.lastName}`.trim()
+    return user.value.fullName || ''
   })
   
   const isAdmin = computed(() => {
-    return user.value?.role === userRole.ADMIN
+    return user.value?.role === 'ADMIN'
   })
   
   const isClient = computed(() => {
-    return user.value?.role === userRole.CLIENT
+    return user.value?.role === 'CLIENT'
   })
   
   const isInvestor = computed(() => {
-    return user.value?.role === userRole.INVESTOR
+    return user.value?.role === 'INVESTOR'
   })
 
   const userRole = computed(() => {
-    return user.value?.role || ''
+    return user.value?.role || 'INVESTOR'
   })
   
   // Actions
@@ -49,12 +49,11 @@ export const useAuthStore = defineStore('auth', () => {
     // TEMPORARY: For testing, create a mock logged-in user if no user exists
     if (!storedUser && !storedAccessToken) {
       console.log('🔧 Creating temporary mock user for testing')
-      const mockUser = {
+      const mockUser: User = {
         id: 'test-user-123',
         email: 'test@example.com',
-        firstName: 'Test',
-        lastName: 'User',
-        role: 'user' as const,
+        fullName: 'Test User',
+        role: 'INVESTOR',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }
@@ -166,8 +165,8 @@ export const useAuthStore = defineStore('auth', () => {
     
     // Store in localStorage
     localStorage.setItem('user', JSON.stringify(user.value))
-    localStorage.setItem('accessToken', accessToken.value)
-    localStorage.setItem('refreshToken', refreshToken.value)
+    if (accessToken.value) localStorage.setItem('accessToken', accessToken.value)
+    if (refreshToken.value) localStorage.setItem('refreshToken', refreshToken.value)
     if (tokenExpiresAt.value) localStorage.setItem('tokenExpiresAt', tokenExpiresAt.value.toString())
     if (refreshTokenExpiresAt.value) localStorage.setItem('refreshTokenExpiresAt', refreshTokenExpiresAt.value.toString())
     
@@ -245,8 +244,8 @@ export const useAuthStore = defineStore('auth', () => {
       }
       
       // Update localStorage
-      localStorage.setItem('accessToken', accessToken.value)
-      if (response.refreshToken) localStorage.setItem('refreshToken', refreshToken.value)
+      if (accessToken.value) localStorage.setItem('accessToken', accessToken.value)
+      if (response.refreshToken && refreshToken.value) localStorage.setItem('refreshToken', refreshToken.value)
       if (tokenExpiresAt.value) localStorage.setItem('tokenExpiresAt', tokenExpiresAt.value.toString())
       if (refreshTokenExpiresAt.value) localStorage.setItem('refreshTokenExpiresAt', refreshTokenExpiresAt.value.toString())
       

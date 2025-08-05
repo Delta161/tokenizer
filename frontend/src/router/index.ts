@@ -101,6 +101,33 @@ const router = createRouter({
       }
     },
     {
+      path: '/refactoring-summary',
+      name: 'refactoring-summary',
+      component: () => import('@/components/RefactoringSummary.vue'),
+      meta: {
+        requiresAuth: false,
+        layout: 'DefaultLayout'
+      }
+    },
+    {
+      path: '/test-api-services',
+      name: 'test-api-services',
+      component: () => import('@/components/TestAPIServices.vue'),
+      meta: {
+        requiresAuth: false,
+        layout: 'DefaultLayout'
+      }
+    },
+    {
+      path: '/test-user-profile',
+      name: 'test-user-profile',
+      component: () => import('@/components/TestUserProfile.vue'),
+      meta: {
+        requiresAuth: false,
+        layout: 'DefaultLayout'
+      }
+    },
+    {
       path: '/error-handling-demo',
       name: 'error-handling-demo',
       component: () => import('@/examples/ErrorHandlingExample.vue'),

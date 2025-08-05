@@ -36,7 +36,7 @@
     </div>
 
     <!-- Profile content -->
-    <UserProfile 
+    <UserComponent 
       v-else-if="user"
       :user="user"
       :editable="editable"
@@ -50,9 +50,9 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import { useUserStore } from '../stores/user.store';
-import { useUser } from '../composables/useUser';
-import UserProfile from '../components/UserProfile.vue';
-import type { UserProfile as UserProfileType } from '../types/user.types';
+import { useUserComposable } from '../composables/useUser';
+import UserComponent from '../components/UserComponent.vue';
+import type { UserProfile } from '../types/user.types';
 
 // Layer 2 Responsibilities: UI coordination, component orchestration, store access
 
@@ -69,13 +69,13 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   'mode-change': [mode: 'profile' | 'settings'];
-  'profile-updated': [profile: UserProfileType];
+  'profile-updated': [profile: UserProfile];
   'error': [error: string];
 }>();
 
 // Layer 3 access: Stores and Composables
 const userStore = useUserStore();
-const { loading, error, getUserById, updateUser } = useUser();
+const { loading, error } = useUserComposable();
 
 // Computed properties for section coordination
 const user = computed(() => {
@@ -85,23 +85,21 @@ const user = computed(() => {
   return userStore.currentUser;
 });
 
-const isLoading = computed(() => loading.value || userStore.loading);
+const isLoading = computed(() => loading.value || userStore.isLoading);
 const currentMode = computed(() => 'profile'); // Current mode tracking
 
 // Section coordination methods (Layer 2 responsibility)
-const handleUpdate = async (profileData: Partial<UserProfileType>) => {
+const handleUpdate = async (profileData: Partial<UserProfile>) => {
   try {
     if (props.userId) {
-      // For viewing other users' profiles, we can't update them directly
-      // This would need admin permissions and a separate update method
-      throw new Error('Cannot update other users profiles directly');
-    } else if (userStore.currentUser) {
-      await userStore.updateUserProfile(profileData);
+      await userStore.updateUserProfile(props.userId, profileData);
+    } else {
+      await userStore.updateCurrentUserProfile(profileData);
     }
     
     const updatedUser = user.value;
     if (updatedUser) {
-      emit('profile-updated', updatedUser as UserProfileType);
+      emit('profile-updated', updatedUser as UserProfile);
     }
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Failed to update profile';
@@ -118,7 +116,7 @@ const handleEditToggle = (isEditing: boolean) => {
 onMounted(async () => {
   if (props.userId && !user.value) {
     try {
-      await getUserById(props.userId);
+      await userStore.fetchUser(props.userId);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch user';
       emit('error', errorMessage);

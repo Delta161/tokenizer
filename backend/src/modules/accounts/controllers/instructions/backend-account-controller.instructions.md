@@ -7,18 +7,66 @@ applyTo: 'backend/src/modules/accounts/controllers/, backend/src/modules/account
 **Purpose:**  
 This folder contains all Express.js controller modules responsible for handling HTTP requests related to account management. Controllers act as the interface layer between incoming API calls and the business logic encapsulated in the services layer.
 
----
+## 🏗️ MANDATORY BACKEND ARCHITECTURE - CONTROLLERS LAYER
 
-### ✅ Responsibilities of Controller Functions
+Controllers are **Layer 3** in the mandatory 7-layer backend architecture:
 
-- Handle incoming HTTP requests (e.g., params, query, body extraction).
-- Call appropriate service-layer methods to execute business logic.
-- Return structured HTTP responses with appropriate status codes (usually JSON).
-- Use async/await and forward errors to centralized error handling middleware via `http-errors`.
-- Use the `http-errors` to create and manage HTTP errors consistently.
-- Keep functions short, focused, and single-responsibility.
-- Avoid direct database access or complex business logic inside controllers.
-- Basic input validation can be done here or delegated to middleware.
+**Route → Middleware → Validator → 🎯 CONTROLLER → Service → Utils → Types**
+
+### ✅ Controller Responsibilities (Layer 3)
+
+Controllers handle the incoming HTTP request and prepare the HTTP response:
+
+- **Extract data** from request (params, query, body)
+- **Validate request data** (basic validation or use validators)
+- **Call appropriate service functions** to perform business logic
+- **Format and return responses** with proper HTTP status codes
+- **Handle errors** by forwarding to error handling middleware
+
+### ❌ What Controllers Should NOT Do
+
+- **NO business logic** - delegate to services
+- **NO database calls** - services handle all Prisma interactions
+- **NO complex data processing** - use services and utils
+- **NO authentication logic** - use middleware
+- **NO direct Prisma usage** - only services can use Prisma
+
+### 🔄 Controller Flow Pattern
+
+```typescript
+export const controllerFunction = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // 1. Extract request data
+    const { param } = req.params;
+    const { query } = req.query;
+    const data = req.body;
+    
+    // 2. Basic validation (or use validators)
+    if (!data.required) {
+      throw createError(400, 'Required field missing');
+    }
+    
+    // 3. Call service layer
+    const result = await serviceFunction(data);
+    
+    // 4. Return formatted response
+    res.status(200).json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    next(error); // Forward to error handling middleware
+  }
+};
+```
+
+### ✅ Architecture Compliance Rules
+
+1. **Services Only**: All business logic must be in services layer
+2. **No Prisma**: Controllers cannot directly use Prisma client
+3. **Error Forwarding**: Use `next(error)` for centralized error handling
+4. **Single Responsibility**: Each controller function handles one endpoint
+5. **Type Safety**: Use TypeScript with proper Request/Response typing
 
 ---
 

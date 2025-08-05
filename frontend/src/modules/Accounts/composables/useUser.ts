@@ -7,7 +7,7 @@
 import { ref, computed } from 'vue';
 import { UserService } from '../services/user.service';
 import type { User, UserProfile, UserSettings, UserUpdate } from '../types/user.types';
-import { useUserStore } from '../store/user.store';
+import { useUserStore } from '../stores/user.store';
 
 export function useUser() {
   const userService = new UserService();

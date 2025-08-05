@@ -11,6 +11,3 @@ export * from './user.service';
 
 // KYC service
 export * from './kyc.service';
-
-// Token service
-export * from './token.service';

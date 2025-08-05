@@ -8,27 +8,89 @@ applyTo: 'backend/src/modules/accounts/controllers/auth.controller.ts'
 **Purpose:**  
 This controller handles all HTTP endpoints related to authentication and session management. It processes incoming requests for login, logout, OAuth callbacks, and token validation, delegating core business logic to the `auth.service.ts` while focusing solely on HTTP-level concerns.
 
----
+## 🏗️ MANDATORY BACKEND ARCHITECTURE - AUTH CONTROLLER
 
-### ✅ Key Responsibilities
+This controller is **Layer 3** in the mandatory 7-layer backend architecture:
 
-- Parse and validate HTTP requests related to authentication flows.
-- Call appropriate methods from the authentication service layer.
-- Manage session initialization, renewal, and destruction.
-- Handle OAuth provider callbacks and user info retrieval.
-- Return well-structured JSON responses with relevant HTTP status codes.
-- Forward errors to centralized error-handling middleware using `next(error)`.
+**Route → Middleware → Validator → 🎯 AUTH CONTROLLER → Auth Service → Utils → Types**
 
----
+### ✅ Auth Controller Responsibilities (Layer 3)
 
-### 🚫 What This Controller Should Avoid
+Authentication controllers handle HTTP requests and prepare HTTP responses:
 
-- **Business logic:** No token generation, validation, or user persistence here — delegate to `auth.service.ts`.
-- **Direct database access:** Prisma client calls belong in the service layer.
-- **Complex validation:** Basic request checks allowed; detailed validation should happen in middleware or service.
-- **Logging and metrics:** Should be centralized outside controller.
-- **Security enforcement:** Authorization and permission checks should be done before or inside service methods.
-- **State management outside sessions:** Keep session management minimal and stateless where possible.
+- **Extract credentials** from request (body, headers, cookies)
+- **Basic validation** of authentication data format
+- **Call auth service methods** for authentication logic
+- **Handle OAuth callbacks** and redirect flows
+- **Set/clear authentication tokens** in cookies/headers
+- **Return authentication responses** with proper status codes
+
+### ❌ What Auth Controllers Should NOT Do
+
+- **NO token generation/validation logic** - delegate to auth service
+- **NO password hashing/comparison** - auth service handles this
+- **NO database user lookups** - services handle all Prisma interactions
+- **NO OAuth provider communication** - use strategies or services
+- **NO session storage logic** - use middleware and services
+- **NO direct Prisma usage** - only services can use Prisma
+
+### 🔄 Auth Controller Flow Pattern
+
+```typescript
+export const login = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // 1. Extract authentication data
+    const { email, password } = req.body;
+    
+    // 2. Basic validation
+    if (!email || !password) {
+      throw createError(400, 'Email and password required');
+    }
+    
+    // 3. Call auth service
+    const authResult = await authService.authenticateUser(email, password);
+    
+    // 4. Set authentication tokens
+    res.cookie('accessToken', authResult.accessToken, { httpOnly: true });
+    
+    // 5. Return response
+    res.status(200).json({
+      success: true,
+      user: authResult.user
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+```
+
+### 🔒 OAuth Flow Handling
+
+```typescript
+export const googleCallback = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // 1. Extract OAuth data from request
+    const { code } = req.query;
+    
+    // 2. Call auth service for OAuth processing
+    const authResult = await authService.processGoogleAuth(code);
+    
+    // 3. Set tokens and redirect
+    res.cookie('accessToken', authResult.accessToken, { httpOnly: true });
+    res.redirect('/dashboard');
+  } catch (error) {
+    next(error);
+  }
+};
+```
+
+### ✅ Architecture Compliance Rules
+
+1. **Auth Service Only**: All authentication logic must be in auth service
+2. **No Prisma**: Controllers cannot directly use Prisma client
+3. **Token Handling**: Only set/clear tokens, never generate/validate them
+4. **OAuth Delegation**: Use auth service for OAuth provider communication
+5. **Error Forwarding**: Use `next(error)` for centralized error handling
 
 ---
 

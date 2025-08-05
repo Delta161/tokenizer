@@ -2,33 +2,17 @@
  * Auth Types
  * 
  * This file defines the types used for authentication in the Accounts module.
+ * Updated to match backend AuthResponseDTO and related types.
  */
 
-/**
- * Login credentials for authentication
- * Note: Password field removed as only OAuth authentication is supported
- */
-export interface LoginCredentials {
-  email: string;
-  // password field removed - only OAuth authentication is supported
-}
-
-/**
- * Registration data for new user accounts
- * Note: Password field removed as only OAuth authentication is supported
- */
-export interface RegisterData {
-  email: string;
-  // password field removed - only OAuth authentication is supported
-  firstName: string;
-  lastName: string;
-}
+import type { User, UserRole } from './user.types';
 
 /**
  * Authentication response from the API
+ * Matches backend AuthResponseDTO structure
  */
 export interface AuthResponse {
-  user: import('./user.types').User;
+  user: User;
   accessToken: string;
   refreshToken: string;
 }
@@ -41,4 +25,50 @@ export interface TokenRefreshResponse {
   refreshToken?: string;
 }
 
-// Password reset types removed - only OAuth authentication is supported
+/**
+ * OAuth profile data structure
+ * Matches backend OAuthProfileDTO
+ */
+export interface OAuthProfile {
+  provider: string;
+  id: string;
+  displayName?: string;
+  name?: {
+    givenName?: string;
+    familyName?: string;
+  };
+  emails?: Array<{ value: string; verified?: boolean }>;
+  photos?: Array<{ value: string }>;
+  _json?: any;
+}
+
+/**
+ * Token payload structure
+ * Matches backend TokenPayload
+ */
+export interface TokenPayload {
+  id: string;
+  email: string;
+  role: UserRole;
+  iat?: number;
+  exp?: number;
+}
+
+// Legacy interfaces kept for backward compatibility but deprecated
+// These are no longer used as only OAuth authentication is supported
+
+/**
+ * @deprecated Use OAuth authentication instead
+ */
+export interface LoginCredentials {
+  email: string;
+}
+
+/**
+ * @deprecated Use OAuth authentication instead
+ */
+export interface RegisterData {
+  email: string;
+  firstName: string;
+  lastName: string;
+}

@@ -6,9 +6,9 @@
  */
 
 // Core functionality exports
-export { useAuthStore } from './store/auth.store';
-export { useUserStore } from './store/user.store';  
-export { useKycStore } from './store/kyc.store';
+export { useAuthStore } from './stores/auth.store';
+export { useUserStore } from './stores/user.store';  
+export { useKycStore } from './stores/kyc.store';
 
 export { accountsRoutes } from './routes';
 

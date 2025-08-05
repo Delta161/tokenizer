@@ -14,7 +14,6 @@ import type { OAuthProfileDTO } from '../types/auth.types';
 
 // Global utilities
 import { logger } from '../../../utils/logger';
-import { prisma } from '../../../prisma/client';
 
 // Default callback URL is configured in .env as GOOGLE_CALLBACK_URL
 

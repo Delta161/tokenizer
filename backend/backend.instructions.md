@@ -6,6 +6,82 @@ The folder named "backend" is the backend folder.
 For the backend, Express.js is used.
 For the database, PostgreSQL is used.
 The backend is responsible for handling API requests, managing data storage, and serving the frontend application.
+
+## 🏗️ MANDATORY BACKEND ARCHITECTURE
+
+The backend follows a strict 7-layer architecture that MUST be enforced in all modules:
+
+### ✅ routes/
+This is where all your API endpoints are defined.
+
+Each route simply connects a URL and HTTP method (like GET /users) to a controller function. No logic, no validation, and definitely no database access should live here. Its only purpose is to define what happens when a certain API endpoint is hit.
+
+### ✅ middleware/
+Middleware functions run before the route handlers.
+
+These are used for authentication, authorization, logging, rate limiting, and similar cross-cutting concerns. For example, you'd use middleware to check if the user is logged in before allowing them to access protected routes.
+
+Middleware can attach things to the request (like the authenticated user), but shouldn't handle business logic or touch the database directly.
+
+### ✅ controllers/
+Controllers handle the incoming HTTP request and prepare the HTTP response.
+
+They extract relevant data from the request, validate it if necessary, and then call the appropriate service functions to perform the actual business logic. Afterward, they send a structured response back to the client.
+
+Controllers should not contain business logic or database calls. Their job is simply to act as the "bridge" between the request and your service layer.
+
+### ✅ validators/
+This folder contains schemas to validate incoming request data.
+
+It ensures that all inputs to your system (such as user registration or KYC data) are properly formatted, required fields are present, and values meet the rules you've defined.
+
+These are typically used in the controller layer before data is passed to services. No logic, no side effects, and no DB access here — just strict validation.
+
+### ✅ services/
+This is where all the core logic and data handling takes place.
+
+Services are responsible for executing the business rules of your application and interacting with the database using the Prisma client. Everything that involves reading from or writing to the database happens here.
+
+The controller passes data to the service, and the service decides how to process it — whether that's fetching a user, updating a record, or handling a more complex workflow like verifying KYC.
+
+All Prisma logic should live here, and nowhere else.
+
+### ✅ utils/
+This folder holds reusable, stateless helper functions.
+
+These are pure utility functions like formatting a date, generating a random ID, or converting data formats. They should never access the database or deal with incoming requests.
+
+Think of this as your internal toolbox: low-level helpers that can be reused across services or controllers.
+
+### ✅ types/
+This is where you define TypeScript types and enums used across the module.
+
+Types ensure consistency in how data is represented and passed around, reducing bugs and improving developer experience.
+
+There's no logic here — just structural definitions to keep things type-safe and consistent.
+
+### ✅ strategies/
+This folder is dedicated to third-party authentication setups like OAuth.
+
+It holds configuration logic for providers such as Google or Azure, usually using Passport strategies. These define how users log in, how callbacks are handled, and what data is retrieved during authentication.
+
+This is the integration point for external identity providers — not for core logic or data handling.
+
+## 🔄 How the Pieces Work Together
+Here's the flow when a request hits your backend:
+
+1. **Route** receives the HTTP request.
+2. **Middleware** checks auth or other pre-conditions.
+3. **Validator** ensures the request data is well-formed.
+4. **Controller** receives the cleaned data and calls the appropriate service.
+5. **Service** contains the business logic and talks to the database using Prisma.
+6. **Utils** may be used by services or controllers for support.
+7. **Response** is returned to the client.
+
+## ✅ Where Prisma Should Be Used
+The only place where Prisma (your database client) should be directly used is inside the **services** folder.
+
+This keeps your architecture clean, testable, and easy to scale. Services are the one and only layer that should know how the data is stored or retrieved.
 The backend communicates with the frontend through RESTful APIs, allowing for data exchange and user interactions.
 The backend is structured to handle various functionalities such as user authentication, data processing, and integration with external services.
 The backend code is organized into modules, each responsible for specific features or services.

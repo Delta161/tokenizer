@@ -3,24 +3,9 @@ import { Response, NextFunction } from 'express';
 
 // Internal modules
 import { AuthenticatedRequest } from './auth.middleware';
-import { KycService } from '../services/kyc.service';
+import { kycService } from '../services/kyc.service';
 import { logger } from '../../../utils/logger';
-import { prisma } from '../../../prisma/client';
 import { accountsLogger } from '../utils/accounts.logger';
-
-// Create a singleton instance of the KYC service
-let kycService: KycService | null = null;
-
-/**
- * Get the KYC service instance
- */
-function getKycService(): KycService {
-  if (!kycService) {
-    // Use the shared prisma client
-    kycService = new KycService(prisma);
-  }
-  return kycService;
-}
 
 /**
  * Middleware to require verified KYC status
@@ -62,7 +47,7 @@ export const requireKycVerified = async (
       method: req.method
     });
 
-    const service = getKycService();
+    const service = kycService;
     const isVerified = await service.isKycVerified(req.user.id);
 
     if (!isVerified) {

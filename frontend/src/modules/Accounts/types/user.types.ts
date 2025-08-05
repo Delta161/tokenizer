@@ -2,45 +2,37 @@
  * User Types
  * 
  * This file defines the types used in the User module.
+ * Updated to match backend UserDTO structure.
  */
 
 export interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  fullName?: string;
+  fullName: string;
   role: UserRole;
-  avatar?: string;
-  bio?: string;
-  location?: string;
-  website?: string;
-  socialLinks?: {
-    twitter?: string;
-    linkedin?: string;
-    github?: string;
-  };
+  avatarUrl?: string;
+  authProvider?: string;
+  providerId?: string;
   createdAt: string;
   updatedAt: string;
+  lastLoginAt?: string;
+  phone?: string;
+  preferredLanguage?: string;
+  timezone?: string;
 }
 
-export type UserRole = 'user' | 'admin' | 'manager';
+// Use same UserRole values as backend Prisma schema
+export type UserRole = 'INVESTOR' | 'CLIENT' | 'ADMIN';
 
 export interface UserProfile {
   id: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
-  avatar?: string;
+  avatarUrl?: string;
   role: UserRole;
-  bio?: string;
-  location?: string;
-  website?: string;
-  socialLinks?: {
-    twitter?: string;
-    linkedin?: string;
-    github?: string;
-  };
+  phone?: string;
+  preferredLanguage?: string;
+  timezone?: string;
 }
 
 export interface UserSettings {

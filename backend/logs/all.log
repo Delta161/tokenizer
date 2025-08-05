@@ -1693,3 +1693,22 @@
 2025-08-05 11:30:26:3026 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/kyc/me - /api/v1/api/v1/kyc/me - GET - ::1[39m
 2025-08-05 11:30:32:3032 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/users/me - /api/v1/api/v1/users/me - GET - ::1[39m
 2025-08-05 11:30:32:3032 [33mwarn[39m: [33m404 - NOT_FOUND - Not Found - /api/v1/api/v1/kyc/me - /api/v1/api/v1/kyc/me - GET - ::1[39m
+2025-08-05 14:54:54:5454 [32minfo[39m: [32mCleaning up auth middleware resources[39m
+2025-08-05 14:54:54:5454 [32minfo[39m: [32mToken cache cleared[39m
+2025-08-05 14:54:54:5454 [32minfo[39m: [32mAuth middleware cleanup completed[39m
+2025-08-05 14:55:10:5510 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-05 14:55:10:5510 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-05 14:55:10:5510 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-05 14:55:10:5510 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-05 19:06:38:638 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 19:06:38:638 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 19:06:38:638 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 19:06:52:652 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 19:06:52:652 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 19:06:52:652 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/users/me - GET - ::1[39m
+2025-08-05 19:13:04:134 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 19:13:04:134 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 19:13:04:134 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 19:14:32:1432 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 19:14:32:1432 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 19:14:32:1432 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m

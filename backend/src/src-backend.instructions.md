@@ -3,6 +3,65 @@ applyTo: 'backend/src'
 ---
 # Backend SRC Instructions
 The folder named "src" is the source code folder for the backend.
+
+## 🏗️ MANDATORY BACKEND ARCHITECTURE
+
+All code in backend/src MUST follow the strict 7-layer architecture:
+
+### ✅ routes/
+- Define API endpoints only
+- Connect URL + HTTP method to controller functions
+- NO business logic, validation, or database access
+- Only route definition and handler assignment
+
+### ✅ middleware/
+- Pre-route processing functions
+- Authentication, authorization, logging, rate limiting
+- Can attach data to request object
+- NO business logic or direct database access
+
+### ✅ controllers/
+- Handle HTTP requests and responses
+- Extract/validate request data
+- Call appropriate service functions
+- Format and return responses
+- NO business logic or database calls
+
+### ✅ validators/
+- Request data validation schemas
+- Ensure proper data formatting and required fields
+- Used by controllers before calling services
+- NO logic, side effects, or database access
+
+### ✅ services/
+- **CORE BUSINESS LOGIC LAYER**
+- All database interactions via Prisma
+- Business rule execution
+- Data processing and workflows
+- **ONLY place where Prisma should be used**
+
+### ✅ utils/
+- Reusable, stateless helper functions
+- Pure functions for formatting, conversion, etc.
+- NO database access or request handling
+
+### ✅ types/
+- TypeScript type definitions and enums
+- Structural definitions for type safety
+- NO logic or functionality
+
+### ✅ strategies/ (for auth modules)
+- Third-party authentication configurations
+- OAuth provider setups (Google, Azure, etc.)
+- Passport strategy configurations
+
+## 🔄 REQUEST FLOW
+Route → Middleware → Validator → Controller → Service → Database (Prisma)
+
+## ✅ PRISMA USAGE RULE
+**Prisma database client can ONLY be used in services/ folder.**
+This ensures clean architecture, testability, and maintainability.
+
 For the backend, Express.js is used as the web framework.
 For the database, PostgreSQL is used.
 The backend is structured to handle various functionalities such as user authentication, data processing, and API endpoints.

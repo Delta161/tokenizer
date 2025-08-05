@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { useAuthStore } from '../store/auth.store';
+import { useAuthStore } from '../stores/auth.store';
 
 // Component props
 defineProps<{

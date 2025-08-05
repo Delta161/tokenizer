@@ -4,84 +4,100 @@ applyTo: `backend/src/modules/accounts/middleware/*.middleware.ts`
 
 # Middleware Folder: `backend/src/modules/accounts/middleware`
 
-## Purpose
+## 🏗️ MANDATORY BACKEND ARCHITECTURE - MIDDLEWARE LAYER
 
-This folder contains **domain-specific middleware** tailored to the Accounts module in the backend. These middleware functions focus on applying concerns directly related to the `auth`, `user`, and `kyc` domains. They enforce module-level rules and checks before requests reach controllers or services.
+Middleware is **Layer 2** in the mandatory 7-layer backend architecture:
 
-Unlike global middleware applied application-wide (e.g., logging, CORS, security headers), this folder’s middleware is specialized and scoped to **Accounts domain functionality**.
+**Route → 🎯 MIDDLEWARE → Validator → Controller → Services → Utils → Types**
 
----
+### ✅ Middleware Responsibilities (Layer 2)
 
-## Included in Middleware folder
+Middleware functions run **before route handlers** and handle cross-cutting concerns:
 
-- **`auth.middleware.ts`**  
-  Handles authentication-related checks such as verifying user identity from sessions or tokens. Ensures requests are made by authenticated users and sets user context for downstream handlers.
+- **Authentication checks** - verify user identity from tokens/sessions
+- **Authorization enforcement** - check user permissions and roles
+- **Request preprocessing** - attach user context to request object
+- **Rate limiting** - protect against abuse and ensure fair usage
+- **Logging** - track request information for monitoring
+- **Input sanitization** - basic cleanup before validation
 
-- **`user.middleware.ts`**  
-  Contains user-specific validations and access controls, e.g., verifying user permissions or validating user-related request parameters before hitting user controllers.
+### ❌ What Middleware Should NOT Do
 
-- **`kyc.middleware.ts`**  
-  Enforces KYC-specific preconditions like checking KYC status, validating KYC data formats, or restricting access based on KYC verification state.
+- **NO business logic** - delegate complex logic to services
+- **NO database operations** - middleware should be lightweight and fast
+- **NO direct Prisma usage** - only services can use Prisma
+- **NO response formatting** - controllers handle responses
+- **NO complex validation** - use validators for schema validation
 
----
+### 🔄 Middleware Pattern
 
-## Best Practices for Domain Middleware
+```typescript
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // 1. Extract authentication data
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    
+    // 2. Basic validation
+    if (!token) {
+      return res.status(401).json({ error: 'No token provided' });
+    }
+    
+    // 3. Verify token (can call auth service for complex validation)
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // 4. Attach user context to request
+    req.user = payload as AuthenticatedUser;
+    
+    // 5. Continue to next middleware/controller
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+```
 
-### 1. Single Responsibility Principle
+### 🔒 Authentication Middleware Example
 
-- Each middleware function should address **one domain-specific concern** clearly and concisely.
-- Keep middleware focused on **pre-controller validation, authentication, and authorization** relevant to the domain.
-- Delegate complex business logic and data operations to service layers.
+```typescript
+export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+  next();
+};
 
-### 2. Lightweight and Fast
+export const requireRole = (roles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({ error: 'Insufficient permissions' });
+    }
+    next();
+  };
+};
+```
 
-- Middleware must be performant as it runs on every matching request.
-- Avoid heavy computations, synchronous blocking code, or unnecessary database queries.
-- Cache or memoize lookups if repeated within request lifetime.
+### 📌 Domain-Specific Middleware
 
-### 3. Use Proper Express Types
+This folder contains **domain-specific middleware** tailored to the Accounts module:
 
-- Use TypeScript’s `Request`, `Response`, and `NextFunction` types for strong typing.
-- Attach relevant domain context (e.g., authenticated user info, KYC flags) to `req` object for downstream usage.
+- **`auth.middleware.ts`** - Authentication and session management checks
+- **`user.middleware.ts`** - User-specific access controls and validations  
+- **`kyc.middleware.ts`** - KYC status checks and verification requirements
 
-### 4. Error Handling and Flow Control
+Unlike global middleware applied application-wide (e.g., CORS, security headers), this folder's middleware is specialized and scoped to **Accounts domain functionality**.
 
-- Use `next(error)` to delegate errors to centralized error handling middleware.
-- For access denials or validation failures, respond early with proper HTTP status codes (e.g., 401 Unauthorized, 403 Forbidden, 400 Bad Request).
-- Avoid swallowing errors silently.
+### ✅ Best Practices for Domain Middleware
 
-### 5. Reusability and Composability
+1. **Single Responsibility**: Each middleware addresses one domain-specific concern
+2. **Lightweight and Fast**: Avoid heavy computations or blocking operations
+3. **Proper Express Types**: Use TypeScript Request, Response, NextFunction types
+4. **Context Attachment**: Attach domain context to req object for downstream usage
+5. **Error Handling**: Use next(error) for centralized error handling
 
-- Export named middleware functions for easy import and reuse.
-- Compose middleware functions where multiple domain checks are required.
-- Keep middleware functions pure and free of side effects outside their domain concern.
+### ✅ Architecture Compliance Rules
 
-### 6. Consistency with Domain Logic
-
-- Ensure middleware enforces **rules aligned with service-layer business logic** to maintain consistency.
-- Middleware should not duplicate validations already performed in services but rather perform **early request-level checks**.
-
-### 7. Secure Access Control
-
-- Protect sensitive user or KYC operations by verifying roles, permissions, and authentication status.
-- Avoid exposing internal system details or sensitive user information on failures.
-
----
-
-## Middleware Application
-
-- Domain middleware is applied **per-route or per-router** within the Accounts module routes.
-- They execute **after global middleware** (such as body parsers, CORS, logging) but **before controllers**.
-- Proper ordering ensures authentication checks occur before authorization or validation.
-
----
-
-## Example Usage in Routes
-
-```ts
-import { authMiddleware } from '@modules/accounts/middleware/auth.middleware';
-import { userMiddleware } from '@modules/accounts/middleware/user.middleware';
-import { kycMiddleware } from '@modules/accounts/middleware/kyc.middleware';
-
-router.get('/profile', authMiddleware.ensureAuthenticated, userMiddleware.loadUser, userController.getProfile);
-router.post('/kyc/submit', authMiddleware.ensureAuthenticated, kycMiddleware.validateSubmission, kycController.submitKyc);
+1. **Lightweight Processing**: Keep middleware fast and efficient
+2. **No Business Logic**: Complex logic belongs in services
+3. **No Prisma**: Only services can access the database
+4. **Context Attachment**: Use req object to pass data to controllers
+5. **Error Forwarding**: Use next(error) for centralized error handling

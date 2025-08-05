@@ -1,5 +1,5 @@
 // External packages
-import { KycRecord, PrismaClient } from '@prisma/client';
+import { KycRecord } from '@prisma/client';
 
 // Internal modules
 import { KycStatus,
@@ -12,8 +12,10 @@ import { KycStatus,
 import { createNotFound } from '@middleware/errorHandler';
 import { getSkipValue } from '@utils/pagination';
 
+// Shared Prisma client
+import { prisma } from '../utils/prisma';
+
 export class KycService {
-  constructor(private readonly prisma: PrismaClient) {}
 
   /**
    * Update KYC record by provider reference
@@ -29,7 +31,7 @@ export class KycService {
   ): Promise<KycRecord | null> {
     try {
       // Find KYC record by provider and reference ID
-      const kycRecord = await this.prisma.kycRecord.findFirst({
+      const kycRecord = await prisma.kycRecord.findFirst({
         where: {
           provider,
           referenceId // Using referenceId field from the schema instead of providerReference
@@ -41,7 +43,7 @@ export class KycService {
       }
 
       // Update KYC record
-      const updatedRecord = await this.prisma.kycRecord.update({
+      const updatedRecord = await prisma.kycRecord.update({
         where: {
           id: kycRecord.id
         },
@@ -69,7 +71,7 @@ export class KycService {
    * @returns KYC record or null if not found
    */
   async getByUserId(userId: string): Promise<KycRecord | null> {
-    return this.prisma.kycRecord.findUnique({
+    return prisma.kycRecord.findUnique({
       where: { userId }
     });
   }
@@ -82,7 +84,7 @@ export class KycService {
    */
   async submitKyc(userId: string, data: KycSubmissionData): Promise<KycRecord> {
     // Check if user exists
-    const user = await this.prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: userId }
     });
 
@@ -99,7 +101,7 @@ export class KycService {
     }
 
     // Create or update KYC record
-    return this.prisma.kycRecord.upsert({
+    return prisma.kycRecord.upsert({
       where: { userId },
       update: {
         ...data,
@@ -125,7 +127,7 @@ export class KycService {
     const { status, rejectionReason } = data;
 
     // Check if user exists
-    const user = await this.prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: userId }
     });
 
@@ -142,7 +144,7 @@ export class KycService {
     }
 
     // Check if KYC record exists
-    const existingRecord = await this.prisma.kycRecord.findUnique({
+    const existingRecord = await prisma.kycRecord.findUnique({
       where: { userId }
     });
 
@@ -159,7 +161,7 @@ export class KycService {
     }
 
     // Update KYC record based on status
-    return this.prisma.kycRecord.update({
+    return prisma.kycRecord.update({
       where: { userId },
       data: {
         status,
@@ -182,7 +184,7 @@ export class KycService {
     const skip = getSkipValue(page, limit);
     
     const [kycRecords, total] = await Promise.all([
-      this.prisma.kycRecord.findMany({
+      prisma.kycRecord.findMany({
         include: {
           user: {
             select: {
@@ -198,7 +200,7 @@ export class KycService {
         skip,
         take: limit
       }),
-      this.prisma.kycRecord.count()
+      prisma.kycRecord.count()
     ]);
     
     return { kycRecords, total };
@@ -210,7 +212,7 @@ export class KycService {
    * @returns Boolean indicating if user has verified KYC
    */
   async isKycVerified(userId: string): Promise<boolean> {
-    const kycRecord = await this.prisma.kycRecord.findUnique({
+    const kycRecord = await prisma.kycRecord.findUnique({
       where: { userId }
     });
 
@@ -226,7 +228,7 @@ export class KycService {
    */
   async initiateProviderVerification(userId: string, provider: KycProvider, redirectUrl: string): Promise<KycProviderSession> {
     // Check if user exists
-    const user = await this.prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: userId }
     });
 
@@ -265,6 +267,5 @@ export class KycService {
 }
 
 // Create singleton instance using the shared prisma client
-import { prisma } from '../utils/prisma';
-export const kycService = new KycService(prisma);
+export const kycService = new KycService();
 

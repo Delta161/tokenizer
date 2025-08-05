@@ -458,7 +458,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue';
-import { UserService } from '../services/user.service';
+import { userService } from '../services/user.service';
 import type { User, UserProfile, UserSettings } from '../types/user.types';
 
 // Props
@@ -477,9 +477,6 @@ const emit = defineEmits<{
   (e: 'update', settings: Partial<UserSettings>): void;
 }>();
 
-// Service instance - following instructions: "All communication between frontend and backend must happen through the Standardized API Client"
-const userService = new UserService();
-
 // State
 const user = ref<User | null>(null);
 const loading = ref<boolean>(true);
@@ -487,33 +484,21 @@ const error = ref<string | null>(null);
 const isEditing = ref<boolean>(false);
 const showRawData = ref<boolean>(false);
 
-// Profile edit form state
+// Profile edit form state - simplified to match backend User structure
 interface EditFormData {
-  firstName?: string;
-  lastName?: string;
+  fullName?: string;
   email?: string;
-  bio?: string;
-  location?: string;
-  website?: string;
-  socialLinks: {
-    twitter?: string;
-    linkedin?: string;
-    github?: string;
-  };
+  phone?: string;
+  preferredLanguage?: string;
+  timezone?: string;
 }
 
 const editForm = reactive<EditFormData>({
-  firstName: '',
-  lastName: '',
+  fullName: '',
   email: '',
-  bio: '',
-  location: '',
-  website: '',
-  socialLinks: {
-    twitter: '',
-    linkedin: '',
-    github: ''
-  }
+  phone: '',
+  preferredLanguage: '',
+  timezone: ''
 });
 
 // Settings form state (merged from UserSettingsForm)
@@ -529,28 +514,24 @@ const settingsForm = reactive({
 });
 
 // Computed properties
-const hasSocialLinks = computed(() => {
-  return user.value?.socialLinks?.twitter || 
-         user.value?.socialLinks?.linkedin || 
-         user.value?.socialLinks?.github;
+const userInitials = computed(() => {
+  if (!user.value?.fullName) return '?';
+  const names = user.value.fullName.split(' ');
+  const first = names[0]?.charAt(0)?.toUpperCase() || '';
+  const last = names[names.length - 1]?.charAt(0)?.toUpperCase() || '';
+  return first + (names.length > 1 ? last : '');
 });
 
 // Methods
-function getInitials(firstName?: string, lastName?: string): string {
-  const first = firstName?.charAt(0)?.toUpperCase() || '';
-  const last = lastName?.charAt(0)?.toUpperCase() || '';
-  return first + last || '?';
-}
-
 function formatRole(role: string): string {
   return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
 }
 
 function getRoleBadgeClasses(role: string): string {
   const roleMap: Record<string, string> = {
-    admin: 'bg-red-100 text-red-800',
-    manager: 'bg-blue-100 text-blue-800',
-    user: 'bg-green-100 text-green-800'
+    ADMIN: 'bg-red-100 text-red-800',
+    CLIENT: 'bg-blue-100 text-blue-800',
+    INVESTOR: 'bg-green-100 text-green-800'
   };
   return roleMap[role.toLowerCase()] || roleMap.user;
 }

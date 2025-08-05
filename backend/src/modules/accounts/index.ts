@@ -21,7 +21,6 @@ export { KycController } from './controllers/kyc.controller';
 export { userService, UserService } from './services/user.service';
 export { authService, AuthService } from './services/auth.service';
 export { kycService, KycService } from './services/kyc.service';
-export * from './services/token.service';
 
 // Import and re-export middleware (fix path aliases)
 export { 

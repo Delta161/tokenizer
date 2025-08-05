@@ -112,8 +112,7 @@ const {
   isPending,
   isRejected,
   isNotSubmitted,
-  fetchKycRecord,
-  initiateVerification
+  fetchKycRecord
 } = useKyc();
 
 onMounted(async () => {

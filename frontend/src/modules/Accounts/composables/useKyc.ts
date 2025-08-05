@@ -2,11 +2,12 @@
  * useKyc Composable
  * 
  * This composable provides KYC functionality for Vue components.
+ * Updated to work with refactored backend KYC endpoints.
  */
 
 import { ref, computed } from 'vue';
-import { KycService } from '../services/kyc.service';
-import type { KycRecord, KycSubmissionData, KycProviderSession } from '../types/kyc.types';
+import { kycService } from '../services/kyc.service';
+import type { KycRecord, KycSubmissionData } from '../types/kyc.types';
 import { KycStatus } from '../types/kyc.types';
 
 export function useKyc() {
@@ -30,7 +31,7 @@ export function useKyc() {
     error.value = null;
     
     try {
-      kycRecord.value = await KycService.getCurrentUserKyc();
+      kycRecord.value = await kycService.getCurrentUserKyc();
     } catch (err) {
       error.value = err as Error;
       console.error('Error fetching KYC record:', err);
@@ -47,7 +48,7 @@ export function useKyc() {
     error.value = null;
     
     try {
-      kycRecord.value = await KycService.submitKyc(data);
+      kycRecord.value = await kycService.submitKyc(data);
       return kycRecord.value;
     } catch (err) {
       error.value = err as Error;
@@ -59,24 +60,35 @@ export function useKyc() {
   };
 
   /**
-   * Initiate KYC verification with a provider
+   * Upload KYC documents
    */
-  const initiateVerification = async (
-    provider: string,
-    redirectUrl: string
-  ): Promise<KycProviderSession> => {
+  const uploadDocuments = async (documents: FormData) => {
     isLoading.value = true;
     error.value = null;
     
     try {
-      const session = await KycService.initiateProviderVerification(provider, redirectUrl);
-      return session;
+      const result = await kycService.uploadDocuments(documents);
+      // Refresh KYC record after document upload
+      await fetchKycRecord();
+      return result;
     } catch (err) {
       error.value = err as Error;
-      console.error('Error initiating KYC verification:', err);
+      console.error('Error uploading KYC documents:', err);
       throw err;
     } finally {
       isLoading.value = false;
+    }
+  };
+
+  /**
+   * Check if KYC is verified
+   */
+  const checkKycVerification = async (): Promise<boolean> => {
+    try {
+      return await kycService.isKycVerified();
+    } catch (err) {
+      console.warn('Error checking KYC verification:', err);
+      return false;
     }
   };
 
@@ -90,6 +102,7 @@ export function useKyc() {
     isNotSubmitted,
     fetchKycRecord,
     submitKyc,
-    initiateVerification
+    uploadDocuments,
+    checkKycVerification
   };
 }

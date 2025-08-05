@@ -5,47 +5,137 @@ applyTo: `backend/src/modules/accounts/controllers/user.controller.ts`
 ### 📄 File: `user.controller.ts`
 
 **Purpose:**  
-Handles HTTP endpoints related to the currently authenticated user.  
-Designed as a lightweight Express.js controller that communicates with the user service layer.  
+Handles HTTP endpoints related to user profile management and account operations.
+Designed as a lightweight Express.js controller that communicates with the user service layer.
 
----
+## 🏗️ MANDATORY BACKEND ARCHITECTURE - USER CONTROLLER
 
-### ✅ Core Responsibilities
+This controller is **Layer 3** in the mandatory 7-layer backend architecture:
 
-- Handle HTTP requests for user account operations (e.g., fetching profile).
-- Validate session presence (`req.session?.user`).
-- Return `401 Unauthorized` if session is missing or invalid.
-- Delegate business logic to `user.service.ts`.
-- Send structured JSON responses with appropriate status codes.
-- Avoid any direct database, token, or authentication logic.
+**Route → Middleware → Validator → 🎯 USER CONTROLLER → User Service → Utils → Types**
 
----
+### ✅ User Controller Responsibilities (Layer 3)
 
-### 🧱 Structural Conventions
+User controllers handle HTTP requests for user management:
 
-- Use TypeScript: import `Request`, `Response`, `NextFunction` from `express`.
-- Use `async` functions and `try/catch` blocks for error handling.
-- Forward errors with `next(createHttpError(...))` using the `http-errors` package.
-- Always use **named exports** for controller methods.
-- Keep controller logic minimal; delegate to services.
-- Follow RESTful HTTP method conventions (`GET`, `POST`, etc.).
-- Only expose safe, minimal user data in responses.
+- **Extract user data** from request (params, query, body)
+- **Validate user session** and authentication state
+- **Call user service methods** for user business logic
+- **Handle user profile operations** (get, update, delete)
+- **Format user responses** with proper HTTP status codes
+- **Handle user-specific errors** by forwarding to error middleware
 
----
+### ❌ What User Controllers Should NOT Do
 
-### 🔐 Security & Middleware Expectations
+- **NO user business logic** - delegate to user service
+- **NO database calls** - user service handles all Prisma interactions
+- **NO password hashing** - auth service handles authentication
+- **NO direct user data processing** - use user service methods
+- **NO OAuth handling** - auth controller handles OAuth flows
+- **NO direct Prisma usage** - only services can use Prisma
 
-- Assume session middleware has already attached the user to `req.session.user`.
-- Do not access Prisma or DB logic directly — use the service layer.
-- Avoid embedding business logic, authentication, or formatting logic in controller.
-- Do not include any middleware, logging, or validation logic directly.
-- Let centralized middleware handle:
-  - Error handling
-  - Logging
-  - Validation
-  - Authorization
-  - Rate limiting
-  - Security headers and CORS
+### 🔄 User Controller Flow Pattern
+
+```typescript
+export const getCurrentUserProfile = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // 1. Extract user context from middleware
+    const userId = req.user?.id;
+    
+    // 2. Basic validation
+    if (!userId) {
+      throw createError(401, 'User not authenticated');
+    }
+    
+    // 3. Call user service
+    const userProfile = await userService.getUserProfile(userId);
+    
+    // 4. Return formatted response
+    res.status(200).json({
+      success: true,
+      data: userProfile
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateCurrentUserProfile = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // 1. Extract data
+    const userId = req.user?.id;
+    const updateData = req.body;
+    
+    // 2. Basic validation
+    if (!userId) {
+      throw createError(401, 'User not authenticated');
+    }
+    
+    // 3. Call user service
+    const updatedUser = await userService.updateUserProfile(userId, updateData);
+    
+    // 4. Return response
+    res.status(200).json({
+      success: true,
+      data: updatedUser
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+```
+
+### 🔐 User Management Operations
+
+```typescript
+// Admin-only user management
+export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { page = 1, limit = 10, search } = req.query;
+    
+    const result = await userService.getAllUsers({
+      page: Number(page),
+      limit: Number(limit),
+      search: search as string
+    });
+    
+    res.status(200).json({
+      success: true,
+      data: result.users,
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total: result.total
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    
+    const user = await userService.getUserById(id);
+    
+    res.status(200).json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+```
+
+### ✅ Architecture Compliance Rules
+
+1. **User Service Only**: All user logic must be in user service
+2. **No Prisma**: Controllers cannot directly use Prisma client
+3. **Session Context**: Use req.user from authentication middleware
+4. **Error Forwarding**: Use `next(error)` for centralized error handling
+5. **Response Formatting**: Consistent JSON response structure
 
 ---
 

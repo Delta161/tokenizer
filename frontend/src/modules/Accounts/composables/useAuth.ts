@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import { useAuthStore } from '../store/auth.store';
+import { useAuthStore } from '../stores/auth.store';
 import type { User } from '../types/user.types';
 
 /**

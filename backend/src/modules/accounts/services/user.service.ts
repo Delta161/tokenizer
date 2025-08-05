@@ -3,9 +3,6 @@
  * Handles user-related business logic
  */
 
-// External packages
-import { PrismaClient } from '@prisma/client';
-
 // Internal modules
 import { PAGINATION } from '@config/constants';
 import { createNotFound, createBadRequest } from '@middleware/errorHandler';
@@ -18,12 +15,10 @@ import type {
   UserSortOptions 
 } from '@modules/accounts/types/user.types';
 
-export class UserService {
-  private prisma: PrismaClient;
+// Shared Prisma client
+import { prisma } from '../utils/prisma';
 
-  constructor(prisma: PrismaClient) {
-    this.prisma = prisma;
-  }
+export class UserService {
 
   /**
    * Get all users with pagination and filtering
@@ -64,7 +59,7 @@ export class UserService {
     
     // Get users and total count
     const [users, total] = await Promise.all([
-      this.prisma.user.findMany({
+      prisma.user.findMany({
         where,
         orderBy,
         skip,
@@ -79,7 +74,7 @@ export class UserService {
           updatedAt: true
         }
       }),
-      this.prisma.user.count({ where })
+      prisma.user.count({ where })
     ]);
     
     return { users: users as UserDTO[], total };
@@ -89,7 +84,7 @@ export class UserService {
    * Get user by ID
    */
   async getUserById(userId: string): Promise<UserDTO> {
-    const user = await this.prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
@@ -114,7 +109,7 @@ export class UserService {
    */
   async createUser(data: CreateUserDTO): Promise<UserDTO> {
     // Check if user with email already exists
-    const existingUser = await this.prisma.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { email: data.email }
     });
     
@@ -123,7 +118,7 @@ export class UserService {
     }
     
     // Create user
-    const user = await this.prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         email: data.email,
         fullName: data.fullName,
@@ -154,7 +149,7 @@ export class UserService {
    */
   async updateUser(userId: string, data: UpdateUserDTO): Promise<UserDTO> {
     // Check if user exists
-    const existingUser = await this.prisma.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { id: userId }
     });
     
@@ -164,7 +159,7 @@ export class UserService {
     
     // Check if email is being updated and is already taken
     if (data.email && data.email !== existingUser.email) {
-      const emailTaken = await this.prisma.user.findUnique({
+      const emailTaken = await prisma.user.findUnique({
         where: { email: data.email }
       });
       
@@ -174,7 +169,7 @@ export class UserService {
     }
     
     // Update user
-    const updatedUser = await this.prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: { id: userId },
       data,
       select: {
@@ -195,7 +190,7 @@ export class UserService {
    */
   async deleteUser(userId: string): Promise<void> {
     // Check if user exists
-    const existingUser = await this.prisma.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { id: userId }
     });
     
@@ -204,7 +199,7 @@ export class UserService {
     }
     
     // Delete user
-    await this.prisma.user.delete({
+    await prisma.user.delete({
       where: { id: userId }
     });
   }
@@ -216,6 +211,5 @@ export class UserService {
 }
 
 // Create singleton instance using the shared prisma client
-import { prisma } from '../utils/prisma';
-export const userService = new UserService(prisma);
+export const userService = new UserService();
 

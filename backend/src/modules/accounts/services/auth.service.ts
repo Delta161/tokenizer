@@ -5,7 +5,7 @@
  */
 
 // External packages
-import { AuthProvider, PrismaClient } from '@prisma/client';
+import { AuthProvider } from '@prisma/client';
 import createError from 'http-errors';
 
 // Internal modules - Use relative imports only
@@ -28,17 +28,14 @@ import {
 } from '../validators/auth.validator';
 import { createUserFromOAuthSchema } from '../validators/user.validator';
 
+// Shared Prisma client
+import { prisma } from '../utils/prisma';
+
 // Global utilities - Use relative imports
 import { logger } from '../../../utils/logger';
-import { prisma } from '../../../prisma/client';
 
 
 export class AuthService {
-  private prisma: PrismaClient;
-
-  constructor(prisma: PrismaClient) {
-    this.prisma = prisma;
-  }
 
   /**
    * Verify JWT token and return user with enhanced validation
@@ -57,7 +54,7 @@ export class AuthService {
       }
 
       // Find user with optimized query
-      const user = await this.prisma.user.findUnique({
+      const user = await prisma.user.findUnique({
         where: { id: decoded.id },
         select: {
           id: true,
@@ -110,7 +107,7 @@ export class AuthService {
     }
 
     try {
-      const user = await this.prisma.user.findUnique({
+      const user = await prisma.user.findUnique({
         where: { email: processedEmail },
         select: {
           id: true,
@@ -145,7 +142,7 @@ export class AuthService {
     }
 
     try {
-      const user = await this.prisma.user.findFirst({
+      const user = await prisma.user.findFirst({
         where: {
           providerId: providerId.trim(),
           authProvider: provider
@@ -191,7 +188,7 @@ export class AuthService {
         throw createError(401, 'Invalid refresh token payload');
       }
 
-      const user = await this.prisma.user.findUnique({ 
+      const user = await prisma.user.findUnique({ 
         where: { id: userId },
         select: {
           id: true,
@@ -349,7 +346,7 @@ export class AuthService {
    */
   private async findOrCreateUserFromProfile(normalizedProfile: any) {
     // Find existing user by provider ID first (most reliable)
-    let user = await this.prisma.user.findFirst({
+    let user = await prisma.user.findFirst({
       where: {
         authProvider: normalizedProfile.provider.toUpperCase() as AuthProvider,
         providerId: normalizedProfile.providerId
@@ -358,7 +355,7 @@ export class AuthService {
 
     // If not found by provider, try by email (for account merging)
     if (!user && normalizedProfile.email && !normalizedProfile.email.includes('@placeholder.auth')) {
-      user = await this.prisma.user.findUnique({
+      user = await prisma.user.findUnique({
         where: { email: normalizedProfile.email }
       });
 
@@ -370,7 +367,7 @@ export class AuthService {
           newProvider: normalizedProfile.provider
         });
 
-        user = await this.prisma.user.update({
+        user = await prisma.user.update({
           where: { id: user.id },
           data: {
             authProvider: normalizedProfile.provider.toUpperCase() as AuthProvider,
@@ -416,7 +413,7 @@ export class AuthService {
       const validatedUserData = validateUserCreationData(userCreationData, normalizedProfile.provider as 'google' | 'azure-ad');
 
       // Create user in database
-      const user = await this.prisma.user.create({
+      const user = await prisma.user.create({
         data: {
           ...validatedUserData,
           lastLoginAt: new Date()
@@ -454,7 +451,7 @@ export class AuthService {
    */
   private async updateUserLastLogin(userId: string): Promise<void> {
     try {
-      await this.prisma.user.update({
+      await prisma.user.update({
         where: { id: userId },
         data: { lastLoginAt: new Date() }
       });
@@ -543,10 +540,10 @@ export class AuthService {
   }> {
     try {
       const [totalUsers, googleUsers, azureUsers, recentLogins] = await Promise.all([
-        this.prisma.user.count(),
-        this.prisma.user.count({ where: { authProvider: 'GOOGLE' } }),
-        this.prisma.user.count({ where: { authProvider: 'AZURE' } }),
-        this.prisma.user.count({
+        prisma.user.count(),
+        prisma.user.count({ where: { authProvider: 'GOOGLE' } }),
+        prisma.user.count({ where: { authProvider: 'AZURE' } }),
+        prisma.user.count({
           where: {
             lastLoginAt: {
               gte: new Date(Date.now() - 24 * 60 * 60 * 1000) // Last 24 hours
@@ -571,7 +568,7 @@ export class AuthService {
 }
 
 // Export singleton instance for use across the application
-export const authService = new AuthService(prisma);
+export const authService = new AuthService();
 
 /*
  * Auth Service Optimization Summary:
