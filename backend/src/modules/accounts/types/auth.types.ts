@@ -7,6 +7,11 @@
 import { UserRole } from '@prisma/client';
 export { UserRole };
 
+// Enhanced type definitions for auth middleware improvements
+export type TokenSource = 'header' | 'cookie' | 'body' | 'query' | null;
+
+export type SecurityLevel = 'HIGH' | 'MEDIUM' | 'LOW' | 'UNKNOWN';
+
 export interface UserDTO {
   id: string;
   email: string;

@@ -3,12 +3,18 @@
  * Configures Passport for Google OAuth authentication
  */
 
+// External packages
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { mapGoogleProfile, validateNormalizedProfile } from '../utils/oauthProfileMapper';
-import { logger } from '@utils/logger';
-import { prisma } from '../utils/prisma';
-import { validateAndProcessFullName } from '../validators/google.validator';
+
+// Internal modules - Use relative imports
+import { validateAndProcessFullName } from '../validators/auth.validator';
+import { authService } from '../services/auth.service';
+import type { OAuthProfileDTO } from '../types/auth.types';
+
+// Global utilities
+import { logger } from '../../../utils/logger';
+import { prisma } from '../../../prisma/client';
 
 // Default callback URL is configured in .env as GOOGLE_CALLBACK_URL
 
@@ -50,97 +56,30 @@ export const configureGoogleStrategy = (): void => {
       },
       async (req, accessToken, refreshToken, profile, done) => {
         try {
-          // Map Google profile to normalized format
-          const normalizedProfile = mapGoogleProfile(profile);
+          // Map Google profile to OAuth DTO format
+          const oauthProfile: OAuthProfileDTO = {
+            provider: 'google',
+            id: profile.id,
+            displayName: profile.displayName,
+            name: {
+              givenName: profile.name?.givenName,
+              familyName: profile.name?.familyName
+            },
+            emails: profile.emails?.map(email => ({
+              value: email.value,
+              verified: email.verified
+            })),
+            photos: profile.photos?.map(photo => ({
+              value: photo.value
+            })),
+            _json: profile._json
+          };
+
+          // Use auth service to process OAuth login
+          const authResponse = await authService.processOAuthLogin(oauthProfile);
           
-          // Validate profile
-          if (!validateNormalizedProfile(normalizedProfile)) {
-            logger.error('Invalid Google profile', { profile });
-            return done(new Error('Invalid profile data'));
-          }
-          
-          // Find existing user by provider ID
-          let user = await prisma.user.findFirst({
-            where: {
-              authProvider: 'GOOGLE',
-              providerId: normalizedProfile.providerId
-            }
-          });
-          
-          // If user not found by provider ID, try to find by email
-          if (!user && normalizedProfile.email) {
-            user = await prisma.user.findUnique({
-              where: { email: normalizedProfile.email }
-            });
-            
-            // If user exists with this email but different provider, update provider info
-            if (user) {
-              user = await prisma.user.update({
-                where: { id: user.id },
-                data: {
-                  authProvider: 'GOOGLE',
-                  providerId: normalizedProfile.providerId
-                }
-              });
-              
-              logger.info('Updated existing user with Google provider', {
-                userId: user.id,
-                email: user.email
-              });
-            }
-          }
-          
-          // If user still not found, create new user
-          if (!user) {
-            try {
-              // Use the validator to process and validate fullName
-              const fullName = validateAndProcessFullName({
-                firstName: normalizedProfile.firstName,
-                lastName: normalizedProfile.lastName,
-                displayName: normalizedProfile.displayName,
-                email: normalizedProfile.email
-              });
-              
-              // Log the fullName to ensure it's being set correctly
-              logger.info('Creating new user with fullName', { fullName, email: normalizedProfile.email });
-              
-              // Prepare user data
-              const userData = {
-                email: normalizedProfile.email,
-                fullName: fullName,
-                authProvider: 'GOOGLE',
-                providerId: normalizedProfile.providerId,
-                avatarUrl: normalizedProfile.avatarUrl,
-                role: normalizedProfile.role || 'INVESTOR'
-              };
-              
-              // Log the complete user data before creation
-              logger.debug('User data for creation', userData);
-              
-              user = await prisma.user.create({
-                data: userData
-              });
-              
-              logger.info('Successfully created user with fullName', { fullName, email: normalizedProfile.email });
-            } catch (createError) {
-              logger.error('Error creating user from Google profile', { error: createError });
-              return done(createError as Error);
-            }
-            
-            logger.info('Created new user from Google OAuth', {
-              userId: user.id,
-              email: user.email
-            });
-          }
-          
-          // Update last login timestamp
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { lastLoginAt: new Date() }
-          });
-          
-          // Return user
-          return done(null, user);
+          // Return the user (Passport will handle the session)
+          return done(null, authResponse.user);
         } catch (error) {
           logger.error('Google authentication error', { error });
           return done(error);

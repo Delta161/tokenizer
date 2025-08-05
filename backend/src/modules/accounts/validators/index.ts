@@ -11,6 +11,3 @@ export * from './user.validator';
 
 // KYC validators
 export * from './kyc.validator';
-
-// Azure validators
-export * from './azure.validator';

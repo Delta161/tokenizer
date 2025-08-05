@@ -1,182 +1,112 @@
 /**
  * Auth Routes
- * Simplified authentication routes without path aliases
+ * Authentication routes with OAuth integration
  */
 
+// External packages
 import { Router } from 'express';
+import passport from 'passport';
+
+// Internal modules - Use relative imports
+import { authController } from '../controllers/auth.controller';
+import { authGuard, optionalAuth } from '../middleware/auth.middleware';
+import { googleAuthOptions, googleCallbackOptions } from '../strategies/google.strategy';
+
+// Global utilities
+import { logger } from '../../../utils/logger';
 
 // Create router
 const router = Router();
 
-console.log('✅ Auth routes module loaded');
+logger.info('✅ Auth routes module loading...');
 
-// Health check
-router.get('/health', (req, res) => {
-  console.log('✅ Auth health check accessed');
-  res.json({ 
-    success: true, 
-    message: 'Auth service is healthy!',
-    timestamp: new Date().toISOString()
-  });
-});
+// =============================================================================
+// HEALTH & STATUS ENDPOINTS
+// =============================================================================
 
-// Token verification endpoint - this is what the frontend needs!
-router.get('/verify-token', (req, res) => {
-  console.log('✅ Auth verify-token (GET) accessed');
-  
-  // Get token from Authorization header
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  
-  console.log('🔍 Token provided:', !!token);
-  
-  if (token) {
-    // For now, accept any token that exists - later we can add proper JWT validation
-    res.json({
-      valid: true,
-      message: 'Token is valid',
-      user: {
-        id: 'verified-user-123',
-        email: 'verified@example.com',
-        firstName: 'Verified',
-        lastName: 'User',
-        role: 'user'
-      }
-    });
-  } else {
-    // No token provided
-    res.status(401).json({
-      valid: false,
-      message: 'No token provided'
-    });
-  }
-});
+/**
+ * Health check endpoint
+ */
+router.get('/health', authController.healthCheck.bind(authController));
 
-// POST version for compatibility
-router.post('/verify-token', (req, res) => {
-  console.log('✅ Auth verify-token (POST) accessed');
-  
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  
-  if (token) {
-    res.json({
-      valid: true,
-      message: 'Token is valid (POST)',
-      user: {
-        id: 'verified-user-123',
-        email: 'verified@example.com',
-        firstName: 'Verified',
-        lastName: 'User',
-        role: 'user'
-      }
-    });
-  } else {
-    res.status(401).json({
-      valid: false,
-      message: 'No token provided'
-    });
-  }
-});
+/**
+ * Token verification endpoint
+ */
+router.get('/verify-token', authController.verifyToken.bind(authController));
+router.post('/verify-token', authController.verifyToken.bind(authController));
 
-// Token verification endpoint
-router.get('/verify-token', (req, res) => {
-  console.log('✅ Token verification endpoint accessed');
-  
-  // Get token from Authorization header
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  
-  if (!token) {
-    return res.status(401).json({
-      success: false,
-      message: 'No token provided',
-      errorCode: 'AUTH_TOKEN_MISSING',
-      timestamp: new Date().toISOString()
-    });
-  }
-  
-  // For now, basic token validation (can be enhanced with JWT verification later)
-  if (token.length < 10) {
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid token format',
-      errorCode: 'AUTH_TOKEN_INVALID',
-      timestamp: new Date().toISOString()
-    });
-  }
-  
-  // Token is valid
-  res.json({
-    success: true,
-    message: 'Token is valid',
-    tokenValid: true,
-    timestamp: new Date().toISOString()
-  });
-});
+// =============================================================================
+// AUTHENTICATION ENDPOINTS
+// =============================================================================
 
-// Basic logout endpoint
-router.post('/logout', (req, res) => {
-  console.log('✅ Auth logout accessed');
-  
-  // Clear any cookies and respond with success
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
-  
-  res.json({
-    success: true,
-    message: 'Logged out successfully',
-    timestamp: new Date().toISOString()
-  });
-});
+/**
+ * Get current user profile (requires authentication)
+ */
+router.get('/profile', authGuard, authController.getProfile.bind(authController));
 
-// OAuth routes - simplified stubs for now
-// These can be enhanced later when the path alias issues are resolved
+/**
+ * Refresh access token
+ */
+router.post('/refresh-token', authController.refreshToken.bind(authController));
 
-// Google OAuth placeholder
-router.get('/google', (req, res) => {
-  res.status(501).json({
-    success: false,
-    message: 'Google OAuth not yet implemented in simplified routes',
-    redirectTo: '/login'
-  });
-});
+/**
+ * Logout user
+ */
+router.post('/logout', optionalAuth, authController.logout.bind(authController));
 
-router.get('/google/callback', (req, res) => {
-  res.status(501).json({
-    success: false,
-    message: 'Google OAuth callback not yet implemented',
-    redirectTo: '/login'
-  });
-});
+// =============================================================================
+// GOOGLE OAUTH ENDPOINTS
+// =============================================================================
 
-// Azure OAuth placeholder
-router.get('/azure', (req, res) => {
-  res.status(501).json({
-    success: false,
-    message: 'Azure OAuth not yet implemented in simplified routes',
-    redirectTo: '/login'
-  });
-});
+/**
+ * Google OAuth initiation
+ */
+router.get('/google', 
+  passport.authenticate('google', googleAuthOptions)
+);
 
-router.get('/azure/callback', (req, res) => {
-  res.status(501).json({
-    success: false,
-    message: 'Azure OAuth callback not yet implemented',
-    redirectTo: '/login'
-  });
-});
+/**
+ * Google OAuth callback
+ */
+router.get('/google/callback',
+  passport.authenticate('google', { 
+    failureRedirect: process.env.FRONTEND_URL + '/auth/error?provider=google' 
+  }),
+  authController.handleOAuthSuccess.bind(authController)
+);
 
-// Handle OAuth errors
-router.get('/error', (req, res) => {
-  console.log('✅ Auth error endpoint accessed');
-  res.status(400).json({
-    success: false,
-    message: 'Authentication error occurred',
-    timestamp: new Date().toISOString()
-  });
-});
+// =============================================================================
+// AZURE OAUTH ENDPOINTS
+// =============================================================================
+
+/**
+ * Azure OAuth initiation
+ */
+router.get('/azure',
+  passport.authenticate('azure-ad', {
+    failureRedirect: process.env.FRONTEND_URL + '/auth/error?provider=azure'
+  })
+);
+
+/**
+ * Azure OAuth callback
+ */
+router.get('/azure/callback',
+  passport.authenticate('azure-ad', {
+    failureRedirect: process.env.FRONTEND_URL + '/auth/error?provider=azure'
+  }),
+  authController.handleOAuthSuccess.bind(authController)
+);
+
+// =============================================================================
+// ERROR HANDLING ENDPOINTS
+// =============================================================================
+
+/**
+ * OAuth error handler
+ */
+router.get('/error', authController.handleOAuthError.bind(authController));
 
 export { router as authRouter };
 
-console.log('✅ Auth routes exported');
+logger.info('✅ Auth routes configured successfully');
