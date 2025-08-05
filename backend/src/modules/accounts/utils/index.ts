@@ -9,9 +9,6 @@ export * from './jwt';
 // OAuth profile mapping utilities
 export * from './oauthProfileMapper';
 
-// Authentication utilities
-export * from './auth.utils';
-
 // User utilities
 export * from './user.utils';
 
@@ -23,6 +20,3 @@ export * from './prisma';
 
 // Accounts logger
 export * from './accounts.logger';
-
-// Error handling utilities
-export * from './errors';

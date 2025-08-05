@@ -1,233 +1,159 @@
+/**
+ * Accounts Logger
+ * Provides logging functionality for the accounts module
+ */
+
 import { logger } from '../../../utils/logger';
-import { UserRole } from '@prisma/client';
-import { KycStatus } from '../types/kyc.types';
 
 /**
- * Logger for accounts module actions
+ * Simplified logger for the accounts module
  */
-export class AccountsLogger {
-  private readonly module = 'AccountsModule';
-
-  constructor() {}
+export const accountsLogger = {
+  /**
+   * Log info level message
+   */
+  info: (message: string, meta?: Record<string, unknown>) => {
+    logger.info(`[Accounts] ${message}`, { module: 'AccountsModule', ...meta });
+  },
 
   /**
-   * Log user registration
+   * Log error level message
    */
-  logUserRegistration(userId: string, email: string, registrationType: string): void {
-    logger.info(
-      `User registered: ${userId} (${email}) via ${registrationType}`,
-      {
-        action: 'USER_REGISTRATION',
-        userId,
-        email,
-        registrationType,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log user login
-   */
-  logUserLogin(userId: string, email: string, loginMethod: string): void {
-    logger.info(
-      `User login: ${userId} (${email}) via ${loginMethod}`,
-      {
-        action: 'USER_LOGIN',
-        userId,
-        email,
-        loginMethod,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log user logout
-   */
-  logUserLogout(userId: string): void {
-    logger.info(
-      `User logout: ${userId}`,
-      {
-        action: 'USER_LOGOUT',
-        userId,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log user profile update
-   */
-  logUserProfileUpdate(userId: string, updatedFields: string[]): void {
-    logger.info(
-      `User ${userId} updated profile fields: ${updatedFields.join(', ')}`,
-      {
-        action: 'USER_PROFILE_UPDATE',
-        userId,
-        updatedFields,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log password change
-   */
-  logPasswordChange(userId: string): void {
-    logger.info(
-      `User ${userId} changed password`,
-      {
-        action: 'PASSWORD_CHANGE',
-        userId,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log password reset request
-   */
-  logPasswordResetRequest(email: string): void {
-    logger.info(
-      `Password reset requested for ${email}`,
-      {
-        action: 'PASSWORD_RESET_REQUEST',
-        email,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log password reset completion
-   */
-  logPasswordResetComplete(userId: string, email: string): void {
-    logger.info(
-      `Password reset completed for ${userId} (${email})`,
-      {
-        action: 'PASSWORD_RESET_COMPLETE',
-        userId,
-        email,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log KYC submission
-   */
-  logKycSubmission(userId: string, provider: string): void {
-    logger.info(
-      `KYC submitted by user ${userId} via provider ${provider}`,
-      {
-        action: 'KYC_SUBMISSION',
-        userId,
-        provider,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log KYC status update
-   */
-  logKycStatusUpdate(userId: string, oldStatus: KycStatus, newStatus: KycStatus, updatedBy?: string): void {
-    logger.info(
-      `KYC status updated for user ${userId} from ${oldStatus} to ${newStatus}${updatedBy ? ` by ${updatedBy}` : ''}`,
-      {
-        action: 'KYC_STATUS_UPDATE',
-        userId,
-        oldStatus,
-        newStatus,
-        updatedBy,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log KYC verification initiation
-   */
-  logKycVerificationInitiated(userId: string, provider: string): void {
-    logger.info(
-      `KYC verification initiated for user ${userId} with provider ${provider}`,
-      {
-        action: 'KYC_VERIFICATION_INITIATED',
-        userId,
-        provider,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log KYC verification completion
-   */
-  logKycVerificationCompleted(userId: string, provider: string, status: KycStatus): void {
-    logger.info(
-      `KYC verification completed for user ${userId} with provider ${provider}, status: ${status}`,
-      {
-        action: 'KYC_VERIFICATION_COMPLETED',
-        userId,
-        provider,
-        status,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log authentication error
-   */
-  logAuthError(email: string, error: string, method: string): void {
-    logger.error(
-      `Authentication error for ${email} via ${method}: ${error}`,
-      {
-        action: 'AUTH_ERROR',
-        email,
-        error,
-        method,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log user account deletion
-   */
-  logUserDeletion(userId: string, reason?: string): void {
-    logger.info(
-      `User account deleted: ${userId}${reason ? `, reason: ${reason}` : ''}`,
-      {
-        action: 'USER_DELETION',
-        userId,
-        reason,
-        module: this.module,
-      }
-    );
-  }
-
-  /**
-   * Log general account error
-   */
-  logAccountError(action: string, error: Error | string, context: Record<string, any> = {}): void {
+  error: (message: string, error?: Error | string, meta?: Record<string, unknown>) => {
     const errorMessage = error instanceof Error ? error.message : error;
-    const errorObj = error instanceof Error ? error : new Error(error);
-    
-    logger.error(
-      `Account error during ${action}: ${errorMessage}`,
-      {
-        action: 'ACCOUNT_ERROR',
-        errorAction: action,
-        error: errorMessage,
-        ...context,
-        module: this.module,
-      },
-      errorObj
-    );
-  }
-}
+    logger.error(`[Accounts] ${message}`, { 
+      module: 'AccountsModule', 
+      error: errorMessage,
+      ...meta 
+    });
+  },
 
-// Export a singleton instance
-export const accountsLogger = new AccountsLogger();
+  /**
+   * Log warning level message
+   */
+  warn: (message: string, meta?: Record<string, unknown>) => {
+    logger.warn(`[Accounts] ${message}`, { module: 'AccountsModule', ...meta });
+  },
+
+  /**
+   * Log debug level message
+   */
+  debug: (message: string, meta?: Record<string, unknown>) => {
+    logger.debug(`[Accounts] ${message}`, { module: 'AccountsModule', ...meta });
+  },
+
+  // Legacy method wrappers for backward compatibility
+  logUserRegistration: (userId: string, email: string, registrationType: string) => {
+    accountsLogger.info(`User registered: ${userId} (${email}) via ${registrationType}`, {
+      action: 'USER_REGISTRATION',
+      userId,
+      email,
+      registrationType
+    });
+  },
+
+  logUserLogin: (userId: string, email: string, loginMethod: string) => {
+    accountsLogger.info(`User login: ${userId} (${email}) via ${loginMethod}`, {
+      action: 'USER_LOGIN',
+      userId,
+      email,
+      loginMethod
+    });
+  },
+
+  logUserLogout: (userId: string) => {
+    accountsLogger.info(`User logout: ${userId}`, {
+      action: 'USER_LOGOUT',
+      userId
+    });
+  },
+
+  logUserProfileUpdate: (userId: string, updatedFields: string[]) => {
+    accountsLogger.info(`User ${userId} updated profile fields: ${updatedFields.join(', ')}`, {
+      action: 'USER_PROFILE_UPDATE',
+      userId,
+      updatedFields
+    });
+  },
+
+  logPasswordChange: (userId: string) => {
+    accountsLogger.info(`User ${userId} changed password`, {
+      action: 'PASSWORD_CHANGE',
+      userId
+    });
+  },
+
+  logPasswordResetRequest: (email: string) => {
+    accountsLogger.info(`Password reset requested for ${email}`, {
+      action: 'PASSWORD_RESET_REQUEST',
+      email
+    });
+  },
+
+  logPasswordResetComplete: (userId: string, email: string) => {
+    accountsLogger.info(`Password reset completed for ${userId} (${email})`, {
+      action: 'PASSWORD_RESET_COMPLETE',
+      userId,
+      email
+    });
+  },
+
+  logKycSubmission: (userId: string, provider: string) => {
+    accountsLogger.info(`KYC submitted by user ${userId} via provider ${provider}`, {
+      action: 'KYC_SUBMISSION',
+      userId,
+      provider
+    });
+  },
+
+  logKycStatusUpdate: (userId: string, oldStatus: string, newStatus: string, updatedBy?: string) => {
+    accountsLogger.info(`KYC status updated for user ${userId} from ${oldStatus} to ${newStatus}${updatedBy ? ` by ${updatedBy}` : ''}`, {
+      action: 'KYC_STATUS_UPDATE',
+      userId,
+      oldStatus,
+      newStatus,
+      updatedBy
+    });
+  },
+
+  logKycVerificationInitiated: (userId: string, provider: string) => {
+    accountsLogger.info(`KYC verification initiated for user ${userId} with provider ${provider}`, {
+      action: 'KYC_VERIFICATION_INITIATED',
+      userId,
+      provider
+    });
+  },
+
+  logKycVerificationCompleted: (userId: string, provider: string, status: string) => {
+    accountsLogger.info(`KYC verification completed for user ${userId} with provider ${provider}, status: ${status}`, {
+      action: 'KYC_VERIFICATION_COMPLETED',
+      userId,
+      provider,
+      status
+    });
+  },
+
+  logAuthError: (email: string, error: string, method: string) => {
+    accountsLogger.error(`Authentication error for ${email} via ${method}: ${error}`, error, {
+      action: 'AUTH_ERROR',
+      email,
+      method
+    });
+  },
+
+  logUserDeletion: (userId: string, reason?: string) => {
+    accountsLogger.info(`User account deleted: ${userId}${reason ? `, reason: ${reason}` : ''}`, {
+      action: 'USER_DELETION',
+      userId,
+      reason
+    });
+  },
+
+  logAccountError: (action: string, error: Error | string, context: Record<string, any> = {}) => {
+    accountsLogger.error(`Account error during ${action}`, error, {
+      action: 'ACCOUNT_ERROR',
+      errorAction: action,
+      ...context
+    });
+  }
+};
