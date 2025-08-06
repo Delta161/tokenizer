@@ -193,9 +193,18 @@ const router = createRouter({
       }
     },
     {
+      path: '/user',
+      name: 'user',
+      component: () => import('@/views/ProfilePage.vue'),
+      meta: {
+        requiresAuth: false, // Temporarily disabled for testing
+        layout: 'DefaultLayout'
+      }
+    },
+    {
       path: '/profile',
       name: 'profile',
-      component: () => import('@/modules/Accounts/views/user.view.vue'),
+      component: () => import('@/views/ProfilePage.vue'),
       meta: {
         requiresAuth: false, // Temporarily disabled for testing
         layout: 'DefaultLayout'

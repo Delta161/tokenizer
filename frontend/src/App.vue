@@ -26,14 +26,14 @@ const layoutComponent = computed(() => {
 
 // Check authentication on app mount
 onMounted(async () => {
-  if (localStorage.getItem('accessToken') || localStorage.getItem('refreshToken')) {
-    try {
-      // Initialize auth from localStorage and check token validity
-      authStore.initializeAuth()
-      await authStore.checkTokenValidity()
-    } catch (error) {
-      // Ignore errors, will be handled by router guard
-    }
+  console.log('🚀 App mounted - checking authentication status...');
+  try {
+    // Initialize session-based authentication
+    await authStore.initializeAuth();
+    console.log('✅ Authentication initialized successfully');
+  } catch (error) {
+    console.warn('⚠️ Authentication initialization failed:', error);
+    // Ignore errors, will be handled by router guard
   }
 })
 </script>

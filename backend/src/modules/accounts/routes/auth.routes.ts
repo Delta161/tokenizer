@@ -29,6 +29,23 @@ logger.info('✅ Auth routes module loading...');
  */
 router.get('/health', authController.healthCheck.bind(authController));
 
+/**
+ * Session status check endpoint
+ */
+router.get('/session-status', authController.getSessionStatus.bind(authController));
+
+/**
+ * Debug session endpoint (temporary - for troubleshooting)
+ */
+router.get('/debug-session', (req, res) => {
+  res.json({
+    sessionID: req.sessionID,
+    isAuthenticated: req.isAuthenticated(),
+    user: req.user,
+    session: req.session
+  });
+});
+
 // =============================================================================
 // AUTHENTICATION ENDPOINTS
 // =============================================================================

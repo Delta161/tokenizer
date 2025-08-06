@@ -41,14 +41,29 @@ export const AuthService = {
   },
 
   /**
-   * Check if user is authenticated by calling profile endpoint
+   * Check if user is authenticated using session status endpoint
    * @returns Promise with authentication status and user data
    */
   async checkAuth(): Promise<{ isAuthenticated: boolean; user?: AuthResponse['user'] }> {
     try {
-      const user = await this.getCurrentUser();
-      return { isAuthenticated: true, user };
+      console.log('🔍 Checking authentication status via session endpoint...');
+      const response = await apiClient.get('/auth/session-status');
+      const sessionData = response.data;
+      
+      console.log('📊 Session status response:', sessionData);
+      
+      if (sessionData.isAuthenticated && sessionData.user) {
+        console.log('✅ User is authenticated:', sessionData.user.email);
+        return { 
+          isAuthenticated: true, 
+          user: sessionData.user 
+        };
+      } else {
+        console.log('❌ User is not authenticated');
+        return { isAuthenticated: false };
+      }
     } catch (error) {
+      console.error('❌ Session status check failed:', error);
       return { isAuthenticated: false };
     }
   },

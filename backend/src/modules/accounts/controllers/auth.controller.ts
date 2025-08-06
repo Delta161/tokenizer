@@ -186,55 +186,63 @@ export class AuthController {
       if (!authenticatedUser) {
         this.logAuthError('handleOAuthSuccess', new Error('No user data provided'), req);
         const redirectUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-        return res.redirect(`${redirectUrl}/auth/error?message=${encodeURIComponent('Authentication failed - no user data')}`);
+        return res.redirect(`${redirectUrl}/auth/callback?error=no_user`);
       }
 
-      // The user is already authenticated and stored in session via Passport
-      // No need for token generation - session handles everything
-      
       const userId = authenticatedUser.id;
       const userEmail = authenticatedUser.email;
       const provider = authenticatedUser.provider || authenticatedUser.authProvider || 'oauth';
-      const processingTime = Date.now() - startTime;
-
-      // Enhanced logging with comprehensive context
+      
+      // Enhanced logging with session info
       accountsLogger.logUserLogin(userId, userEmail, provider);
-      logger.info('✅ OAuth session authentication completed successfully', {
+      logger.info('✅ OAuth authentication success - checking session', {
         userId: userId,
         provider: provider,
         email: userEmail,
-        processingTime,
         sessionID: req.sessionID,
+        isAuthenticated: req.isAuthenticated(),
         ip: req.ip,
         userAgent: req.get('User-Agent')
       });
 
-      // Performance monitoring
-      if (processingTime > 2000) {
-        logger.warn('Slow OAuth processing', { 
-          userId: userId, 
-          provider,
-          processingTime 
-        });
-      }
+      // Ensure session is properly saved before redirect
+      req.session.save((err) => {
+        if (err) {
+          logger.error('❌ Session save error during OAuth:', err);
+          const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+          return res.redirect(`${baseUrl}/auth/callback?error=session_error`);
+        }
 
-      // Direct redirect to dashboard - no callback needed with sessions
-      const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-      const successUrl = `${baseUrl}/dashboard`;
-      
-      // Validate URL before redirect
-      try {
-        new URL(successUrl);
-        logger.info('🔄 Redirecting to dashboard after successful OAuth', {
+        const processingTime = Date.now() - startTime;
+        logger.info('✅ Session saved successfully after OAuth', {
+          sessionID: req.sessionID,
+          userId: userId,
+          processingTime,
+          isAuthenticated: req.isAuthenticated()
+        });
+
+        // Performance monitoring
+        if (processingTime > 2000) {
+          logger.warn('Slow OAuth processing', { 
+            userId: userId, 
+            provider,
+            processingTime 
+          });
+        }
+
+        // Direct redirect to dashboard - session is now properly saved
+        const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const successUrl = `${baseUrl}/dashboard`;
+        
+        logger.info('🔄 Redirecting to dashboard after successful OAuth session save', {
           userId: userId,
           redirectUrl: successUrl,
           sessionID: req.sessionID
         });
+        
         res.redirect(successUrl);
-      } catch (urlError) {
-        logger.error('Invalid redirect URL', { successUrl, error: urlError });
-        res.redirect(`${baseUrl}/dashboard`);
-      }
+      });
+
     } catch (error) {
       this.logAuthError('handleOAuthSuccess', error, req, { 
         processingTime: Date.now() - startTime 
@@ -243,7 +251,7 @@ export class AuthController {
       // Redirect to error page with secure error handling
       const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
       const errorMessage = error instanceof Error ? error.message : 'Authentication failed';
-      res.redirect(`${baseUrl}/auth/error?message=${encodeURIComponent(errorMessage)}`);
+      res.redirect(`${baseUrl}/auth/callback?error=${encodeURIComponent(errorMessage)}`);
     }
   }
 
@@ -388,6 +396,51 @@ export class AuthController {
     }
   }
   
+  /**
+   * Check current session authentication status
+   * Used by frontend to verify if user is logged in
+   */
+  async getSessionStatus(req: Request, res: Response): Promise<void> {
+    try {
+      const sessionID = req.sessionID;
+      const isAuthenticated = req.isAuthenticated();
+      const user = req.user as any;
+      
+      logger.info('🔍 Session status check', { 
+        sessionID,
+        isAuthenticated,
+        userId: user?.id || null,
+        userEmail: user?.email || null
+      });
+
+      if (isAuthenticated && user) {
+        res.json({
+          isAuthenticated: true,
+          user: {
+            id: user.id,
+            email: user.email,
+            fullName: user.fullName,
+            role: user.role,
+            avatarUrl: user.avatarUrl,
+            authProvider: user.authProvider
+          }
+        });
+      } else {
+        res.json({ 
+          isAuthenticated: false,
+          user: null 
+        });
+      }
+    } catch (error) {
+      logger.error('❌ Session status check error:', error);
+      res.status(500).json({ 
+        error: 'Failed to check session status',
+        isAuthenticated: false,
+        user: null 
+      });
+    }
+  }
+
   /**
    * Health check for auth service with comprehensive status
    */

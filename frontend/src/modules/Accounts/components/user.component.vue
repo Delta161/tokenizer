@@ -1,5 +1,27 @@
 <template>
   <section class="bg-white shadow rounded-lg overflow-hidden">
+    <!-- Debug Information (Remove in production) -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 m-6">
+      <h3 class="text-sm font-medium text-blue-800">Debug Information</h3>
+      <div class="mt-2 text-xs text-blue-700 space-y-1">
+        <p>Loading: {{ loading }}</p>
+        <p>Error: {{ error || 'None' }}</p>
+        <p>Auth User: {{ authUser ? 'Present' : 'Null' }}</p>
+        <p>Auth Email: {{ authUser?.email || 'No email' }}</p>
+        <p>Store User: {{ storeUser ? 'Present' : 'Null' }}</p>
+        <p>Store Email: {{ storeUser?.email || 'No email' }}</p>
+        <p>Current User: {{ user ? 'Present' : 'Null' }}</p>
+        <p>User Email: {{ user?.email || 'No email' }}</p>
+        <p>Is Authenticated: {{ authStore.isAuthenticated }}</p>
+      </div>
+      <button 
+        @click="loadUserProfile"
+        class="mt-2 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+      >
+        Reload Profile
+      </button>
+    </div>
+
     <!-- Loading State -->
     <div v-if="loading" class="flex justify-center items-center py-12">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -19,7 +41,7 @@
           <p class="mt-1 text-sm text-red-700">{{ error }}</p>
           <div class="mt-4">
             <button 
-              @click="refreshProfile" 
+              @click="loadUserProfile" 
               class="bg-red-100 hover:bg-red-200 text-red-800 font-medium py-2 px-4 rounded-md text-sm transition-colors"
             >
               Try Again
@@ -27,6 +49,75 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Profile Display -->
+    <div v-else-if="user && !loading" class="user-profile-display">
+      <!-- Profile Header -->
+      <div class="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4">
+        <div class="flex items-center">
+          <!-- Avatar -->
+          <div class="flex-shrink-0">
+            <img 
+              v-if="user.avatarUrl" 
+              :src="user.avatarUrl" 
+              :alt="user.fullName || 'User Avatar'"
+              class="h-16 w-16 rounded-full border-4 border-white shadow-lg"
+            >
+            <div 
+              v-else 
+              class="h-16 w-16 rounded-full bg-gray-300 border-4 border-white shadow-lg flex items-center justify-center"
+            >
+              <span class="text-xl font-semibold text-gray-600">
+                {{ getUserInitials() }}
+              </span>
+            </div>
+          </div>
+          
+          <!-- User Info -->
+          <div class="ml-4">
+            <h1 class="text-2xl font-bold text-white">
+              {{ user.fullName || 'User Profile' }}
+            </h1>
+            <p class="text-blue-100">{{ user.email }}</p>
+            <p class="text-blue-200 text-sm">Role: {{ user.role }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Details -->
+      <div class="px-6 py-4">
+        <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Email Address</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ user.email }}</dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Full Name</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ user.fullName || 'Not provided' }}</dd>
+          </div>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Role</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ user.role }}</dd>
+          </div>
+          <div v-if="user.authProvider">
+            <dt class="text-sm font-medium text-gray-500">Auth Provider</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ user.authProvider }}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <!-- No User State -->
+    <div v-else-if="!loading" class="text-center py-12 m-6">
+      <h3 class="text-lg font-medium text-gray-900">No Profile Data</h3>
+      <p class="mt-1 text-sm text-gray-500">Unable to load user profile information.</p>
+      <button 
+        @click="loadUserProfile"
+        class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+      >
+        Load Profile
+      </button>
     </div>
 
     <!-- Settings Form (when in settings mode) -->
@@ -459,6 +550,8 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue';
 import { userService } from '../services/user.service';
+import { useAuthStore } from '../stores/auth.store';
+import { useUserStore } from '../stores/user.store';
 import type { User, UserProfile, UserSettings } from '../types/user.types';
 
 // Props
@@ -477,12 +570,20 @@ const emit = defineEmits<{
   (e: 'update', settings: Partial<UserSettings>): void;
 }>();
 
+// Stores
+const authStore = useAuthStore();
+const userStore = useUserStore();
+
 // State
 const user = ref<User | null>(null);
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 const isEditing = ref<boolean>(false);
 const showRawData = ref<boolean>(false);
+
+// Computed properties for debugging
+const authUser = computed(() => authStore.user);
+const storeUser = computed(() => userStore.currentUser);
 
 // Profile edit form state - extended to match template fields
 interface EditFormData {
@@ -535,6 +636,60 @@ const userInitials = computed(() => {
 });
 
 // Methods
+const loadUserProfile = async (): Promise<void> => {
+  try {
+    console.log('🔄 Loading user profile...');
+    loading.value = true;
+    error.value = null;
+    
+    // Try to get user from auth store first
+    console.log('🔍 Checking auth store...');
+    const isAuthenticated = await authStore.checkAuth();
+    console.log('🔐 Authentication status:', isAuthenticated);
+    
+    if (isAuthenticated && authStore.user) {
+      console.log('✅ User found in auth store:', authStore.user);
+      user.value = authStore.user;
+      return;
+    }
+    
+    // If not in auth store, try user service
+    console.log('🔍 Fetching from user service...');
+    user.value = await userService.getCurrentUser();
+    console.log('📊 User service result:', user.value);
+    
+  } catch (err) {
+    console.error('❌ Failed to load user profile:', err);
+    error.value = err instanceof Error ? err.message : 'Failed to load profile';
+  } finally {
+    loading.value = false;
+  }
+};
+
+const getUserInitials = (): string => {
+  if (!user.value?.fullName) return 'U';
+  return user.value.fullName
+    .split(' ')
+    .map(name => name.charAt(0))
+    .join('')
+    .toUpperCase()
+    .substring(0, 2);
+};
+
+const getInitials = (firstName?: string, lastName?: string): string => {
+  const first = firstName?.charAt(0)?.toUpperCase() || '';
+  const last = lastName?.charAt(0)?.toUpperCase() || '';
+  return first + last || 'U';
+};
+
+const hasSocialLinks = computed(() => {
+  return user.value && (
+    (user.value as any).socialLinks?.twitter ||
+    (user.value as any).socialLinks?.linkedin ||
+    (user.value as any).socialLinks?.github
+  );
+});
+
 function formatRole(role: string): string {
   return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
 }
@@ -655,33 +810,7 @@ async function refreshProfile(): Promise<void> {
 
 // Load user data on component mount
 onMounted(async () => {
-  try {
-    // For development: Set a simple test token if none exists
-    if (!localStorage.getItem('accessToken')) {
-      console.log('🔐 No auth token found, setting development token...');
-      localStorage.setItem('accessToken', 'dev-test-token-12345');
-      localStorage.setItem('tokenExpiresAt', (Date.now() + 3600000).toString()); // 1 hour from now
-    }
-    
-    console.log('👤 Loading user profile...');
-    if (props.userId) {
-      console.log('📍 Loading user by ID:', props.userId);
-      user.value = await userService.getUserById(props.userId);
-    } else {
-      console.log('📍 Loading current user profile...');
-      user.value = await userService.getCurrentUser();
-    }
-    console.log('✅ User profile loaded:', user.value);
-    
-    // Initialize settings form if in settings mode
-    if (props.mode === 'settings' && user.value) {
-      resetSettingsForm();
-    }
-  } catch (err: any) {
-    console.error('❌ Error loading user profile:', err);
-    error.value = err?.message || 'Failed to load user profile';
-  } finally {
-    loading.value = false;
-  }
+  console.log('🎯 User component mounted');
+  await loadUserProfile();
 });
 </script>
