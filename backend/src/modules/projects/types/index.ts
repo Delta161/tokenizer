@@ -1,7 +1,10 @@
 /**
  * Projects Module Types Index
+ * Centralized exports for all project-related types
  * 
- * This file exports all types from the projects module
+ * Architecture Layer: Types (Layer 7)
+ * Purpose: Provide clean imports for other layers
  */
 
-export * from './projects.types';
+// Primary project types - comprehensive type definitions
+export * from './project.types';

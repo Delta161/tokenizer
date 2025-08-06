@@ -32,6 +32,7 @@ import { errorHandler, notFoundHandler } from './src/middleware/errorHandler';
 // Import feature routers (using relative paths since path aliases have issues)
 import { authRouter } from './src/modules/accounts/routes/auth.routes';
 import { userRouter } from './src/modules/accounts/routes/user.routes';
+import { projectModuleRoutes } from './src/modules/projects/routes/index';
 
 // Create KYC router inline for now (can be moved to separate file later)
 const kycRouter = express.Router();
@@ -178,8 +179,10 @@ app.use(`${API_PREFIX}/users`, userRouter);
 console.log(`📍 Mounting KYC routes at: ${API_PREFIX}/kyc`);
 app.use(`${API_PREFIX}/kyc`, kycRouter);
 
+console.log(`📍 Mounting Projects routes at: ${API_PREFIX}/projects`);
+app.use(`${API_PREFIX}/projects`, projectModuleRoutes);
+
 // TODO: Mount additional feature routers when path alias issues are resolved
-// app.use(`${API_PREFIX}/projects`, projectsRouter);
 // app.use(`${API_PREFIX}/investments`, investmentsRouter);
 // app.use(`${API_PREFIX}/blockchain`, blockchainRouter);
 // app.use(`${API_PREFIX}/analytics`, analyticsRouter);
