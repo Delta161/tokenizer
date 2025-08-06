@@ -4,7 +4,7 @@
  */
 
 import { Router } from 'express';
-import { sessionGuard } from '../middleware/session.middleware';
+import { sessionGuard } from '../middleware/auth.middleware';
 import { userController } from '../controllers/user.controller';
 import { logger } from '@utils/logger';
 

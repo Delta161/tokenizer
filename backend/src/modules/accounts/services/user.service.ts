@@ -1,18 +1,14 @@
 /**
- * User Service (LEGACY - Being gradually replaced by specialized services)
- * Handles user-related business logic
- * 
- * @deprecated This service is being phased out in favor of:
- * - ProfileService for profile-related operations  
- * - AdminService for administrative user operations
- * 
- * Use specialized services for new development.
+ * User Service 
+ * Handles user-related business logic with integrated profile caching
+ * Merged ProfileService functionality for cleaner architecture
  */
 
 // Internal modules
 import { PAGINATION } from '@config/constants';
 import { createNotFound, createBadRequest } from '@middleware/errorHandler';
 import { getSkipValue } from '../../../utils/pagination';
+import { logger } from '../../../utils/logger';
 import type { 
   CreateUserDTO, 
   UpdateUserDTO, 
@@ -24,7 +20,48 @@ import type {
 // Shared Prisma client
 import { prisma } from '../utils/prisma';
 
+/**
+ * Simple in-memory cache for user profiles
+ * In production, this would be replaced with Redis
+ */
+class ProfileCache {
+  private cache = new Map<string, { data: UserDTO; expires: number }>();
+  private readonly TTL = 5 * 60 * 1000; // 5 minutes
+
+  get(key: string): UserDTO | null {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+    
+    if (Date.now() > entry.expires) {
+      this.cache.delete(key);
+      return null;
+    }
+    
+    return entry.data;
+  }
+
+  set(key: string, data: UserDTO): void {
+    this.cache.set(key, {
+      data,
+      expires: Date.now() + this.TTL
+    });
+  }
+
+  invalidate(pattern: string): void {
+    for (const key of this.cache.keys()) {
+      if (key.includes(pattern)) {
+        this.cache.delete(key);
+      }
+    }
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+}
+
 export class UserService {
+  private cache = new ProfileCache();
 
   /**
    * Get all users with pagination and filtering
@@ -88,18 +125,36 @@ export class UserService {
   }
 
   /**
-   * Get user by ID
-   * @deprecated Use ProfileService.getProfile() instead for new development
+   * Get user by ID with caching (merged from ProfileService)
+   * Optimized for performance with selective field fetching
    */
   async getUserById(userId: string): Promise<UserDTO> {
+    if (!userId) {
+      throw createNotFound('User ID is required');
+    }
+
+    // Check cache first
+    const cacheKey = `profile:${userId}`;
+    const cached = this.cache.get(cacheKey);
+    if (cached) {
+      logger.debug('Profile cache hit', { userId });
+      return cached;
+    }
+
+    logger.debug('Profile cache miss, fetching from database', { userId });
+
+    // Fetch from database with optimized query (matching ProfileService)
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
         email: true,
         fullName: true,
+        providerId: true,
+        avatarUrl: true,
         role: true,
         authProvider: true,
+        lastLoginAt: true,
         createdAt: true,
         updatedAt: true
       }
@@ -108,8 +163,26 @@ export class UserService {
     if (!user) {
       throw createNotFound('User not found');
     }
+
+    const userProfile = user as UserDTO;
     
-    return user as UserDTO;
+    // Cache the result
+    this.cache.set(cacheKey, userProfile);
+    
+    logger.info('User profile retrieved', { 
+      userId, 
+      email: user.email,
+      cacheStatus: 'miss' 
+    });
+
+    return userProfile;
+  }
+
+  /**
+   * Get user profile by ID (alias for getUserById for compatibility)
+   */
+  async getProfile(userId: string): Promise<UserDTO> {
+    return this.getUserById(userId);
   }
 
   /**
@@ -154,13 +227,17 @@ export class UserService {
   }
 
   /**
-   * Update user
-   * @deprecated Use AdminService.updateUser() or ProfileService.updateProfile() instead for new development
+   * Update user with cache invalidation (merged from ProfileService)
    */
   async updateUser(userId: string, data: UpdateUserDTO): Promise<UserDTO> {
-    // Check if user exists
+    if (!userId) {
+      throw createNotFound('User ID is required');
+    }
+
+    // Validate user exists first
     const existingUser = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
+      select: { id: true, email: true }
     });
     
     if (!existingUser) {
@@ -178,21 +255,50 @@ export class UserService {
       }
     }
     
-    // Update user
+    // Update user with enhanced field selection
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data,
+      data: {
+        ...data,
+        updatedAt: new Date()
+      },
       select: {
         id: true,
         email: true,
         fullName: true,
+        providerId: true,
+        avatarUrl: true,
         role: true,
+        authProvider: true,
+        lastLoginAt: true,
         createdAt: true,
         updatedAt: true
       }
     });
+
+    // Invalidate cache for this user
+    this.cache.invalidate(`profile:${userId}`);
+
+    logger.info('User profile updated', { 
+      userId, 
+      updatedFields: Object.keys(data) 
+    });
     
     return updatedUser as UserDTO;
+  }
+
+  /**
+   * Update user profile (alias for updateUser for compatibility)
+   */
+  async updateProfile(userId: string, updateData: UpdateUserDTO): Promise<UserDTO> {
+    return this.updateUser(userId, updateData);
+  }
+
+  /**
+   * Upload and update user avatar
+   */
+  async updateAvatar(userId: string, avatarUrl: string): Promise<UserDTO> {
+    return this.updateUser(userId, { avatarUrl });
   }
 
   /**
@@ -254,6 +360,72 @@ export class UserService {
     } catch (error: any) {
       throw createBadRequest('Failed to retrieve user statistics');
     }
+  }
+
+  /**
+   * Get multiple profiles efficiently (merged from ProfileService)
+   */
+  async getProfiles(userIds: string[]): Promise<UserDTO[]> {
+    if (!userIds.length) return [];
+
+    // Check cache for each user
+    const cached: UserDTO[] = [];
+    const uncachedIds: string[] = [];
+
+    for (const userId of userIds) {
+      const cachedProfile = this.cache.get(`profile:${userId}`);
+      if (cachedProfile) {
+        cached.push(cachedProfile);
+      } else {
+        uncachedIds.push(userId);
+      }
+    }
+
+    // Fetch uncached profiles from database
+    let uncached: UserDTO[] = [];
+    if (uncachedIds.length > 0) {
+      const users = await prisma.user.findMany({
+        where: { id: { in: uncachedIds } },
+        select: {
+          id: true,
+          email: true,
+          fullName: true,
+          providerId: true,
+          avatarUrl: true,
+          role: true,
+          authProvider: true,
+          lastLoginAt: true,
+          createdAt: true,
+          updatedAt: true
+        }
+      });
+
+      uncached = users as UserDTO[];
+      
+      // Cache the newly fetched profiles
+      uncached.forEach(user => {
+        this.cache.set(`profile:${user.id}`, user);
+      });
+    }
+
+    return [...cached, ...uncached];
+  }
+
+  /**
+   * Clear all profile cache (useful for testing or manual cache reset)
+   */
+  clearCache(): void {
+    this.cache.clear();
+    logger.info('Profile cache cleared');
+  }
+
+  /**
+   * Get cache statistics (for monitoring)
+   */
+  getCacheStats(): { size: number } {
+    return {
+      size: this.cache['cache'].size
+    };
   }
 }
 

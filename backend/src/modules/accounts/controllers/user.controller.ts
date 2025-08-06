@@ -9,8 +9,6 @@ import { Request, Response, NextFunction } from 'express';
 // Internal modules
 import { PAGINATION } from '@config/constants';
 import { userService } from '@modules/accounts/services/user.service';
-import { ProfileService } from '@modules/accounts/services/profile.service';
-import { AdminService } from '@modules/accounts/services/admin.service';
 import type { UserFilterOptions, UserSortOptions } from '@modules/accounts/types/user.types';
 import { createPaginationResult, getSkipValue } from '@utils/pagination';
 import { accountsLogger } from '@modules/accounts/utils/accounts.logger';
@@ -23,12 +21,9 @@ import {
 } from '@modules/accounts/validators/user.validator';
 
 export class UserController {
-  private profileService: ProfileService;
-  private adminService: AdminService;
 
   constructor() {
-    this.profileService = new ProfileService();
-    this.adminService = new AdminService();
+    // UserService now includes ProfileService functionality
   }
 
   /**
@@ -61,8 +56,8 @@ export class UserController {
         };
       }
       
-      // Get users using admin service
-      const { users, total } = await this.adminService.getUsers(page, limit, filters, sort);
+      // Get users using user service
+      const { users, total } = await userService.getUsers(page, limit, filters, sort);
       
       // Create pagination result
       const result = createPaginationResult(users, total, { page, limit, skip });
@@ -100,7 +95,7 @@ export class UserController {
       });
 
       // Get complete user profile using profile service
-      const userData = await this.profileService.getProfile(user.id);
+      const userData = await userService.getProfile(user.id);
 
       // Add performance metrics
       const processingTime = Date.now() - startTime;
@@ -135,8 +130,8 @@ export class UserController {
       // Validate and parse request body
       const validatedData = createUserSchema.parse(req.body);
       
-      // Create user using admin service
-      const user = await this.adminService.createUser(validatedData);
+      // Create user using user service
+      const user = await userService.createUser(validatedData);
       
       // Log user creation
       accountsLogger.logUserRegistration(user.id, user.email, 'manual_creation');
@@ -181,11 +176,11 @@ export class UserController {
       // Update user using appropriate service
       let user;
       if (isProfileUpdate) {
-        // Use ProfileService for self-profile updates
-        user = await this.profileService.updateProfile(userId, validatedData);
+        // Use UserService for self-profile updates
+        user = await userService.updateProfile(userId, validatedData);
       } else {
-        // Use AdminService for admin-controlled user updates
-        user = await this.adminService.updateUser(userId, validatedData);
+        // Use UserService for user updates
+        user = await userService.updateUser(userId, validatedData);
       }
       
       // Log user update
@@ -215,8 +210,8 @@ export class UserController {
       const deletedBy = (req as any).user?.id || 'system';
       const reason = req.body.reason || 'not specified';
       
-      // Delete user using admin service
-      await this.adminService.deleteUser(userId);
+      // Delete user using user service
+      await userService.deleteUser(userId);
       
       // Log user deletion
       accountsLogger.logUserDeletion(userId, reason);
@@ -237,7 +232,7 @@ export class UserController {
       const params = userIdParamSchema.parse(req.params);
       const userId = params.userId;
       // Get user using profile service
-      const user = await this.profileService.getProfile(userId);
+      const user = await userService.getProfile(userId);
       res.status(200).json({ user });
     } catch (error) {
       next(error);

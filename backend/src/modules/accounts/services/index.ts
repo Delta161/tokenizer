@@ -6,13 +6,7 @@
 // Authentication service
 export * from './auth.service';
 
-// User profile service
-export * from './profile.service';
-
-// Admin service
-export * from './admin.service';
-
-// User service (legacy - gradually being replaced by profile and admin services)
+// User service (now includes profile functionality with caching)
 export * from './user.service';
 
 // KYC service

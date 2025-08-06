@@ -4,11 +4,8 @@
  */
 
 // Authentication & Security
-export { sessionGuard } from './session.middleware';
+export * from './auth.middleware';
 
-// Production Features
-export * from './rate-limit.middleware';
-export * from './health-check.middleware';
-export * from './security.middleware';
+// Production Features  
 export * from './kyc.middleware';
 export * from './user.middleware';
