@@ -530,41 +530,6 @@ export class AuthService {
     return sanitizedUser as UserDTO;
   }
 
-  /**
-   * Get user statistics for monitoring
-   */
-  async getUserStats(): Promise<{
-    totalUsers: number;
-    oauthUsers: { google: number; azure: number };
-    recentLogins: number;
-  }> {
-    try {
-      const [totalUsers, googleUsers, azureUsers, recentLogins] = await Promise.all([
-        prisma.user.count(),
-        prisma.user.count({ where: { authProvider: 'GOOGLE' } }),
-        prisma.user.count({ where: { authProvider: 'AZURE' } }),
-        prisma.user.count({
-          where: {
-            lastLoginAt: {
-              gte: new Date(Date.now() - 24 * 60 * 60 * 1000) // Last 24 hours
-            }
-          }
-        })
-      ]);
-
-      return {
-        totalUsers,
-        oauthUsers: {
-          google: googleUsers,
-          azure: azureUsers
-        },
-        recentLogins
-      };
-    } catch (error: any) {
-      logger.error('Failed to get user statistics', { error: error?.message });
-      throw createError(500, 'Failed to retrieve user statistics');
-    }
-  }
 }
 
 // Export singleton instance for use across the application

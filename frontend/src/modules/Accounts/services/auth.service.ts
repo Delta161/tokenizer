@@ -1,23 +1,23 @@
 import apiClient from '@/services/apiClient';
 import type { AuthResponse } from '../types/auth.types';
 import { handleServiceError } from '../utils/errorHandling';
+import { userService } from './user.service';
 
 /**
  * Auth Service
  * Handles all API calls related to session-based authentication
  * Updated to work with session management and HTTP-only cookies
+ * Profile-related functions moved to user service for better separation
  */
 export const AuthService = {
   /**
-   * Get current user profile from /auth/profile endpoint
+   * Get current user profile - delegates to user service
    * Uses session cookies for authentication
    * @returns Promise with user data
    */
   async getCurrentUser(): Promise<AuthResponse['user']> {
     try {
-      const response = await apiClient.get('/auth/profile');
-      // Backend returns { success: true, data: { user: userObject } }
-      return response.data.data.user;
+      return await userService.getCurrentUser();
     } catch (error) {
       handleServiceError(error, 'Failed to retrieve user profile.');
       throw error;

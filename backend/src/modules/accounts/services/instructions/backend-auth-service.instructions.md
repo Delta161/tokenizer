@@ -6,6 +6,11 @@ applyTo: 'backend/src/modules/accounts/services/auth.service.ts'
 
 This file defines the `AuthService` class and is responsible for handling **all business logic related to user authentication** via **OAuth-based workflows**. It adheres to best practices in service-layer design within a modular Express.js + Prisma + TypeScript stack.
 
+**⚠️ IMPORTANT REFACTORING CHANGE:**
+- **Profile-related functions have been MOVED to `user.service.ts`**
+- **This service now ONLY handles authentication actions**
+- **User profile management is handled by the User Service**
+
 ---
 
 ## 📁 Location
@@ -15,25 +20,29 @@ This file defines the `AuthService` class and is responsible for handling **all 
 
 ## 🎯 Purpose
 
-`AuthService` encapsulates authentication logic, including:
+`AuthService` encapsulates **authentication logic ONLY**, including:
 
-- Verifying access and refresh tokens
-- Normalizing and validating OAuth profiles
-- Handling user creation or updating from OAuth data
-- Issuing new JWT tokens
-- Returning safe `UserDTO` objects for controller use
+- ✅ Verifying access and refresh tokens
+- ✅ Normalizing and validating OAuth profiles
+- ✅ Handling user creation or updating from OAuth data
+- ✅ Issuing new JWT tokens
+- ✅ Session management and OAuth provider integrations
+- ❌ **NO LONGER:** User profile retrieval (moved to user.service.ts)
+- ❌ **NO LONGER:** User statistics (moved to user.service.ts)
 
-The controller should **delegate all logic** related to authentication to this service.
+The controller should **delegate authentication logic** to this service and **user profile logic** to the user service.
 
 ---
 
 ## ⚙️ Design Principles
 
 - **Layered architecture:** Business logic lives in this service, while request handling is done by controllers.
+- **Authentication focus:** This service ONLY handles authentication, NOT user profile management.
 - **Token management:** Generates and verifies JWT access and refresh tokens using utility functions.
 - **Data safety:** Always sanitizes user data before returning it.
 - **OAuth-only:** Registration and login are supported only via third-party OAuth providers (e.g., Google, Azure).
 - **Centralized error handling:** Uses custom error factories (`createUnauthorized`, `createNotFound`, `createBadRequest`) from the shared middleware.
+- **Separation of concerns:** User profile operations are handled by `user.service.ts`
 
 ---
 

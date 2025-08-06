@@ -9,7 +9,7 @@ import passport from 'passport';
 
 // Internal modules - Use relative imports
 import { authController } from '../controllers/auth.controller';
-import { authGuard, optionalAuth } from '../middleware/auth.middleware';
+import { sessionGuard, optionalSession } from '../middleware/session.middleware';
 import { googleAuthOptions, googleCallbackOptions } from '../strategies/google.strategy';
 
 // Global utilities
@@ -29,30 +29,14 @@ logger.info('✅ Auth routes module loading...');
  */
 router.get('/health', authController.healthCheck.bind(authController));
 
-/**
- * Token verification endpoint
- */
-router.get('/verify-token', authController.verifyToken.bind(authController));
-router.post('/verify-token', authController.verifyToken.bind(authController));
-
 // =============================================================================
 // AUTHENTICATION ENDPOINTS
 // =============================================================================
 
 /**
- * Get current user profile (requires authentication)
+ * Logout user - destroy session
  */
-router.get('/profile', authGuard, authController.getProfile.bind(authController));
-
-/**
- * Refresh access token
- */
-router.post('/refresh-token', authController.refreshToken.bind(authController));
-
-/**
- * Logout user
- */
-router.post('/logout', optionalAuth, authController.logout.bind(authController));
+router.post('/logout', sessionGuard, authController.logout.bind(authController));
 
 // =============================================================================
 // GOOGLE OAUTH ENDPOINTS

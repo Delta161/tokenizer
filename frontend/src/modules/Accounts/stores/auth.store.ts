@@ -127,9 +127,34 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.setItem('user', JSON.stringify(userData))
       return userData
     } catch (err: any) {
-      console.error('Error handling OAuth callback:', err)
+      console.error('OAuth callback failed:', err)
       error.value = err.message || 'Failed to complete authentication.'
       clearAuthData()
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+  
+  // Check authentication status - direct session check
+  async function checkAuthStatus() {
+    loading.value = true
+    error.value = null
+    
+    try {
+      // With session authentication, we can directly check by fetching user profile
+      const userData = await AuthService.getCurrentUser()
+      user.value = userData
+      isAuthenticated.value = true
+      // Store user data in localStorage for UI purposes only
+      localStorage.setItem('user', JSON.stringify(userData))
+      return userData
+    } catch (err: any) {
+      console.error('Authentication check failed:', err)
+      // User is not authenticated
+      user.value = null
+      isAuthenticated.value = false
+      localStorage.removeItem('user')
       throw err
     } finally {
       loading.value = false
@@ -205,7 +230,7 @@ export const useAuthStore = defineStore('auth', () => {
     loginWithApple,
     logout,
     getCurrentUser,
-    handleOAuthCallback,
+    checkAuthStatus,
     checkAuth,
     initializeAuth,
     clearAuthData

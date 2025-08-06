@@ -4,7 +4,7 @@
  */
 
 import { Router } from 'express';
-import { sessionGuard } from '../middleware/session.middleware';
+import { authGuard } from '../middleware/auth.middleware';
 import { userController } from '../controllers/user.controller';
 import { logger } from '@utils/logger';
 
@@ -20,16 +20,16 @@ logger.info('📄 User routes module loaded');
 /**
  * @route   GET /api/v1/users/me
  * @desc    Get current user's profile (alias for /profile)
- * @access  Private (requires session authentication)
+ * @access  Private (requires authentication)
  */
-router.get('/me', sessionGuard, userController.getProfile.bind(userController));
+router.get('/me', authGuard, userController.getProfile.bind(userController));
 
 /**
  * @route   GET /api/v1/users/profile
  * @desc    Get current user's profile
- * @access  Private (requires session authentication)
+ * @access  Private (requires authentication)
  */
-router.get('/profile', sessionGuard, userController.getProfile.bind(userController));
+router.get('/profile', authGuard, userController.getProfile.bind(userController));
 
 // =============================================================================
 // USER MANAGEMENT ROUTES - Admin Only
@@ -38,37 +38,37 @@ router.get('/profile', sessionGuard, userController.getProfile.bind(userControll
 /**
  * @route   GET /api/v1/users
  * @desc    Get all users with pagination and filtering
- * @access  Private (requires session authentication)
+ * @access  Private (requires authentication)
  */
-router.get('/', sessionGuard, userController.getUsers.bind(userController));
+router.get('/', authGuard, userController.getUsers.bind(userController));
 
 /**
  * @route   POST /api/v1/users
  * @desc    Create a new user
- * @access  Private (requires session authentication)
+ * @access  Private (requires authentication)
  */
-router.post('/', sessionGuard, userController.createUser.bind(userController));
+router.post('/', authGuard, userController.createUser.bind(userController));
 
 /**
  * @route   GET /api/v1/users/:id
  * @desc    Get user by ID
- * @access  Private (requires session authentication)
+ * @access  Private (requires authentication)
  */
-router.get('/:id', sessionGuard, userController.getUserById.bind(userController));
+router.get('/:id', authGuard, userController.getUserById.bind(userController));
 
 /**
  * @route   PUT /api/v1/users/:id
  * @desc    Update user by ID
- * @access  Private (requires session authentication)
+ * @access  Private (requires authentication)
  */
-router.put('/:id', sessionGuard, userController.updateUser.bind(userController));
+router.put('/:id', authGuard, userController.updateUser.bind(userController));
 
 /**
  * @route   DELETE /api/v1/users/:id
  * @desc    Delete user by ID
- * @access  Private (requires session authentication)
+ * @access  Private (requires authentication)
  */
-router.delete('/:id', sessionGuard, userController.deleteUser.bind(userController));
+router.delete('/:id', authGuard, userController.deleteUser.bind(userController));
 
 export { router as userRouter };
 logger.info('✅ User routes exported');

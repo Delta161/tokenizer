@@ -2372,3 +2372,511 @@
 2025-08-05 22:22:41:2241 [34mdebug[39m: [34m✅ User deserialized successfully[39m
 2025-08-05 22:22:50:2250 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
 2025-08-05 22:22:50:2250 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:27:04:274 [34mdebug[39m: [34mToken cache cleanup completed[39m
+2025-08-05 22:27:06:276 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:27:06:276 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:27:06:276 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:27:06:276 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:27:08:278 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:27:08:278 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:27:08:278 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:27:08:278 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:27:10:2710 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:27:10:2710 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:27:10:2710 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:27:10:2710 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:27:10:2710 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:27:10:2710 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:27:12:2712 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:27:12:2712 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:27:35:2735 [32minfo[39m: [32mCleaning up auth middleware resources[39m
+2025-08-05 22:27:35:2735 [32minfo[39m: [32mToken cache cleared[39m
+2025-08-05 22:27:35:2735 [32minfo[39m: [32mAuth middleware cleanup completed[39m
+2025-08-05 22:27:50:2750 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-05 22:27:50:2750 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-05 22:27:50:2750 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-05 22:27:50:2750 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-05 22:27:50:2750 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-05 22:27:50:2750 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-05 22:27:50:2750 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-05 22:27:50:2750 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-05 22:28:28:2828 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:28:28:2828 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:28:28:2828 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:28:28:2828 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:28:28:2828 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:28:28:2828 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:28:28:2828 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:28:28:2828 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:28:28:2828 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:28:28:2828 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:28:28:2828 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:28:29:2829 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:28:29:2829 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:28:29:2829 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 22:28:29:2829 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/auth/profile - GET - ::1[39m
+2025-08-05 22:28:32:2832 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:28:32:2832 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:28:35:2835 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:28:35:2835 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:28:36:2836 [32minfo[39m: [32m🔄 Processing Google OAuth callback[39m
+2025-08-05 22:28:36:2836 [34mdebug[39m: [34m🔍 Looking for existing user[39m
+2025-08-05 22:28:36:2836 [34mdebug[39m: [34m👤 Existing user found, updating OAuth info[39m
+2025-08-05 22:28:36:2836 [32minfo[39m: [32m✅ Google OAuth user processed successfully[39m
+2025-08-05 22:28:36:2836 [34mdebug[39m: [34m🔄 Serializing user for session storage[39m
+2025-08-05 22:28:36:2836 [32minfo[39m: [32mConverting Prisma user to OAuth profile[39m
+2025-08-05 22:28:36:2836 [34mdebug[39m: [34mTokens generated successfully[39m
+2025-08-05 22:28:36:2836 [32minfo[39m: [32mOAuth login completed successfully[39m
+2025-08-05 22:28:36:2836 [32minfo[39m: [32m[Accounts] User login: e5aa1543-3265-4d72-9f06-b0161d5a2e5c (hackschool@gmail.com) via GOOGLE[39m
+2025-08-05 22:28:36:2836 [32minfo[39m: [32mOAuth authentication completed successfully[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:28:37:2837 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:28:37:2837 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:28:37:2837 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:28:37:2837 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:33:50:3350 [34mdebug[39m: [34mToken cache cleanup completed[39m
+2025-08-05 22:55:55:5555 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:55:55:5555 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:55:55:5555 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:55:55:5555 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:55:55:5555 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:55:55:5555 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:55:55:5555 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:55:55:5555 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:55:55:5555 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:55:55:5555 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:57:56:5756 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:57:56:5756 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:57:56:5756 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:57:56:5756 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:57:56:5756 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 22:57:56:5756 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 22:57:56:5756 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 22:57:56:5756 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 22:57:56:5756 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 22:57:56:5756 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:01:50:150 [34mdebug[39m: [34mToken cache cleanup completed[39m
+2025-08-05 23:20:03:203 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:20:03:203 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:20:03:203 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:20:03:203 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:20:03:203 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:20:03:203 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:20:03:203 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:20:03:203 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:20:03:203 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:20:03:203 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:20:11:2011 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:20:11:2011 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:20:11:2011 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:20:11:2011 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:20:11:2011 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:20:11:2011 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:20:11:2011 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:20:11:2011 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:23:25:2325 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:23:25:2325 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:23:25:2325 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:23:25:2325 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:23:25:2325 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:23:25:2325 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:23:25:2325 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:23:25:2325 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:23:51:2351 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:23:51:2351 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:23:51:2351 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:23:51:2351 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:23:51:2351 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:23:51:2351 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:23:51:2351 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:23:51:2351 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:25:51:2551 [34mdebug[39m: [34mToken cache cleanup completed[39m
+2025-08-05 23:27:31:2731 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:27:31:2731 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:27:31:2731 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:27:31:2731 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:27:31:2731 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:27:31:2731 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:27:31:2731 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:27:31:2731 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:32:51:3251 [34mdebug[39m: [34mToken cache cleanup completed[39m
+2025-08-05 23:40:36:4036 [32minfo[39m: [32mCleaning up auth middleware resources[39m
+2025-08-05 23:40:36:4036 [32minfo[39m: [32mToken cache cleared[39m
+2025-08-05 23:40:36:4036 [32minfo[39m: [32mAuth middleware cleanup completed[39m
+2025-08-05 23:41:14:4114 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-05 23:41:14:4114 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-05 23:41:14:4114 [32minfo[39m: [32m📄 User routes module loaded[39m
+2025-08-05 23:41:14:4114 [32minfo[39m: [32m✅ User routes exported[39m
+2025-08-05 23:41:14:4114 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-05 23:41:14:4114 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-05 23:41:14:4114 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-05 23:41:14:4114 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-05 23:41:14:4114 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-05 23:41:14:4114 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 23:41:15:4115 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/users/me - GET - ::1[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 23:41:15:4115 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/users/me - GET - ::1[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:41:15:4115 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-05 23:41:15:4115 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/users/me - GET - ::1[39m
+2025-08-05 23:41:25:4125 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:41:25:4125 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:41:29:4129 [32minfo[39m: [32m🔄 Processing Google OAuth callback[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34m🔍 Looking for existing user[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34m👤 Existing user found, updating OAuth info[39m
+2025-08-05 23:41:29:4129 [32minfo[39m: [32m✅ Google OAuth user processed successfully[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34m🔄 Serializing user for session storage[39m
+2025-08-05 23:41:29:4129 [32minfo[39m: [32mConverting Prisma user to OAuth profile[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34mTokens generated successfully[39m
+2025-08-05 23:41:29:4129 [32minfo[39m: [32mOAuth login completed successfully[39m
+2025-08-05 23:41:29:4129 [32minfo[39m: [32m[Accounts] User login: e5aa1543-3265-4d72-9f06-b0161d5a2e5c (hackschool@gmail.com) via GOOGLE[39m
+2025-08-05 23:41:29:4129 [32minfo[39m: [32mOAuth authentication completed successfully[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:41:29:4129 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:41:29:4129 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:41:29:4129 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:41:29:4129 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:42:28:4228 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:42:28:4228 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:42:28:4228 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:42:28:4228 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:42:28:4228 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:42:30:4230 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:42:30:4230 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:42:33:4233 [32minfo[39m: [32m🔄 Processing Google OAuth callback[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34m🔍 Looking for existing user[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34m👤 Existing user found, updating OAuth info[39m
+2025-08-05 23:42:33:4233 [32minfo[39m: [32m✅ Google OAuth user processed successfully[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34m🔄 Serializing user for session storage[39m
+2025-08-05 23:42:33:4233 [32minfo[39m: [32mConverting Prisma user to OAuth profile[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34mTokens generated successfully[39m
+2025-08-05 23:42:33:4233 [32minfo[39m: [32mOAuth login completed successfully[39m
+2025-08-05 23:42:33:4233 [32minfo[39m: [32m[Accounts] User login: e5aa1543-3265-4d72-9f06-b0161d5a2e5c (hackschool@gmail.com) via GOOGLE[39m
+2025-08-05 23:42:33:4233 [32minfo[39m: [32mOAuth authentication completed successfully[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:42:33:4233 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:42:33:4233 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:42:33:4233 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:42:33:4233 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:42:53:4253 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:42:53:4253 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:42:53:4253 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:42:53:4253 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:42:53:4253 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:42:53:4253 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:42:53:4253 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:42:53:4253 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:42:53:4253 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:42:53:4253 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:42:57:4257 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:42:57:4257 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:42:57:4257 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:42:57:4257 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:42:57:4257 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:42:57:4257 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-05 23:42:57:4257 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-05 23:42:57:4257 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-05 23:42:57:4257 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-05 23:42:57:4257 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-05 23:47:14:4714 [34mdebug[39m: [34mToken cache cleanup completed[39m
+2025-08-05 23:48:14:4814 [34mdebug[39m: [34mToken cache cleanup completed[39m
+2025-08-06 09:34:47:3447 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:34:47:3447 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:34:47:3447 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:34:47:3447 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-06 09:34:47:3447 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/users/me - GET - ::1[39m
+2025-08-06 09:34:47:3447 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:34:47:3447 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:34:47:3447 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:34:47:3447 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-06 09:34:47:3447 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/users/me - GET - ::1[39m
+2025-08-06 09:34:48:3448 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:34:48:3448 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:34:48:3448 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:34:48:3448 [34mdebug[39m: [34mAuthentication failed - invalid or missing token[39m
+2025-08-06 09:34:48:3448 [33mwarn[39m: [33m401 - UNAUTHORIZED - Authentication required - No valid token provided - /api/v1/users/me - GET - ::1[39m
+2025-08-06 09:34:51:3451 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:34:51:3451 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:34:54:3454 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:34:54:3454 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:34:54:3454 [32minfo[39m: [32m🔄 Processing Google OAuth callback[39m
+2025-08-06 09:34:54:3454 [34mdebug[39m: [34m🔍 Looking for existing user[39m
+2025-08-06 09:34:54:3454 [34mdebug[39m: [34m👤 Existing user found, updating OAuth info[39m
+2025-08-06 09:34:54:3454 [32minfo[39m: [32m✅ Google OAuth user processed successfully[39m
+2025-08-06 09:34:54:3454 [34mdebug[39m: [34m🔄 Serializing user for session storage[39m
+2025-08-06 09:34:54:3454 [32minfo[39m: [32mConverting Prisma user to OAuth profile[39m
+2025-08-06 09:34:54:3454 [34mdebug[39m: [34mTokens generated successfully[39m
+2025-08-06 09:34:54:3454 [32minfo[39m: [32mOAuth login completed successfully[39m
+2025-08-06 09:34:54:3454 [32minfo[39m: [32m[Accounts] User login: e5aa1543-3265-4d72-9f06-b0161d5a2e5c (hackschool@gmail.com) via GOOGLE[39m
+2025-08-06 09:34:54:3454 [32minfo[39m: [32mOAuth authentication completed successfully[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:34:55:3455 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:34:55:3455 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:34:55:3455 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:34:55:3455 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:35:04:354 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:35:04:354 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:35:04:354 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:35:04:354 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:35:04:354 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:35:05:355 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:35:05:355 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:35:05:355 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:35:05:355 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:35:05:355 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:39:23:3923 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:39:23:3923 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:39:23:3923 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:39:23:3923 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:39:23:3923 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:39:23:3923 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:39:23:3923 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:39:23:3923 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:39:23:3923 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:39:23:3923 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:40:12:4012 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:40:12:4012 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:40:12:4012 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:40:12:4012 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:40:14:4014 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:40:14:4014 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:40:18:4018 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:40:18:4018 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:40:18:4018 [32minfo[39m: [32m🔄 Processing Google OAuth callback[39m
+2025-08-06 09:40:18:4018 [34mdebug[39m: [34m🔍 Looking for existing user[39m
+2025-08-06 09:40:18:4018 [34mdebug[39m: [34m👤 Existing user found, updating OAuth info[39m
+2025-08-06 09:40:18:4018 [32minfo[39m: [32m✅ Google OAuth user processed successfully[39m
+2025-08-06 09:40:18:4018 [34mdebug[39m: [34m🔄 Serializing user for session storage[39m
+2025-08-06 09:40:18:4018 [32minfo[39m: [32mConverting Prisma user to OAuth profile[39m
+2025-08-06 09:40:18:4018 [34mdebug[39m: [34mTokens generated successfully[39m
+2025-08-06 09:40:18:4018 [32minfo[39m: [32mOAuth login completed successfully[39m
+2025-08-06 09:40:18:4018 [32minfo[39m: [32m[Accounts] User login: e5aa1543-3265-4d72-9f06-b0161d5a2e5c (hackschool@gmail.com) via GOOGLE[39m
+2025-08-06 09:40:18:4018 [32minfo[39m: [32mOAuth authentication completed successfully[39m
+2025-08-06 09:40:18:4018 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:40:18:4018 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:40:18:4018 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:40:19:4019 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:40:19:4019 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:40:19:4019 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:40:19:4019 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:40:19:4019 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:40:19:4019 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:40:19:4019 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:40:19:4019 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:40:19:4019 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:40:19:4019 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:40:19:4019 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:40:19:4019 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:45:49:4549 [34mdebug[39m: [34mToken cache cleanup completed[39m
+2025-08-06 09:47:50:4750 [31merror[39m: [31m[Accounts] Account error during user_creation[39m
+2025-08-06 09:47:50:4750 [31merror[39m: [31m[Accounts] Account error during user_update[39m
+2025-08-06 09:47:50:4750 [31merror[39m: [31m[Accounts] Account error during user_deletion[39m
+2025-08-06 09:54:56:5456 [32minfo[39m: [32mCleaning up auth middleware resources[39m
+2025-08-06 09:54:56:5456 [32minfo[39m: [32mToken cache cleared[39m
+2025-08-06 09:54:56:5456 [32minfo[39m: [32mAuth middleware cleanup completed[39m
+2025-08-06 09:55:07:557 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-06 09:55:07:557 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-06 09:55:07:557 [32minfo[39m: [32m📄 User routes module loaded[39m
+2025-08-06 09:55:07:557 [32minfo[39m: [32m✅ User routes exported[39m
+2025-08-06 09:55:07:557 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-06 09:55:07:557 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-06 09:55:07:557 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-06 09:55:07:557 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-06 09:55:07:557 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-06 09:55:07:557 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-06 09:55:14:5514 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:55:14:5514 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:55:14:5514 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:55:14:5514 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:55:14:5514 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:55:14:5514 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:55:14:5514 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:55:14:5514 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:55:14:5514 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:55:14:5514 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:55:14:5514 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:55:14:5514 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:55:15:5515 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:55:15:5515 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:55:15:5515 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:55:24:5524 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:55:24:5524 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:55:24:5524 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:55:24:5524 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:55:30:5530 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:55:30:5530 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:55:33:5533 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:55:33:5533 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:55:34:5534 [32minfo[39m: [32m🔄 Processing Google OAuth callback[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34m🔍 Looking for existing user[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34m👤 Existing user found, updating OAuth info[39m
+2025-08-06 09:55:34:5534 [32minfo[39m: [32m✅ Google OAuth user processed successfully[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34m🔄 Serializing user for session storage[39m
+2025-08-06 09:55:34:5534 [32minfo[39m: [32mConverting Prisma user to OAuth profile[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34mTokens generated successfully[39m
+2025-08-06 09:55:34:5534 [32minfo[39m: [32mOAuth login completed successfully[39m
+2025-08-06 09:55:34:5534 [32minfo[39m: [32m[Accounts] User login: e5aa1543-3265-4d72-9f06-b0161d5a2e5c (hackschool@gmail.com) via GOOGLE[39m
+2025-08-06 09:55:34:5534 [32minfo[39m: [32mOAuth authentication completed successfully[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:55:34:5534 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:55:34:5534 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 09:55:34:5534 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 09:55:34:5534 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:01:07:17 [34mdebug[39m: [34mToken cache cleanup completed[39m
+2025-08-06 10:15:20:1520 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:15:20:1520 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:15:20:1520 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 10:15:20:1520 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 10:15:20:1520 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:15:20:1520 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:15:21:1521 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:15:21:1521 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 10:15:21:1521 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 10:15:21:1521 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:19:49:1949 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:19:49:1949 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:19:49:1949 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 10:19:49:1949 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 10:19:49:1949 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:19:49:1949 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:19:49:1949 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:19:49:1949 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 10:19:49:1949 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 10:19:49:1949 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:19:56:1956 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:19:56:1956 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:19:56:1956 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 10:19:56:1956 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 10:19:56:1956 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:19:56:1956 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:19:56:1956 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:19:56:1956 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 10:19:56:1956 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 10:19:56:1956 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:20:07:207 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:20:07:207 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:20:07:207 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 10:20:07:207 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 10:20:07:207 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:20:07:207 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:20:07:207 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:20:07:207 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 10:20:07:207 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 10:20:07:207 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:21:07:217 [34mdebug[39m: [34mToken cache cleanup completed[39m
+2025-08-06 10:22:45:2245 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:22:45:2245 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:22:45:2245 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 10:22:45:2245 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 10:22:45:2245 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:22:46:2246 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:22:46:2246 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:22:46:2246 [34mdebug[39m: [34mExcellent validation performance[39m
+2025-08-06 10:22:46:2246 [34mdebug[39m: [34mAuthentication successful[39m
+2025-08-06 10:22:46:2246 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:22:53:2253 [32minfo[39m: [32mCleaning up auth middleware resources[39m
+2025-08-06 10:22:53:2253 [32minfo[39m: [32mToken cache cleared[39m
+2025-08-06 10:22:53:2253 [32minfo[39m: [32mAuth middleware cleanup completed[39m
+2025-08-06 10:23:13:2313 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-06 10:23:13:2313 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-06 10:23:13:2313 [32minfo[39m: [32m📄 User routes module loaded[39m
+2025-08-06 10:23:13:2313 [32minfo[39m: [32m✅ User routes exported[39m
+2025-08-06 10:23:13:2313 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-06 10:23:13:2313 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-06 10:23:13:2313 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-06 10:23:13:2313 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-06 10:23:13:2313 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-06 10:23:13:2313 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-06 10:23:26:2326 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:23:26:2326 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:23:26:2326 [34mdebug[39m: [34m✅ Session authentication successful[39m
+2025-08-06 10:23:26:2326 [32minfo[39m: [32m[Accounts] User profile accessed[39m
+2025-08-06 10:23:26:2326 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-06 10:23:26:2326 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-06 10:23:26:2326 [34mdebug[39m: [34m✅ Session authentication successful[39m
+2025-08-06 10:23:26:2326 [32minfo[39m: [32m[Accounts] User profile accessed[39m

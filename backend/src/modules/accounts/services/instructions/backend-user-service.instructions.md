@@ -10,44 +10,54 @@ This document provides detailed guidelines for contributing to or consuming the 
 backend/src/modules/accounts/services/user.service.ts
 ```
 
+**⚠️ IMPORTANT REFACTORING UPDATE:**
+- **Profile-related functions have been MOVED FROM `auth.service.ts` to here**
+- **This service now handles ALL user profile and user data operations**
+- **Authentication logic remains in `auth.service.ts`**
+
 ---
 
 ## Purpose
 
-The `user.service.ts` file contains business logic related to user management. It abstracts direct database access, ensuring a clear separation of concerns between services and controllers. Responsibilities include user creation, retrieval, updating, deletion, and search/filtering with pagination.
+The `user.service.ts` file contains business logic related to **user management and user profile operations**. It abstracts direct database access, ensuring a clear separation of concerns between services and controllers. 
+
+**New Responsibilities After Refactoring:**
+- ✅ User creation, retrieval, updating, deletion
+- ✅ Search/filtering with pagination  
+- ✅ **User profile management** (moved from auth service)
+- ✅ **User statistics and analytics** (moved from auth service)
+- ❌ Authentication logic (stays in auth.service.ts)
 
 ---
 
 ## Best Practices
 
-* **Single Responsibility**: Limit the service to user-related operations (no authentication, KYC, or roles logic).
+* **Single Responsibility**: Focus on user data operations and profile management.
 * **Prisma Only Through Singleton**: Always use the shared `prisma` instance for database operations.
 * **Input Validation**: Ensure DTOs are validated externally before they reach this layer.
 * **Consistent Error Handling**: Use centralized error utilities like `createNotFound`, `createBadRequest`.
 * **Avoid Data Leakage**: Exclude sensitive fields from results unless explicitly needed.
+* **Authentication Delegation**: Delegate authentication logic to `auth.service.ts`
 
 ---
 
 ## Key Functions and Responsibilities
 
-### `getUsers()`
+### Core User Management
+- `getUsers()`: Retrieves a paginated list of users with filtering and sorting
+- `getUserById()`: Returns a single user by their unique ID  
+- `createUser()`: Creates a new user with validation
+- `updateUser()`: Updates user data
+- `deleteUser()`: Removes a user from the system
 
-* Retrieves a paginated list of users.
-* Supports filtering by role, full name, email, and date ranges.
-* Sorting is customizable by creation date or other fields.
+### Profile Management (Moved from Auth Service)
+- `getUserStats()`: **NEW** - Get user statistics for monitoring (moved from auth service)
+- Profile operations integrated with existing user management functions
 
-### `getUserById()`
-
-* Returns a single user by their unique ID.
-* Throws a 404 if user is not found.
-
-### `createUser()`
-
-* Creates a new user with fields provided in `CreateUserDTO`.
-* Validates uniqueness of email.
-* Sets default role to `INVESTOR` if not provided.
-
-### `updateUser()`
+### Profile Endpoints Support
+- Support for `/users/me` endpoint (current user profile)
+- Support for `/users/profile` endpoint (alias for profile access)
+- Integration with authentication middleware for secure profile access
 
 * Updates user attributes from `UpdateUserDTO`.
 * Validates user existence and unique email constraint.

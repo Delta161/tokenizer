@@ -6,20 +6,26 @@ applyTo: "backend/src/modules/accounts/routes/auth.routes.ts"
 
 **Location:** `accounts/routes/auth.routes.ts`
 
+**⚠️ IMPORTANT REFACTORING CHANGE:**
+- **Profile route REMOVED from auth routes** (moved to user routes)
+- **Auth routes now ONLY handle authentication actions**
+- **User profile routes are in `user.routes.ts`**
+
 ## 🏗️ MANDATORY BACKEND ARCHITECTURE - ROUTES LAYER
 
 Routes are **Layer 1** in the mandatory 7-layer backend architecture:
 
 **🎯 ROUTES → Middleware → Validator → Controller → Services → Utils → Types**
 
-### ✅ Routes Responsibilities (Layer 1)
+### ✅ Auth Routes Responsibilities (Layer 1)
 
-Routes define **API endpoints only** and connect URLs to handlers:
+Auth routes define **authentication endpoints only**:
 
-- **Endpoint definition** - URL patterns and HTTP methods
-- **Handler assignment** - connect routes to controller functions
-- **Middleware attachment** - apply auth, validation, etc.
-- **Route organization** - group related endpoints together
+- **OAuth provider redirects** - `/google`, `/azure`, `/apple`
+- **OAuth callbacks** - `/google/callback`, `/azure/callback`, `/apple/callback`
+- **Session management** - `/logout`, `/refresh-token`
+- **Health checks** - `/health`
+- ❌ **NO LONGER:** Profile endpoints (moved to user routes)
 
 ### ⚠️ CRITICAL: SESSION MANAGEMENT DEPENDENCY
 
@@ -45,8 +51,9 @@ app.use(passport.session());
 - ❌ Authentication state will NOT persist
 - ❌ Login flow will be BROKEN
 
-### ❌ What Routes Should NOT Do
+### ❌ What Auth Routes Should NOT Do
 
+- **NO profile endpoints** - user routes handle profile operations
 - **NO business logic** - controllers handle request processing
 - **NO validation logic** - validators handle data validation
 - **NO authentication logic** - middleware handles auth

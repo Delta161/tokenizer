@@ -78,9 +78,33 @@ Here's the flow when a request hits your backend:
 6. **Utils** may be used by services or controllers for support.
 7. **Response** is returned to the client.
 
-## 🔐 MANDATORY SESSION MANAGEMENT & AUTHENTICATION
+## 🔐 MANDATORY SESSION-ONLY AUTHENTICATION
 
-**CRITICAL**: Session management is MANDATORY for proper user authentication and must be implemented across all authentication-related functionality.
+**CRITICAL**: This backend uses **PURE PASSPORT SESSION AUTHENTICATION ONLY**. No JWT tokens are used anywhere in the system. Session management is MANDATORY for proper user authentication and must be implemented across all authentication-related functionality.
+
+### 🚨 **IMPORTANT - NO JWT TOKENS**
+- **NO JWT token generation** anywhere in the system
+- **NO JWT token validation** or middleware  
+- **NO refresh tokens** or token-based endpoints
+- **Only session-based authentication** using Passport sessions
+- **HTTP-only session cookies** for client authentication
+
+### ✅ Authentication Middleware (REQUIRED)
+- **File Location**: `src/modules/accounts/middleware/session.middleware.ts`
+- **Primary Guard**: `sessionGuard` - Protects routes requiring authentication
+- **Optional Guard**: `optionalSession` - For routes that optionally use authentication
+- **Usage**: Import and use `sessionGuard` instead of any JWT-based auth guards
+
+**Example Route Protection:**
+```typescript
+import { sessionGuard } from '@/modules/accounts/middleware/session.middleware';
+
+// Protected route
+router.get('/me', sessionGuard, userController.getCurrentUser);
+
+// Public route  
+router.post('/login', authController.initiateOAuth);
+```
 
 ### ✅ Session Configuration (REQUIRED)
 - **File Location**: `src/config/session.ts`
@@ -175,8 +199,8 @@ The backend is designed to be resilient, with mechanisms to recover from failure
 The backend is built with a focus on developer experience, providing clear error messages and debugging tools.
 The backend is designed to support real-time features, such as WebSockets, for live updates and notifications.
 The backend is structured to allow for easy integration with third-party services and APIs, enhancing functionality and user experience.
-The backend is designed to support multiple authentication methods, including OAuth, JWT, and session-based authentication
-to accommodate various user needs.
+The backend is designed to support session-based authentication only using Passport strategies 
+to accommodate OAuth providers (Google, Microsoft, Apple).
 The backend is built to handle data validation and sanitization, ensuring data integrity and security.  
 The backend is designed to support data caching mechanisms, improving performance and reducing database load.
 The backend is structured to allow for easy testing and debugging, with tools and frameworks that facilitate development.

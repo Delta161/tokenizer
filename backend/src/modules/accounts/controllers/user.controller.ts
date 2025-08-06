@@ -64,18 +64,58 @@ export class UserController {
     }
   }
 
-  /**
- * Get user by ID
- */
-async getProfile(req: Request, res: Response, next: NextFunction) {
-  try {
-    const userId = (req.user as any).id;
-    const user = await userService.getUserById(userId);
-    res.status(200).json({ user });
-  } catch (error) {
-    next(error);
+    /**
+   * Get current user profile
+   * Requires authentication via authGuard middleware
+   */
+  async getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const startTime = Date.now();
+    
+    try {
+      // User is already attached to request by authGuard middleware
+      const user = (req as any).user;
+
+      if (!user) {
+        const error = new Error('Authentication required');
+        (error as any).status = 401;
+        return next(error);
+      }
+
+      // Log profile access for security monitoring
+      accountsLogger.info('User profile accessed', {
+        userId: user.id,
+        email: user.email,
+        ip: req.ip,
+        userAgent: req.get('User-Agent')
+      });
+
+      // Get complete user data from database
+      const userData = await userService.getUserById(user.id);
+
+      // Add performance metrics
+      const processingTime = Date.now() - startTime;
+      if (processingTime > 100) {
+        logger.warn('Slow profile retrieval', { 
+          userId: user.id, 
+          processingTime 
+        });
+      }
+
+      res.status(200).json({ 
+        user: userData,
+        message: 'Profile retrieved successfully'
+      });
+    } catch (error) {
+      accountsLogger.logAccountError('profile_retrieval', 
+        error instanceof Error ? error.message : 'Unknown error', 
+        { 
+          userId: (req as any).user?.id,
+          processingTime: Date.now() - startTime 
+        }
+      );
+      next(error);
+    }
   }
-}
 
   /**
    * Create a new user

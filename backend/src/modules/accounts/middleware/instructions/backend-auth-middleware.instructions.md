@@ -1,16 +1,16 @@
 ---
-applyTo: `backend/src/modules/accounts/middleware/auth.middleware.ts`
+applyTo: `backend/src/modules/accounts/middleware/session.middleware.ts`
 ---
 
-# `auth.middleware.ts` — Development & Usage Guidelines
+# `session.middleware.ts` — Session-Based Authentication Middleware
 
 ---
 
 ## Purpose
 
-The `auth.middleware.ts` file provides essential middleware functions that protect routes by enforcing authentication and authorization within the Accounts domain. This middleware ensures that only authenticated users can access secured resources and that users have the appropriate roles for specific actions.
+The `session.middleware.ts` file provides session-based authentication middleware functions that protect routes using Passport sessions. This middleware replaces all JWT-based authentication and ensures only authenticated users can access secured resources.
 
-**CRITICAL**: This middleware depends on properly configured session management to function correctly.
+**CRITICAL**: This system uses **PURE PASSPORT SESSIONS ONLY** - no JWT tokens are used anywhere.
 
 ### 🔐 SESSION MANAGEMENT DEPENDENCY (MANDATORY)
 

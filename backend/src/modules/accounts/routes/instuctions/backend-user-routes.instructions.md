@@ -6,6 +6,11 @@ applyTo: 'backend/src/modules/accounts/routes/user.routes.ts'
 
 **Location:** `accounts/routes/user.routes.ts`
 
+**⚠️ IMPORTANT REFACTORING UPDATE:**
+- **Profile routes MOVED FROM auth routes to here**
+- **User routes now handle ALL user profile operations**  
+- **Clean controller pattern implemented** (removed inline handlers)
+
 ## 🏗️ MANDATORY BACKEND ARCHITECTURE - ROUTES LAYER
 
 Routes are **Layer 1** in the mandatory 7-layer backend architecture:
@@ -14,40 +19,48 @@ Routes are **Layer 1** in the mandatory 7-layer backend architecture:
 
 ### ✅ User Routes Responsibilities (Layer 1)
 
-User routes define **API endpoints for user management**:
+User routes define **API endpoints for user management AND profile operations**:
 
-- **Profile endpoints** - user profile retrieval and updates
+- **Profile endpoints** - `/me`, `/profile` for current user operations
 - **User management** - admin-level user operations
-- **Handler assignment** - connect user routes to controller functions
+- **Handler assignment** - connect user routes to controller functions  
 - **Middleware attachment** - apply auth, validation, role checks
+- **RESTful patterns** - `/users/me` is now the standard for current user
 
 ### ❌ What User Routes Should NOT Do
 
+- **NO inline handlers** - MUST use controller methods only
 - **NO business logic** - controllers handle user processing
 - **NO validation logic** - validators handle user data validation
 - **NO authentication logic** - middleware handles auth
 - **NO database access** - services handle all user Prisma operations
 - **NO response formatting** - controllers format user responses
 
-### 🔄 User Routes Pattern
+### 🔄 User Routes Pattern (Post-Refactoring)
 
 ```typescript
 import { Router } from 'express';
 import { userController } from '../controllers/user.controller';
-import { authMiddleware, requireRole } from '../middleware/auth.middleware';
-import { validateUserUpdate, validateUserCreate } from '../validators/user.validator';
+import { authGuard } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// ✅ User profile routes (authenticated users)
-router.get('/profile', authMiddleware, userController.getCurrentUserProfile);
-router.put('/profile', 
-  authMiddleware, 
-  validateUserUpdate, 
-  userController.updateCurrentUserProfile
-);
+// ✅ Current user profile routes (moved from auth routes)
+router.get('/me', authGuard, userController.getProfile.bind(userController));
+router.get('/profile', authGuard, userController.getProfile.bind(userController));
 
-// ✅ User management routes (admin only)
+// ✅ User management routes (admin level)
+router.get('/', authGuard, userController.getUsers.bind(userController));
+router.post('/', authGuard, userController.createUser.bind(userController));
+```
+
+### 🎯 Key Changes After Refactoring
+
+**✅ What Changed:**
+- Profile routes moved from `/auth/profile` to `/users/me` and `/users/profile`
+- All inline route handlers replaced with controller methods
+- Proper controller binding implemented
+- Clean separation: auth routes = authentication, user routes = profile/user data
 router.get('/', 
   authMiddleware, 
   requireRole(['admin']), 

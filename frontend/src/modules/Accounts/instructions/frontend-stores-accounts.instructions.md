@@ -7,6 +7,12 @@ applyTo: "frontend/src/modules/accounts/stores/*.ts"
 ## Overview
 This document provides comprehensive instructions for developing, maintaining, and extending Pinia stores within the Frontend Accounts Module. Stores serve as the centralized state management layer, handling authentication state, user profiles, and KYC verification data while providing reactive interfaces for components and composables.
 
+**⚠️ IMPORTANT REFACTORING UPDATE:**
+- **AuthStore focuses ONLY on authentication state and actions**
+- **UserStore handles ALL user profile state and operations**
+- **Clear separation implemented between auth and user concerns**
+- **Profile operations moved from AuthStore to UserStore**
+
 ## Store Architecture
 
 ### 🏗️ Layer 3: Store (State Management)
@@ -39,15 +45,29 @@ Stores must follow the application flow:
 - **Business Logic**: Complex operations that span multiple components
 - **Service Integration**: Coordination with API services for data persistence (Layer 4 only)
 - **Error Handling**: Centralized error state management and propagation
-- **Authentication**: Token management, session handling, and OAuth integration
+- **Authentication**: Session management and OAuth integration (AuthStore only)
 - **Data Consistency**: Ensuring data integrity across the application
 - **⚠️ NO DIRECT BACKEND COMMUNICATION**: Stores must NEVER directly call apiClient, axios, fetch, or any HTTP methods. All backend communication MUST go through services layer only.
 
-## Current Store Implementation
+## Store Separation After Refactoring
 
-### 1. AuthStore (Composition API Pattern)
-```typescript
-// Location: frontend/src/modules/Accounts/stores/auth.store.ts
+### 1. AuthStore (Authentication Only)
+**Purpose**: Authentication state and session management
+**Responsibilities**:
+- ✅ Authentication status (`isAuthenticated`)
+- ✅ OAuth login initiation
+- ✅ Logout operations
+- ✅ Session validation (with caching)
+- ✅ Authentication error handling
+- ❌ **NO LONGER**: User profile data (moved to UserStore)
+
+### 2. UserStore (Profile & User Data)
+**Purpose**: User profile and data management
+**Responsibilities**:
+- ✅ Current user profile state
+- ✅ Profile updates and management
+- ✅ User data operations
+- ✅ **NEW**: Primary store for user data (moved from AuthStore)
 // Purpose: Complete authentication state management with OAuth-only support
 // Architecture: Composition API with reactive state and computed getters
 ```

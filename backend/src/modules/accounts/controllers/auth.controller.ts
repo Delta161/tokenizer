@@ -10,21 +10,12 @@ import createError from 'http-errors';
 
 // Internal modules - Use relative imports
 import { authService } from '../services/auth.service';
-import { setTokenCookies, clearTokenCookies } from '../utils/jwt';
 import { accountsLogger } from '../utils/accounts.logger';
 import type { 
-  AuthenticatedRequest, 
   AuthResponseDTO, 
   OAuthProfileDTO, 
-  UserDTO,
-  TokenPayload 
+  UserDTO
 } from '../types/auth.types';
-
-// Validation schemas
-import { 
-  VerifyTokenSchema,
-  RefreshTokenRequestSchema 
-} from '../validators/auth.validator';
 
 // Global utilities
 import { logger } from '../../../utils/logger';
@@ -163,7 +154,7 @@ export class AuthController {
       userAgent: req.get('User-Agent'),
       path: req.path,
       method: req.method,
-      userId: (req as AuthenticatedRequest).user?.id,
+      userId: (req as any).user?.id,
       ...additionalContext
     };
 
@@ -183,165 +174,8 @@ export class AuthController {
   // =============================================================================
 
   /**
-   * Get authenticated user profile with enhanced validation
-   * Requires authentication via authGuard middleware
-   */
-  async getProfile(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
-    const startTime = Date.now();
-    
-    try {
-      // User is already attached to request by authGuard middleware
-      const user = req.user;
-
-      if (!user) {
-        return next(createError(401, 'Authentication required'));
-      }
-
-      // Log profile access for security monitoring
-      accountsLogger.info('User profile accessed', {
-        userId: user.id,
-        email: user.email,
-        ip: req.ip,
-        userAgent: req.get('User-Agent')
-      });
-
-      // Return sanitized user data with enhanced response format
-      const responseData = this.createSuccessResponse(
-        { user }, 
-        'Profile retrieved successfully'
-      );
-
-      // Add performance metrics
-      const processingTime = Date.now() - startTime;
-      if (processingTime > 100) {
-        logger.warn('Slow profile retrieval', { 
-          userId: user.id, 
-          processingTime 
-        });
-      }
-
-      res.status(200).json(responseData);
-    } catch (error) {
-      this.logAuthError('getProfile', error, req, { 
-        processingTime: Date.now() - startTime 
-      });
-      next(error);
-    }
-  }
-
-  /**
-   * Verify JWT token with enhanced validation and comprehensive error handling
-   */
-  async verifyToken(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const startTime = Date.now();
-    
-    try {
-      // Extract token using enhanced extraction method
-      const { token, source } = this.extractTokenFromRequest(req);
-      
-      // Additional validation for POST requests with body
-      if (!token && req.method === 'POST' && req.body?.token) {
-        const tokenValidation = VerifyTokenSchema.safeParse(req.body);
-        if (tokenValidation.success) {
-          const { token: validatedToken, source: bodySource } = { 
-            token: tokenValidation.data.token, 
-            source: 'body' 
-          };
-          
-          if (!validatedToken) {
-            res.status(200).json({ 
-              valid: false, 
-              error: 'Invalid token format in request body',
-              source: bodySource
-            });
-            return;
-          }
-          
-          // Use validated token
-          await this.processTokenVerification(validatedToken, bodySource, req, res, startTime);
-          return;
-        }
-      }
-
-      if (!token) {
-        res.status(200).json({ 
-          valid: false, 
-          error: 'No token provided',
-          source: 'none'
-        });
-        return;
-      }
-
-      await this.processTokenVerification(token, source, req, res, startTime);
-    } catch (error) {
-      this.logAuthError('verifyToken', error, req, { 
-        processingTime: Date.now() - startTime 
-      });
-      
-      // Return validation failure (not an error response)
-      const errorMessage = error instanceof Error ? error.message : 'Token verification failed';
-      res.status(200).json({ 
-        valid: false, 
-        error: errorMessage,
-        timestamp: new Date().toISOString()
-      });
-    }
-  }
-
-  /**
-   * Process token verification with performance monitoring
-   * @private
-   */
-  private async processTokenVerification(
-    token: string, 
-    source: string, 
-    req: Request, 
-    res: Response, 
-    startTime: number
-  ): Promise<void> {
-    try {
-      // Verify token and get user
-      const user = await authService.verifyToken(token);
-      
-      // Log successful verification for security monitoring
-      accountsLogger.info('Token verification successful', {
-        userId: user.id,
-        email: user.email,
-        tokenSource: source,
-        ip: req.ip
-      });
-
-      // Check for performance issues
-      const processingTime = Date.now() - startTime;
-      if (processingTime > 200) {
-        logger.warn('Slow token verification', { 
-          userId: user.id, 
-          processingTime,
-          tokenSource: source
-        });
-      }
-
-      // Return successful verification with comprehensive data
-      res.status(200).json({ 
-        valid: true, 
-        data: { user: this.sanitizeResponse(user) },
-        source,
-        timestamp: new Date().toISOString()
-      });
-    } catch (verificationError) {
-      // Log verification failure
-      logger.debug('Token verification failed', { 
-        error: verificationError instanceof Error ? verificationError.message : 'Unknown error',
-        source,
-        ip: req.ip
-      });
-      
-      throw verificationError; // Re-throw to be caught by parent try-catch
-    }
-  }
-
-  /**
-   * Enhanced OAuth authentication success handler with comprehensive validation
+   * Session-based OAuth authentication success handler
+   * Replaces JWT token approach with pure Passport sessions
    */
   async handleOAuthSuccess(req: Request, res: Response, next: NextFunction): Promise<void> {
     const startTime = Date.now();
@@ -352,43 +186,25 @@ export class AuthController {
       if (!authenticatedUser) {
         this.logAuthError('handleOAuthSuccess', new Error('No user data provided'), req);
         const redirectUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-        return res.redirect(`${redirectUrl}/auth/callback?error=${encodeURIComponent('Authentication failed - no user data')}`);
+        return res.redirect(`${redirectUrl}/auth/error?message=${encodeURIComponent('Authentication failed - no user data')}`);
       }
 
-      let authResponse: AuthResponseDTO;
-
-      // Enhanced OAuth profile detection and processing
-      if (this.isOAuthProfile(authenticatedUser)) {
-        // Direct OAuth profile from strategy
-        logger.info('Processing OAuth profile', { 
-          provider: authenticatedUser.provider,
-          userId: authenticatedUser.id 
-        });
-        authResponse = await authService.processOAuthLogin(authenticatedUser as OAuthProfileDTO);
-      } else {
-        // Prisma user object - convert to OAuth profile format
-        logger.info('Converting Prisma user to OAuth profile', { 
-          userId: authenticatedUser.id,
-          provider: authenticatedUser.authProvider 
-        });
-        const normalizedProfile = this.convertPrismaUserToOAuthProfile(authenticatedUser);
-        authResponse = await authService.processOAuthLogin(normalizedProfile);
-      }
-
-      // Set secure token cookies with enhanced options
-      const { accessToken, refreshToken } = authResponse;
-      setTokenCookies(res, accessToken, refreshToken);
-
-      // Enhanced logging with comprehensive context
+      // The user is already authenticated and stored in session via Passport
+      // No need for token generation - session handles everything
+      
+      const userId = authenticatedUser.id;
+      const userEmail = authenticatedUser.email;
       const provider = authenticatedUser.provider || authenticatedUser.authProvider || 'oauth';
       const processingTime = Date.now() - startTime;
-      
-      accountsLogger.logUserLogin(authResponse.user.id, authResponse.user.email, provider);
-      logger.info('OAuth authentication completed successfully', {
-        userId: authResponse.user.id,
+
+      // Enhanced logging with comprehensive context
+      accountsLogger.logUserLogin(userId, userEmail, provider);
+      logger.info('✅ OAuth session authentication completed successfully', {
+        userId: userId,
         provider: provider,
-        email: authResponse.user.email,
+        email: userEmail,
         processingTime,
+        sessionID: req.sessionID,
         ip: req.ip,
         userAgent: req.get('User-Agent')
       });
@@ -396,24 +212,28 @@ export class AuthController {
       // Performance monitoring
       if (processingTime > 2000) {
         logger.warn('Slow OAuth processing', { 
-          userId: authResponse.user.id, 
+          userId: userId, 
           provider,
           processingTime 
         });
       }
 
-      // Construct secure redirect URL with enhanced validation
+      // Direct redirect to dashboard - no callback needed with sessions
       const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-      const successPath = process.env.FRONTEND_LOGIN_SUCCESS_PATH || '/auth/callback';
-      const successUrl = `${baseUrl}${successPath}`;
+      const successUrl = `${baseUrl}/dashboard`;
       
       // Validate URL before redirect
       try {
         new URL(successUrl);
+        logger.info('🔄 Redirecting to dashboard after successful OAuth', {
+          userId: userId,
+          redirectUrl: successUrl,
+          sessionID: req.sessionID
+        });
         res.redirect(successUrl);
       } catch (urlError) {
         logger.error('Invalid redirect URL', { successUrl, error: urlError });
-        res.redirect(`${baseUrl}/auth/callback`);
+        res.redirect(`${baseUrl}/dashboard`);
       }
     } catch (error) {
       this.logAuthError('handleOAuthSuccess', error, req, { 
@@ -423,45 +243,10 @@ export class AuthController {
       // Redirect to error page with secure error handling
       const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
       const errorMessage = error instanceof Error ? error.message : 'Authentication failed';
-      res.redirect(`${baseUrl}/auth/callback?error=${encodeURIComponent(errorMessage)}`);
+      res.redirect(`${baseUrl}/auth/error?message=${encodeURIComponent(errorMessage)}`);
     }
   }
 
-  /**
-   * Type guard to check if user data is OAuth profile format
-   * @private
-   */
-  private isOAuthProfile(user: any): boolean {
-    return user && (
-      user.provider || 
-      (user.emails && Array.isArray(user.emails)) ||
-      (user.name && typeof user.name === 'object')
-    );
-  }
-
-  /**
-   * Convert Prisma user object to OAuth profile format
-   * @private
-   */
-  private convertPrismaUserToOAuthProfile(prismaUser: any): OAuthProfileDTO {
-    return {
-      provider: prismaUser.authProvider?.toLowerCase() || 'google',
-      id: prismaUser.providerId || prismaUser.id,
-      displayName: prismaUser.fullName || prismaUser.displayName || 'User',
-      name: {
-        givenName: prismaUser.firstName || '',
-        familyName: prismaUser.lastName || ''
-      },
-      emails: prismaUser.email ? [{ value: prismaUser.email, verified: true }] : [],
-      photos: prismaUser.avatarUrl ? [{ value: prismaUser.avatarUrl }] : [],
-      _json: {
-        id: prismaUser.id,
-        email: prismaUser.email,
-        name: prismaUser.fullName
-      }
-    };
-  }
-  
   /**
    * Enhanced OAuth error handler with comprehensive logging and secure redirects
    */
@@ -535,95 +320,70 @@ export class AuthController {
   /**
    * Logout user with proper cleanup
    */
+  /**
+   * Session-based logout - destroys Passport session
+   */
   async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      // Get user ID from request if available (attached by optionalAuth middleware)
+      // Get user ID from session
       const userId = req.user?.id;
       const userEmail = req.user?.email;
-      
-      // Clear token cookies securely
-      clearTokenCookies(res);
+      const sessionID = req.sessionID;
       
       // Log logout event if user was authenticated
       if (userId) {
         accountsLogger.logUserLogout(userId);
-        logger.info('User logged out', { userId, email: userEmail });
+        logger.info('✅ User logging out', { 
+          userId, 
+          email: userEmail, 
+          sessionID 
+        });
       } else {
-        logger.debug('Logout called for unauthenticated session');
+        logger.debug('Logout called for unauthenticated session', { sessionID });
       }
       
-      // Return consistent success response
-      res.status(200).json({ 
-        success: true, 
-        message: 'Logged out successfully',
-        data: null
-      });
-    } catch (error) {
-      logger.error('Logout error', { error, userId: req.user?.id });
-      next(error);
-    }
-  }
-  
-  /**
-   * Refresh access token using refresh token with enhanced security
-   */
-  async refreshToken(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      // Extract refresh token from cookies (most secure) or body (fallback)
-      let refreshToken = req.cookies?.refreshToken;
-      
-      // Fallback to body if cookie not available (for API clients)
-      if (!refreshToken && req.body?.refreshToken) {
-        refreshToken = req.body.refreshToken;
-      }
-      
-      if (!refreshToken) {
-        const errorContext = { 
-          ip: req.ip, 
-          userAgent: req.get('User-Agent'),
-          hasCookies: !!req.cookies,
-          hasBody: !!req.body?.refreshToken
-        };
-        accountsLogger.logAccountError('token_refresh', 'No refresh token provided', errorContext);
-        return next(createError(401, 'No refresh token provided'));
-      }
-
-      // Verify refresh token and get user
-      const user = await authService.verifyRefreshToken(refreshToken);
-      
-      // Generate new token pair
-      const { accessToken, refreshToken: newRefreshToken } = authService.generateTokens(user);
-      
-      // Set new tokens in secure cookies
-      setTokenCookies(res, accessToken, newRefreshToken);
-      
-      // Log successful token refresh
-      logger.debug('Token refreshed successfully', { 
-        userId: user.id,
-        email: user.email,
-        timestamp: new Date().toISOString()
-      });
-
-      // Return success response with consistent format
-      res.status(200).json({ 
-        success: true, 
-        message: 'Token refreshed successfully',
-        data: { 
-          accessToken,
-          user: this.sanitizeResponse(user)
+      // Destroy session using Passport's logout method
+      req.logout((err) => {
+        if (err) {
+          logger.error('❌ Session logout error', { 
+            error: err.message, 
+            userId, 
+            sessionID 
+          });
+          return next(err);
         }
+        
+        // Destroy session completely
+        req.session.destroy((destroyErr) => {
+          if (destroyErr) {
+            logger.error('❌ Session destroy error', { 
+              error: destroyErr.message, 
+              userId, 
+              sessionID 
+            });
+            return next(destroyErr);
+          }
+          
+          logger.info('✅ Session destroyed successfully', { 
+            userId, 
+            sessionID 
+          });
+          
+          // Return consistent success response
+          res.status(200).json({ 
+            success: true, 
+            message: 'Logged out successfully',
+            data: null
+          });
+        });
       });
+      
     } catch (error) {
-      const errorContext = { 
-        ip: req.ip, 
-        userAgent: req.get('User-Agent'),
-        timestamp: new Date().toISOString()
-      };
-      const errorMessage = error instanceof Error ? error.message : 'Token refresh failed';
-      
-      accountsLogger.logAccountError('token_refresh', errorMessage, errorContext);
-      logger.error('Token refresh failed', { error: errorMessage, context: errorContext });
-      
+      logger.error('❌ Logout error', { 
+        error: error instanceof Error ? error.message : 'Unknown error', 
+        userId: req.user?.id,
+        sessionID: req.sessionID
+      });
       next(error);
     }
   }

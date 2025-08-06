@@ -458,11 +458,24 @@ export const authGuard = async (req: Request, res: Response, next: NextFunction)
   const requestFingerprint = generateRequestFingerprint(req);
   
   try {
+    // Debug: Log cookies being received
+    console.log('🔍 AuthGuard Debug - Cookies received:', req.cookies);
+    console.log('🔍 AuthGuard Debug - AccessToken cookie:', req.cookies?.accessToken);
+    console.log('🔍 AuthGuard Debug - Request path:', req.path);
+    console.log('🔍 AuthGuard Debug - Request method:', req.method);
+    
     // Enhanced token extraction with validation
     const extractionResult = extractTokenAdvanced(req);
     
     if (!extractionResult.token || !extractionResult.isValid) {
       const processingTime = Date.now() - startTime;
+      
+      console.log('❌ AuthGuard Debug - Token extraction failed:', {
+        hasToken: !!extractionResult.token,
+        isValid: extractionResult.isValid,
+        source: extractionResult.source,
+        validationError: extractionResult.validationError
+      });
       
       req.authContext = createAuthContext(
         false, 

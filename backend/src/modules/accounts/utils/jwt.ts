@@ -76,9 +76,31 @@ export const generateRefreshToken = (userId: string): string => {
  */
 export const verifyToken = (token: string): JWTPayload => {
   try {
-    return jwt.verify(token, getJWTSecret()) as JWTPayload;
+    console.log('🔍 JWT Debug - Verifying token:', {
+      tokenLength: token.length,
+      tokenStart: token.substring(0, 20) + '...',
+      secretLength: getJWTSecret().length,
+      secretStart: getJWTSecret().substring(0, 10) + '...'
+    });
+    
+    const result = jwt.verify(token, getJWTSecret()) as JWTPayload;
+    
+    console.log('✅ JWT Debug - Token verified successfully:', {
+      userId: result.id,
+      email: result.email,
+      role: result.role
+    });
+    
+    return result;
   } catch (error) {
     if (error instanceof Error) {
+      console.log('❌ JWT Debug - Token verification failed:', {
+        error: error.message,
+        errorName: error.name,
+        tokenLength: token.length,
+        secretLength: getJWTSecret().length
+      });
+      
       logger.error('Token verification failed', { error: error.message });
       
       if (error.name === 'TokenExpiredError') {

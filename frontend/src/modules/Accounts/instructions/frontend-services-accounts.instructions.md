@@ -7,6 +7,12 @@ applyTo: "frontend/src/modules/Accounts/services/*.ts"
 ## Overview
 This document provides comprehensive instructions for developing, maintaining, and extending service classes within the Frontend Accounts Module. Services form the critical data access layer, handling all API communication with the backend while providing type-safe, error-handled, and properly mapped data interfaces.
 
+**⚠️ IMPORTANT REFACTORING UPDATE:**
+- **Profile operations MOVED from AuthService to UserService**
+- **AuthService now ONLY handles authentication actions**
+- **UserService handles ALL user profile and data operations**
+- **Clean separation of concerns implemented**
+
 ## Service Architecture
 
 ### 🏗️ Layer 4: Service (Backend Communication)
@@ -27,7 +33,7 @@ Services are specialized classes that:
 - Implement consistent error handling patterns
 - Transform data between frontend and backend formats using mappers
 - Abstract API complexity from components and composables
-- Support OAuth-only authentication architecture
+- Support session-based authentication architecture (updated from OAuth-only)
 
 ### Mandatory Flow Integration
 Services must follow the application flow:
@@ -41,13 +47,27 @@ Services must follow the application flow:
 - **Data Transformation**: Frontend ↔ Backend data mapping
 - **Error Handling**: Consistent error processing and propagation
 - **Type Safety**: Full TypeScript integration with proper interfaces
-- **Authentication**: Token-based request authentication
+- **Authentication**: Session-based request authentication (HTTP-only cookies)
 - **Caching**: Optional response caching for performance optimization
 
-## Current Service Implementation
+## Service Separation After Refactoring
 
-### 1. UserService Class
-```typescript
+### 1. AuthService (Authentication Only)
+**Endpoint Focus**: `/api/v1/auth/*`
+**Responsibilities**:
+- ✅ OAuth provider URL generation
+- ✅ Logout operations
+- ✅ Session validation via UserService delegation
+- ✅ Authentication health checks
+- ❌ **NO LONGER**: Direct profile retrieval (delegates to UserService)
+
+### 2. UserService (Profile & User Data)
+**Endpoint Focus**: `/api/v1/users/*`
+**Responsibilities**:
+- ✅ Current user profile (`/users/me`, `/users/profile`)
+- ✅ Profile updates and management
+- ✅ User data operations
+- ✅ **NEW**: Primary service for all user data (moved from AuthService)
 // Location: frontend/src/modules/Accounts/services/user.service.ts
 // Purpose: Complete user profile and management operations
 // Architecture: Class-based service with instance methods

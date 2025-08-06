@@ -1,6 +1,19 @@
-# OAuth2 Login Test Frontend
+# OAuth2 Session-Based Authentication Frontend
 
-This is a minimal Vue 3 frontend for testing OAuth2 login flow with the Express.js backend.
+This is a Vue 3 frontend for session-based OAuth2 authentication with the Express.js backend.
+
+## 🔐 **Authentication Architecture**
+
+**IMPORTANT**: This frontend uses **session-based authentication only**. No JWT tokens are used.
+
+### Session-Based OAuth Flow:
+1. User clicks "Login with Google/Microsoft/Apple"
+2. Redirected to OAuth provider
+3. Provider redirects to backend callback
+4. **Backend creates session automatically**
+5. **Direct redirect to dashboard** (no frontend callback processing needed)
+6. All API requests use HTTP-only session cookies
+7. Session persists until logout or expiration
 
 ## Setup
 
@@ -26,9 +39,10 @@ This is a minimal Vue 3 frontend for testing OAuth2 login flow with the Express.
 
 ## Features
 
-- **Login Page** (`/login`): Provides buttons to login with Google or Azure
-- **Callback Page** (`/callback`): Handles OAuth redirects and stores JWT
-- **Profile Page** (`/profile`): Displays user data fetched from the backend
+- **Login Page** (`/login`): Provides buttons to login with OAuth providers
+- **Callback Page** (`/auth/callback`): **Only displays OAuth errors** (success redirects to dashboard)
+- **Dashboard**: Authenticated user landing page with session-based access
+- **Session-Based API**: All requests use HTTP-only cookies, no token management needed
 
 ## Environment Variables
 
@@ -54,10 +68,17 @@ Authentication functionality is implemented in the `Accounts` module, which hand
 - `src/modules/Accounts/components/UserProfile.component.vue`: Reusable user profile component
 - `src/modules/Accounts/views/UserProfile.view.vue`: User profile page with layout and logout functionality
 
-## Testing the OAuth Flow
+## Testing the Session-Based OAuth Flow
 
-1. Click "Login with Google" or "Login with Azure" on the login page
-2. Complete the OAuth authentication process
-3. You will be redirected back to the callback page
-4. If successful, you will be redirected to the profile page
-5. Your user profile information will be displayed
+1. Click "Login with Google", "Login with Microsoft", or "Login with Apple" on the login page
+2. Complete the OAuth authentication process with the provider
+3. **You will be redirected directly to the dashboard** (no callback page processing)
+4. Your session is automatically created and managed server-side
+5. Navigate to different pages - authentication persists via session cookies
+6. Use logout button to destroy session and return to login page
+
+### 🚨 **Important Changes from JWT-Based Flow:**
+- **No callback page processing** - OAuth success redirects directly to dashboard  
+- **No token storage** - Authentication handled via HTTP-only session cookies
+- **No manual profile fetching** - Session contains user information automatically
+- **Simplified error handling** - Only OAuth errors are displayed on callback page

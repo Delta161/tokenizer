@@ -495,3 +495,6 @@
 2025-08-03 13:00:12:012 [31merror[39m: [31mToken verification failed[39m
 2025-08-05 20:35:03:353 [31merror[39m: [31mError: Unknown authentication strategy "google"[39m
 2025-08-05 21:32:12:3212 [31merror[39m: [31mError: Unknown authentication strategy "google"[39m
+2025-08-06 09:47:50:4750 [31merror[39m: [31m[Accounts] Account error during user_creation[39m
+2025-08-06 09:47:50:4750 [31merror[39m: [31m[Accounts] Account error during user_update[39m
+2025-08-06 09:47:50:4750 [31merror[39m: [31m[Accounts] Account error during user_deletion[39m
