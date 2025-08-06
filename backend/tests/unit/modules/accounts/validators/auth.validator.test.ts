@@ -7,46 +7,12 @@ import { describe, it, expect } from 'vitest';
 
 // Internal modules
 import {
-  VerifyTokenSchema,
   OAuthProfileSchema,
   NormalizedProfileSchema,
   RelaxedNormalizedProfileSchema
 } from '@modules/accounts/validators/auth.validator';
 
 describe('Auth Validators', () => {
-  describe('VerifyTokenSchema', () => {
-    it('should validate a valid token payload', () => {
-      const validPayload = {
-        token: 'valid-token-string'
-      };
-
-      const result = VerifyTokenSchema.safeParse(validPayload);
-      expect(result.success).toBe(true);
-    });
-
-    it('should reject an empty token', () => {
-      const invalidPayload = {
-        token: ''
-      };
-
-      const result = VerifyTokenSchema.safeParse(invalidPayload);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(result.error.issues[0].path).toContain('token');
-      }
-    });
-
-    it('should reject a missing token', () => {
-      const invalidPayload = {};
-
-      const result = VerifyTokenSchema.safeParse(invalidPayload);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        expect(result.error.issues[0].path).toContain('token');
-      }
-    });
-  });
-
   describe('OAuthProfileSchema', () => {
     it('should validate a complete OAuth profile', () => {
       const completeProfile = {

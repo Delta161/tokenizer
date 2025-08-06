@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { TokenController } from '../controllers/token.controller';
-import { authGuard } from '@/modules/accounts/middleware/auth.middleware';
-import { roleGuard } from '@/modules/accounts/middleware/auth.middleware';
+import { sessionGuard as authGuard } from '@/modules/accounts/middleware/session.middleware';
+import { requireRole as roleGuard } from '@/modules/accounts/middleware/session.middleware';
 import { UserRole } from '@prisma/client';
 import { requireKycVerified } from '@/middleware/kyc.middleware';
 import { BlockchainService, getBlockchainConfig } from '../../blockchain/services/blockchain.service.js';

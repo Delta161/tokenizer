@@ -1,6 +1,12 @@
 /**
- * User Service
+ * User Service (LEGACY - Being gradually replaced by specialized services)
  * Handles user-related business logic
+ * 
+ * @deprecated This service is being phased out in favor of:
+ * - ProfileService for profile-related operations  
+ * - AdminService for administrative user operations
+ * 
+ * Use specialized services for new development.
  */
 
 // Internal modules
@@ -22,6 +28,7 @@ export class UserService {
 
   /**
    * Get all users with pagination and filtering
+   * @deprecated Use AdminService.getUsers() instead for new development
    */
   async getUsers(page = PAGINATION.DEFAULT_PAGE, limit = PAGINATION.DEFAULT_LIMIT, filters?: UserFilterOptions, sort?: UserSortOptions): Promise<{ users: UserDTO[], total: number }> {
     // Calculate skip value using the utility function
@@ -82,6 +89,7 @@ export class UserService {
 
   /**
    * Get user by ID
+   * @deprecated Use ProfileService.getProfile() instead for new development
    */
   async getUserById(userId: string): Promise<UserDTO> {
     const user = await prisma.user.findUnique({
@@ -106,6 +114,7 @@ export class UserService {
 
   /**
    * Create a new user
+   * @deprecated Use AdminService.createUser() instead for new development
    */
   async createUser(data: CreateUserDTO): Promise<UserDTO> {
     // Check if user with email already exists
@@ -122,7 +131,7 @@ export class UserService {
       data: {
         email: data.email,
         fullName: data.fullName,
-        providerId: data.providerId,
+        providerId: data.providerId || `legacy-${Date.now()}`, // Handle optional providerId
         avatarUrl: data.avatarUrl,
         role: data.role || 'INVESTOR',
         authProvider: data.authProvider,
@@ -146,6 +155,7 @@ export class UserService {
 
   /**
    * Update user
+   * @deprecated Use AdminService.updateUser() or ProfileService.updateProfile() instead for new development
    */
   async updateUser(userId: string, data: UpdateUserDTO): Promise<UserDTO> {
     // Check if user exists
@@ -187,6 +197,7 @@ export class UserService {
 
   /**
    * Delete user
+   * @deprecated Use AdminService.deleteUser() instead for new development
    */
   async deleteUser(userId: string): Promise<void> {
     // Check if user exists
@@ -205,12 +216,13 @@ export class UserService {
   }
 
   /**
-   * Change user password
+   * OAuth-only authentication - no credential management needed
    */
-  // changePassword method removed - only OAuth authentication is supported
+  // Authentication methods removed - only OAuth authentication is supported
 
   /**
    * Get user statistics for monitoring
+   * @deprecated Use AdminService.getUserStats() instead for new development
    */
   async getUserStats(): Promise<{
     totalUsers: number;

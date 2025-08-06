@@ -3,9 +3,6 @@
  * Exports all utility functions for the accounts module
  */
 
-// JWT utilities
-export * from './jwt';
-
 // OAuth profile mapping utilities
 export * from './oauthProfileMapper';
 
@@ -13,7 +10,7 @@ export * from './oauthProfileMapper';
 export * from './user.utils';
 
 // KYC utilities
-export * from './kyc.utils';
+export * from './kycProvider.utils';
 
 // Shared Prisma client
 export * from './prisma';

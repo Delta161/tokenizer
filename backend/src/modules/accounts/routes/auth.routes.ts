@@ -11,6 +11,12 @@ import passport from 'passport';
 import { authController } from '../controllers/auth.controller';
 import { sessionGuard, optionalSession } from '../middleware/session.middleware';
 import { googleAuthOptions, googleCallbackOptions } from '../strategies/google.strategy';
+import { 
+  healthCheckEndpoint, 
+  livenessEndpoint, 
+  readinessEndpoint 
+} from '../middleware/health-check.middleware';
+import { generalRateLimit } from '../middleware/rate-limit.middleware';
 
 // Global utilities
 import { logger } from '../../../utils/logger';
@@ -28,6 +34,21 @@ logger.info('✅ Auth routes module loading...');
  * Health check endpoint
  */
 router.get('/health', authController.healthCheck.bind(authController));
+
+/**
+ * Advanced health check endpoint
+ */
+router.get('/health/detailed', generalRateLimit, healthCheckEndpoint);
+
+/**
+ * Liveness probe for Kubernetes/Docker
+ */
+router.get('/health/live', livenessEndpoint);
+
+/**
+ * Readiness probe for Kubernetes/Docker
+ */
+router.get('/health/ready', readinessEndpoint);
 
 /**
  * Session status check endpoint

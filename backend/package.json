@@ -32,8 +32,6 @@
 
     "@types/express-session": "^1.18.2",
 
-    "@types/jsonwebtoken": "^9.0.10",
-
     "@types/pino": "^7.0.4",
 
     "compression": "^1.8.1",
@@ -41,6 +39,8 @@
     "cookie-parser": "^1.4.7",
 
     "cors": "^2.8.5",
+
+    "dompurify": "^3.2.6",
 
     "dotenv": "^17.2.0",
 
@@ -59,8 +59,6 @@
     "helmet": "^8.1.0",
 
     "http-errors": "^2.0.0",
-
-    "jsonwebtoken": "^9.0.2",
 
     "morgan": "^1.10.1",
 
@@ -92,6 +90,8 @@
 
     "@types/cors": "^2.8.19",
 
+    "@types/dompurify": "^3.0.5",
+
     "@types/express": "^5.0.3",
 
     "@types/morgan": "^1.9.10",
@@ -105,6 +105,8 @@
     "@types/passport-azure-ad": "^4.3.6",
 
     "@types/passport-google-oauth20": "^2.0.16",
+
+    "@types/validator": "^13.15.2",
 
     "@typescript-eslint/eslint-plugin": "^8.37.0",
 

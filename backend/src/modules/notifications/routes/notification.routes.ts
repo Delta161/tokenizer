@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { NotificationController } from '../controllers/notification.controller';
-import { requireAuth, requireRole } from '../../accounts/middleware/auth.middleware';
+import { requireAuth, requireRole } from '../../accounts/middleware/session.middleware';
 import { UserRole } from '@prisma/client';
 
 /**

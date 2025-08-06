@@ -37,7 +37,7 @@ describe.skip('UserService', () => {
 
   beforeEach(() => {
     mockPrisma = new PrismaClient();
-    userService = new UserService(mockPrisma);
+    userService = new UserService();
   });
 
   afterEach(() => {

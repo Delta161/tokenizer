@@ -41,12 +41,12 @@ export interface UserPublicDTO {
 
 /**
  * Create user DTO
- * Note: Password is optional as we only support OAuth authentication
+ * Note: All authentication is handled through OAuth providers only
  */
 export interface CreateUserDTO {
   email: string;
   fullName: string;
-  providerId: string;
+  providerId?: string; // Optional to match validator schema
   avatarUrl?: string;
   role?: UserRole;
   phone?: string;
@@ -69,7 +69,7 @@ export interface UpdateUserDTO {
 }
 
 /**
- * Change password DTO removed - only OAuth authentication is supported
+ * Authentication DTOs removed - only OAuth authentication is supported
  */
 
 /**

@@ -6,9 +6,7 @@
 import { Router } from 'express';
 import { authRouter } from './auth.routes';
 import { userRouter } from './user.routes';
-import { createKycRoutes } from './kyc.routes';
-import { KycController } from '../controllers/kyc.controller';
-import { kycService } from '../services/kyc.service';
+import { kycRouter } from './kyc.routes';
 
 /**
  * Register all accounts routes
@@ -16,10 +14,6 @@ import { kycService } from '../services/kyc.service';
  */
 export function registerAccountsRoutes(): Router {
   const router = Router();
-  
-  // Create KYC controller and routes using the static factory method
-  const kycController = KycController.getInstance();
-  const kycRouter = createKycRoutes(kycController);
   
   // Mount routes
   router.use('/auth', authRouter);
@@ -32,5 +26,5 @@ export function registerAccountsRoutes(): Router {
 // Export individual routers
 export { authRouter } from './auth.routes';
 export { userRouter } from './user.routes';
-export { createKycRoutes } from './kyc.routes';
+export { kycRouter } from './kyc.routes';
 

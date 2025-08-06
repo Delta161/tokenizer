@@ -26,9 +26,9 @@ const MAX_EMAIL_LENGTH = 320;
 const MAX_PROVIDER_ID_LENGTH = 255;
 /** Maximum length for URLs */
 const MAX_URL_LENGTH = 2048;
-/** Minimum length for tokens */
+/** Minimum length for authentication strings */
 const MIN_TOKEN_LENGTH = 10;
-/** Maximum length for tokens */
+/** Maximum length for authentication strings */
 const MAX_TOKEN_LENGTH = 10000;
 
 /** Supported OAuth providers */
@@ -50,35 +50,6 @@ const PLACEHOLDER_DOMAINS = {
 // =============================================================================
 // CORE AUTH SCHEMAS
 // =============================================================================
-
-/**
- * Enhanced token verification schema with security validation
- */
-export const VerifyTokenSchema = z.object({
-  token: z.string()
-    .min(MIN_TOKEN_LENGTH, `Token must be at least ${MIN_TOKEN_LENGTH} characters`)
-    .max(MAX_TOKEN_LENGTH, `Token must not exceed ${MAX_TOKEN_LENGTH} characters`)
-    .regex(/^[A-Za-z0-9._-]+$/, 'Token contains invalid characters')
-    .refine(token => !token.includes(' '), 'Token must not contain spaces')
-    .transform(token => token.trim())
-});
-
-/**
- * Enhanced JWT token payload validation schema
- */
-export const JWTPayloadSchema = z.object({
-  id: z.string().uuid('Invalid user ID format'),
-  email: z.string().email('Invalid email format'),
-  role: z.nativeEnum(UserRole).refine(
-    role => Object.values(UserRole).includes(role),
-    { message: 'Invalid user role' }
-  ),
-  iat: z.number().int().positive('Invalid issued at timestamp').optional(),
-  exp: z.number().int().positive('Invalid expiration timestamp').optional()
-}).refine(
-  data => !data.exp || !data.iat || data.exp > data.iat,
-  { message: 'Token expiration must be after issued time', path: ['exp'] }
-);
 
 /**
  * Enhanced base OAuth profile validation schema with comprehensive checks
@@ -646,8 +617,8 @@ export const OAuthErrorSchema = z.object({
     } else if (message.includes('invalid profile data')) {
       userFriendlyMessage = 'Your profile data is invalid or incomplete. Please check your account.';
       severity = 'MEDIUM';
-    } else if (message.includes('token')) {
-      userFriendlyMessage = 'Authentication token is invalid or expired. Please try signing in again.';
+    } else if (message.includes('authentication')) {
+      userFriendlyMessage = 'Authentication credentials are invalid or expired. Please try signing in again.';
       severity = 'MEDIUM';
       retryable = true;
     } else if (message.includes('network') || message.includes('timeout')) {
@@ -1027,56 +998,6 @@ export const validateUserCreationData = (
 };
 
 /**
- * Enhanced token validation with comprehensive security checks
- */
-export const validateToken = (token: string): { valid: boolean; payload?: any; error?: string } => {
-  try {
-    const tokenValidationResult = VerifyTokenSchema.safeParse({ token });
-    
-    if (!tokenValidationResult.success) {
-      return {
-        valid: false,
-        error: 'Invalid token format'
-      };
-    }
-    
-    // Additional security checks
-    const cleanToken = tokenValidationResult.data.token;
-    
-    // Check for common token patterns that might indicate tampering
-    const suspiciousPatterns = [
-      /^null$/,
-      /^undefined$/,
-      /^[0]+$/,
-      /^\s*$/
-    ];
-    
-    const isSuspicious = suspiciousPatterns.some(pattern => pattern.test(cleanToken));
-    if (isSuspicious) {
-      logger.warn('Suspicious token pattern detected', { 
-        tokenStart: cleanToken.substring(0, 10),
-        tokenLength: cleanToken.length
-      });
-      return {
-        valid: false,
-        error: 'Invalid token content'
-      };
-    }
-    
-    return {
-      valid: true,
-      payload: { token: cleanToken }
-    };
-  } catch (error) {
-    logger.error('Token validation error', { error });
-    return {
-      valid: false,
-      error: 'Token validation failed'
-    };
-  }
-};
-
-/**
  * Validation performance tracking utility
  */
 export const trackValidationPerformance = (
@@ -1128,7 +1049,7 @@ export const trackValidationPerformance = (
  * - Enhanced full name processing with intelligent fallbacks
  * - Added placeholder email generation with collision prevention
  * - Comprehensive error transformation with actionable feedback
- * - Enhanced token validation with security pattern detection
+ * - Enhanced authentication validation with security pattern detection
  * - Added validation performance tracking for optimization
  * - Implemented request metadata validation for monitoring
  * - Enhanced type safety with proper Zod schema definitions

@@ -79,6 +79,71 @@ export const sessionGuard = (req: Request, res: Response, next: NextFunction): v
 };
 
 /**
+ * Role-based authorization middleware
+ * Requires authentication and specific user role
+ */
+export const requireRole = (role: string) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    const startTime = Date.now();
+    
+    try {
+      // First check authentication
+      if (!req.isAuthenticated() || !req.user) {
+        logger.warn('❌ Role check failed - not authenticated', {
+          requiredRole: role,
+          processingTime: Date.now() - startTime,
+          ip: req.ip
+        });
+        
+        res.status(401).json({
+          success: false,
+          message: 'Authentication required'
+        });
+        return;
+      }
+      
+      // Check role
+      if (req.user.role !== role) {
+        logger.warn('❌ Role check failed - insufficient privileges', {
+          userId: req.user.id,
+          userRole: req.user.role,
+          requiredRole: role,
+          processingTime: Date.now() - startTime,
+          ip: req.ip
+        });
+        
+        res.status(403).json({
+          success: false,
+          message: 'Insufficient privileges'
+        });
+        return;
+      }
+      
+      logger.debug('✅ Role check successful', {
+        userId: req.user.id,
+        role: req.user.role,
+        processingTime: Date.now() - startTime
+      });
+      
+      return next();
+    } catch (error) {
+      const processingTime = Date.now() - startTime;
+      logger.error('❌ Role check error', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        requiredRole: role,
+        processingTime
+      });
+      
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error'
+      });
+      return;
+    }
+  };
+};
+
+/**
  * Optional session authentication
  * Sets req.user if session exists, but doesn't require authentication
  */

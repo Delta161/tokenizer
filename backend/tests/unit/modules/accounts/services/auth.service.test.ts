@@ -22,13 +22,6 @@ vi.mock('@prisma/client', () => {
   return { PrismaClient };
 });
 
-// Mock the JWT utils
-vi.mock('@modules/accounts/utils/jwt', () => ({
-  generateAccessToken: vi.fn().mockReturnValue('mock-access-token'),
-  generateRefreshToken: vi.fn().mockReturnValue('mock-refresh-token'),
-  verifyToken: vi.fn().mockReturnValue({ id: 'user-id', email: 'test@example.com', role: 'INVESTOR' }),
-}));
-
 // Mock the OAuth profile mapper
 vi.mock('@modules/accounts/utils/oauthProfileMapper', () => ({
   mapOAuthProfile: vi.fn().mockReturnValue({
@@ -49,51 +42,11 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     mockPrisma = new PrismaClient();
-    authService = new AuthService(mockPrisma);
+    authService = new AuthService();
   });
 
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe('verifyToken', () => {
-    it('should verify a valid token and return the user', async () => {
-      // Mock the user found in the database
-      const mockUser = {
-        id: 'user-id',
-        email: 'test@example.com',
-        firstName: 'Test',
-        lastName: 'User',
-        role: 'INVESTOR',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      // Setup the mock implementation
-      mockPrisma.user.findUnique = vi.fn().mockResolvedValue(mockUser);
-
-      // Call the method
-      const result = await authService.verifyToken('valid-token');
-
-      // Assertions
-      expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
-        where: { id: 'user-id' },
-      });
-      expect(result).toEqual(mockUser);
-    });
-
-    it('should throw an error if the user is not found', async () => {
-      // Setup the mock implementation to return null (user not found)
-      mockPrisma.user.findUnique = vi.fn().mockResolvedValue(null);
-
-      // Call the method and expect it to throw
-      await expect(authService.verifyToken('valid-token')).rejects.toThrow('User not found');
-
-      // Verify the mock was called
-      expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
-        where: { id: 'user-id' },
-      });
-    });
   });
 
   describe('processOAuthLogin', () => {

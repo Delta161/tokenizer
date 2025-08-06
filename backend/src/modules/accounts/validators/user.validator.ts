@@ -12,7 +12,7 @@ import { AuthProvider } from '@prisma/client';
 
 /**
  * Create user schema
- * Note: Password is optional as we only support OAuth authentication
+ * Note: All authentication is handled through OAuth providers only
  */
 export const createUserSchema = z.object({
   email: z.string().email('Invalid email format'),
@@ -59,7 +59,7 @@ export const updateUserSchema = z.object({
 }).strict();
 
 /**
- * Change password schema removed - only OAuth authentication is supported
+ * Authentication schemas removed - only OAuth authentication is supported
  */
 
 /**

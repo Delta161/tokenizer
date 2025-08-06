@@ -53,13 +53,13 @@ export const errorHandler = (err: Error, req: Request, res: Response, _next: Nex
     isOperational = true;
     details = (err as any).format?.() || {};
   } else if (err.name === 'JsonWebTokenError') {
-    // Handle JWT errors
+    // Handle authentication errors
     statusCode = 401;
     message = 'Invalid token';
     errorCode = 'INVALID_TOKEN';
     isOperational = true;
   } else if (err.name === 'TokenExpiredError') {
-    // Handle JWT expiration
+    // Handle authentication expiration
     statusCode = 401;
     message = 'Token expired';
     errorCode = 'TOKEN_EXPIRED';

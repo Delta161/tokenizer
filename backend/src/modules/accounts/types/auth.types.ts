@@ -29,16 +29,8 @@ export interface UserDTO {
 
 export interface AuthResponseDTO {
   user: UserDTO;
-  accessToken: string;
-  refreshToken: string;
-}
-
-export interface TokenPayload {
-  id: string;
-  email: string;
-  role: UserRole;
-  iat?: number;
-  exp?: number;
+  success: boolean;
+  message?: string;
 }
 
 export interface OAuthProfileDTO {

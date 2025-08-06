@@ -76,28 +76,6 @@ export const accountsLogger = {
     });
   },
 
-  logPasswordChange: (userId: string) => {
-    accountsLogger.info(`User ${userId} changed password`, {
-      action: 'PASSWORD_CHANGE',
-      userId
-    });
-  },
-
-  logPasswordResetRequest: (email: string) => {
-    accountsLogger.info(`Password reset requested for ${email}`, {
-      action: 'PASSWORD_RESET_REQUEST',
-      email
-    });
-  },
-
-  logPasswordResetComplete: (userId: string, email: string) => {
-    accountsLogger.info(`Password reset completed for ${userId} (${email})`, {
-      action: 'PASSWORD_RESET_COMPLETE',
-      userId,
-      email
-    });
-  },
-
   logKycSubmission: (userId: string, provider: string) => {
     accountsLogger.info(`KYC submitted by user ${userId} via provider ${provider}`, {
       action: 'KYC_SUBMISSION',

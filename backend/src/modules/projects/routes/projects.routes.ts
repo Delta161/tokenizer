@@ -7,7 +7,7 @@
 import { Router } from 'express';
 import { ProjectController } from '../controllers';
 import { ClientController } from '../../client/controllers/client.controller';
-import { requireAuth, requireRole } from '../../accounts/middleware/auth.middleware';
+import { requireAuth, requireRole } from '../../accounts/middleware/session.middleware';
 import { prisma } from '../utils/prisma';
 
 /**

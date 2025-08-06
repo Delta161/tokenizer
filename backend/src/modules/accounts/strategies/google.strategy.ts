@@ -53,7 +53,7 @@ export const configureGoogleStrategy = (): void => {
         callbackURL: GOOGLE_CALLBACK_URL,
         passReqToCallback: true
       },
-      async (req, accessToken, refreshToken, profile, done) => {
+      async (req, accessToken, oauthRefreshToken, profile, done) => {
         try {
           // Map Google profile to OAuth DTO format
           const oauthProfile: OAuthProfileDTO = {

@@ -24,14 +24,11 @@ export { kycService, KycService } from './services/kyc.service';
 
 // Import and re-export middleware (fix path aliases)
 export { 
-  authGuard, 
-  roleGuard, 
+  sessionGuard,
   requireAuth, 
   requireRole, 
-  optionalAuth, 
-  isAuthenticated, 
-  hasRole 
-} from './middleware/auth.middleware';
+  optionalSession
+} from './middleware/session.middleware';
 export { requireKycVerified } from './middleware/kyc.middleware';
 
 // Import and re-export validators
@@ -55,7 +52,6 @@ export type {
 
 export type {
   AuthResponseDTO,
-  TokenPayload,
   OAuthProfileDTO
 } from './types/auth.types';
 

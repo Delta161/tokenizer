@@ -11,12 +11,12 @@ import type { UserDTO, UserPublicDTO } from '../types/user.types';
 
 /**
  * Map Prisma User model to UserDTO
- * Removes sensitive fields like password
+ * Removes sensitive fields from user object
  * @param user Prisma User model
  * @returns User DTO without sensitive fields
  */
 export const mapUserToDTO = (user: User): UserDTO => {
-  // No password field in the User model, just return the user object
+  // OAuth-based user model - all fields are safe to return
   const userDTO = user;
   
   return userDTO as UserDTO;
@@ -35,23 +35,6 @@ export const mapUserToPublicDTO = (user: User): UserPublicDTO => {
     fullName: user.fullName,
     role: user.role,
   };
-};
-
-/**
- * Generate a random password
- * @param length Password length (default: 12)
- * @returns Random password string
- */
-export const generateRandomPassword = (length = 12): string => {
-  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?';
-  let password = '';
-  
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * charset.length);
-    password += charset[randomIndex];
-  }
-  
-  return password;
 };
 
 /**

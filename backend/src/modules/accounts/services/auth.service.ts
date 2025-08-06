@@ -11,12 +11,6 @@ import createError from 'http-errors';
 // Internal modules - Use relative imports only
 import { UserRole, type AuthResponseDTO, type OAuthProfileDTO, type UserDTO } from '../types/auth.types';
 import { 
-  generateAccessToken, 
-  generateRefreshToken, 
-  verifyToken, 
-  verifyRefreshToken 
-} from '../utils/jwt';
-import { 
   validateAndProcessEmail,
   validateAndProcessFullName,
   generatePlaceholderEmail,
@@ -36,61 +30,6 @@ import { logger } from '../../../utils/logger';
 
 
 export class AuthService {
-
-  /**
-   * Verify JWT token and return user with enhanced validation
-   */
-  async verifyToken(token: string): Promise<UserDTO> {
-    if (!token || typeof token !== 'string' || token.trim().length === 0) {
-      throw createError(401, 'Invalid token format');
-    }
-
-    try {
-      // Verify token
-      const decoded = verifyToken(token);
-
-      if (!decoded?.id) {
-        throw createError(401, 'Invalid token payload');
-      }
-
-      // Find user with optimized query
-      const user = await prisma.user.findUnique({
-        where: { id: decoded.id },
-        select: {
-          id: true,
-          email: true,
-          fullName: true,
-          role: true,
-          createdAt: true,
-          updatedAt: true,
-          authProvider: true,
-          providerId: true,
-          avatarUrl: true,
-          lastLoginAt: true
-        }
-      });
-
-      if (!user) {
-        logger.debug('User not found for token', { userId: decoded.id });
-        throw createError(404, 'User not found');
-      }
-
-      // Return sanitized user
-      return this.sanitizeUser(user);
-    } catch (error: any) {
-      // Enhanced error handling with context
-      if (error?.statusCode) {
-        throw error; // Re-throw HTTP errors as-is
-      }
-      
-      const errorMessage = error?.message || 'Token verification failed';
-      logger.debug('Token verification failed', { 
-        error: errorMessage,
-        tokenLength: token.length 
-      });
-      throw createError(401, 'Invalid or expired token');
-    }
-  }
 
   /**
    * Find user by email with optimized query
@@ -172,59 +111,6 @@ export class AuthService {
     }
   }
   /**
-   * Verify refresh token and return user with enhanced security
-   * @param token Refresh token to verify
-   * @returns UserDTO
-   */
-  async verifyRefreshToken(token: string): Promise<UserDTO> {
-    if (!token || typeof token !== 'string' || token.trim().length === 0) {
-      throw createError(401, 'Invalid refresh token format');
-    }
-
-    try {
-      const { userId } = verifyRefreshToken(token);
-      
-      if (!userId) {
-        throw createError(401, 'Invalid refresh token payload');
-      }
-
-      const user = await prisma.user.findUnique({ 
-        where: { id: userId },
-        select: {
-          id: true,
-          email: true,
-          fullName: true,
-          role: true,
-          createdAt: true,
-          updatedAt: true,
-          authProvider: true,
-          providerId: true,
-          avatarUrl: true,
-          lastLoginAt: true
-        }
-      });
-
-      if (!user) {
-        logger.debug('User not found for refresh token', { userId });
-        throw createError(401, 'Invalid refresh token - user not found');
-      }
-
-      return this.sanitizeUser(user);
-    } catch (error: any) {
-      if (error?.statusCode) {
-        throw error; // Re-throw HTTP errors as-is
-      }
-      
-      logger.debug('Refresh token verification failed', { 
-        error: error?.message,
-        tokenLength: token.length 
-      });
-      throw createError(401, 'Invalid or expired refresh token');
-    }
-  }
-  
-
-  /**
    * Process OAuth login with enhanced validation and error handling
    */
   async processOAuthLogin(profile: OAuthProfileDTO): Promise<AuthResponseDTO> {
@@ -251,9 +137,8 @@ export class AuthService {
       // Update last login timestamp
       await this.updateUserLastLogin(user.id);
       
-      // Generate tokens
+      // Prepare session-based response
       const sanitizedUser = this.sanitizeUser(user);
-      const { accessToken, refreshToken } = this.generateTokens(sanitizedUser);
       
       // Log successful OAuth login with performance metrics
       const processingTime = Date.now() - startTime;
@@ -265,11 +150,11 @@ export class AuthService {
         isNewUser: !user.lastLoginAt
       });
       
-      // Return user data and tokens
+      // Return user data for session-based auth
       return {
         user: sanitizedUser,
-        accessToken,
-        refreshToken
+        success: true,
+        message: 'OAuth login successful'
       };
     } catch (error: any) {
       const processingTime = Date.now() - startTime;
@@ -465,40 +350,6 @@ export class AuthService {
   }
 
   /**
-   * Generate tokens for authentication with enhanced security
-   */
-  generateTokens(user: UserDTO): { accessToken: string; refreshToken: string } {
-    if (!user?.id || !user?.email || !user?.role) {
-      throw createError(400, 'Invalid user data for token generation');
-    }
-
-    try {
-      const tokenPayload = {
-        id: user.id,
-        email: user.email,
-        role: user.role
-      };
-
-      const accessToken = generateAccessToken(tokenPayload);
-      const refreshToken = generateRefreshToken(user.id);
-
-      logger.debug('Tokens generated successfully', { 
-        userId: user.id,
-        accessTokenLength: accessToken.length,
-        refreshTokenLength: refreshToken.length
-      });
-
-      return { accessToken, refreshToken };
-    } catch (error: any) {
-      logger.error('Failed to generate tokens', { 
-        error: error?.message,
-        userId: user.id 
-      });
-      throw createError(500, 'Token generation failed');
-    }
-  }
-
-  /**
    * Sanitize user object by removing sensitive data with validation
    */
   private sanitizeUser(user: any): UserDTO {
@@ -508,11 +359,8 @@ export class AuthService {
 
     // Remove sensitive fields that might be included accidentally
     const { 
-      _password, 
-      password, 
       hash, 
-      salt, 
-      refreshToken,
+      oauthToken,
       ...sanitizedUser 
     } = user;
 
@@ -530,25 +378,189 @@ export class AuthService {
     return sanitizedUser as UserDTO;
   }
 
+  /**
+   * Process OAuth success with full business logic
+   */
+  async processOAuthSuccess(user: any, sessionId: string): Promise<{ 
+    redirectUrl: string; 
+    user: UserDTO; 
+    isNewUser: boolean 
+  }> {
+    try {
+      const startTime = Date.now();
+
+      // Convert user to OAuth profile for processing
+      let processedUser: UserDTO;
+      let isNewUser = false;
+
+      // Check if this is a new user (created within last minute)
+      if (user.createdAt && user.updatedAt) {
+        const timeDiff = new Date(user.updatedAt).getTime() - new Date(user.createdAt).getTime();
+        isNewUser = timeDiff < 60000; // Less than 1 minute difference
+      }
+
+      // Sanitize user data
+      processedUser = this.sanitizeUser(user);
+
+      // Update last login
+      await this.updateUserLastLogin(user.id);
+
+      // Determine redirect URL
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+      const successPath = isNewUser ? '/onboarding' : '/dashboard';
+      const redirectUrl = `${frontendUrl}${successPath}`;
+
+      // Log successful OAuth processing
+      const processingTime = Date.now() - startTime;
+      logger.info('OAuth success processing completed', {
+        userId: user.id,
+        isNewUser,
+        processingTimeMs: processingTime,
+        redirectUrl
+      });
+
+      return {
+        redirectUrl,
+        user: processedUser,
+        isNewUser
+      };
+    } catch (error: any) {
+      logger.error('OAuth success processing failed', {
+        error: error?.message,
+        userId: user?.id
+      });
+      throw createError(500, 'OAuth processing failed');
+    }
+  }
+
+  /**
+   * Get OAuth provider health status
+   */
+  async getOAuthHealthStatus(): Promise<{
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    providers: Array<{ name: string; configured: boolean }>;
+    services: object;
+  }> {
+    try {
+      // Check OAuth provider configurations
+      const providers = [
+        {
+          name: 'google',
+          configured: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET)
+        },
+        {
+          name: 'microsoft',
+          configured: !!(
+            process.env.AZURE_CLIENT_ID && 
+            process.env.AZURE_CLIENT_SECRET && 
+            process.env.AZURE_TENANT_ID
+          )
+        },
+        {
+          name: 'apple',
+          configured: !!(
+            process.env.APPLE_CLIENT_ID && 
+            process.env.APPLE_PRIVATE_KEY_ID
+          )
+        }
+      ];
+
+      const configuredProviders = providers.filter(p => p.configured);
+      const totalConfigured = configuredProviders.length;
+
+      // Determine service status
+      let status: 'healthy' | 'degraded' | 'unhealthy';
+      if (totalConfigured >= 2) {
+        status = 'healthy';
+      } else if (totalConfigured >= 1) {
+        status = 'degraded';
+      } else {
+        status = 'unhealthy';
+      }
+
+      // Test database connection
+      await prisma.$queryRaw`SELECT 1`;
+
+      return {
+        status,
+        providers,
+        services: {
+          database: 'connected',
+          sessions: 'enabled',
+          oauth: {
+            providers,
+            totalConfigured,
+            totalAvailable: providers.length
+          }
+        }
+      };
+    } catch (error: any) {
+      logger.error('Health check failed', { error: error?.message });
+      return {
+        status: 'unhealthy',
+        providers: [],
+        services: {
+          database: 'error',
+          sessions: 'unknown',
+          oauth: {
+            providers: [],
+            totalConfigured: 0,
+            totalAvailable: 0
+          }
+        }
+      };
+    }
+  }
+
+  /**
+   * Handle OAuth error with proper logging
+   */
+  async handleOAuthError(
+    error: string,
+    provider: string,
+    req: any
+  ): Promise<{ redirectUrl: string }> {
+    try {
+      // Log the OAuth error
+      logger.error('OAuth authentication error', {
+        error: error.substring(0, 200),
+        provider: provider.substring(0, 50),
+        userAgent: req.get('User-Agent')?.substring(0, 200),
+        ipAddress: req.ip,
+        timestamp: new Date().toISOString()
+      });
+
+      // Build error redirect URL
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+      const errorPath = '/auth/callback';
+      
+      const errorParams = new URLSearchParams({
+        error: error.substring(0, 200),
+        provider: provider.substring(0, 50),
+        timestamp: new Date().toISOString()
+      });
+
+      const redirectUrl = `${frontendUrl}${errorPath}?${errorParams.toString()}`;
+
+      // Validate URL before returning
+      try {
+        new URL(redirectUrl);
+        return { redirectUrl };
+      } catch (urlError) {
+        logger.warn('Invalid error redirect URL, using fallback', { 
+          attemptedUrl: redirectUrl 
+        });
+        return { redirectUrl: `${frontendUrl}/auth/error` };
+      }
+    } catch (error: any) {
+      logger.error('Failed to handle OAuth error', { error: error?.message });
+      const fallbackUrl = (process.env.FRONTEND_URL || 'http://localhost:5173') + '/auth/error';
+      return { redirectUrl: fallbackUrl };
+    }
+  }
 }
 
 // Export singleton instance for use across the application
 export const authService = new AuthService();
-
-/*
- * Auth Service Optimization Summary:
- * - Enhanced input validation and type safety across all methods
- * - Optimized database queries with selective field projection
- * - Improved error handling with structured logging and context
- * - Better integration with auth validator utilities
- * - Enhanced OAuth profile processing with comprehensive validation
- * - Added performance monitoring and metrics collection
- * - Implemented secure token generation with validation
- * - Enhanced user sanitization with security-focused field removal
- * - Added user statistics method for monitoring and analytics
- * - Improved separation of concerns with private helper methods
- * - Better compatibility with controller, middleware, and strategies
- * - Enhanced logging for debugging and monitoring
- */
   
 
