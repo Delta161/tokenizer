@@ -12,4 +12,3 @@ export * from './project.validators';
 // Legacy validators for backward compatibility
 export * from './project.validator';
 export * from './property.validators';
-export * from './token.validators';

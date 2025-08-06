@@ -5,10 +5,9 @@
  */
 
 import { Router } from 'express';
-import { PropertyController, TokenController, ProjectController } from '../controllers';
+import { ProjectController } from '../controllers';
 import { ClientController } from '../../client/controllers/client.controller';
 import { requireAuth, requireRole } from '../../accounts/middleware/auth.middleware';
-import { BlockchainService, getBlockchainConfig } from '../../blockchain/services/blockchain.service.js';
 import { prisma } from '../utils/prisma';
 
 /**
@@ -20,10 +19,7 @@ export function createProjectsRoutes(): Router {
   
   // Initialize controllers
   const clientController = new ClientController(prisma);
-  const propertyController = new PropertyController(prisma);
-  const blockchainService = new BlockchainService(getBlockchainConfig());
-  const tokenController = new TokenController(prisma, blockchainService);
-  const projectController = new ProjectController(prisma);
+  const projectController = new ProjectController();
 
   // Client routes
   router.post('/clients/apply', requireAuth, clientController.applyAsClient);
@@ -33,27 +29,18 @@ export function createProjectsRoutes(): Router {
   router.get('/clients', requireAuth, requireRole('ADMIN'), clientController.listClients);
   router.patch('/clients/:id/status', requireAuth, requireRole('ADMIN'), clientController.updateClientStatus);
 
-  // Property routes
-  router.get('/properties', requireAuth, requireRole('ADMIN'), propertyController.getProperties);
-  router.get('/properties/public', propertyController.getPublicProperties);
-  router.get('/properties/client/:clientId', requireAuth, propertyController.getClientProperties);
-  router.get('/properties/:id', propertyController.getPropertyById);
-  router.post('/properties', requireAuth, propertyController.createProperty);
-  router.put('/properties/:id', requireAuth, propertyController.updateProperty);
-  router.patch('/properties/:id/status', requireAuth, requireRole('ADMIN'), propertyController.updatePropertyStatus);
-
-  // Token routes
-  router.post('/tokens', requireAuth, requireRole('ADMIN'), tokenController.create);
-  router.put('/tokens/:id', requireAuth, requireRole('ADMIN'), tokenController.update);
-  router.get('/tokens/:id', tokenController.getById);
-  router.get('/tokens', tokenController.list);
-  router.get('/tokens/balance', tokenController.getBalance);
-  router.get('/tokens/metadata/:contractAddress', tokenController.getMetadata);
-
-  // Project routes (combined client, property, and token data)
-  router.get('/combined', requireAuth, projectController.listProjects);
-  router.get('/combined/:id', projectController.getProjectById);
-  router.get('/featured', projectController.getFeaturedProjects);
+  // Project routes (unified functionality for properties and tokens)
+  router.get('/projects', requireAuth, projectController.getProjects);
+  router.get('/projects/:id', projectController.getProjectById);
+  router.post('/projects', requireAuth, requireRole('ADMIN'), projectController.createProject);
+  router.put('/projects/:id', requireAuth, requireRole('ADMIN'), projectController.updateProject);
+  router.delete('/projects/:id', requireAuth, requireRole('ADMIN'), projectController.deleteProject);
+  router.patch('/projects/:id/status', requireAuth, requireRole('ADMIN'), projectController.updateProjectStatus);
+  router.get('/projects/stats', requireAuth, requireRole('ADMIN'), projectController.getProjectStats);
+  
+  // Public project routes
+  router.get('/public/featured', projectController.getFeaturedProjects);
+  router.get('/public/search', projectController.searchProjects);
 
   return router;
 }
