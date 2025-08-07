@@ -5,6 +5,10 @@
 		}
 	],
 	"settings": {
-		"github.copilot.nextEditSuggestions.enabled": true
+		"github.copilot.nextEditSuggestions.enabled": true,
+		"files.exclude": {
+			"**/node_modules": true,
+			"**/node_modules/**": true
+		}
 	}
 }
