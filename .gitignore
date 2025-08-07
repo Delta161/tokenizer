@@ -1,48 +1,464 @@
-.trae\rules
-package-lock.json
-package.json
-node_modules
-backend/node_modules
-frontend/node_modules
-/backend/backups/*.zip
-/backend/dist/
+# ==========================================
+# COMPREHENSIVE .GITIGNORE FOR TOKENIZER
+# ==========================================
 
-logs
-*.log
+# ==========================================
+# NODE.JS & NPM
+# ==========================================
+# Dependencies
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 lerna-debug.log*
+pnpm-debug.log*
 
-/frontend/node_modules
-/frontend/.DS_Store
-/frontend/dist
-/frontend/dist-ssr
-/frontend/coverage
-/frontend/*.local
+# Package manager lock files (choose one)
+# package-lock.json  # Uncomment if using yarn
+# yarn.lock          # Uncomment if using npm
 
-/frontend/cypress/videos/
-/frontend/cypress/screenshots/
+# NPM cache
+.npm
+.yarn-integrity
 
-# Editor directories and files
-/frontend/.vscode/*
-!.vscode/extensions.json
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
+# ==========================================
+# BUILD OUTPUTS & COMPILED CODE
+# ==========================================
+# TypeScript compiled output
+dist/
+build/
+out/
 *.tsbuildinfo
 
+# Frontend build outputs
+frontend/dist/
+frontend/build/
+frontend/out/
+
+# Backend compiled JavaScript
+backend/dist/
+backend/build/
+backend/lib/
+backend/*.js.map
+
+# ==========================================
+# ENVIRONMENT & CONFIGURATION
+# ==========================================
+# Environment variables (CRITICAL - contains secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env*
+frontend/.env*
+
+# Configuration files with secrets
+config/secrets.json
+config/production.json
+*.pem
+*.key
+*.p12
+*.pfx
+
+# ==========================================
+# DATABASE & PRISMA
+# ==========================================
+# SQLite databases (if used for development)
+*.db
+*.sqlite
+*.sqlite3
+
+# Database connection files
+database.url
+db.json
+
+# Prisma generated client (regenerated on install)
+# Uncomment if you want to exclude generated client
+# backend/node_modules/.prisma/
+# backend/prisma/generated/
+
+# ==========================================
+# LOGS & TEMPORARY FILES
+# ==========================================
+# Application logs
 logs/
-tests_output/
-.editorconfig
-start-servers.ps1
+*.log
+backend/logs/
+frontend/logs/
 
-# Ignore all instructions files
-.instructions.md
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
 
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+.coverage/
+
+# Temporary folders
+tmp/
+temp/
+backend/src/tmp/
+frontend/tmp/
+
+# ==========================================
+# UPLOADS & USER CONTENT
+# ==========================================
+# File uploads (user content)
+uploads/
+backend/uploads/
+frontend/uploads/
+
+# User documents (KYC, profile images, etc.)
+backend/uploads/documents/
+backend/uploads/images/
+backend/uploads/kyc/
+
+# Static assets that change frequently
+public/uploads/
+static/uploads/
+
+# ==========================================
+# TESTING & COVERAGE
+# ==========================================
+# Test coverage
+coverage/
+*.coverage
+.coverage/
+.lcov
+
+# Test results
+test-results/
+junit.xml
+coverage.xml
+
+# Vitest cache
+.vitest/
+
+# Jest cache
+.jest/
+
+# ==========================================
+# DEVELOPMENT TOOLS & IDE SPECIFIC
+# ==========================================
+# Visual Studio Code
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+.vscode/extensions.json
+.vscode/.ropeproject
+.vscode/c_cpp_properties.json
+.vscode/last.sql
+
+# JetBrains IDEs (WebStorm, IntelliJ IDEA, PhpStorm, etc.)
+.idea/
+*.iws
+*.iml
+*.ipr
+.idea_modules/
+atlassian-ide-plugin.xml
+
+# Visual Studio
+.vs/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vcxproj.filters
+*.vcxproj.user
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Atom
+.atom/
+
+# Brackets
+.brackets.json
+
+# Vim/Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+Session.vim
+.vimrc.local
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.project
+.classpath
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Android Studio
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# Xcode (for React Native iOS development)
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.xcuserstate
+project.xcworkspace/
+
+# Code::Blocks
+*.depend
+*.layout
+*.cbp
+
+# CodeLite
+.codelite/
+*.workspace
+
+# Kate
+.kateconfig
+.kateproject
+.kateproject.d
+
+# Geany
+*.geany
+
+# Tags generated by IDEs
+tags
+TAGS
+.tags
+.tags1
+ctags.tmp
+
+# Backup files created by editors
+*~
+*.orig
+*.rej
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+Desktop.ini
+
+# Linux
+*~
+
+# ==========================================
+# SECURITY & SENSITIVE DATA
+# ==========================================
+# SSL certificates
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# OAuth secrets and API keys
+oauth.json
+api-keys.json
+secrets.json
+
+# JWT private keys
+jwt-private.key
+jwt-public.key
+
+# Session secrets
+session.secret
+
+# ==========================================
+# BLOCKCHAIN & CRYPTO
+# ==========================================
+# Wallet files and private keys
+wallet.json
+*.wallet
+private-keys/
+keystore/
+
+# Hardhat cache and artifacts
+backend/cache/
+backend/artifacts/
+backend/node_modules/.hardhat/
+
+# ==========================================
+# FRONTEND SPECIFIC
+# ==========================================
+# Vite cache
+frontend/.vite/
+frontend/dist-ssr/
+frontend/vite.config.js.timestamp-*
+
+# Vue.js cache
+frontend/.vue/
+
+# Nuxt.js build / generate output
+frontend/.nuxt/
+frontend/dist/
+
+# ==========================================
+# BACKEND SPECIFIC
+# ==========================================
+# Express session storage
+sessions/
+backend/sessions/
+
+# Backend cache
+backend/.cache/
+backend/cache/
+
+# ==========================================
+# DOCKER & CONTAINERIZATION
+# ==========================================
+# Docker
+.docker/
+Dockerfile.local
+docker-compose.override.yml
+.dockerignore.local
+
+# ==========================================
+# CI/CD & DEPLOYMENT
+# ==========================================
+# Deployment configurations (may contain secrets)
+deploy.yml
+deployment/
+.deploy/
+
+# ==========================================
+# MONITORING & ANALYTICS
+# ==========================================
+# Error tracking
+.sentry/
+sentry.properties
+
+# Analytics
+analytics.json
+metrics/
+
+# ==========================================
+# MISCELLANEOUS
+# ==========================================
+# Backup files
+*.backup
+*.bak
+*.tmp
+
+# Archive files
+*.tar.gz
+*.zip
+*.rar
+
+# System files
+.system/
+.cache/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# ==========================================
+# PROJECT SPECIFIC EXCLUSIONS
+# ==========================================
+# Keep these sections for project-specific files
+
+# Example: Exclude test API HTML files if they contain secrets
+# frontend/test-api.html
+
+# Example: Exclude specific development files
+# backend/test-server.js
+# backend/server.js
+
+# ==========================================
+# KEEP THESE FILES (DO NOT IGNORE)
+# ==========================================
+# These files SHOULD be tracked in git:
+# - package.json
+# - package-lock.json (or yarn.lock)
+# - tsconfig.json
+# - eslint.config.js
+# - vite.config.ts
+# - vitest.config.ts
+# - tailwind.config.js
+# - backend/prisma/schema.prisma
+# - backend/prisma/migrations/
+# - .github/workflows/
+# - .vscode/extensions.json (team settings)
+# ==========================================
