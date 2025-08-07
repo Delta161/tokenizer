@@ -1,5 +1,9 @@
 {
-
+  "name": "tokenizer-backend",
+  "version": "1.0.0",
+  "description": "Backend for Tokenizer real estate tokenization platform",
+  "type": "module",
+  "main": "src/server.ts",
   "scripts": {
 
     "dev": "tsx src/server.ts",
@@ -18,7 +22,13 @@
 
     "test:watch": "vitest",
 
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+
+    "lint": "eslint src/**/*.ts --format friendly",
+
+    "lint:fix": "eslint src/**/*.ts --fix --format friendly",
+
+    "lint:check": "eslint src/**/*.ts --max-warnings 0 --format friendly"
 
   },
 

@@ -1,6 +1,5 @@
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
-import prettierConfig from 'eslint-config-prettier';
 
 export default [
   // Global ignores
@@ -17,14 +16,15 @@ export default [
     ]
   },
   
-  // Base configuration for all TypeScript files
+  // Backend TypeScript configuration
   {
     files: ['**/*.ts', '**/*.js'],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
         ecmaVersion: 2022,
-        sourceType: 'module'
+        sourceType: 'module',
+        project: './tsconfig.json'
       },
       globals: {
         console: 'readonly',
@@ -44,13 +44,14 @@ export default [
       // Core ESLint rules (MANDATORY from backend.instructions.md)
       'prefer-const': 'error',
       'no-var': 'error',
-      'no-console': 'warn',
+      'no-console': 'off', // Allow console in backend
       'no-duplicate-imports': 'error',
       'no-unused-expressions': 'error',
       'eqeqeq': ['error', 'always'],
       'curly': ['error', 'all'],
       'no-eval': 'error',
       'no-implied-eval': 'error',
+      'no-process-exit': 'error',
       
       // TypeScript rules (MANDATORY from backend.instructions.md)
       '@typescript-eslint/no-explicit-any': 'error',
@@ -58,22 +59,8 @@ export default [
       '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/prefer-optional-chain': 'error',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'error'
-    }
-  },
-  
-  // Backend-specific configuration
-  {
-    files: ['backend/**/*.ts', 'backend/**/*.js'],
-    languageOptions: {
-      parser: typescriptParser,
-      parserOptions: {
-        ecmaVersion: 2022,
-        sourceType: 'module',
-        project: './backend/tsconfig.json'
-      }
-    },
-    rules: {
+      '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      
       // Async/await safety rules (CRITICAL for backend)
       '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
@@ -84,31 +71,7 @@ export default [
       '@typescript-eslint/no-unsafe-assignment': 'warn',
       '@typescript-eslint/no-unsafe-member-access': 'warn',
       '@typescript-eslint/no-unsafe-call': 'warn',
-      '@typescript-eslint/no-unsafe-return': 'warn',
-      
-      // Node.js specific
-      'no-process-exit': 'error',
-      
-      // Allow console in backend for logging
-      'no-console': 'off'
-    }
-  },
-  
-  // Frontend-specific configuration (for future use)
-  {
-    files: ['frontend/**/*.ts', 'frontend/**/*.vue', 'frontend/**/*.js'],
-    languageOptions: {
-      globals: {
-        window: 'readonly',
-        document: 'readonly',
-        navigator: 'readonly',
-        localStorage: 'readonly',
-        sessionStorage: 'readonly'
-      }
-    },
-    rules: {
-      'no-console': 'warn', // Warn about console in frontend
-      '@typescript-eslint/explicit-function-return-type': 'off' // Less strict for frontend
+      '@typescript-eslint/no-unsafe-return': 'warn'
     }
   },
   
@@ -127,10 +90,8 @@ export default [
     files: ['*.config.js', '*.config.ts', 'vitest.config.ts', 'tsconfig-paths-bootstrap.js'],
     rules: {
       '@typescript-eslint/no-var-requires': 'off',
-      'no-console': 'off'
+      'no-console': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off'
     }
-  },
-  
-  // Prettier integration (must be last)
-  prettierConfig
+  }
 ];
