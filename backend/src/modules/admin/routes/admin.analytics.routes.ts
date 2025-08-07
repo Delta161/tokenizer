@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { AdminAnalyticsController } from '../controllers/admin.analytics.controller.js';
-import { requireAuth, requireRole } from '../../accounts/middleware/auth.middleware.js';
+import { requireAuth, requireAdmin } from '../../accounts/middleware/auth.middleware.js';
 
 export function createAdminAnalyticsRouter(adminAnalyticsController: AdminAnalyticsController): Router {
   const router = Router();
 
   // Apply authentication and admin role middleware to all routes
   router.use(requireAuth);
-  router.use(requireRole('ADMIN'));
+  router.use(requireAdmin);
 
   // Analytics routes
   router.get('/summary', adminAnalyticsController.getSummary);

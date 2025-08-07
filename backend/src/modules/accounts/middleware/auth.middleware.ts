@@ -92,3 +92,8 @@ export const optionalSession = (req: Request, res: Response, next: NextFunction)
 export const requireAuth = sessionGuard;
 export const authGuard = sessionGuard;
 export const optionalAuth = optionalSession;
+
+/**
+ * Re-export types and functions from user.middleware for convenience
+ */
+export { AuthenticatedRequest, requireRole, requireAdmin, requireClient, requireClientOrAdmin } from './user.middleware';

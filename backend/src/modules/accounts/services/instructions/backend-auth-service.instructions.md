@@ -56,14 +56,7 @@ The controller should **delegate authentication logic** to this service and **us
 
 ---
 
-### 2. `verifyRefreshToken(token: string): Promise<UserDTO>`
-- Verifies a refresh token.
-- Returns the associated user (sanitized).
-- Uses `verifyRefreshToken` utility.
-
----
-
-### 3. `findUserByEmail(email: string): Promise<UserDTO | null>`
+### 2. `findUserByEmail(email: string): Promise<UserDTO | null>`
 - Looks up a user by their email address.
 - Returns sanitized user or `null`.
 
@@ -82,13 +75,6 @@ The controller should **delegate authentication logic** to this service and **us
   - Creates or updates user if needed
   - Logs successful or failed logins
   - Returns tokens and sanitized user
-- Calls `generateTokens` internally.
-
----
-
-### 6. `generateTokens(user: UserDTO): { accessToken: string; refreshToken: string }`
-- Generates access and refresh tokens using secure JWT utilities.
-- Includes role and user ID in payload.
 
 ---
 

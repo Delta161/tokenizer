@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { NotificationController } from '../controllers/notification.controller';
-import { requireAuth, requireRole } from '../../accounts/middleware/session.middleware';
+import { requireAuth } from '../../accounts/middleware/auth.middleware';
+import { requireRole } from '../../accounts/middleware/user.middleware';
 import { UserRole } from '@prisma/client';
 
 /**
@@ -27,7 +28,7 @@ export const createNotificationRouter = (controller: NotificationController): Ro
   router.patch('/read-all', controller.markAllAsRead);
 
   // Send broadcast notification (admin only)
-  router.post('/broadcast', requireRole(UserRole.ADMIN), controller.sendBroadcast);
+  router.post('/broadcast', requireRole([UserRole.ADMIN]), controller.sendBroadcast);
 
   return router;
 };

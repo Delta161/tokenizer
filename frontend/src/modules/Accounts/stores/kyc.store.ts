@@ -65,27 +65,6 @@ export const useKycStore = defineStore('kyc', {
     },
 
     /**
-     * Upload KYC documents
-     */
-    async uploadDocuments(documents: FormData) {
-      this.isLoading = true;
-      this.error = null;
-      
-      try {
-        const result = await kycService.uploadDocuments(documents);
-        // Refresh KYC record after document upload
-        await this.fetchKycRecord();
-        return result;
-      } catch (error: any) {
-        this.error = error.message || 'Failed to upload KYC documents';
-        console.error('Error uploading KYC documents:', error);
-        throw error;
-      } finally {
-        this.isLoading = false;
-      }
-    },
-
-    /**
      * Check if KYC is verified
      */
     async checkKycVerification(): Promise<boolean> {
@@ -98,6 +77,42 @@ export const useKycStore = defineStore('kyc', {
     },
 
     /**
+     * Check if KYC is pending
+     */
+    async checkKycPending(): Promise<boolean> {
+      try {
+        return await kycService.isKycPending();
+      } catch (error: any) {
+        console.warn('Error checking KYC pending status:', error);
+        return false;
+      }
+    },
+
+    /**
+     * Check if KYC is rejected
+     */
+    async checkKycRejected(): Promise<boolean> {
+      try {
+        return await kycService.isKycRejected();
+      } catch (error: any) {
+        console.warn('Error checking KYC rejected status:', error);
+        return false;
+      }
+    },
+
+    /**
+     * Check if user has submitted KYC
+     */
+    async checkKycSubmitted(): Promise<boolean> {
+      try {
+        return await kycService.hasSubmittedKyc();
+      } catch (error: any) {
+        console.warn('Error checking KYC submission status:', error);
+        return false;
+      }
+    },
+
+    /**
      * Get KYC service health status
      */
     async getHealthStatus() {
@@ -105,7 +120,7 @@ export const useKycStore = defineStore('kyc', {
       this.error = null;
       
       try {
-        const healthStatus = await kycService.getHealthStatus();
+        const healthStatus = await kycService.getKycHealth();
         return healthStatus;
       } catch (error: any) {
         this.error = error.message || 'Failed to get KYC health status';

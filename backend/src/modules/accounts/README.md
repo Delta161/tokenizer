@@ -102,7 +102,6 @@ accounts/
 | Method | Description |
 |--------|-------------|
 | `verifyToken(token: string)` | Verify JWT token and return user |
-| `refreshToken(refreshToken: string)` | Generate new access token using refresh token |
 | `processOAuthLogin(profile: OAuthProfileDTO)` | Process OAuth login and return tokens |
 | `logout(userId: string)` | Invalidate user's refresh tokens |
 

@@ -79,13 +79,6 @@ router.get('/profile', authMiddleware, authController.getProfile);
 // ✅ Route with validation
 router.post('/oauth/callback', validateOAuthCallback, authController.oauthCallback);
 
-// ✅ Route with multiple middleware
-router.post('/refresh', 
-  authMiddleware, 
-  validateRefreshToken, 
-  authController.refreshToken
-);
-
 export default router;
 ```
 
@@ -103,7 +96,6 @@ router.get('/azure/callback', validateOAuthCallback, authController.azureCallbac
 
 // Protected routes (auth required)
 router.get('/profile', authMiddleware, authController.getProfile);
-router.post('/refresh-token', authMiddleware, authController.refreshToken);
 router.post('/logout', authMiddleware, authController.logout);
 router.get('/verify-token', authMiddleware, authController.verifyToken);
 

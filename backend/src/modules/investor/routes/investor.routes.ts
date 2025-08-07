@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { InvestorController } from '../controllers/investor.controller.js';
-import { authGuard, roleGuard } from '../../accounts/middleware/auth.middleware.js';
+import { authGuard, requireRole } from '../../accounts/middleware/auth.middleware.js';
+import { UserRole } from '@prisma/client';
 import { investorLogger } from '../utils/investor.logger.js';
 
 /**
@@ -18,18 +19,18 @@ export function createInvestorRoutes(): Router {
 
   // User routes - authentication required
   router.post('/apply', authGuard, controller.applyAsInvestor);
-  router.get('/me', authGuard, roleGuard('INVESTOR'), controller.getCurrentInvestorProfile);
-  router.patch('/me', authGuard, roleGuard('INVESTOR'), controller.updateCurrentInvestorProfile);
+  router.get('/me', authGuard, requireRole([UserRole.INVESTOR]), controller.getCurrentInvestorProfile);
+  router.patch('/me', authGuard, requireRole([UserRole.INVESTOR]), controller.updateCurrentInvestorProfile);
   
   // Wallet management routes
-  router.post('/me/wallets', authGuard, roleGuard('INVESTOR'), controller.addWallet);
-  router.delete('/me/wallets/:walletId', authGuard, roleGuard('INVESTOR'), controller.deleteWallet);
+  router.post('/me/wallets', authGuard, requireRole([UserRole.INVESTOR]), controller.addWallet);
+  router.delete('/me/wallets/:walletId', authGuard, requireRole([UserRole.INVESTOR]), controller.deleteWallet);
 
   // Admin routes - admin role required
-  router.get('/', authGuard, roleGuard('ADMIN'), controller.getAllInvestors);
-  router.get('/:id', authGuard, roleGuard('ADMIN'), controller.getInvestorProfileById);
-  router.patch('/:id/verification', authGuard, roleGuard('ADMIN'), controller.updateInvestorVerification);
-  router.patch('/wallets/:walletId/verification', authGuard, roleGuard('ADMIN'), controller.updateWalletVerification);
+  router.get('/', authGuard, requireRole([UserRole.ADMIN]), controller.getAllInvestors);
+  router.get('/:id', authGuard, requireRole([UserRole.ADMIN]), controller.getInvestorProfileById);
+  router.patch('/:id/verification', authGuard, requireRole([UserRole.ADMIN]), controller.updateInvestorVerification);
+  router.patch('/wallets/:walletId/verification', authGuard, requireRole([UserRole.ADMIN]), controller.updateWalletVerification);
 
   return router;
 }

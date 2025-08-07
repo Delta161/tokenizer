@@ -1,7 +1,11 @@
 /**
  * Passport Configuration with Session Management
  * 
- * This file implements Passport serialization/deserialization for session management.
+ * This file implements Passport serialization/deserialization for     logger.error('❌ Google OAuth error', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      profileId: profile.id 
+    });
+    return done(error, false);on management.
  * Following backend coding instructions for OAuth-only authentication with secure session handling.
  * 
  * IMPORTANT: This configuration is MANDATORY for proper user session management.
@@ -130,7 +134,7 @@ passport.use(new GoogleStrategy({
       error: error instanceof Error ? error.message : 'Unknown error',
       profileId: profile.id 
     });
-    return done(error, null);
+    return done(error, false);
   }
 }));
 

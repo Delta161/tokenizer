@@ -17,7 +17,7 @@ export const KycSubmissionSchema = z.object({
  */
 export const KycUpdateSchema = z.object({
   status: z.enum([KycStatus.PENDING, KycStatus.VERIFIED, KycStatus.REJECTED], {
-    errorMap: () => ({ message: 'Status must be PENDING, VERIFIED, or REJECTED' })
+    message: 'Status must be PENDING, VERIFIED, or REJECTED'
   }),
   rejectionReason: z.string().max(500).optional().nullable()
 });

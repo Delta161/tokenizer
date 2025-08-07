@@ -4,8 +4,8 @@
  */
 
 // Authentication middleware
-// Export session middleware instead of auth middleware
-export * from '../modules/accounts/middleware/session.middleware';
+export * from '../modules/accounts/middleware/auth.middleware';
+export * from '../modules/accounts/middleware/user.middleware';
 
 // KYC middleware
 export * from '../modules/accounts/middleware/kyc.middleware';

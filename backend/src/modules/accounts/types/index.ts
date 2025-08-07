@@ -6,8 +6,8 @@
 // Authentication types
 export * from './auth.types';
 
-// User types
-export * from './user.types';
+// User types (excluding UserDTO to avoid conflict with auth.types)
+export { CreateUserDTO, UpdateUserDTO, UserSortField, UserFilterOptions, UserSortOptions } from './user.types';
 
 // KYC types
 export * from './kyc.types';

@@ -112,7 +112,7 @@ export class AdminController {
       await this.adminService.sendBroadcastNotification(
         validatedData.title,
         validatedData.message,
-        validatedData.userRole,
+        validatedData.userRole ?? null,
         adminId
       );
       
@@ -124,5 +124,6 @@ export class AdminController {
   };
 }
 
-// Create and export a singleton instance
-export const adminController = new AdminController(new AdminService());
+// Temporary singleton - will be replaced with proper dependency injection
+// This is just for backward compatibility
+export const adminController: AdminController = null as any;

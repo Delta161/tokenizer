@@ -6,6 +6,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodSchema } from 'zod';
 
+// Type alias for Express types
+type ParamsDictionary = Record<string, string>;
+type ParsedQs = Record<string, any>;
+
 /**
  * Validates request body against a Zod schema
  * @param schema - Zod schema to validate against
@@ -58,7 +62,7 @@ export const validateParams = (schema: ZodSchema) => {
       }
       
       // Replace request params with validated data
-      req.params = validation.data;
+      req.params = validation.data as ParamsDictionary;
       next();
     } catch (error) {
       res.status(500).json({
@@ -90,7 +94,7 @@ export const validateQuery = (schema: ZodSchema) => {
       }
       
       // Replace request query with validated data
-      req.query = validation.data;
+      req.query = validation.data as ParsedQs;
       next();
     } catch (error) {
       res.status(500).json({

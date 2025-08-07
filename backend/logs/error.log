@@ -498,3 +498,7 @@
 2025-08-06 09:47:50:4750 [31merror[39m: [31m[Accounts] Account error during user_creation[39m
 2025-08-06 09:47:50:4750 [31merror[39m: [31m[Accounts] Account error during user_update[39m
 2025-08-06 09:47:50:4750 [31merror[39m: [31m[Accounts] Account error during user_deletion[39m
+2025-08-07 08:29:50:2950 [31merror[39m: [31m[Accounts] Account error during user_creation[39m
+2025-08-07 08:29:50:2950 [31merror[39m: [31m[Accounts] Account error during user_update[39m
+2025-08-07 08:29:50:2950 [31merror[39m: [31m[Accounts] Account error during user_update[39m
+2025-08-07 08:29:50:2950 [31merror[39m: [31m[Accounts] Account error during user_deletion[39m

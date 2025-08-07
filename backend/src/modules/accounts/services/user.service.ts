@@ -295,13 +295,6 @@ export class UserService {
   }
 
   /**
-   * Upload and update user avatar
-   */
-  async updateAvatar(userId: string, avatarUrl: string): Promise<UserDTO> {
-    return this.updateUser(userId, { avatarUrl });
-  }
-
-  /**
    * Delete user
    * @deprecated Use AdminService.deleteUser() instead for new development
    */
@@ -360,72 +353,6 @@ export class UserService {
     } catch (error: any) {
       throw createBadRequest('Failed to retrieve user statistics');
     }
-  }
-
-  /**
-   * Get multiple profiles efficiently (merged from ProfileService)
-   */
-  async getProfiles(userIds: string[]): Promise<UserDTO[]> {
-    if (!userIds.length) return [];
-
-    // Check cache for each user
-    const cached: UserDTO[] = [];
-    const uncachedIds: string[] = [];
-
-    for (const userId of userIds) {
-      const cachedProfile = this.cache.get(`profile:${userId}`);
-      if (cachedProfile) {
-        cached.push(cachedProfile);
-      } else {
-        uncachedIds.push(userId);
-      }
-    }
-
-    // Fetch uncached profiles from database
-    let uncached: UserDTO[] = [];
-    if (uncachedIds.length > 0) {
-      const users = await prisma.user.findMany({
-        where: { id: { in: uncachedIds } },
-        select: {
-          id: true,
-          email: true,
-          fullName: true,
-          providerId: true,
-          avatarUrl: true,
-          role: true,
-          authProvider: true,
-          lastLoginAt: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      });
-
-      uncached = users as UserDTO[];
-      
-      // Cache the newly fetched profiles
-      uncached.forEach(user => {
-        this.cache.set(`profile:${user.id}`, user);
-      });
-    }
-
-    return [...cached, ...uncached];
-  }
-
-  /**
-   * Clear all profile cache (useful for testing or manual cache reset)
-   */
-  clearCache(): void {
-    this.cache.clear();
-    logger.info('Profile cache cleared');
-  }
-
-  /**
-   * Get cache statistics (for monitoring)
-   */
-  getCacheStats(): { size: number } {
-    return {
-      size: this.cache['cache'].size
-    };
   }
 }
 

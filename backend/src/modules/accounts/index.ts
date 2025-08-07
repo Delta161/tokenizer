@@ -25,10 +25,14 @@ export { kycService, KycService } from './services/kyc.service';
 // Import and re-export middleware (fix path aliases)
 export { 
   sessionGuard,
-  requireAuth, 
-  requireRole, 
-  optionalSession
-} from './middleware/session.middleware';
+  requireAuth
+} from './middleware/auth.middleware';
+export { 
+  requireRole,
+  requireAdmin,
+  requireClient,
+  requireClientOrAdmin
+} from './middleware/user.middleware';
 export { requireKycVerified } from './middleware/kyc.middleware';
 
 // Import and re-export validators

@@ -13,6 +13,10 @@ export * from './routes';
 export { createAdminRouter } from './routes/admin.routes';
 export { createAdminAnalyticsRouter } from './routes/admin.analytics.routes';
 
+// Import route functions for initialization
+import { createAdminRouter as createAdminRouterFunc } from './routes/admin.routes';
+import { createAdminAnalyticsRouter as createAdminAnalyticsRouterFunc } from './routes/admin.analytics.routes';
+
 // Import and re-export controllers
 export { AdminController, adminController } from './controllers/admin.controller';
 export { AdminAnalyticsController, adminAnalyticsController } from './controllers/admin.analytics.controller';
@@ -20,6 +24,12 @@ export { AdminAnalyticsController, adminAnalyticsController } from './controller
 // Import and re-export services
 export { AdminService, adminService } from './services/admin.service';
 export { AdminAnalyticsService, adminAnalyticsService } from './services/admin.analytics.service';
+
+// Import classes separately for use in initialization
+import { AdminController as AdminControllerClass } from './controllers/admin.controller';
+import { AdminAnalyticsController as AdminAnalyticsControllerClass } from './controllers/admin.analytics.controller';
+import { AdminService as AdminServiceClass } from './services/admin.service';
+import { AdminAnalyticsService as AdminAnalyticsServiceClass } from './services/admin.analytics.service';
 
 // Import and re-export validators
 export * from './validators';
@@ -38,18 +48,18 @@ export * from './utils';
  */
 export const initAdminModule = (prisma: PrismaClient, notificationTrigger: NotificationTrigger): Router => {
   // Create service instances
-  const adminService = new AdminService(notificationTrigger);
-  const adminAnalyticsService = new AdminAnalyticsService();
+  const adminService = new AdminServiceClass(notificationTrigger);
+  const adminAnalyticsService = new AdminAnalyticsServiceClass();
   
   // Create controller instances
-  const adminController = new AdminController(adminService);
-  const adminAnalyticsController = new AdminAnalyticsController(adminAnalyticsService);
+  const adminController = new AdminControllerClass(adminService);
+  const adminAnalyticsController = new AdminAnalyticsControllerClass(adminAnalyticsService);
   
   // Create the main admin router
-  const adminRouter = createAdminRouter(adminController);
+  const adminRouter = createAdminRouterFunc(adminController);
   
   // Create and mount the analytics subrouter
-  const analyticsRouter = createAdminAnalyticsRouter(adminAnalyticsController);
+  const analyticsRouter = createAdminAnalyticsRouterFunc(adminAnalyticsController);
   adminRouter.use('/analytics', analyticsRouter);
   
   // Return the combined router

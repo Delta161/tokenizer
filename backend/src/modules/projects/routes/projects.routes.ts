@@ -7,7 +7,8 @@
 import { Router } from 'express';
 import { ProjectController } from '../controllers';
 import { ClientController } from '../../client/controllers/client.controller';
-import { requireAuth, requireRole } from '../../accounts/middleware/session.middleware';
+import { requireAuth } from '../../accounts/middleware/auth.middleware';
+import { requireAdmin } from '../../accounts/middleware/user.middleware';
 import { prisma } from '../utils/prisma';
 
 /**
@@ -25,18 +26,18 @@ export function createProjectsRoutes(): Router {
   router.post('/clients/apply', requireAuth, clientController.applyAsClient);
   router.get('/clients/me', requireAuth, clientController.getCurrentClientProfile);
   router.put('/clients/me', requireAuth, clientController.updateCurrentClientProfile);
-  router.get('/clients/:id', requireAuth, requireRole('ADMIN'), clientController.getClientById);
-  router.get('/clients', requireAuth, requireRole('ADMIN'), clientController.listClients);
-  router.patch('/clients/:id/status', requireAuth, requireRole('ADMIN'), clientController.updateClientStatus);
+  router.get('/clients/:id', requireAuth, requireAdmin, clientController.getClientById);
+  router.get('/clients', requireAuth, requireAdmin, clientController.listClients);
+  router.patch('/clients/:id/status', requireAuth, requireAdmin, clientController.updateClientStatus);
 
   // Project routes (unified functionality for properties and tokens)
   router.get('/projects', requireAuth, projectController.getProjects);
   router.get('/projects/:id', projectController.getProjectById);
-  router.post('/projects', requireAuth, requireRole('ADMIN'), projectController.createProject);
-  router.put('/projects/:id', requireAuth, requireRole('ADMIN'), projectController.updateProject);
-  router.delete('/projects/:id', requireAuth, requireRole('ADMIN'), projectController.deleteProject);
-  router.patch('/projects/:id/status', requireAuth, requireRole('ADMIN'), projectController.updateProjectStatus);
-  router.get('/projects/stats', requireAuth, requireRole('ADMIN'), projectController.getProjectStats);
+  router.post('/projects', requireAuth, requireAdmin, projectController.createProject);
+  router.put('/projects/:id', requireAuth, requireAdmin, projectController.updateProject);
+  router.delete('/projects/:id', requireAuth, requireAdmin, projectController.deleteProject);
+  router.patch('/projects/:id/status', requireAuth, requireAdmin, projectController.updateProjectStatus);
+  router.get('/projects/stats', requireAuth, requireAdmin, projectController.getProjectStats);
   
   // Public project routes
   router.get('/public/featured', projectController.getFeaturedProjects);

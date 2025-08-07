@@ -12,7 +12,7 @@
 
 import { Router } from 'express';
 import { projectController } from '../controllers/project.controller';
-import { requireAuth } from '../../accounts/middleware/session.middleware';
+import { requireAuth } from '../../accounts/middleware/auth.middleware';
 import { requireRole } from '../../accounts/middleware/user.middleware';
 
 const router = Router();

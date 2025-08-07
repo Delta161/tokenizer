@@ -3199,3 +3199,153 @@
 2025-08-06 11:06:07:67 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
 2025-08-06 11:06:07:67 [34mdebug[39m: [34m✅ User deserialized successfully[39m
 2025-08-06 11:06:07:67 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:26:18:2618 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-07 08:26:18:2618 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-07 08:26:18:2618 [32minfo[39m: [32m📄 User routes module loaded[39m
+2025-08-07 08:26:18:2618 [32minfo[39m: [32m✅ User routes exported[39m
+2025-08-07 08:26:18:2618 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-07 08:26:18:2618 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-07 08:26:18:2618 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-07 08:26:18:2618 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-07 08:26:18:2618 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-07 08:26:18:2618 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-07 08:26:36:2636 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:26:37:2637 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:26:37:2637 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:26:37:2637 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:26:37:2637 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:26:37:2637 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:26:37:2637 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:26:37:2637 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:26:37:2637 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:26:37:2637 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:26:37:2637 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:26:37:2637 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:26:51:2651 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:26:51:2651 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:26:51:2651 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:26:51:2651 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:26:51:2651 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:26:51:2651 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:27:07:277 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:27:07:277 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:27:07:277 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:27:07:277 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:27:07:277 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:27:07:277 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:27:12:2712 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:27:12:2712 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:27:12:2712 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:27:12:2712 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:27:12:2712 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:27:12:2712 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:27:30:2730 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:27:30:2730 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:27:30:2730 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:27:30:2730 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:27:30:2730 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:27:30:2730 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:27:39:2739 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:27:39:2739 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:27:39:2739 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:27:39:2739 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:27:39:2739 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:27:39:2739 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:27:46:2746 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:27:46:2746 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:27:46:2746 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:27:46:2746 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 08:27:46:2746 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 08:27:46:2746 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 08:29:50:2950 [31merror[39m: [31m[Accounts] Account error during user_creation[39m
+2025-08-07 08:29:50:2950 [31merror[39m: [31m[Accounts] Account error during user_update[39m
+2025-08-07 08:29:50:2950 [31merror[39m: [31m[Accounts] Account error during user_update[39m
+2025-08-07 08:29:50:2950 [31merror[39m: [31m[Accounts] Account error during user_deletion[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32m📄 User routes module loaded[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32m✅ User routes exported[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-07 09:00:22:022 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:00:22:022 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:00:22:022 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:00:22:022 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:00:22:022 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:00:31:031 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:00:31:031 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:00:31:031 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:00:31:031 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:00:31:031 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:00:31:031 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:00:40:040 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:00:40:040 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:00:40:040 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:00:40:040 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:00:40:040 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:00:40:040 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:10:51:1051 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:10:51:1051 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:10:51:1051 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:10:51:1051 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:10:51:1051 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:10:51:1051 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:11:26:1126 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:11:26:1126 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:11:26:1126 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:11:26:1126 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:11:26:1126 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:11:26:1126 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:11:56:1156 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:11:56:1156 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:11:56:1156 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:11:56:1156 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:11:56:1156 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:11:56:1156 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:13:09:139 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:13:09:139 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:13:09:139 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:13:09:139 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:13:09:139 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:13:09:139 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:13:56:1356 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:13:56:1356 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:13:56:1356 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:13:56:1356 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:13:56:1356 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:13:56:1356 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:14:42:1442 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:14:42:1442 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:14:42:1442 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:14:42:1442 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:14:42:1442 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:14:42:1442 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:14:50:1450 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:14:50:1450 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:14:50:1450 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:14:50:1450 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:14:50:1450 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:14:50:1450 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:16:08:168 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:16:08:168 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:16:08:168 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:16:08:168 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:16:08:168 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:16:08:168 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:16:16:1616 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:16:16:1616 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:16:16:1616 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:16:16:1616 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:16:16:1616 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:16:16:1616 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:21:49:2149 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:21:49:2149 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:21:49:2149 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-07 09:21:49:2149 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
+2025-08-07 09:21:49:2149 [34mdebug[39m: [34m✅ User deserialized successfully[39m
+2025-08-07 09:21:49:2149 [32minfo[39m: [32m🔍 Session status check[39m

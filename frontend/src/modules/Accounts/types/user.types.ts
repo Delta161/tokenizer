@@ -19,6 +19,17 @@ export interface User {
   phone?: string;
   preferredLanguage?: string;
   timezone?: string;
+  // These fields may come from related Investor/Client models or computed values
+  firstName?: string;  // Computed from fullName
+  lastName?: string;   // Computed from fullName
+  bio?: string;        // Optional profile field
+  location?: string;   // Optional profile field
+  website?: string;    // Optional profile field
+  socialLinks?: {
+    twitter?: string;
+    linkedin?: string;
+    github?: string;
+  };
 }
 
 // Use same UserRole values as backend Prisma schema
@@ -33,6 +44,17 @@ export interface UserProfile {
   phone?: string;
   preferredLanguage?: string;
   timezone?: string;
+  // These fields may come from related Investor/Client models
+  firstName?: string;  // Computed from fullName
+  lastName?: string;   // Computed from fullName
+  bio?: string;        // Optional profile field
+  location?: string;   // Optional profile field
+  website?: string;    // Optional profile field
+  socialLinks?: {
+    twitter?: string;
+    linkedin?: string;
+    github?: string;
+  };
 }
 
 export interface UserSettings {
@@ -86,4 +108,36 @@ export interface UserSearchResult {
   page: number;
   limit: number;
   hasMore: boolean;
+}
+
+// Additional types for backend API compatibility
+export interface CreateUserRequest {
+  email: string;
+  fullName: string;
+  role?: UserRole;
+  authProvider: string;
+  providerId?: string;
+  phone?: string;
+  preferredLanguage?: string;
+  timezone?: string;
+  avatarUrl?: string;
+}
+
+export interface UpdateUserRequest {
+  fullName?: string;
+  email?: string;
+  role?: UserRole;
+  phone?: string;
+  preferredLanguage?: string;
+  timezone?: string;
+  avatarUrl?: string;
+}
+
+export interface UserListResponse {
+  users: User[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+  totalPages: number;
 }

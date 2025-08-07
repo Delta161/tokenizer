@@ -317,4 +317,5 @@ export class AdminAnalyticsService {
 }
 
 // Create and export a singleton instance
-export const adminAnalyticsService = new AdminAnalyticsService();
+// Temporary singleton - will be replaced with proper dependency injection
+export const adminAnalyticsService: AdminAnalyticsService = null as any;

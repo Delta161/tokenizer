@@ -4,10 +4,24 @@
     <div class="p-6">
       <!-- Profile Header -->
       <div class="flex items-center mb-6">
-        <UserAvatar :user="user" size="large" class="mr-4" />
+        <!-- Inline Avatar (replaces UserAvatar component) -->
+        <div class="user-avatar flex-shrink-0 bg-gray-100 rounded-full flex items-center justify-center w-16 h-16 mr-4">
+          <img 
+            v-if="user.avatarUrl" 
+            :src="user.avatarUrl" 
+            :alt="`${user.fullName}`"
+            class="w-full h-full rounded-full object-cover"
+          />
+          <div 
+            v-else 
+            class="text-gray-600 font-medium text-lg"
+          >
+            {{ userInitials }}
+          </div>
+        </div>
         
         <div class="flex-1">
-          <h2 class="text-xl font-semibold">{{ user.firstName }} {{ user.lastName }}</h2>
+          <h2 class="text-xl font-semibold">{{ user.fullName }}</h2>
           <div class="flex items-center mt-1">
             <UserRoleBadge :role="user.role" />
             <span class="ml-4 text-gray-500">{{ user.email }}</span>
@@ -167,8 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue';
-import UserAvatar from './UserAvatar.vue';
+import { ref, reactive, watch, computed } from 'vue';
 import UserRoleBadge from './UserRoleBadge.vue';
 import type { UserProfile, UserRole } from '../types/user.types';
 
@@ -190,13 +203,24 @@ const emit = defineEmits<{
   'edit-toggle': [isEditing: boolean];
 }>();
 
+// Computed property for user initials
+const userInitials = computed(() => {
+  if (!props.user?.fullName) return '';
+  return props.user.fullName
+    .split(' ')
+    .map(name => name.charAt(0))
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+});
+
 // UI state only
 const isEditing = ref(false);
 
 // Form state for editing
 const form = reactive({
-  firstName: props.user.firstName,
-  lastName: props.user.lastName,
+  firstName: props.user.firstName || (props.user.fullName ? props.user.fullName.split(' ')[0] : ''),
+  lastName: props.user.lastName || (props.user.fullName ? props.user.fullName.split(' ').slice(1).join(' ') : ''),
   email: props.user.email,
   role: props.user.role,
   bio: props.user.bio || '',
@@ -206,8 +230,8 @@ const form = reactive({
 
 // Update form when user prop changes
 watch(() => props.user, (newUser) => {
-  form.firstName = newUser.firstName;
-  form.lastName = newUser.lastName;
+  form.firstName = newUser.firstName || (newUser.fullName ? newUser.fullName.split(' ')[0] : '');
+  form.lastName = newUser.lastName || (newUser.fullName ? newUser.fullName.split(' ').slice(1).join(' ') : '');
   form.email = newUser.email;
   form.role = newUser.role;
   form.bio = newUser.bio || '';
@@ -222,8 +246,8 @@ const toggleEdit = () => {
   
   if (isEditing.value) {
     // Reset form to current user data
-    form.firstName = props.user.firstName;
-    form.lastName = props.user.lastName;
+    form.firstName = props.user.firstName || (props.user.fullName ? props.user.fullName.split(' ')[0] : '');
+    form.lastName = props.user.lastName || (props.user.fullName ? props.user.fullName.split(' ').slice(1).join(' ') : '');
     form.email = props.user.email;
     form.role = props.user.role;
     form.bio = props.user.bio || '';

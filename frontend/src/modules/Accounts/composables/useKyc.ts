@@ -60,27 +60,6 @@ export function useKyc() {
   };
 
   /**
-   * Upload KYC documents
-   */
-  const uploadDocuments = async (documents: FormData) => {
-    isLoading.value = true;
-    error.value = null;
-    
-    try {
-      const result = await kycService.uploadDocuments(documents);
-      // Refresh KYC record after document upload
-      await fetchKycRecord();
-      return result;
-    } catch (err) {
-      error.value = err as Error;
-      console.error('Error uploading KYC documents:', err);
-      throw err;
-    } finally {
-      isLoading.value = false;
-    }
-  };
-
-  /**
    * Check if KYC is verified
    */
   const checkKycVerification = async (): Promise<boolean> => {
@@ -89,6 +68,61 @@ export function useKyc() {
     } catch (err) {
       console.warn('Error checking KYC verification:', err);
       return false;
+    }
+  };
+
+  /**
+   * Check if KYC is pending
+   */
+  const checkKycPending = async (): Promise<boolean> => {
+    try {
+      return await kycService.isKycPending();
+    } catch (err) {
+      console.warn('Error checking KYC pending status:', err);
+      return false;
+    }
+  };
+
+  /**
+   * Check if KYC is rejected
+   */
+  const checkKycRejected = async (): Promise<boolean> => {
+    try {
+      return await kycService.isKycRejected();
+    } catch (err) {
+      console.warn('Error checking KYC rejected status:', err);
+      return false;
+    }
+  };
+
+  /**
+   * Check if user has submitted KYC
+   */
+  const checkKycSubmitted = async (): Promise<boolean> => {
+    try {
+      return await kycService.hasSubmittedKyc();
+    } catch (err) {
+      console.warn('Error checking KYC submission status:', err);
+      return false;
+    }
+  };
+
+  /**
+   * Get KYC service health status
+   */
+  const getHealthStatus = async () => {
+    isLoading.value = true;
+    error.value = null;
+    
+    try {
+      const health = await kycService.getKycHealth();
+      return health;
+    } catch (err) {
+      error.value = err as Error;
+      console.error('Error getting KYC health status:', err);
+      throw err;
+    } finally {
+      isLoading.value = false;
     }
   };
 
@@ -102,7 +136,10 @@ export function useKyc() {
     isNotSubmitted,
     fetchKycRecord,
     submitKyc,
-    uploadDocuments,
-    checkKycVerification
+    checkKycVerification,
+    checkKycPending,
+    checkKycRejected,
+    checkKycSubmitted,
+    getHealthStatus
   };
 }
