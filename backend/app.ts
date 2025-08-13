@@ -5,8 +5,7 @@
 
 // Load environment variables at the very top before any other code executes
 import dotenv from 'dotenv';
-import path from 'path';
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config();
 
 // Core Express imports
 import express, { Express } from 'express';
@@ -28,10 +27,12 @@ import { logger } from './src/utils/logger';
 
 // Import middleware
 import { errorHandler, notFoundHandler } from './src/middleware/errorHandler';
+import { performanceMonitorMiddleware } from './src/modules/accounts/middleware/performance.middleware';
 
 // Import feature routers (using relative paths since path aliases have issues)
 import { authRouter } from './src/modules/accounts/routes/auth.routes';
 import { userRouter } from './src/modules/accounts/routes/user.routes';
+import { performanceRouter } from './src/modules/accounts/routes';
 import { projectModuleRoutes } from './src/modules/projects/routes/index';
 
 // Create KYC router inline for now (can be moved to separate file later)
@@ -119,6 +120,9 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('combined'));
 }
 
+// Performance monitoring middleware
+app.use(performanceMonitorMiddleware);
+
 // Body parsing middleware for JSON and URL-encoded payloads
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -179,6 +183,9 @@ app.use(`${API_PREFIX}/users`, userRouter);
 console.log(`📍 Mounting KYC routes at: ${API_PREFIX}/kyc`);
 app.use(`${API_PREFIX}/kyc`, kycRouter);
 
+console.log(`📍 Mounting Performance routes at: ${API_PREFIX}/performance`);
+app.use(`${API_PREFIX}/performance`, performanceRouter);
+
 console.log(`📍 Mounting Projects routes at: ${API_PREFIX}/projects`);
 app.use(`${API_PREFIX}/projects`, projectModuleRoutes);
 
@@ -197,6 +204,7 @@ app.get(`${API_PREFIX}/test`, (req, res) => {
       auth: `${API_PREFIX}/auth`,
       users: `${API_PREFIX}/users`,
       kyc: `${API_PREFIX}/kyc`,
+      performance: `${API_PREFIX}/performance`,
       health: '/health',
     },
     timestamp: new Date().toISOString(),

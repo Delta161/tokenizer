@@ -95,5 +95,8 @@ export const optionalAuth = optionalSession;
 
 /**
  * Re-export types and functions from user.middleware for convenience
+ * Note: AuthenticatedRequest is a TypeScript type, so export it as a type-only export
+ * to prevent runtime ESM export errors.
  */
-export { AuthenticatedRequest, requireRole, requireAdmin, requireClient, requireClientOrAdmin } from './user.middleware';
+export type { AuthenticatedRequest } from './user.middleware';
+export { requireRole, requireAdmin, requireClient, requireClientOrAdmin } from './user.middleware';

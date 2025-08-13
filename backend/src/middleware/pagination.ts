@@ -6,6 +6,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { PAGINATION } from '../config/constants';
 import { PaginationOptions } from '../utils/pagination';
+import createError from 'http-errors';
 
 /**
  * Middleware to parse and validate pagination parameters
@@ -37,12 +38,11 @@ export const paginationMiddleware = (req: Request, res: Response, next: NextFunc
     req.pagination = { page, limit, skip } as PaginationOptions;
 
     next();
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      error: 'Invalid pagination parameters',
-      message: 'Please provide valid page and limit values',
-    });
+  } catch {
+    next(createError(400, 'Invalid pagination parameters', {
+      code: 'VALIDATION_ERROR',
+      message: 'Please provide valid page and limit values'
+    }));
   }
 };
 

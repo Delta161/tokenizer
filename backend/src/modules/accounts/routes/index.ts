@@ -7,6 +7,7 @@ import { Router } from 'express';
 import { authRouter } from './auth.routes';
 import { userRouter } from './user.routes';
 import { kycRouter } from './kyc.routes';
+import performanceRouter from './performance.routes';
 
 /**
  * Register all accounts routes
@@ -19,6 +20,7 @@ export function registerAccountsRoutes(): Router {
   router.use('/auth', authRouter);
   router.use('/users', userRouter);
   router.use('/kyc', kycRouter);
+  router.use('/performance', performanceRouter);
   
   return router;
 }
@@ -27,4 +29,5 @@ export function registerAccountsRoutes(): Router {
 export { authRouter } from './auth.routes';
 export { userRouter } from './user.routes';
 export { kycRouter } from './kyc.routes';
+export { default as performanceRouter } from './performance.routes';
 

@@ -5,6 +5,7 @@ import { isAddress } from 'ethers';
 import { BlockchainService, getBlockchainConfig } from '../../../modules/blockchain';
 import { TokenMetadata } from '../../../modules/blockchain/types/blockchain.types';
 import { tokenLogger } from '../utils/token.logger';
+import createError from 'http-errors';
 
 export class TokenService {
   private blockchainService: BlockchainService;
@@ -34,18 +35,24 @@ export class TokenService {
     // Ensure property exists and is APPROVED
     const property = await this.prisma.property.findUnique({ where: { id: dto.propertyId } });
     if (!property || property.status !== PropertyStatus.APPROVED) {
-      throw new Error('Property must exist and be APPROVED');
+      throw createError(400, 'Property must exist and be APPROVED', {
+        code: 'INVALID_PROPERTY_STATUS'
+      });
     }
     
     // Prevent duplicate token for same property
     const existing = await this.prisma.token.findUnique({ where: { propertyId: dto.propertyId } });
     if (existing) {
-      throw new Error('Token already exists for this property');
+      throw createError(409, 'Token already exists for this property', {
+        code: 'TOKEN_ALREADY_EXISTS'
+      });
     }
     
     // Validate contract address
     if (!isAddress(dto.contractAddress)) {
-      throw new Error('Invalid Ethereum contract address');
+      throw createError(400, 'Invalid Ethereum contract address', {
+        code: 'INVALID_CONTRACT_ADDRESS'
+      });
     }
     
     // Validate the contract on the blockchain
@@ -53,7 +60,9 @@ export class TokenService {
     const validationResult = await blockchainService.validateContract(dto.contractAddress);
     
     if (!validationResult.isValid || !validationResult.isERC20) {
-      throw new Error('Contract address does not point to a valid ERC20 token');
+      throw createError(400, 'Contract address does not point to a valid ERC20 token', {
+        code: 'INVALID_CONTRACT'
+      });
     }
     
     // Create token
@@ -147,7 +156,9 @@ export class TokenService {
     if (!token) return null;
     
     if (dto.contractAddress && !isAddress(dto.contractAddress)) {
-      throw new Error('Invalid Ethereum contract address');
+      throw createError(400, 'Invalid Ethereum contract address', {
+        code: 'INVALID_CONTRACT_ADDRESS'
+      });
     }
     
     const updated = await this.prisma.token.update({ where: { id }, data: dto });

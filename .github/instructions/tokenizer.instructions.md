@@ -27,7 +27,7 @@ applyTo: '**/*.ts'
 - **Database**: PostgreSQL (localhost:5432, database: `tokenizer_dev`)
 - **ORM**: Prisma 6.11.1 with @prisma/client@6.11.1
 - **Validation**: Zod 4.0.5 for all input validation and sanitization
-- **Authentication**: OAuth 2.0 (Google & Azure) with JWT tokens
+- **Authentication**: OAuth 2.0 (Google & Azure) with session-based authentication
 - **Error Handling**: http-errors package for standardized HTTP errors
 - **Testing**: Supertest for API testing, Jest for unit tests
 - **Development Server**: http://localhost:3000
@@ -44,7 +44,6 @@ applyTo: '**/*.ts'
     "express-session": "1.18.1",
     "hardhat": "2.26.0",
     "http-errors": "^2.0.0",
-    "jsonwebtoken": "9.0.2",
     "multer": "2.0.2",
     "node-fetch": "3.3.2",
     "passport": "0.7.0",
@@ -57,7 +56,6 @@ applyTo: '**/*.ts'
   "devDependencies": {
     "@types/cookie-parser": "1.4.9",
     "@types/express": "5.0.3",
-    "@types/jsonwebtoken": "9.0.10",
     "@types/multer": "2.0.0",
     "@types/node": "24.0.13",
     "@types/passport": "1.0.17",
@@ -69,6 +67,62 @@ applyTo: '**/*.ts'
     "ts-node-dev": "2.0.0",
     "typescript": "5.8.3"
   }
+}
+```
+
+---
+
+## 📝 **Documentation Standards**
+
+### **JSDoc Documentation Requirements**
+- **Mandatory for all public entities**: Every public class, method, function, constant, and interface must be documented with JSDoc
+- **Style**: JSDoc is the only accepted inline documentation style
+- **Required Elements**:
+  - Description of purpose and functionality
+  - `@param` tags for all parameters with types and descriptions
+  - `@returns` tag describing the return value
+  - `@throws` tag for any errors that might be thrown
+  - `@example` where appropriate for complex functionality
+
+**Example JSDoc Format:**
+```typescript
+/**
+ * Processes user authentication through OAuth provider
+ * 
+ * @param provider - The OAuth provider (google, microsoft, apple)
+ * @param profile - User profile data from the provider
+ * @param accessToken - OAuth provider access token
+ * @returns User data with session information
+ * @throws HttpError if authentication fails
+ */
+async processOAuthLogin(
+  provider: OAuthProvider,
+  profile: OAuthProfile,
+  accessToken: string
+): Promise<UserDTO> {
+  // Implementation
+}
+```
+
+### **TypeScript Interface Documentation**
+All interfaces, especially DTOs, must be documented with JSDoc:
+
+```typescript
+/**
+ * Data transfer object for user authentication response
+ * Contains sanitized user data and session information
+ */
+export interface AuthResponseDTO {
+  /** Unique user identifier */
+  id: string;
+  /** User's email address */
+  email: string;
+  /** User's full name */
+  fullName: string;
+  /** User's assigned role */
+  role: UserRole;
+  /** Authentication provider used */
+  provider: string;
 }
 ```
 
@@ -292,7 +346,7 @@ Every module must contain the following folders:
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']),
   DATABASE_URL: z.string().url(),
-  JWT_SECRET: z.string().min(32),
+  SESSION_SECRET: z.string().min(32),
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string()
 });
@@ -389,8 +443,8 @@ const users = await prisma.user.findMany({
 
 ### **Authentication Requirements**
 - **OAuth 2.0 Only**: Google OAuth 2.0 and Azure AD
-- **Token Strategy**: JWT tokens stored in HTTP-only cookies
-- **Route Protection**: Always apply `requireAuth` middleware on protected routes
+- **Session Strategy**: Passport sessions with Redis or Prisma session store
+- **Route Protection**: Always apply `sessionGuard` middleware on protected routes
 - **Role-Based Access**: Use `requireRole('<ROLE>')` for role gating
 - **Client Trust**: Never trust client-supplied IDs or data
 

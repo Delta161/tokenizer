@@ -202,10 +202,12 @@ export class AuthService {
 - ❌ NO database access or request handling
 
 ```typescript
-// utils/tokenUtils.ts
-export const generateTokens = (userId: string) => {
-  const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET);
-  return { accessToken };
+// utils/formatter.ts
+export const formatCurrency = (amount: number, currency = 'USD'): string => {
+  return new Intl.NumberFormat('en-US', { 
+    style: 'currency', 
+    currency 
+  }).format(amount);
 };
 ```
 
@@ -396,17 +398,34 @@ modules/
 - Use type-safe validation with proper error messages
 
 ### ✅ Error Handling
-```typescript
-// utils/errorHandlers.ts
-export const createError = (status: number, message: string) => {
-  const error = new Error(message) as any;
-  error.status = status;
-  return error;
-};
+- **MANDATORY**: All HTTP errors MUST be handled by the `http-errors` package
+- **PROHIBITED**: Custom error classes or manual status code assignment
+- **REQUIRED**: Use createError from http-errors for all error creation
 
-export const createUnauthorized = (message = 'Unauthorized') => createError(401, message);
-export const createNotFound = (message = 'Resource not found') => createError(404, message);
-export const createBadRequest = (message = 'Bad request') => createError(400, message);
+```typescript
+// CORRECT Way to create errors
+import createError from 'http-errors';
+
+// Create specific HTTP errors
+throw createError(404, 'Resource not found');
+throw createError(400, 'Invalid input data');
+throw createError(401, 'Authentication required');
+throw createError(403, 'Permission denied');
+throw createError(409, 'Resource conflict');
+throw createError(500, 'Internal server error');
+
+// With additional properties
+throw createError(400, 'Validation failed', { 
+  code: 'VALIDATION_ERROR',
+  details: validationErrors 
+});
+
+// Handling errors in controllers
+try {
+  // operation code
+} catch (error) {
+  return handleControllerError(error, req, res, 'Operation name');
+}
 ```
 
 ### ✅ Data Sanitization
@@ -1229,10 +1248,9 @@ CORS_ORIGIN="http://localhost:5173"
 
 ## 🚫 **FORBIDDEN DEPENDENCIES**
 
-### **❌ JWT Libraries (Forbidden)**
-- **jsonwebtoken** - Conflicts with session-based auth
-- **jose** - Not needed with Passport sessions
-- **node-jose** - Forbidden for authentication
+### **❌ Token-Based Auth Libraries (Forbidden)**
+- **All token-based auth libraries** - Conflicts with our session-based auth approach
+- **Any libraries that bypass Passport sessions**
 
 ### **❌ Alternative ORMs (Forbidden)**
 - **typeorm** - Use Prisma only
@@ -1305,14 +1323,13 @@ CORS_ORIGIN="http://localhost:5173"
 
 ### **Authentication & Security:**
 - [ ] Session-based authentication is properly configured
-- [ ] No JWT tokens used for authentication
-- [ ] OAuth strategies are properly implemented
+- [ ] OAuth strategies are properly implemented with Passport
 - [ ] Error handling follows established patterns
 - [ ] Data sanitization is implemented in services
 
 ### **Dependency Management (CRITICAL):**
 - [ ] Only approved dependencies from the official list are installed
-- [ ] No JWT libraries (jsonwebtoken, jose, node-jose) are used
+- [ ] No token-based authentication libraries are used
 - [ ] No alternative ORMs (typeorm, sequelize, mongoose) are installed
 - [ ] No alternative validation libraries (joi, yup, class-validator) are used
 - [ ] No alternative HTTP clients (axios, got, superagent) are installed

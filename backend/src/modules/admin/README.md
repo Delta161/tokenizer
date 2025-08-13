@@ -69,10 +69,9 @@ The Admin Module provides functionality for platform administrators to manage us
 ## Security
 
 All admin endpoints are protected by:
-1. Authentication middleware (`requireAuth`)
-2. Admin role middleware (`requireAdmin`)
-3. JWT validation
-4. Role-based access control (RBAC)
+1. Session authentication middleware (`sessionGuard`)
+2. Admin role middleware (`adminGuard`)
+3. Role-based access control (RBAC)
 
 ## Logging
 

@@ -9,24 +9,40 @@ import { KycProvider, KycStatus } from '../types/kyc.types';
 import { KycSubmissionSchema, KycUpdateSchema } from '../validators/kyc.validator';
 import { accountsLogger } from '../utils/accounts.logger';
 import { verifySumsubWebhookSignature, mapSumsubStatusToKycStatus } from '../utils/kycProvider.utils';
+import { createSuccessResponse, createPaginatedResponse } from '../utils/response-formatter';
 
 // Global utilities - Fixed with relative imports
 import { createPaginationResult, getSkipValue } from '../../../utils/pagination';
 import { logger } from '../../../utils/logger';
 import { PAGINATION } from '../../../config/constants';
 
+/**
+ * Controller for handling KYC (Know Your Customer) verification operations
+ * Manages identity verification processes, KYC submissions, and status tracking
+ * Integrates with external KYC providers like Sumsub and handles webhook events
+ */
 export class KycController {
   private kycService: KycService;
 
+  /**
+   * Creates a new KycController instance
+   * 
+   * @param kycService - The KYC service instance for business logic operations
+   */
   constructor(kycService: KycService) {
     this.kycService = kycService;
   }
 
   /**
-   * Handle Sumsub webhook
-   * @param req Express request
-   * @param res Express response
-   * @param next Express next function
+   * Handles Sumsub webhook notifications for KYC verification status updates
+   * Processes status change events from the Sumsub verification provider
+   * 
+   * @param req - Express request with Sumsub webhook data
+   * @param res - Express response
+   * @param next - Express next function for error handling
+   * @returns Express response with success status or passes error to next middleware
+   * @throws Passes HTTP errors to next middleware if webhook processing fails
+   */
    */
   public handleSumsubWebhook = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -100,7 +116,13 @@ export class KycController {
   }
 
   /**
-   * Get current user's KYC record
+   * Retrieves the KYC verification record for the currently authenticated user
+   * Returns the user's verification status, progress, and relevant data
+   * 
+   * @param req - Authenticated request with user data attached
+   * @param res - Express response object
+   * @returns Response with the user's KYC record or error response
+   * @throws HttpError if retrieval fails or user is not authenticated
    */
   getCurrentUserKyc = async (
     req: AuthenticatedRequest,
@@ -110,7 +132,7 @@ export class KycController {
     try {
       if (!req.user?.id) {
         accountsLogger.logAuthError(
-          req.ip || 'unknown', 
+          req.ip ?? 'unknown', 
           'Authentication required for KYC access', 
           'getCurrentUserKyc'
         );
@@ -123,13 +145,13 @@ export class KycController {
         userId: req.user.id,
         action: 'KYC_RECORD_ACCESS',
         module: 'accounts',
-        kycStatus: kycRecord?.status || 'NOT_SUBMITTED'
+        kycStatus: kycRecord?.status ?? 'NOT_SUBMITTED'
       });
 
-      res.json({
-        success: true,
-        data: kycRecord || { status: 'NOT_SUBMITTED' }
-      });
+      res.json(createSuccessResponse(
+        kycRecord ?? { status: 'NOT_SUBMITTED' },
+        'KYC record retrieved successfully'
+      ));
     } catch (error) {
       accountsLogger.logAccountError('getCurrentUserKyc', error as Error, { userId: req.user?.id });
       next(error);
@@ -137,7 +159,14 @@ export class KycController {
   };
   
   /**
-   * Initiate KYC verification with a provider
+   * Initiates KYC verification process with an external provider
+   * Creates or retrieves a verification session with the configured KYC provider
+   * 
+   * @param req - Authenticated request with user data attached
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   * @returns Response with provider session data or passes error to next middleware
+   * @throws HttpError if initiation fails or user is not authenticated
    */
   initiateProviderVerification = async (
     req: AuthenticatedRequest,
@@ -199,14 +228,14 @@ export class KycController {
         referenceId: session.referenceId
       });
       
-      res.status(200).json({
-        success: true,
-        data: {
+      res.status(200).json(createSuccessResponse(
+        {
           redirectUrl: session.redirectUrl,
           expiresAt: session.expiresAt,
           referenceId: session.referenceId
-        }
-      });
+        },
+        'KYC verification initiated successfully'
+      ));
     } catch (error) {
       accountsLogger.logAccountError('initiateProviderVerification', error as Error, { 
         userId: req.user?.id,
@@ -217,7 +246,14 @@ export class KycController {
   };
   
   /**
-   * Sync KYC record status with provider
+   * Synchronizes the KYC verification status with the external provider
+   * Fetches the latest status from the KYC provider and updates local records
+   * 
+   * @param req - Authenticated request with user data attached
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   * @returns Response with updated KYC status or passes error to next middleware
+   * @throws HttpError if synchronization fails or user is not authenticated
    */
   syncKycStatus = async (
     req: AuthenticatedRequest,
@@ -266,10 +302,10 @@ export class KycController {
         kycStatus: kycRecord.status
       });
       
-      res.json({
-        success: true,
-        data: kycRecord
-      });
+      res.json(createSuccessResponse(
+        kycRecord,
+        'KYC status synced successfully'
+      ));
     } catch (error) {
       const userId = req.params?.userId;
       accountsLogger.logAccountError('syncKycStatus', error as Error, { 
@@ -281,7 +317,15 @@ export class KycController {
   };
 
   /**
-   * Submit KYC information
+   * Submits user KYC information for verification
+   * Validates and processes the submitted KYC data from the user
+   * 
+   * @param req - Authenticated request with user data and KYC submission
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   * @returns Response with submission result or passes error to next middleware
+   * @throws HttpError if submission validation fails or processing fails
+   */
    */
   submitKyc = async (
     req: AuthenticatedRequest,
@@ -344,7 +388,14 @@ export class KycController {
   };
 
   /**
-   * Get all KYC records (admin only) with pagination
+   * Retrieves all KYC records with pagination for administrative purposes
+   * Admin-only endpoint to review all user verification records
+   * 
+   * @param req - Express request object with pagination parameters
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   * @returns Paginated response with KYC records or passes error to next middleware
+   * @throws HttpError if retrieval fails or user lacks admin permissions
    */
   getAllKycRecords = async (
     req: Request,
@@ -402,7 +453,14 @@ export class KycController {
   };
 
   /**
-   * Get KYC record by user ID (admin only)
+   * Retrieves a specific user's KYC record by their user ID
+   * Admin-only endpoint to view individual user verification status
+   * 
+   * @param req - Express request object containing userId parameter
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   * @returns Response with the user's KYC record or passes error to next middleware
+   * @throws HttpError if retrieval fails, user not found, or lacks admin permissions
    */
   getUserKyc = async (
     req: Request,
@@ -469,7 +527,14 @@ export class KycController {
   };
 
   /**
-   * Update KYC status (admin only)
+   * Updates a user's KYC verification status manually
+   * Admin-only endpoint to override or manually adjust verification status
+   * 
+   * @param req - Express request object with userId parameter and status update data
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   * @returns Response with updated KYC record or passes error to next middleware
+   * @throws HttpError if update fails, validation fails, or lacks admin permissions
    */
   updateKycStatus = async (
     req: Request,

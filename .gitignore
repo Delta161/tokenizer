@@ -318,10 +318,6 @@ oauth.json
 api-keys.json
 secrets.json
 
-# JWT private keys
-jwt-private.key
-jwt-public.key
-
 # Session secrets
 session.secret
 

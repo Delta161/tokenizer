@@ -3349,3 +3349,52 @@
 2025-08-07 09:21:49:2149 [34mdebug[39m: [34m🔄 Deserializing user from session[39m
 2025-08-07 09:21:49:2149 [34mdebug[39m: [34m✅ User deserialized successfully[39m
 2025-08-07 09:21:49:2149 [32minfo[39m: [32m🔍 Session status check[39m
+2025-08-11 20:57:48:5748 [31merror[39m: [31m[Accounts] Account error during user_creation[39m
+2025-08-11 20:57:48:5748 [31merror[39m: [31m[Accounts] Account error during user_update[39m
+2025-08-11 20:57:48:5748 [31merror[39m: [31m[Accounts] Account error during user_update[39m
+2025-08-11 20:57:48:5748 [31merror[39m: [31m[Accounts] Account error during user_deletion[39m
+2025-08-11 21:19:12:1912 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-11 21:19:12:1912 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-11 21:19:12:1912 [32minfo[39m: [32m📄 User routes module loaded[39m
+2025-08-11 21:19:12:1912 [32minfo[39m: [32m✅ User routes exported[39m
+2025-08-11 21:19:12:1912 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-11 21:19:12:1912 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-11 21:19:12:1912 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-11 21:19:12:1912 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-11 21:19:12:1912 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-11 21:19:12:1912 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-11 21:19:16:1916 [31merror[39m: [31mUnhandled Rejection:[39m
+2025-08-11 21:24:26:2426 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-11 21:24:26:2426 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-11 21:24:26:2426 [32minfo[39m: [32m📄 User routes module loaded[39m
+2025-08-11 21:24:26:2426 [32minfo[39m: [32m✅ User routes exported[39m
+2025-08-11 21:24:26:2426 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-11 21:24:26:2426 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-11 21:24:26:2426 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-11 21:24:26:2426 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-11 21:24:26:2426 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-11 21:24:26:2426 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-11 21:24:30:2430 [31merror[39m: [31mUnhandled Rejection:[39m
+2025-08-11 21:27:43:2743 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-11 21:27:43:2743 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-11 21:27:43:2743 [32minfo[39m: [32m📄 User routes module loaded[39m
+2025-08-11 21:27:43:2743 [32minfo[39m: [32m✅ User routes exported[39m
+2025-08-11 21:27:43:2743 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-11 21:27:43:2743 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-11 21:27:43:2743 [32minfo[39m: [32m🗄️ Using Prisma-backed session store[39m
+2025-08-11 21:27:43:2743 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-11 21:27:43:2743 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-11 21:27:43:2743 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-11 21:27:43:2743 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m
+2025-08-11 21:27:48:2748 [31merror[39m: [31mUnhandled Rejection:[39m
+2025-08-11 21:29:30:2930 [32minfo[39m: [32m✅ Auth routes module loading...[39m
+2025-08-11 21:29:30:2930 [32minfo[39m: [32m✅ Auth routes configured successfully[39m
+2025-08-11 21:29:30:2930 [32minfo[39m: [32m📄 User routes module loaded[39m
+2025-08-11 21:29:30:2930 [32minfo[39m: [32m✅ User routes exported[39m
+2025-08-11 21:29:30:2930 [32minfo[39m: [32m🔧 Initializing session management...[39m
+2025-08-11 21:29:30:2930 [32minfo[39m: [32m🔧 Configuring session store[39m
+2025-08-11 21:29:30:2930 [33mwarn[39m: [33m⚠️ Using in-memory session store (development or no DATABASE_URL or SESSION_STORE=memory).[39m
+2025-08-11 21:29:30:2930 [32minfo[39m: [32m🔧 Initializing Passport authentication...[39m
+2025-08-11 21:29:30:2930 [32minfo[39m: [32m✅ Session management and Passport configured successfully[39m
+2025-08-11 21:29:30:2930 [32minfo[39m: [32mServer running in development mode on port 3000[39m
+2025-08-11 21:29:30:2930 [32minfo[39m: [32mAPI available at http://localhost:3000/api/v1[39m

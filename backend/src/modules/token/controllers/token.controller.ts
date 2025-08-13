@@ -13,6 +13,8 @@ import { AuthRequest } from '../../accounts/types/auth.types';
 import { BlockchainService, getBlockchainConfig } from '../../blockchain/services/blockchain.service.js';
 import { validateAddress } from '../../blockchain/utils/blockchain.utils.js';
 import { tokenLogger } from '../utils/token.logger';
+import createError from 'http-errors';
+import { handleControllerError } from '../../../utils/error/error-handler';
 
 export class TokenController {
   private tokenService: TokenService;
@@ -29,12 +31,10 @@ export class TokenController {
       const parseResult = safeParseTokenCreate(req.body);
       
       if (!parseResult.success) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'ValidationError', 
-          message: parseResult.error.message 
+        throw createError(400, 'Invalid token data', {
+          code: 'VALIDATION_ERROR',
+          details: parseResult.error.format()
         });
-        return;
       }
       
       const token = await this.tokenService.create(parseResult.data as TokenCreateDTO);
@@ -44,8 +44,7 @@ export class TokenController {
         data: token 
       });
     } catch (error: unknown) {
-      tokenLogger.error('Error creating token', error);
-      next(error);
+      handleControllerError(error, req, res, 'Creating token');
     }
   };
 
@@ -61,37 +60,31 @@ export class TokenController {
         data: tokens 
       });
     } catch (error: unknown) {
-      tokenLogger.error('Error getting all tokens', error);
-      next(error);
+      handleControllerError(error, req, res, 'Getting all tokens');
     }
   };
   
   /**
    * Get a token by ID
    */
-  getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getById = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
     try {
       const parseResult = safeParseTokenIdParams(req.params);
       
       if (!parseResult.success) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'ValidationError', 
-          message: parseResult.error.message 
+        throw createError(400, 'Invalid token ID', {
+          code: 'VALIDATION_ERROR',
+          details: parseResult.error.format()
         });
-        return;
       }
       
       const { id } = parseResult.data;
       const token = await this.tokenService.getById(id);
       
       if (!token) {
-        res.status(404).json({
-          success: false,
-          error: 'NotFound',
-          message: 'Token not found'
+        throw createError(404, 'Token not found', {
+          code: 'RESOURCE_NOT_FOUND'
         });
-        return;
       }
       
       res.json({
@@ -99,48 +92,41 @@ export class TokenController {
         data: token
       });
     } catch (error: unknown) {
-      tokenLogger.error('Error getting token by ID', error);
-      next(error);
+      handleControllerError(error, req, res, 'Getting token by ID');
     }
+  };
   };
   
   /**
    * Update a token
    */
-  update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  update = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
     try {
       const idParseResult = safeParseTokenIdParams(req.params);
       
       if (!idParseResult.success) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'ValidationError', 
-          message: idParseResult.error.message 
+        throw createError(400, 'Invalid token ID', {
+          code: 'VALIDATION_ERROR',
+          details: idParseResult.error.format()
         });
-        return;
       }
       
       const dataParseResult = safeParseTokenUpdate(req.body);
       
       if (!dataParseResult.success) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'ValidationError', 
-          message: dataParseResult.error.message 
+        throw createError(400, 'Invalid token data', {
+          code: 'VALIDATION_ERROR',
+          details: dataParseResult.error.format()
         });
-        return;
       }
       
       const { id } = idParseResult.data;
       const token = await this.tokenService.update(id, dataParseResult.data as TokenUpdateDTO);
       
       if (!token) {
-        res.status(404).json({
-          success: false,
-          error: 'NotFound',
-          message: 'Token not found'
+        throw createError(404, 'Token not found', {
+          code: 'RESOURCE_NOT_FOUND'
         });
-        return;
       }
       
       res.json({
@@ -148,8 +134,7 @@ export class TokenController {
         data: token
       });
     } catch (error: unknown) {
-      tokenLogger.error('Error updating token', error);
-      next(error);
+      handleControllerError(error, req, res, 'Updating token');
     }
   };
   

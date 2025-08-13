@@ -11,13 +11,17 @@ accounts/
 ├── controllers/       # HTTP request handlers
 │   ├── auth.controller.ts
 │   ├── kyc.controller.ts
+│   ├── performance.controller.ts
 │   └── user.controller.ts
 ├── middleware/        # Express middleware
 │   ├── auth.middleware.ts
-│   └── kyc.middleware.ts
+│   ├── kyc.middleware.ts
+│   ├── performance.middleware.ts
+│   └── user.middleware.ts
 ├── routes/            # Express routes
 │   ├── auth.routes.ts
 │   ├── kyc.routes.ts
+│   ├── performance.routes.ts
 │   └── user.routes.ts
 ├── services/          # Business logic
 │   ├── auth.service.ts
@@ -27,6 +31,9 @@ accounts/
 │   ├── auth.types.ts
 │   ├── kyc.types.ts
 │   └── user.types.ts
+├── utils/             # Utility functions
+│   ├── performance-monitor.util.ts
+│   └── response-formatter.ts
 ├── validators/        # Request validation schemas
 │   └── kyc.validators.ts
 ├── index.ts           # Module exports
@@ -38,7 +45,7 @@ accounts/
 ### Authentication
 
 - OAuth authentication only (Google, Azure)
-- JWT-based authentication with refresh tokens
+- Session-based authentication with Passport
 - Role-based access control
 
 ### User Management
@@ -53,6 +60,14 @@ accounts/
 - Integration with KYC providers
 - Admin KYC management
 - KYC status checks
+
+### Performance Monitoring
+
+- Comprehensive performance tracking for all operations
+- Categorized metrics (database reads/writes, authentication, external APIs, etc.)
+- Performance statistics with percentiles
+- Admin dashboard for monitoring system performance
+- Automatic request timing for all API endpoints
 
 ## API Endpoints
 
@@ -91,6 +106,15 @@ accounts/
 | POST | `/submit` | Submit KYC information | Authenticated |
 | POST | `/provider/:provider/initiate` | Initiate verification with a KYC provider | Authenticated |
 | GET | `/admin` | Get all KYC records | Admin only |
+| PATCH | `/admin/:kycId` | Update KYC status | Admin only |
+
+### Performance Routes (`/api/performance`)
+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/metrics` | Get recent performance metrics | Admin only |
+| GET | `/stats` | Get performance statistics | Admin only |
+| GET | `/dashboard` | Get performance dashboard data | Admin only |
 | GET | `/admin/:userId` | Get KYC record for a specific user | Admin only |
 | PATCH | `/admin/:userId` | Update KYC status for a user | Admin only |
 | POST | `/admin/:userId/sync` | Sync KYC status with provider | Admin only |
@@ -228,4 +252,72 @@ The Accounts module is designed to be integrated with other modules in the appli
 - The `roleGuard` middleware can be used to enforce role-based access control
 - The `requireKycVerified` middleware can be used to ensure users have completed KYC
 - The services can be imported and used directly in other modules
+
+## Performance Monitoring
+
+The Accounts module includes a comprehensive performance monitoring system that can be used across the application.
+
+### Operation Categories
+
+Performance metrics are categorized for better analysis:
+
+```typescript
+enum OperationCategory {
+  DATABASE_READ = 'database_read',
+  DATABASE_WRITE = 'database_write',
+  AUTHENTICATION = 'authentication',
+  EXTERNAL_API = 'external_api',
+  FILE_OPERATION = 'file_operation',
+  COMPUTATION = 'computation',
+  REQUEST_HANDLING = 'request_handling'
+}
+```
+
+### Measuring Performance
+
+Use the `measurePerformance` utility to track the performance of any operation:
+
+```typescript
+import { measurePerformance, OperationCategory } from '../utils/performance-monitor.util';
+
+// Example: Measure the performance of a database query
+async function getUserById(userId: string) {
+  return await measurePerformance(
+    'getUserById', // Operation name
+    OperationCategory.DATABASE_READ, // Category
+    async () => {
+      // The operation to measure
+      return await prisma.user.findUnique({ where: { id: userId } });
+    },
+    { userId } // Optional metadata
+  );
+}
+```
+
+### Automatic Request Timing
+
+All API requests are automatically timed using the `performanceMonitorMiddleware`. This middleware is applied globally in `app.ts`.
+
+### Viewing Performance Metrics
+
+Administrators can view performance metrics through the following API endpoints:
+
+- `GET /api/performance/metrics` - Recent performance metrics
+- `GET /api/performance/stats` - Performance statistics
+- `GET /api/performance/dashboard` - Performance dashboard data
+
+### Performance Thresholds
+
+Operations are categorized by duration:
+
+```typescript
+enum PerformanceThreshold {
+  FAST = 100,    // < 100ms
+  MEDIUM = 300,  // 100-300ms
+  SLOW = 500,    // 300-500ms
+  VERY_SLOW = 1000 // > 1000ms
+}
+```
+
+Slow operations are automatically logged with appropriate severity levels.
 

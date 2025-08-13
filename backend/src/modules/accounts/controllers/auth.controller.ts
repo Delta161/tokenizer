@@ -1,7 +1,8 @@
 /**
- * Clean Auth Controller
+ * Authentication Controller
+ * Handles HTTP requests for authentication operations
  * Follows 7-layer architecture - Controllers Layer only handles HTTP requests/responses
- * Business logic moved to Services Layer, utilities moved to Utils Layer
+ * Business logic delegated to Services Layer, utilities in Utils Layer
  */
 
 import { Request, Response, NextFunction } from 'express';
@@ -13,18 +14,27 @@ import {
   buildOAuthSuccessUrl 
 } from '../utils/oauth.utils';
 import { accountsLogger } from '../utils/accounts.logger';
+import { handleControllerError } from '../../../utils/error';
 import { logger } from '../../../utils/logger';
+import { createSuccessResponse, createErrorResponse } from '../utils/response-formatter';
 
 /**
- * Clean Auth Controller following single responsibility principle
+ * Authentication Controller
+ * Responsible for handling all authentication-related HTTP requests
+ * Implements OAuth authentication flows and session management
  */
 export class AuthController {
 
   /**
-   * Handle OAuth authentication success
-   * Pure controller - delegates all business logic to services
+   * Handles successful OAuth authentication callback
+   * Processes the user data from OAuth provider and creates/updates user record
+   * 
+   * @param req - Express request object containing user data from Passport
+   * @param res - Express response object
+   * @returns Redirect response to frontend or error response
+   * @throws HttpError for authentication failures
    */
-  async handleOAuthSuccess(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async handleOAuthSuccess(req: Request, res: Response): Promise<void | Response> {
     try {
       // Extract user from request (set by Passport)
       const user = req.user;
@@ -55,8 +65,8 @@ export class AuthController {
       });
 
     } catch (error) {
-      logger.error('OAuth success handling failed', { error });
-      next(error);
+      // Use standardized error handler
+      return handleControllerError(error, req, res, 'OAuth authentication success');
     }
   }
 
@@ -87,14 +97,20 @@ export class AuthController {
       res.redirect(result.redirectUrl);
 
     } catch (error) {
-      logger.error('OAuth error handling failed', { error });
-      next(error);
+      // Use standardized error handler to process the error
+      const formattedError = handleControllerError(error, req, res, 'OAuth authentication');
+      next(formattedError);
     }
   }
 
   /**
-   * Logout user and destroy session
-   * Pure controller - minimal session cleanup
+   * Logs out the current user and destroys their session
+   * Clears session cookie and invalidates session in the store
+   * 
+   * @param req - Express request object with authenticated user
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   * @returns Void - Sends success response or passes error to next middleware
    */
   async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -132,111 +148,146 @@ export class AuthController {
       });
 
     } catch (error) {
-      logger.error('Logout processing failed', { error });
-      next(error);
+      // Use standardized error handler
+      handleControllerError(error, req, res, 'User logout');
     }
   }
 
   /**
-   * Get authentication health status
-   * Pure controller - delegates health check to services
+   * Retrieves the health status of authentication services
+   * Checks OAuth providers and returns appropriate HTTP status code
+   * 
+   * @param req - Express request object
+   * @param res - Express response object
+   * @returns Response with health status or error response
+   * @throws HttpError if health check fails
    */
-  async getHealthStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getHealthStatus(req: Request, res: Response): Promise<void | Response> {
     try {
       // Delegate health check to service layer
       const healthData = await authService.getOAuthHealthStatus();
       
       // Return health status
       res.status(healthData.status === 'healthy' ? 200 : 503).json(
-        createAuthSuccessResponse(healthData, 'Health check completed')
+        createSuccessResponse(healthData, 'Health check completed')
       );
 
     } catch (error) {
-      logger.error('Health status check failed', { error });
-      next(error);
+      // Use standardized error handler
+      return handleControllerError(error, req, res, 'Auth health check');
     }
   }
 
   /**
-   * Get current authenticated user
-   * Pure controller - returns sanitized user data
+   * Retrieves the current authenticated user's information
+   * Returns sanitized user data from the session
+   * 
+   * @param req - Express request object with authenticated user
+   * @param res - Express response object
+   * @returns Response with user data or error response for unauthenticated users
+   * @throws HttpError if user retrieval fails
    */
-  async getCurrentUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getCurrentUser(req: Request, res: Response): Promise<void | Response> {
     try {
       const user = req.user;
       
       if (!user) {
-        res.status(401).json({
-          success: false,
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'User not authenticated'
-          }
-        });
-        return;
+        return res.status(401).json(createErrorResponse(
+          'UNAUTHORIZED',
+          'User not authenticated'
+        ));
       }
 
       // Return sanitized user data
-      res.json(createAuthSuccessResponse(
+      res.json(createSuccessResponse(
         sanitizeAuthResponse(user),
         'User data retrieved'
       ));
 
     } catch (error) {
-      logger.error('Get current user failed', { error });
-      next(error);
+      // Use standardized error handler
+      return handleControllerError(error, req, res, 'Get current user');
     }
   }
 
   /**
-   * Check current session authentication status
-   * Pure controller - delegates user data processing to services
+   * Checks the current session authentication status
+   * Returns session information and user data if authenticated
+   * 
+   * @param req - Express request object with session information
+   * @param res - Express response object
+   * @returns Response with authentication status and user data if authenticated
+   * @throws HttpError if session status check fails
    */
-  async getSessionStatus(req: Request, res: Response): Promise<void> {
+  async getSessionStatus(req: Request, res: Response): Promise<void | Response> {
     try {
       const sessionID = req.sessionID;
       const isAuthenticated = req.isAuthenticated();
-      const user = req.user as any;
+      
+      // Safely access user data
+      const userObj = req.user as Record<string, unknown> | undefined;
       
       logger.info('🔍 Session status check', { 
         sessionID,
         isAuthenticated,
-        userId: user?.id || null,
-        userEmail: user?.email || null
+        userId: userObj?.id ?? null,
+        userEmail: userObj?.email ?? null
       });
 
-      if (isAuthenticated && user) {
-        const sanitizedUser = sanitizeAuthResponse(user);
+      if (isAuthenticated && userObj) {
+        const sanitizedUser = sanitizeAuthResponse(userObj);
         res.json({
-          isAuthenticated: true,
-          user: sanitizedUser
+          success: true,
+          data: {
+            isAuthenticated: true,
+            user: sanitizedUser
+          },
+          message: 'User is authenticated',
+          meta: {
+            timestamp: new Date().toISOString()
+          }
         });
       } else {
-        res.json({ 
-          isAuthenticated: false,
-          user: null 
+        res.json({
+          success: true,
+          data: {
+            isAuthenticated: false,
+            user: null
+          },
+          message: 'User is not authenticated',
+          meta: {
+            timestamp: new Date().toISOString()
+          }
         });
       }
     } catch (error) {
-      logger.error('❌ Session status check error:', error);
-      res.status(500).json({ 
-        error: 'Failed to check session status',
-        isAuthenticated: false,
-        user: null 
-      });
+      // Use standardized error handler
+      return handleControllerError(error, req, res, 'Session status check');
     }
   }
 
   /**
-   * Health check endpoint
-   * Pure controller - delegates health status to services
+   * Performs health check on authentication services
+   * Validates that OAuth providers and database connections are operational
+   * 
+   * @param req - Express request object
+   * @param res - Express response object
+   * @param next - Express next function for error handling
+   * @returns Void - Sends health status response or passes error to next middleware
    */
   async healthCheck(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // Delegate health check logic to service layer
       const healthStatus = await authService.getOAuthHealthStatus();
       
-      res.json(healthStatus);
+      res.json({
+        success: true,
+        data: healthStatus,
+        message: 'Health check completed',
+        meta: {
+          timestamp: new Date().toISOString()
+        }
+      });
       
     } catch (error) {
       logger.error('Health check failed', { error });
@@ -249,10 +300,14 @@ export class AuthController {
   // =============================================================================
 
   /**
-   * Handle missing user scenario
+   * Handles the case when no user data is present in the request
+   * Redirects to frontend with appropriate error information
+   * 
+   * @param res - Express response object
+   * @returns Void - Redirects to frontend error page
    */
   private handleMissingUser(res: Response): void {
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:5173';
     const errorUrl = buildOAuthErrorUrl(
       frontendUrl,
       '/auth/callback',
@@ -263,10 +318,14 @@ export class AuthController {
   }
 
   /**
-   * Handle session save error
+   * Handles session save errors during authentication
+   * Redirects to frontend with appropriate error information
+   * 
+   * @param res - Express response object
+   * @returns Void - Redirects to frontend error page
    */
   private handleSessionError(res: Response): void {
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:5173';
     const errorUrl = buildOAuthErrorUrl(
       frontendUrl,
       '/auth/callback',
@@ -280,7 +339,7 @@ export class AuthController {
    * Handle invalid error parameters
    */
   private handleInvalidErrorParams(res: Response): void {
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:5173';
     const fallbackUrl = `${frontendUrl}/auth/error`;
     res.redirect(fallbackUrl);
   }

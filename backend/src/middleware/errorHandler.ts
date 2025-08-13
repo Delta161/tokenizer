@@ -52,11 +52,11 @@ export const errorHandler = (err: Error, req: Request, res: Response, _next: Nex
     errorCode = 'VALIDATION_ERROR';
     isOperational = true;
     details = (err as any).format?.() || {};
-  } else if (err.name === 'JsonWebTokenError') {
+  } else if (err.name === 'AuthenticationError') {
     // Handle authentication errors
     statusCode = 401;
-    message = 'Invalid token';
-    errorCode = 'INVALID_TOKEN';
+    message = 'Authentication failed';
+    errorCode = 'AUTH_ERROR';
     isOperational = true;
   } else if (err.name === 'TokenExpiredError') {
     // Handle authentication expiration

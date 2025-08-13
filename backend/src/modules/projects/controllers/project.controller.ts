@@ -12,10 +12,10 @@ import {
   UpdateProjectSchema,
   ProjectFiltersSchema,
   ProjectPaginationSchema,
-  GetProjectParamsSchema,
+  ProjectParamsSchema,
   UpdateProjectStatusSchema,
   SearchProjectsSchema
-} from '../validators/project.validators';
+} from '../validators';
 import {
   ProjectError,
   ProjectNotFoundError,
@@ -143,7 +143,7 @@ export class ProjectController {
   async getProjectById(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       // Validate project ID
-      const validation = GetProjectParamsSchema.safeParse(req.params);
+  const validation = ProjectParamsSchema.safeParse(req.params);
       if (!validation.success) {
         return next(createError(400, 'Invalid project ID'));
       }
@@ -188,7 +188,7 @@ export class ProjectController {
   async updateProject(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       // Validate project ID
-      const paramsValidation = GetProjectParamsSchema.safeParse(req.params);
+  const paramsValidation = ProjectParamsSchema.safeParse(req.params);
       if (!paramsValidation.success) {
         return next(createError(400, 'Invalid project ID'));
       }
@@ -236,7 +236,7 @@ export class ProjectController {
   async deleteProject(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       // Validate project ID
-      const validation = GetProjectParamsSchema.safeParse(req.params);
+  const validation = ProjectParamsSchema.safeParse(req.params);
       if (!validation.success) {
         return next(createError(400, 'Invalid project ID'));
       }
@@ -272,7 +272,7 @@ export class ProjectController {
   async updateProjectStatus(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       // Validate project ID
-      const paramsValidation = GetProjectParamsSchema.safeParse(req.params);
+  const paramsValidation = ProjectParamsSchema.safeParse(req.params);
       if (!paramsValidation.success) {
         return next(createError(400, 'Invalid project ID'));
       }

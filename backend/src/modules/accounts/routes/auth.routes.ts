@@ -14,6 +14,7 @@ import { googleAuthOptions, googleCallbackOptions } from '../strategies/google.s
 
 // Global utilities
 import { logger } from '../../../utils/logger';
+import { authLimiter, apiLimiter } from '../../../middleware/rate-limit/rate-limit.middleware';
 
 // Create router
 const router = Router();
@@ -27,12 +28,12 @@ logger.info('✅ Auth routes module loading...');
 /**
  * Health check endpoint
  */
-router.get('/health', authController.healthCheck.bind(authController));
+router.get('/health', apiLimiter, authController.healthCheck.bind(authController));
 
 /**
  * Session status check endpoint
  */
-router.get('/session-status', authController.getSessionStatus.bind(authController));
+router.get('/session-status', apiLimiter, authController.getSessionStatus.bind(authController));
 
 /**
  * Debug session endpoint (temporary - for troubleshooting)
@@ -53,7 +54,7 @@ router.get('/debug-session', (req, res) => {
 /**
  * Logout user - destroy session
  */
-router.post('/logout', sessionGuard, authController.logout.bind(authController));
+router.post('/logout', apiLimiter, sessionGuard, authController.logout.bind(authController));
 
 // =============================================================================
 // GOOGLE OAUTH ENDPOINTS
@@ -63,6 +64,7 @@ router.post('/logout', sessionGuard, authController.logout.bind(authController))
  * Google OAuth initiation
  */
 router.get('/google', 
+  authLimiter, // Apply stricter rate limiting for auth endpoints
   passport.authenticate('google', googleAuthOptions)
 );
 

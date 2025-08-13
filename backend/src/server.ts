@@ -6,10 +6,9 @@ import app from '../app';
 import { logger } from './utils/logger';
 import { prisma } from './prisma/client';
 import dotenv from 'dotenv';
-import path from 'path';
 
 // Load environment variables
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config();
 
 // Simple environment validation
 const validateEnv = (): void => {
@@ -37,13 +36,16 @@ validateEnv();
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
-  logger.error('Uncaught Exception:', { error: error.message, stack: error.stack });
-  process.exit(1);
+  const details = `${error.message}${error.stack ? `\n${error.stack}` : ''}`;
+  logger.error(`Uncaught Exception: ${details}`);
+  if ((process.env.NODE_ENV ?? 'development') === 'production') {
+    throw error; // Let process manager handle exit in production
+  }
 });
 
 // Start server
-const PORT = parseInt(process.env.PORT || '3000', 10);
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const PORT = parseInt(process.env.PORT ?? '3000', 10);
+const NODE_ENV = process.env.NODE_ENV ?? 'development';
 
 const server = app.listen(PORT, () => {
   logger.info(`Server running in ${NODE_ENV} mode on port ${PORT}`);
@@ -51,19 +53,36 @@ const server = app.listen(PORT, () => {
 });
 
 // Handle unhandled promise rejections
-process.on('unhandledRejection', (error: Error) => {
-  logger.error('Unhandled Rejection:', { error: error.message, stack: error.stack });
-  server.close(() => {
-    process.exit(1);
-  });
+process.on('unhandledRejection', (reason: unknown) => {
+  let details: string;
+  if (reason instanceof Error) {
+    details = `${reason.message}${reason.stack ? `\n${reason.stack}` : ''}`;
+  } else {
+    try {
+      details = JSON.stringify(reason);
+    } catch {
+      details = String(reason);
+    }
+  }
+  logger.error(`Unhandled Rejection: ${details}`);
+  const prod = (process.env.NODE_ENV ?? 'development') === 'production';
+  if (prod) {
+    server.close(() => {
+      // Re-throw to surface to process manager
+      if (reason instanceof Error) {
+        throw reason;
+      }
+      throw new Error('Unhandled promise rejection');
+    });
+  }
 });
 
 // Handle SIGTERM signal
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received. Shutting down gracefully');
-  server.close(async () => {
-    await prisma.$disconnect();
-    logger.info('Process terminated');
-    process.exit(0);
+  server.close(() => {
+    prisma.$disconnect()
+      .catch((e) => logger.error(`Error during Prisma disconnect: ${e instanceof Error ? e.message : String(e)}`))
+      .finally(() => logger.info('Process terminated'));
   });
 });

@@ -1,14 +1,15 @@
 /**
  * Validation Middleware
- * Provides middleware functions for request validation
+ * Provides middleware functions for request validation using http-errors
  */
 
 import { Request, Response, NextFunction } from 'express';
 import { ZodSchema } from 'zod';
+import createError from 'http-errors';
+import { ParsedQs as ExpressQueryParams } from 'qs';
 
 // Type alias for Express types
 type ParamsDictionary = Record<string, string>;
-type ParsedQs = Record<string, any>;
 
 /**
  * Validates request body against a Zod schema
@@ -20,24 +21,20 @@ export const validateBody = (schema: ZodSchema) => {
       const validation = schema.safeParse(req.body);
       
       if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          error: 'Validation failed',
-          message: 'Invalid request body',
+        next(createError(400, 'Invalid request body', {
+          code: 'VALIDATION_ERROR',
           details: validation.error.issues
-        });
+        }));
         return;
       }
       
       // Replace request body with validated data
       req.body = validation.data;
       next();
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        message: 'Validation middleware error'
-      });
+    } catch {
+      next(createError(500, 'Validation middleware error', {
+        code: 'INTERNAL_ERROR'
+      }));
     }
   };
 };
@@ -52,24 +49,20 @@ export const validateParams = (schema: ZodSchema) => {
       const validation = schema.safeParse(req.params);
       
       if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          error: 'Validation failed',
-          message: 'Invalid request parameters',
+        next(createError(400, 'Invalid request parameters', {
+          code: 'VALIDATION_ERROR',
           details: validation.error.issues
-        });
+        }));
         return;
       }
       
       // Replace request params with validated data
       req.params = validation.data as ParamsDictionary;
       next();
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        message: 'Validation middleware error'
-      });
+    } catch {
+      next(createError(500, 'Validation middleware error', {
+        code: 'INTERNAL_ERROR'
+      }));
     }
   };
 };
@@ -84,24 +77,20 @@ export const validateQuery = (schema: ZodSchema) => {
       const validation = schema.safeParse(req.query);
       
       if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          error: 'Validation failed',
-          message: 'Invalid query parameters',
+        next(createError(400, 'Invalid query parameters', {
+          code: 'VALIDATION_ERROR',
           details: validation.error.issues
-        });
+        }));
         return;
       }
       
       // Replace request query with validated data
-      req.query = validation.data as ParsedQs;
+      req.query = validation.data as unknown as ExpressQueryParams;
       next();
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        message: 'Validation middleware error'
-      });
+    } catch {
+      next(createError(500, 'Validation middleware error', {
+        code: 'INTERNAL_ERROR'
+      }));
     }
   };
 };

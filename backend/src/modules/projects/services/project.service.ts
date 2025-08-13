@@ -637,6 +637,23 @@ export class ProjectService {
     }
   }
 
+  /**
+   * Search projects by term with pagination and sorting
+   */
+  async searchProjects(
+    searchTerm: string,
+    options: Omit<ProjectQueryOptions, 'filters'> & { filters?: ProjectFilters }
+  ): Promise<PaginatedProjectResult> {
+    const merged: ProjectQueryOptions = {
+      ...options,
+      filters: {
+        ...(options.filters || {}),
+        search: searchTerm
+      }
+    };
+    return this.getProjects(merged);
+  }
+
   // ==========================================
   // ANALYTICS AND STATISTICS
   // ==========================================

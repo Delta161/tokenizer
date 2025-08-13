@@ -133,6 +133,8 @@ export function createAuthSuccessResponse(data: any, message: string = 'Success'
     success: true,
     message,
     data: sanitizeAuthResponse(data),
-    timestamp: new Date().toISOString()
+    meta: {
+      timestamp: new Date().toISOString()
+    }
   };
 }
